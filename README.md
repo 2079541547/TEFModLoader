@@ -2,7 +2,7 @@
 
 * 一款专用于 Terraria 手机端的强大工具
 * [为项目做出贡献](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=4_FgF6B2vAHURKYQeM-iU3hgXgLa5yao&authKey=uVaNXW3raKeD3M6lx9RryVaH0xC6hRsxfklNoYYB1FMIeOLlEChlrfD%2FbW9TsRkC&noverify=0&group_code=960014110)
-* 答案：silkways
+* 群答案：silkways
   
 # **为什么选择开源**
 
@@ -69,7 +69,7 @@
   | 游戏管理 | 0% |
   | 插件管理 | 0% |
   
-  # 网络页进度
+  # 更多页进度
   
   | 名称 | 完成度 |
   | --- | --- |
