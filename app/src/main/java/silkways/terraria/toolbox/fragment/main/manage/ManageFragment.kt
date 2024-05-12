@@ -23,8 +23,12 @@ class ManageFragment: Fragment() {
     ): View {
 
 
-
-        _binding = MainFragmentManageBinding.inflate(inflater, container, false)
+        /*
+        * @navHostFragment 获取导航控管理器
+        * @navOptions 导航动画
+        * navHostFragment.navController.navigate(R.id.页面id, null, navOptions)
+        * 跳转方法
+         */
 
         val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navOptions = NavOptions.Builder()
@@ -34,7 +38,7 @@ class ManageFragment: Fragment() {
             .setPopExitAnim(R.anim.fragment_anim_exit)
             .build()
 
-        //navHostFragment.navController.navigate(R.id.home_user_info, null, navOptions)
+        _binding = MainFragmentManageBinding.inflate(inflater, container, false)
 
 
         return binding.root

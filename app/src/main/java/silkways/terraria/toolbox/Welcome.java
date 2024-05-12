@@ -13,7 +13,7 @@ public class Welcome extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = WelcomeMainBinding.inflate(getLayoutInflater());
+        getSupportActionBar().hide();
         setContentView(binding.getRoot());
-
     }
 }

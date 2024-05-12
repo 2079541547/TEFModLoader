@@ -13,7 +13,7 @@
         android:theme="@style/Theme.TerrariaToolBox"
         tools:targetApi="31" >
         <activity
-            android:name=".fragment.MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name" >
             <intent-filter>

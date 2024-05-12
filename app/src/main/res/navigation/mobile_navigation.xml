@@ -1,4 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+from EternalFuture゙
+2024.05.12
+
+主页导航代码
+-->
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,6 +14,40 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="silkways.terraria.toolbox.fragment.main.home.HomeFragment"
-        tools:layout="@layout/main_fragment_home" />
+        tools:layout="@layout/main_fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_toolbox"
+            app:destination="@id/navigation_toolbox"
+            app:popUpTo="@+id/navigation_home"
+            app:popUpToInclusive="false"/>
+
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_manage"
+            app:destination="@id/navigation_manage"
+            app:popUpTo="@+id/navigation_home"
+            app:popUpToInclusive="false"/>
+
+        <action
+            android:id="@+id/action_navigation_home_self"
+            app:destination="@id/navigation_home"
+            app:popUpTo="@+id/navigation_home"
+            app:popUpToInclusive="false"/>
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_toolbox"
+        android:name="silkways.terraria.toolbox.fragment.main.toolbox.ToolBoxFragment"
+        tools:layout="@layout/main_fragment_toolbox" />
+
+    <fragment
+        android:id="@+id/navigation_manage"
+        android:name="silkways.terraria.toolbox.fragment.main.manage.ManageFragment"
+        tools:layout="@layout/main_fragment_manage" />
+
+    <fragment
+        android:id="@+id/navigation_more"
+        android:name="silkways.terraria.toolbox.fragment.main.more.MoreFragment"
+        tools:layout="@layout/main_fragment_more" />
 
 </navigation>
