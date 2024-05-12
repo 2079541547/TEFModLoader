@@ -38,6 +38,11 @@
   | English | ❌ |
   | 日本語 | ❌ |
   | 한국어 | ❌ |
+  | Italiano | ❌ |
+  | Lengua española | ❌ |
+  | Français | ❌ |
+  | Русский | ❌ |
+  | Deutsch | ❌ |
 
   
 
