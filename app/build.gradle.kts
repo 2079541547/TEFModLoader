@@ -15,6 +15,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags += "-std=c++20"
+                abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+            }
+        }
     }
 
     buildTypes {
@@ -36,9 +42,18 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    ndkVersion = "27.0.11718014 rc1"
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
 }
 
 dependencies {
+    implementation (libs.chaquopy)
+    implementation (libs.chaquopy.numpy)
     implementation(fileTree("libs"))
     implementation (libs.mmkv.static)
     implementation (libs.google.gson)
@@ -50,6 +65,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+    implementation(libs.cardview.v7)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
