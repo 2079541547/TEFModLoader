@@ -40,6 +40,25 @@ class HomeFragment: Fragment() {
         _binding = MainFragmentHomeBinding.inflate(inflater, container, false)
 
 
+        binding.game.setOnClickListener {
+            //navHostFragment.navController.navigate(R.id.action_homeFragment_to_gameFragment, null, navOptions)
+        }
+
+        binding.about.setOnClickListener {
+            navHostFragment.navController.navigate(R.id.navigation_about, null, navOptions)
+        }
+
+        binding.settings.setOnClickListener {
+            navHostFragment.navController.navigate(R.id.navigation_settings, null, navOptions)
+        }
+
+        binding.logs.setOnClickListener {
+
+        }
+
+        binding.techSupport.setOnClickListener {
+
+        }
 
         return binding.root
     }

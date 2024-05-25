@@ -11,21 +11,21 @@ from EternalFuture゙
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/ic_home"
-        android:title="主页"/>
+        android:title="@string/home"/>
 
     <item
         android:id="@+id/navigation_toolbox"
         android:icon="@drawable/ic_toolbox"
-        android:title="工具箱"/>
+        android:title="@string/toolbox"/>
 
     <item
         android:id="@+id/navigation_manage"
         android:icon="@drawable/ic_manage"
-        android:title="管理"/>
+        android:title="@string/manage"/>
 
     <item
         android:id="@+id/navigation_more"
         android:icon="@drawable/ic_more"
-        android:title="更多"/>
+        android:title="@string/more"/>
 
 </menu>

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Terraria ToolBox</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="home">主页</string>
+    <string name="toolbox">工具箱</string>
+    <string name="manage">管理</string>
+    <string name="more">更多</string>
 </resources>

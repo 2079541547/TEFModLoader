@@ -4,16 +4,17 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Objects;
+
 import silkways.terraria.toolbox.databinding.WelcomeMainBinding;
 
 public class Welcome extends AppCompatActivity {
-    private WelcomeMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = WelcomeMainBinding.inflate(getLayoutInflater());
-        getSupportActionBar().hide();
+        silkways.terraria.toolbox.databinding.WelcomeMainBinding binding = WelcomeMainBinding.inflate(getLayoutInflater());
+        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(binding.getRoot());
     }
 }
