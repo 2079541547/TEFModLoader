@@ -6,4 +6,8 @@
     <string name="more">更多</string>
     <string name="settings">设置</string>
     <string name="about">关于</string>
+    <string name="app_text">致力打造最好的工具</string>
+    <string name="github_text">开源仓库</string>
+    <string name="licence">开源许可证</string>
+    <string name="QQ">QQ交流群</string>
 </resources>
