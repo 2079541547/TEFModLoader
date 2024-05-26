@@ -51,9 +51,9 @@ android {
     }
 }
 
-dependencies {
-    implementation (libs.chaquopy)
-    implementation (libs.chaquopy.numpy)
+dependencies{
+    implementation (libs.jython.standalone)
+    implementation (libs.luaj.jse.v301)
     implementation(fileTree("libs"))
     implementation (libs.mmkv.static)
     implementation (libs.google.gson)
@@ -65,7 +65,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.cardview.v7)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
