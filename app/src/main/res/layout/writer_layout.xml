@@ -7,8 +7,8 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/writer_image"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         app:shapeAppearanceOverlay="@style/CircularImageView"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="0dp"

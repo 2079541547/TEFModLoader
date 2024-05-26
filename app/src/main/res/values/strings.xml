@@ -4,4 +4,6 @@
     <string name="toolbox">工具箱</string>
     <string name="manage">管理</string>
     <string name="more">更多</string>
+    <string name="settings">设置</string>
+    <string name="about">关于</string>
 </resources>

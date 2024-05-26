@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -37,6 +38,11 @@ class SettingsFragemnt: Fragment() {
             .setPopEnterAnim(R.anim.fragment_anim_enter)
             .setPopExitAnim(R.anim.fragment_anim_exit)
             .build()
+
+        // 设置ActionBar的标题
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.title = getString(R.string.settings)
+
 
         _binding = HomeFragmentSettingsBinding.inflate(inflater, container, false)
 

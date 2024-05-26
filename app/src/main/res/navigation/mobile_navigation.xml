@@ -12,6 +12,7 @@ from EternalFuture゙
     app:startDestination="@+id/navigation_home">
 
     <fragment
+        android:label="@string/home"
         android:id="@+id/navigation_home"
         android:name="silkways.terraria.toolbox.fragment.main.home.HomeFragment"
         tools:layout="@layout/main_fragment_home" >
@@ -32,20 +33,26 @@ from EternalFuture゙
             app:destination="@id/navigation_home"
             app:popUpTo="@+id/navigation_home"
             app:popUpToInclusive="false"/>
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_more"
+            app:destination="@id/navigation_more" />
 
     </fragment>
 
     <fragment
+        android:label="@string/toolbox"
         android:id="@+id/navigation_toolbox"
         android:name="silkways.terraria.toolbox.fragment.main.toolbox.ToolBoxFragment"
         tools:layout="@layout/main_fragment_toolbox" />
 
     <fragment
+        android:label="@string/manage"
         android:id="@+id/navigation_manage"
         android:name="silkways.terraria.toolbox.fragment.main.manage.ManageFragment"
         tools:layout="@layout/main_fragment_manage" />
 
     <fragment
+        android:label="@string/more"
         android:id="@+id/navigation_more"
         android:name="silkways.terraria.toolbox.fragment.main.more.MoreFragment"
         tools:layout="@layout/main_fragment_more" />

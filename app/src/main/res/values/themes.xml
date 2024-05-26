@@ -2,9 +2,6 @@
     <!-- Base application theme. -->
     <style name="Theme.TerrariaToolBox" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="android:fontFamily">@font/xwwk</item>
-
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>

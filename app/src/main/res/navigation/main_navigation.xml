@@ -12,16 +12,19 @@ from EternalFuture゙
     app:startDestination="@+id/navigation_main">
 
     <fragment
+        android:label="@string/home"
         android:id="@+id/navigation_main"
         android:name="silkways.terraria.toolbox.fragment.FragmentMain"
         tools:layout="@layout/main_fragment_home" />
 
     <fragment
+        android:label="@string/settings"
         android:id="@+id/navigation_settings"
         android:name="silkways.terraria.toolbox.fragment.home.settings.SettingsFragemnt"
         tools:layout="@layout/home_fragment_settings" />
 
     <fragment
+        android:label="@string/about"
         android:id="@+id/navigation_about"
         android:name="silkways.terraria.toolbox.fragment.home.about.AboutFragment"
         tools:layout="@layout/home_fragment_about" />
