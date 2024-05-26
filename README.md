@@ -27,7 +27,7 @@
   | Kotlin     | ✅       |
   | C++        | ✅       |
   | C          | ✅       |
-  | Lua        | ✅       |
+  | Lua        | ❌       |
   | Python     | ✅       |
   | Web 全家桶 | ✅       |
   
