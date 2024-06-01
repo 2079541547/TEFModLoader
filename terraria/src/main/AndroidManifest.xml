@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:versionCode="301081"
+    android:versionName="1.4.4.9.5"
+    android:installLocation="preferExternal"
+    package="com.and.games505.TerrariaPaid">
+    <supports-screens
+        android:anyDensity="true"
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-feature
+        android:glEsVersion="0x30000"
+        android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.type.pc"
+        android:required="false"/>
+    <uses-feature android:name="android.hardware.gamepad"/>
+    <uses-feature
+        android:name="android.hardware.touchscreen.multitouch"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.touchscreen.multitouch.distinct"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.software.leanback"
+        android:required="false" />
+
+    <application
+        tools:targetApi="31"
+        android:theme="@style/UnityThemeSelector"
+        android:label="Terraria"
+        android:icon="@drawable/icon"
+        android:isGame="true">
+        <activity
+            android:name="com.unity3d.player.UnityPlayerActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="userLandscape"
+            android:configChanges="fontScale|layoutDirection|density|smallestScreenSize|screenSize|uiMode|screenLayout|orientation|navigation|keyboardHidden|keyboard|touchscreen|locale|mnc|mcc"
+            android:hardwareAccelerated="false"
+            android:resizeableActivity="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER"/>
+            </intent-filter>
+            <meta-data
+                android:name="unityplayer.UnityActivity"
+                android:value="true"/>
+            <meta-data
+                android:name="android.notch_support"
+                android:value="true"/>
+        </activity>
+        <meta-data
+            android:name="unity.splash-mode"
+            android:value="1"/>
+        <meta-data
+            android:name="unity.splash-enable"
+            android:value="true"/>
+        <meta-data
+            android:name="unity.launch-fullscreen"
+            android:value="true"/>
+        <meta-data
+            android:name="unity.allow-resizable-window"
+            android:value="false"/>
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape"/>
+        <meta-data
+            android:name="com.android.dynamic.apk.fused.modules"
+            android:value="base"/>
+    </application>
+</manifest>
