@@ -98,7 +98,7 @@
 # 功能
 
 * 主要使用java kotlin C/C++实现
-* 也包括Lua Python 及 Web
+* 也包括Lua 及 Web
   
   # 模组功能进度
   
