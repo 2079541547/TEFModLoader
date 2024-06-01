@@ -1,7 +1,10 @@
 [versions]
-agp = "8.6.0-alpha03"
+agp = "8.6.0-alpha04"
+androidServicemanagerVersion = "1.0.5"
 chaquopyNumpy = "latest-version"
 chaquopy = "latest-version"
+collection = "1.2.0"
+gradleVersion = "7.4.2"
 gsonVersion = "2.10.1"
 jythonStandalone = "2.7.3"
 kotlin = "1.9.0"
@@ -24,7 +27,9 @@ python = "15.0.1"
 plugin = "15.0.1"
 
 [libraries]
+androidx-collection = { module = "androidx.collection:collection", version.ref = "collection" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+build-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradleVersion" }
 chaquopy = { module = "com.chaquo.chaquopy:chaquopy", version.ref = "chaquopy" }
 chaquopy-numpy = { module = "com.chaquo.chaquopy:chaquopy-numpy", version.ref = "chaquopyNumpy" }
 google-gson = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
@@ -45,6 +50,7 @@ mmkv-static = { module = "com.tencent:mmkv-static", version = "1.3.5" }
 cardview-v7 = { group = "com.android.support", name = "cardview-v7", version.ref = "cardviewV7" }
 plugin = { module = "org.chaquopy:plugin", version.ref = "plugin" }
 python = { module = "org.chaquopy:python", version.ref = "python" }
+support-android-servicemanager = { module = "com.limpoxe.support:android-servicemanager", version.ref = "androidServicemanagerVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
