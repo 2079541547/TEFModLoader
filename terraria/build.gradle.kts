@@ -53,6 +53,7 @@ android {
         noCompress.add("assets/bin/Data/resources.resource")
         noCompress.add("assets/bin/Data/unity default resources")
     }
+    ndkVersion = "27.0.11718014 rc1"
 }
 
 dependencies {
