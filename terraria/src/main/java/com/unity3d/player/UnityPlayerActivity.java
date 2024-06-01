@@ -1,9 +1,9 @@
 package com.unity3d.player;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -11,168 +11,106 @@ import android.view.MotionEvent;
 import android.view.PointerIcon;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 
+
+/**
+ * UnityPlayerActivity类是Unity播放器在Android上的活动容器。
+ * 它负责管理Unity播放器的生命周期事件，并处理与Unity的交互。
+ */
 public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecycleEvents, View.OnTouchListener, View.OnGenericMotionListener {
-    boolean[] PressedStates = new boolean[330];
-    protected UnityPlayer mUnityPlayer;
+    boolean[] PressedStates = new boolean[330]; // 用于跟踪按键状态
+    protected UnityPlayer mUnityPlayer; // Unity播放器实例
 
-    int GetUnityKeyCode(int i) {
-        if (i >= 29 && i <= 54) {
-            return (i - 29) + 97;
+    private static final String MAPPING = "abcdefghijklmnopqrstuvwxyz1234567890"; // 键盘映射字符串
+    private static final int[][] SPECIAL_CASES = {{111, 27}, {4, 27}, {68, 96}, {7, 48}, {62, 32}, {69, 45},
+            {70, 61}, {67, 8}, {112, 127}, {59, 304}, {60, 303}, {66, 13}, {22, 275}, {21, 276}, {19, 273},
+            {20, 274}, {55, 44}, {56, 46}, {76, 47}, {57, 308}, {58, 307}, {114, 305}, {113, 306}, {115, 301},
+            {61, 9}, {72, 93}, {71, 91}, {75, 39}, {74, 59}}; // 特殊按键映射
+
+    /**
+     * 根据索引获取Unity中对应的按键码。
+     * @param i 索引值
+     * @return 对应的按键码，如果没有映射则返回0。
+     */
+    public int GetUnityKeyCode(int i) {
+        if (SPECIAL_CASES.length > i) {
+            return SPECIAL_CASES[i][1];
         }
-        if (i >= 8 && i <= 16) {
-            return (i - 8) + 49;
-        }
-        if (i >= 131 && i <= 142) {
-            return (i - 131) + 282;
-        }
-        if (i == 111 || i == 4) {
-            return 27;
-        }
-        if (i == 68) {
-            return 96;
-        }
-        if (i == 7) {
-            return 48;
-        }
-        if (i == 62) {
-            return 32;
-        }
-        if (i == 69) {
-            return 45;
-        }
-        if (i == 70) {
-            return 61;
-        }
-        if (i == 67) {
-            return 8;
-        }
-        if (i == 112) {
-            return 127;
-        }
-        if (i == 59) {
-            return 304;
-        }
-        if (i == 60) {
-            return 303;
-        }
-        if (i == 66) {
-            return 13;
-        }
-        if (i == 22) {
-            return 275;
-        }
-        if (i == 21) {
-            return 276;
-        }
-        if (i == 19) {
-            return 273;
-        }
-        if (i == 20) {
-            return 274;
-        }
-        if (i == 55) {
-            return 44;
-        }
-        if (i == 56) {
-            return 46;
-        }
-        if (i == 76) {
-            return 47;
-        }
-        if (i == 57) {
-            return 308;
-        }
-        if (i == 58) {
-            return 307;
-        }
-        if (i == 114) {
-            return 305;
-        }
-        if (i == 113) {
-            return 306;
-        }
-        if (i == 115) {
-            return 301;
-        }
-        if (i == 61) {
-            return 9;
-        }
-        if (i == 72) {
-            return 93;
-        }
-        if (i == 71) {
-            return 91;
-        }
-        if (i == 75) {
-            return 39;
-        }
-        if (i == 74) {
-            return 59;
-        }
-        return i == 73 ? 92 : 0;
+        return MAPPING.indexOf(String.valueOf(i)) + 1;
     }
 
-    @Override // com.unity3d.player.IUnityPlayerLifecycleEvents
-    public void onUnityPlayerQuitted() {
-    }
+    @Override
+    public void onUnityPlayerQuitted() {  }
 
+    /**
+     * 更新Unity命令行参数。
+     * @param str 原始命令行参数
+     * @return 更新后的命令行参数
+     */
     protected String updateUnityCommandLineArguments(String str) {
         return str;
     }
 
-    @Override // android.app.Activity
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
     protected void onCreate(Bundle bundle) {
         requestWindowFeature(1);
         super.onCreate(bundle);
+        // 更新Unity的命令行参数并初始化Unity播放器
         getIntent().putExtra("unity", updateUnityCommandLineArguments(getIntent().getStringExtra("unity")));
         UnityPlayer unityPlayer = new UnityPlayer(this, this);
         this.mUnityPlayer = unityPlayer;
         setContentView(unityPlayer);
         this.mUnityPlayer.requestFocus();
-        if (Build.VERSION.SDK_INT >= 24 && getApplicationContext().getPackageManager().hasSystemFeature("android.hardware.touchscreen")) {
+        // 如果设备支持触摸屏，设置指针图标
+        if (getApplicationContext().getPackageManager().hasSystemFeature("android.hardware.touchscreen")) {
             this.mUnityPlayer.setPointerIcon(PointerIcon.getSystemIcon(getBaseContext(), 0));
         }
+        // 设置触摸和运动事件监听器
         this.mUnityPlayer.setOnTouchListener(this);
         this.mUnityPlayer.setOnGenericMotionListener(this);
     }
 
-    @Override // com.unity3d.player.IUnityPlayerLifecycleEvents
+    @Override
     public void onUnityPlayerUnloaded() {
         moveTaskToBack(true);
     }
 
-    @Override // android.app.Activity
+    @Override
     protected void onNewIntent(Intent intent) {
         setIntent(intent);
         this.mUnityPlayer.newIntent(intent);
     }
 
-    @Override // android.app.Activity
+    @Override
     protected void onDestroy() {
         this.mUnityPlayer.destroy();
         super.onDestroy();
     }
 
-    @Override // android.app.Activity
+    @Override
     protected void onStop() {
         super.onStop();
+        // 在多窗口模式下暂停Unity播放器
         if (MultiWindowSupport.getAllowResizableWindow(this)) {
             this.mUnityPlayer.pause();
         }
     }
 
-    @Override // android.app.Activity
+    @Override
     protected void onStart() {
         super.onStart();
+        // 在多窗口模式下恢复Unity播放器
         if (MultiWindowSupport.getAllowResizableWindow(this)) {
             this.mUnityPlayer.resume();
         }
     }
 
-    @Override // android.app.Activity
+    @Override
     protected void onPause() {
         super.onPause();
+        // 保存多窗口模式状态，并在非多窗口模式下暂停Unity播放器
         MultiWindowSupport.saveMultiWindowMode(this);
         if (MultiWindowSupport.getAllowResizableWindow(this)) {
             return;
@@ -180,41 +118,48 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         this.mUnityPlayer.pause();
     }
 
-    @Override // android.app.Activity
+    @Override
     protected void onResume() {
         super.onResume();
+        // 在非多窗口模式或多窗口模式改变为真时恢复Unity播放器
         if (!MultiWindowSupport.getAllowResizableWindow(this) || MultiWindowSupport.isMultiWindowModeChangedToTrue(this)) {
             this.mUnityPlayer.resume();
         }
     }
 
-    @Override // android.app.Activity, android.content.ComponentCallbacks
+    @Override
     public void onLowMemory() {
         super.onLowMemory();
         this.mUnityPlayer.lowMemory();
     }
 
-    @Override // android.app.Activity, android.content.ComponentCallbacks2
+    @Override
     public void onTrimMemory(int i) {
         super.onTrimMemory(i);
+        // 当系统进行内存优化时通知Unity播放器
         if (i == 15) {
             this.mUnityPlayer.lowMemory();
         }
     }
 
-    @Override // android.app.Activity, android.content.ComponentCallbacks
-    public void onConfigurationChanged(Configuration configuration) {
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration configuration) {
         super.onConfigurationChanged(configuration);
         this.mUnityPlayer.configurationChanged(configuration);
     }
 
-    @Override // android.app.Activity, android.view.Window.Callback
+    @Override
     public void onWindowFocusChanged(boolean z) {
         super.onWindowFocusChanged(z);
         this.mUnityPlayer.windowFocusChanged(z);
     }
 
-    @Override // android.app.Activity, android.view.Window.Callback
+    /**
+     * 分发键盘事件给Unity播放器。
+     * @param keyEvent 键盘事件
+     * @return 如果事件被消费则返回true，否则返回false。
+     */
+    @Override
     public boolean dispatchKeyEvent(KeyEvent keyEvent) {
         if (keyEvent.getAction() == 2) {
             return this.mUnityPlayer.injectEvent(keyEvent);
@@ -222,25 +167,13 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         return super.dispatchKeyEvent(keyEvent);
     }
 
-    public void SetMouseCursorMode(int i) {
-        if (Build.VERSION.SDK_INT >= 24) {
-            if (i == 0) {
-                this.mUnityPlayer.setPointerIcon(PointerIcon.getSystemIcon(getBaseContext(), 0));
-                return;
-            }
-            if (i != 1) {
-                if (i == 2) {
-                    this.mUnityPlayer.setPointerIcon(PointerIcon.getSystemIcon(getBaseContext(), 1000));
-                }
-            } else if (!getApplicationContext().getPackageManager().hasSystemFeature("android.hardware.touchscreen")) {
-                this.mUnityPlayer.setPointerIcon(PointerIcon.getSystemIcon(getBaseContext(), 1000));
-            } else {
-                this.mUnityPlayer.setPointerIcon(PointerIcon.getSystemIcon(getBaseContext(), 0));
-            }
-        }
-    }
-
-    @Override // android.app.Activity, android.view.KeyEvent.Callback
+    /**
+     * 处理按键释放事件。
+     * @param i 按键码
+     * @param keyEvent 键盘事件
+     * @return 如果事件被消费则返回true，否则返回false。
+     */
+    @Override
     public boolean onKeyUp(int i, KeyEvent keyEvent) {
         int GetUnityKeyCode = GetUnityKeyCode(i);
         if (GetUnityKeyCode != 0) {
@@ -249,7 +182,13 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         return this.mUnityPlayer.injectEvent(keyEvent);
     }
 
-    @Override // android.app.Activity, android.view.KeyEvent.Callback
+    /**
+     * 处理按键按下事件。
+     * @param i 按键码
+     * @param keyEvent 键盘事件
+     * @return 如果事件被消费则返回true，否则返回false。
+     */
+    @Override
     public boolean onKeyDown(int i, KeyEvent keyEvent) {
         int GetUnityKeyCode = GetUnityKeyCode(i);
         if (GetUnityKeyCode != 0) {
@@ -258,33 +197,54 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         return this.mUnityPlayer.injectEvent(keyEvent);
     }
 
-    @Override // android.app.Activity
+    /**
+     * 处理触摸事件并分发给Unity播放器。
+     * @param motionEvent 触摸事件
+     * @return 如果事件被消费则返回true，否则返回false。
+     */
+    @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
         return onTouch(this.mUnityPlayer, motionEvent);
     }
 
-    @Override // android.view.View.OnTouchListener
+    /**
+     * 触摸事件的处理函数。
+     * @param view 触摸的视图
+     * @param motionEvent 触摸事件
+     * @return 如果事件被消费则返回true，否则返回false。
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         InputDevice device;
-        if (Build.VERSION.SDK_INT < 21 || (device = motionEvent.getDevice()) == null || !device.supportsSource(1041) || motionEvent.getToolType(0) != MotionEvent.TOOL_TYPE_FINGER) {
+        // 仅当设备支持触控且为手指触控时处理事件
+        if ((device = motionEvent.getDevice()) == null || !device.supportsSource(1041) || motionEvent.getToolType(0) != MotionEvent.TOOL_TYPE_FINGER) {
             return this.mUnityPlayer.injectEvent(motionEvent);
         }
         return true;
     }
 
-    @Override // android.app.Activity
+    /**
+     * 分发通用运动事件给Unity播放器。
+     * @param motionEvent 通用运动事件
+     * @return 如果事件被消费则返回true，否则返回false。
+     */
+    @Override
     public boolean onGenericMotionEvent(MotionEvent motionEvent) {
         return onGenericMotion(this.mUnityPlayer, motionEvent);
     }
 
-    public boolean IsKeyPressed(int i) {
-        return this.PressedStates[i];
-    }
-
-    @Override // android.view.View.OnGenericMotionListener
+    /**
+     * 通用运动事件的处理函数。
+     * @param view 触发运动事件的视图
+     * @param motionEvent 通用运动事件
+     * @return 如果事件被消费则返回true，否则返回false。
+     */
+    @Override
     public boolean onGenericMotion(View view, MotionEvent motionEvent) {
         InputDevice device;
-        if (Build.VERSION.SDK_INT < 21 || (device = motionEvent.getDevice()) == null || !device.supportsSource(1041) || motionEvent.getToolType(0) != MotionEvent.TOOL_TYPE_FINGER) {
+        // 仅当设备支持触控且为手指触控时处理事件
+        if ((device = motionEvent.getDevice()) == null || !device.supportsSource(1041) || motionEvent.getToolType(0) != MotionEvent.TOOL_TYPE_FINGER) {
             return this.mUnityPlayer.injectEvent(motionEvent);
         }
         return true;
