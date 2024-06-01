@@ -1,0 +1,49 @@
+apply plugin: 'com.android.library'
+
+apply from: './jcenter.gradle'
+
+android {
+    compileSdkVersion COMPILE_SDK_VERSION
+    buildToolsVersion BUILD_TOOLS_VERSION
+
+    namespace 'com.limpoxe.fairy'
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion TARGET_SDK_VERSION
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+        disable 'MissingClass',
+                'MissingPermission',
+                'QueryPermissionsNeeded',
+                'ExportedReceiver',
+                'ApplySharedPref',
+                'ObsoleteSdkInt',
+                'PackageManagerGetSignatures',
+                'StaticFieldLeak',
+                'UseValueOf',
+                'NewApi',
+                'PrivateApi',
+                'DiscouragedPrivateApi',
+                'SoonBlockedPrivateApi'
+        htmlReport false
+        textReport false
+        xmlReport false
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compileOnly libs.androidx.collection
+    //这个依赖不是必须, 引入这个库是为了增强插件间通信能力
+    //https://github.com/limpoxe/Android-ServiceManager
+}
