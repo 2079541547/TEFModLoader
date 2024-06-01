@@ -3,7 +3,11 @@
 * 一款专用于 Terraria 手机端的强大工具
 * [为项目做出贡献](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=4_FgF6B2vAHURKYQeM-iU3hgXgLa5yao&authKey=uVaNXW3raKeD3M6lx9RryVaH0xC6hRsxfklNoYYB1FMIeOLlEChlrfD%2FbW9TsRkC&noverify=0&group_code=960014110)
 * 群答案：silkways
-* 不兼容安卓14+，这东西实在太离谱了，以后有技术就开发一个针对安卓14+的版本
+* 不兼容安卓14+，这东西实在太离谱了
+  
+# 使用的项目
+  > [SpaceCore](https://github.com/FSpaceCore/SpaceCore)
+  > [Android-Plugin-Framework](https://github.com/limpoxe/Android-Plugin-Framework)
   
 # **为什么选择开源**
 
