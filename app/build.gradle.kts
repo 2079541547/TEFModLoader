@@ -1,8 +1,9 @@
+import org.jetbrains.kotlin.gradle.targets.js.npm.includedRange
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
 }
-
 android {
     namespace = "silkways.terraria.toolbox"
     compileSdk = 34
@@ -20,6 +21,9 @@ android {
                 cppFlags += "-std=c++20"
                 abiFilters += listOf("armeabi-v7a", "arm64-v8a")
             }
+        }
+        ndk {
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
         }
     }
 
@@ -51,7 +55,9 @@ android {
     }
 }
 
+
 dependencies{
+    implementation(project(":FairyPlugin"))
     implementation (libs.luaj.jse.v301)
     implementation(fileTree("libs"))
     implementation (libs.mmkv.static)
