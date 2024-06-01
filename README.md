@@ -6,8 +6,8 @@
 * 不兼容安卓14+，这东西实在太离谱了
   
 # 使用的项目
-  > [SpaceCore](https://github.com/FSpaceCore/SpaceCore)
-  > [Android-Plugin-Framework](https://github.com/limpoxe/Android-Plugin-Framework)
+ * > [SpaceCore](https://github.com/FSpaceCore/SpaceCore)
+ * > [Android-Plugin-Framework](https://github.com/limpoxe/Android-Plugin-Framework)
   
 # **为什么选择开源**
 
