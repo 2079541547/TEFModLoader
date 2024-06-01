@@ -8,6 +8,7 @@
 # 使用的项目
  * > [SpaceCore](https://github.com/FSpaceCore/SpaceCore)
  * > [Android-Plugin-Framework](https://github.com/limpoxe/Android-Plugin-Framework)
+ * > [ByNameModding](https://github.com/ByNameModding/BNM-Android)
   
 # **为什么选择开源**
 
