@@ -52,7 +52,6 @@ android {
 }
 
 dependencies{
-    implementation (libs.jython.standalone)
     implementation (libs.luaj.jse.v301)
     implementation(fileTree("libs"))
     implementation (libs.mmkv.static)
