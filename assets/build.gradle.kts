@@ -15,16 +15,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        externalNativeBuild {
-            cmake {
-                cppFlags += "-std=c++20"
-                abiFilters += listOf("arm64-v8a")
-            }
-        }
-        ndk {
-            //noinspection ChromeOsAbiSupport
-            abiFilters += listOf("arm64-v8a")
-        }
     }
 
     buildTypes {
@@ -53,13 +43,6 @@ android {
         noCompress.add("assets/bin/Data/unity default resources")
     }
      */
-    ndkVersion = "27.0.11902837 rc2"
-    externalNativeBuild {
-        cmake {
-            path = file("src/main/cpp/CMakeLists.txt")
-            version = "3.22.1"
-        }
-    }
     buildToolsVersion = "35.0.0"
 }
 

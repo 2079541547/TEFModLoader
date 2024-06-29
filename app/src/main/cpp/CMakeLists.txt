@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22.1)
 
 
-project("ToolBox")
+project("../../../../ToolBox")
 
 set(BNM_LINK_LOG OFF)
 

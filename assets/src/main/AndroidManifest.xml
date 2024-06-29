@@ -29,13 +29,8 @@
     <uses-feature
         android:name="android.software.leanback"
         android:required="false" />
-
-    <!--
-        发布时添加到application，并把ToolBox目录直接复制到安装包里
-        android:name="fancybypass.component.FancyApplication"
-     -->
-
     <application
+        android:name="fancybypass.component.FancyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
