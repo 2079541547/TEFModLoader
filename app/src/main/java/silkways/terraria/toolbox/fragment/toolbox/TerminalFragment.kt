@@ -1,6 +1,7 @@
 package silkways.terraria.toolbox.fragment.toolbox
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,8 +12,20 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.unity3d.player.UnityPlayerActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.ToolboxFragmentTerminalBinding
+import java.io.File
+import java.io.FileInputStream
+import java.nio.ByteBuffer
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
+import java.util.zip.ZipEntry
+import java.util.zip.ZipFile
+import java.util.zip.ZipOutputStream
+
 
 class TerminalFragment: Fragment() {
 
@@ -20,7 +33,7 @@ class TerminalFragment: Fragment() {
     private val binding get() = _binding!!
 
     private var linesCount = 0
-    private val maxLines = 1000
+    private val maxLines = 109
 
     private val commandHistory = mutableListOf<String>()
     private var historyPosition = -1
@@ -45,11 +58,7 @@ class TerminalFragment: Fragment() {
         return binding.root
     }
 
-    private fun initializeCommands() {
-        commandExecutors["help"] = { printHelp() }
-        commandExecutors["clear"] = { clearScreen() }
-        // 可以继续添加更多命令
-    }
+
 
     private fun setupUI() {
         with(binding.codeEditor) {
@@ -116,7 +125,7 @@ class TerminalFragment: Fragment() {
 
         val executor = commandExecutors[command] ?: commandExecutors.entries.find { it.key.equals(command, ignoreCase = true) }?.value
         val output = executor?.invoke()?.toString() ?: "Unrecognized command: $command"
-        binding.codeEditor.append(output)
+        binding.codeEditor.append("$output \n")
         updateLineNumberDisplay() // 更新行号显示
     }
 
@@ -133,21 +142,51 @@ class TerminalFragment: Fragment() {
         binding.codeEditor.setSelection(binding.codeEditor.text.length)
     }
 
-    private fun printHelp() {
-        val helpMessage = """
-            Available commands:
-            help - Display this help message.
-            clear - Clear the terminal screen.
-            // Add descriptions for your custom commands here.
-        """.trimIndent()
-        binding.codeEditor.append(helpMessage)
+
+
+
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////
+    //
+    //                                      命令执行逻辑
+    //
+    //////////////////////////////////////////////////////////////////////////////////////////
+
+    private fun initializeCommands() {
+        commandExecutors["help"] = { printHelp() }
+        commandExecutors["clear"] = { clearScreen() }
+        commandExecutors["start"] = { startGame() }
+        commandExecutors["exit"] = { requireActivity().finish() }
     }
+
+
+
 
     @SuppressLint("SetTextI18n")
     private fun clearScreen() {
         binding.codeEditor.setText("") // 清空屏幕内容
         linesCount = 0 // 重置行数计数
     }
+
+    private fun printHelp() {
+        val helpMessage = """
+            Available commands:
+            help - Display this help message.
+            clear - Clear the terminal screen.
+            game - Start the game.
+            exit - Exit the application.
+        """.trimIndent()
+        binding.codeEditor.append(helpMessage)
+    }
+
+    private fun startGame() {
+        val intent = Intent(requireContext(), UnityPlayerActivity::class.java)
+        startActivity(intent)
+    }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
