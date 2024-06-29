@@ -8,4 +8,3 @@ buildscript {
         maven { url = uri("https://jitpack.io") }
     }
 }
-apply(from = "./config.gradle")
