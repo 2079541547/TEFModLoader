@@ -30,27 +30,12 @@
         android:name="android.software.leanback"
         android:required="false" />
     <application
-        android:name="fancybypass.component.FancyApplication"
         android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TerrariaToolBox"
+        android:isGame="true"
         tools:targetApi="31"
         tools:ignore="MissingClass">
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:isGame="true"
             android:name="com.unity3d.player.UnityPlayerActivity"
@@ -61,6 +46,11 @@
             android:configChanges="fontScale|layoutDirection|density|smallestScreenSize|screenSize|uiMode|screenLayout|orientation|navigation|keyboardHidden|keyboard|touchscreen|locale|mnc|mcc"
             android:hardwareAccelerated="false"
             android:resizeableActivity="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
             <meta-data
                 android:name="unityplayer.UnityActivity"
                 android:value="true"/>

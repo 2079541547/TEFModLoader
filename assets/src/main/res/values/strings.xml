@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Terraria ToolBox</string>
+
+    <string name="FreeformWindowOrientation_landscape" />
+    <string name="FreeformWindowOrientation_portrait" />
+    <string name="FreeformWindowSize_maximize" />
+    <string name="FreeformWindowSize_phone" />
+    <string name="FreeformWindowSize_tablet" />
+</resources>
