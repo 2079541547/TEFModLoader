@@ -4,6 +4,7 @@ androidServicemanagerVersion = "1.0.5"
 chaquopyNumpy = "latest-version"
 chaquopy = "latest-version"
 collection = "1.2.0"
+githubStreamzip = "v1.0.6"
 gradleVersion = "7.4.2"
 gsonVersion = "2.10.1"
 jythonStandalone = "2.7.3"
@@ -30,9 +31,11 @@ uiAndroid = "1.6.8"
 [libraries]
 androidx-collection = { module = "androidx.collection:collection", version.ref = "collection" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidzip = { module = "com.github.buggysofts-com:AndroidZip", version.ref = "githubStreamzip" }
 build-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradleVersion" }
 chaquopy = { module = "com.chaquo.chaquopy:chaquopy", version.ref = "chaquopy" }
 chaquopy-numpy = { module = "com.chaquo.chaquopy:chaquopy-numpy", version.ref = "chaquopyNumpy" }
+github-streamzip = { module = "com.github.buggysofts-com:StreamZip", version.ref = "githubStreamzip" }
 google-gson = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -57,4 +60,5 @@ androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", vers
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 
