@@ -31,4 +31,5 @@
     <string name="FreeformWindowSize_maximize" />
     <string name="FreeformWindowSize_phone" />
     <string name="FreeformWindowSize_tablet" />
+    <string name="terminal">终端</string>
 </resources>

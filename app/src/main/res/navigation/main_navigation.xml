@@ -29,4 +29,10 @@ from EternalFuture゙
         android:name="silkways.terraria.toolbox.fragment.home.about.AboutFragment"
         tools:layout="@layout/home_fragment_about" />
 
+    <fragment
+        android:label="@string/terminal"
+        android:id="@+id/navigation_terminal"
+        android:name="silkways.terraria.toolbox.fragment.toolbox.TerminalFragment"
+        tools:layout="@layout/toolbox_fragment_terminal" />
+
 </navigation>

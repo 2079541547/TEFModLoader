@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
 
         // 获取 NavHostFragment 内的 NavController，用于控制界面间的导航
-        navHostFragment.navController
+        //navHostFragment.navController
+        navHostFragment.navController.navigate(R.id.navigation_terminal)
     }
 }
