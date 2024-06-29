@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.targets.js.npm.includedRange
 
 plugins {
     alias(libs.plugins.android.application)
@@ -46,22 +45,26 @@ android {
     buildFeatures {
         viewBinding = true
     }
-    ndkVersion = "27.0.11718014 rc1"
+    /*
+    aaptOptions {
+        noCompress.add("assets/bin/Data/data.unity3d")
+        noCompress.add("assets/bin/Data/resources.resource")
+        noCompress.add("assets/bin/Data/unity default resources")
+    }
+     */
+    ndkVersion = "27.0.11902837 rc2"
     externalNativeBuild {
         cmake {
             path = file("src/main/cpp/CMakeLists.txt")
             version = "3.22.1"
         }
     }
+    buildToolsVersion = "35.0.0"
 }
 
 
 dependencies{
-    implementation(project(":FairyPlugin"))
-    implementation (libs.luaj.jse.v301)
     implementation(fileTree("libs"))
-    implementation (libs.mmkv.static)
-    implementation (libs.google.gson)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

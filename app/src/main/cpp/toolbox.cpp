@@ -17,9 +17,14 @@
 //    }
 
 
-#include <iostream>
+#include <jni.h>
+#include <BNM/Loading.hpp>
 
-int main(){
-    std::cout << "Hello World!" << std::endl;
-    return 0;
+JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
+    JNIEnv *env;
+    vm->GetEnv((void **) &env, JNI_VERSION_1_6);
+
+    //在这里写Hook的调用方法
+
+    return JNI_VERSION_1_6;
 }
