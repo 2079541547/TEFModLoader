@@ -4,6 +4,7 @@ androidServicemanagerVersion = "1.0.5"
 chaquopyNumpy = "latest-version"
 chaquopy = "latest-version"
 collection = "1.2.0"
+commonsCompress = "1.26.2"
 githubStreamzip = "v1.0.6"
 gradleVersion = "7.4.2"
 gsonVersion = "2.10.1"
@@ -35,6 +36,7 @@ androidzip = { module = "com.github.buggysofts-com:AndroidZip", version.ref = "g
 build-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradleVersion" }
 chaquopy = { module = "com.chaquo.chaquopy:chaquopy", version.ref = "chaquopy" }
 chaquopy-numpy = { module = "com.chaquo.chaquopy:chaquopy-numpy", version.ref = "chaquopyNumpy" }
+commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
 github-streamzip = { module = "com.github.buggysofts-com:StreamZip", version.ref = "githubStreamzip" }
 google-gson = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

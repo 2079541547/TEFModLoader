@@ -65,6 +65,7 @@ android {
 
 
 dependencies{
+    implementation(libs.commons.compress)
     implementation(fileTree("libs"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

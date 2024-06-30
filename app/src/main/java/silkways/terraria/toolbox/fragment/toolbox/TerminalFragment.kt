@@ -13,18 +13,10 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.unity3d.player.UnityPlayerActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.ToolboxFragmentTerminalBinding
+import silkways.terraria.toolbox.logic.AddRes
 import java.io.File
-import java.io.FileInputStream
-import java.nio.ByteBuffer
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
-import java.util.zip.ZipOutputStream
 
 
 class TerminalFragment: Fragment() {
@@ -144,10 +136,6 @@ class TerminalFragment: Fragment() {
 
 
 
-
-
-
-
     //////////////////////////////////////////////////////////////////////////////////////////
     //
     //                                      命令执行逻辑
@@ -159,7 +147,9 @@ class TerminalFragment: Fragment() {
         commandExecutors["clear"] = { clearScreen() }
         commandExecutors["start"] = { startGame() }
         commandExecutors["exit"] = { requireActivity().finish() }
+        commandExecutors["add_res"] = { AddRes.compressDirectoryToZip(File("/storage/sdcard0/工程目录/arm64-v8a/ToolBox"), "/storage/sdcard0/工程目录/arm64-v8a/output.apk") }
     }
+
 
 
 
