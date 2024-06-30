@@ -22,4 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Terraria ToolBox"
 include(":app")
-include(":assets")
+include(":terraria")

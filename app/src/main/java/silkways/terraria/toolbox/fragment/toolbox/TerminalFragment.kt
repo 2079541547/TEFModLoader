@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +13,11 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.unity3d.player.UnityPlayerActivity
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.ToolboxFragmentTerminalBinding
 import silkways.terraria.toolbox.logic.AddRes
 import java.io.File
+import kotlin.math.log
 
 
 class TerminalFragment: Fragment() {
@@ -147,7 +148,13 @@ class TerminalFragment: Fragment() {
         commandExecutors["clear"] = { clearScreen() }
         commandExecutors["start"] = { startGame() }
         commandExecutors["exit"] = { requireActivity().finish() }
-        commandExecutors["add_res"] = { AddRes.compressDirectoryToZip(File("/storage/sdcard0/工程目录/arm64-v8a/ToolBox"), "/storage/sdcard0/工程目录/arm64-v8a/output.apk") }
+        commandExecutors["add_res"] = { 
+            AddRes.compressDirectoryToZip(File("${requireActivity().getExternalFilesDir(null)}/assets"), "data/data/com.and.games505.TerrariaPaid/ToolBox/com.and.games505.TerrariaPaid.apk")
+        }
+        commandExecutors["0"] = {  File("${requireActivity().getExternalFilesDir(null)}/assets").mkdir()  }
+        commandExecutors["1"] = {
+            //Toast.makeText(requireContext(), "${requireActivity().getDir("", 0)}", Toast.LENGTH_SHORT).show()
+        }
     }
 
 
@@ -172,8 +179,17 @@ class TerminalFragment: Fragment() {
     }
 
     private fun startGame() {
-        val intent = Intent(requireContext(), UnityPlayerActivity::class.java)
-        startActivity(intent)
+        try {
+            val intent = requireActivity().packageManager.getLaunchIntentForPackage("com.and.games505.TerrariaPaid")
+            intent?.also {
+                it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(it)
+            } ?: run {
+                Log.e("TerminalFragment", "Game not found.")
+            }
+        } catch (e: Exception) {
+            Log.e("TerminalFragment", "Error starting game: ${e.message}")
+        }
     }
 
 

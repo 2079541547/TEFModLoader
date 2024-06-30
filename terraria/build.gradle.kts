@@ -1,18 +1,18 @@
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
 }
+
 android {
-    namespace = "silkways.terraria.toolbox"
+    namespace = "com.and.games505.TerrariaPaid"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "silkways.terraria.toolbox"
+        applicationId = "com.and.games505.TerrariaPaid"
         minSdk = 28
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.4.4.9.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -22,7 +22,6 @@ android {
             }
         }
         ndk {
-            //noinspection ChromeOsAbiSupport
             abiFilters += listOf("arm64-v8a")
         }
     }
@@ -46,13 +45,6 @@ android {
     buildFeatures {
         viewBinding = true
     }
-    /*
-    aaptOptions {
-        noCompress.add("assets/bin/Data/data.unity3d")
-        noCompress.add("assets/bin/Data/resources.resource")
-        noCompress.add("assets/bin/Data/unity default resources")
-    }
-     */
     ndkVersion = "27.0.11902837 rc2"
     externalNativeBuild {
         cmake {
@@ -63,18 +55,11 @@ android {
     buildToolsVersion = "35.0.0"
 }
 
+dependencies {
 
-dependencies{
-    implementation(libs.commons.compress)
-    implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.ui.android)
+    implementation(files("libs/classes.jar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
