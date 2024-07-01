@@ -46,13 +46,6 @@ android {
     buildFeatures {
         viewBinding = true
     }
-    /*
-    aaptOptions {
-        noCompress.add("assets/bin/Data/data.unity3d")
-        noCompress.add("assets/bin/Data/resources.resource")
-        noCompress.add("assets/bin/Data/unity default resources")
-    }
-     */
     ndkVersion = "27.0.11902837 rc2"
     externalNativeBuild {
         cmake {

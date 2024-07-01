@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <public type="drawable" name="icon" id="0x7f010000" />
+    <public type="drawable" name="unity_static_splash" id="0x7f010001" />
+    <public type="drawable" name="icon_bg" id="0x7f010002" />
+    <public type="drawable" name="icon_fg" id="0x7f010003" />
+    <public type="id" name="unitySurfaceView" id="0x7f020000" />
+    <public type="string" name="FreeformWindowOrientation_landscape" id="0x7f040000" />
+    <public type="string" name="FreeformWindowOrientation_portrait" id="0x7f040001" />
+    <public type="string" name="FreeformWindowSize_maximize" id="0x7f040002" />
+    <public type="string" name="FreeformWindowSize_phone" id="0x7f040003" />
+    <public type="string" name="FreeformWindowSize_tablet" id="0x7f040004" />
+    <public type="style" name="BaseUnityTheme" id="0x7f050000" />
+    <public type="style" name="UnityThemeSelector" id="0x7f050001" />
+    <public type="style" name="UnityThemeSelector.Translucent" id="0x7f050002" />
+</resources>

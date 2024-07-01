@@ -1,6 +1,7 @@
 package silkways.terraria.toolbox.fragment.toolbox
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -17,7 +18,9 @@ import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.ToolboxFragmentTerminalBinding
 import silkways.terraria.toolbox.logic.AddRes
 import java.io.File
-import kotlin.math.log
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 class TerminalFragment: Fragment() {
@@ -125,7 +128,6 @@ class TerminalFragment: Fragment() {
 
 
 
-
     private fun appendNewLine() {
         binding.codeEditor.append("\n")
         linesCount++
@@ -149,15 +151,44 @@ class TerminalFragment: Fragment() {
         commandExecutors["start"] = { startGame() }
         commandExecutors["exit"] = { requireActivity().finish() }
         commandExecutors["add_res"] = { 
-            AddRes.compressDirectoryToZip(File("${requireActivity().getExternalFilesDir(null)}/assets"), "data/data/com.and.games505.TerrariaPaid/ToolBox/com.and.games505.TerrariaPaid.apk")
+            //AddRes.compressDirectoryToZip(File("${requireActivity().getExternalFilesDir(null)}/assets"), "data/data/com.and.games505.TerrariaPaid/ToolBox/com.and.games505.TerrariaPaid.apk")
+            copyFileWithOverride("${requireActivity().getExternalFilesDir(null)}/assets/res.apk", "data/data/com.and.games505.TerrariaPaid/ToolBox/com.and.games505.TerrariaPaid.apk")
         }
         commandExecutors["0"] = {  File("${requireActivity().getExternalFilesDir(null)}/assets").mkdir()  }
-        commandExecutors["1"] = {
-            //Toast.makeText(requireContext(), "${requireActivity().getDir("", 0)}", Toast.LENGTH_SHORT).show()
-        }
     }
 
+    fun copyFileWithOverride(sourcePath: String, targetPath: String) {
+        // 创建源文件和目标文件的File对象
+        val sourceFile = File(sourcePath)
+        val targetFile = File(targetPath)
 
+        // 检查源文件是否存在
+        if (!sourceFile.exists()) {
+            throw IllegalArgumentException("Source file does not exist.")
+        }
+
+        // 如果目标文件已存在，则删除它以准备覆盖
+        if (targetFile.exists()) {
+            targetFile.delete()
+        }
+
+        try {
+            // 使用FileChannel实现文件的复制
+            val sourceChannel = FileInputStream(sourceFile).channel
+            val targetChannel = FileOutputStream(targetFile).channel
+
+            // 尝试传输所有内容，这将自动覆盖目标文件
+            targetChannel.transferFrom(sourceChannel, 0, sourceChannel.size())
+
+            // 关闭通道
+            sourceChannel.close()
+            targetChannel.close()
+
+        } catch (e: IOException) {
+            e.printStackTrace()
+            // 处理可能的IO异常
+        }
+    }
 
 
 

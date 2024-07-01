@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.InputDevice;
 import android.view.KeyEvent;
@@ -65,7 +66,9 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         this.mUnityPlayer.requestFocus();
         // 如果设备支持触摸屏，设置指针图标
         if (getApplicationContext().getPackageManager().hasSystemFeature("android.hardware.touchscreen")) {
-            this.mUnityPlayer.setPointerIcon(PointerIcon.getSystemIcon(getBaseContext(), 0));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                this.mUnityPlayer.setPointerIcon(PointerIcon.getSystemIcon(getBaseContext(), 0));
+            }
         }
         // 设置触摸和运动事件监听器
         this.mUnityPlayer.setOnTouchListener(this);

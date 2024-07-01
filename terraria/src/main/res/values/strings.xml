@@ -1,6 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Terraria ToolBox</string>
-
     <string name="FreeformWindowOrientation_landscape" />
     <string name="FreeformWindowOrientation_portrait" />
     <string name="FreeformWindowSize_maximize" />
