@@ -1,0 +1,3 @@
+打包时请把打包出来的放进安装包中的 assets/lspatch/origin.apk
+并把assets/classes.dex替换掉安装包中的
+在xml的application处添加: android:appComponentFactory="org.lsposed.lspatch.metaloader.LSPAppComponentFactoryStub"

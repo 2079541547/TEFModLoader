@@ -151,8 +151,10 @@ class TerminalFragment: Fragment() {
         commandExecutors["start"] = { startGame() }
         commandExecutors["exit"] = { requireActivity().finish() }
         commandExecutors["add_res"] = { 
-            //AddRes.compressDirectoryToZip(File("${requireActivity().getExternalFilesDir(null)}/assets"), "data/data/com.and.games505.TerrariaPaid/ToolBox/com.and.games505.TerrariaPaid.apk")
-            copyFileWithOverride("${requireActivity().getExternalFilesDir(null)}/assets/res.apk", "data/data/com.and.games505.TerrariaPaid/ToolBox/com.and.games505.TerrariaPaid.apk")
+            AddRes.compressDirectoryToZip(File("${requireActivity().getExternalFilesDir(null)}/Resources"), "/data/data/com.and.games505.TerrariaPaid/lspatch/origin/Resources.apk")
+        }
+        commandExecutors["add_res2"] = {
+            copyFileWithOverride("${requireActivity().getExternalFilesDir(null)}/Resources.apk", "/data/data/com.and.games505.TerrariaPaid/lspatch/origin/Resources.apk")
         }
         commandExecutors["0"] = {  File("${requireActivity().getExternalFilesDir(null)}/assets").mkdir()  }
     }

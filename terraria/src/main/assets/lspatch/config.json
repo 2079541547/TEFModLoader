@@ -1,0 +1,15 @@
+{
+  "appComponentFactory": "androidx.core.app.CoreComponentFactory",
+  "debuggable": true,
+  "lspConfig": {
+    "ۥ": 93,
+    "ۥ۟": 402,
+    "ۥ۟۟": "0.6",
+    "ۥ۟۟۟": 7024,
+    "ۥ۟۟۠": "1.9.2"
+  },
+  "originalSignature": "",
+  "overrideVersionCode": true,
+  "sigBypassLevel": 2,
+  "useManager": false
+}
