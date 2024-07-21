@@ -8,6 +8,7 @@
 ## Используемые проекты
 
 * [ByNameModding](https://github.com/ByNameModding/BNM-Android)
+* [LSPatch](https://github.com/LSPosed/LSPatch)
 
 
 # Что может Terraria ToolBox?
