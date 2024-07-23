@@ -9,7 +9,8 @@
 
 # 使用的项目
 
-* > [ByNameModding](https://github.com/ByNameModding/BNM-Android)
+* [ByNameModding](https://github.com/ByNameModding/BNM-Android)
+* [LSPatch](https://github.com/LSPosed/LSPatch)
 
 # Terraria ToolBox 功能
 
@@ -21,7 +22,7 @@
 
 # 原理
 
-* 资源加载使用iohook（NP方案）
+* 资源加载使用iohook（LsPatch）
 * 模组使用BNM挂钩
 
 # **多语言支持**

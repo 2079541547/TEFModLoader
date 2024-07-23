@@ -8,6 +8,7 @@
 ## Используемые проекты
 
 * [ByNameModding](https://github.com/ByNameModding/BNM-Android)
+* [LSPatch](https://github.com/LSPosed/LSPatch)
 
 
 # Что может Terraria ToolBox?
@@ -20,7 +21,7 @@
 
 ## Принцип работы
 
-* Загрузка ресурсов с использованием iohook (решение NP).
+* Загрузка ресурсов с использованием iohook (LsPatch).
 * Модификации используют крюки BNM.
 
 ## Поддержка множественных языков
