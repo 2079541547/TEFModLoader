@@ -9,6 +9,7 @@
 
 * [ByNameModding](https://github.com/ByNameModding/BNM-Android)
 * [LSPatch](https://github.com/LSPosed/LSPatch)
+* [ShadowHook](https://github.com/bytedance/android-inline-hook)
 
 # What Can Terraria ToolBox Do?
 
@@ -25,20 +26,23 @@
 
 ## Multi-language Support
 
-| Language             | Supported |
-| ------------------- | --------- |
-| 简体中文         | ✅️     |
-| 繁体中文         | ❌       |
-| English          | ❌       |
-| 日本語           | ❌       |
-| 한국어           | ❌       |
-| Italiano         | ❌       |
-| Lengua española | ❌       |
-| Français        | ❌       |
-| Русский   | ❌       |
-| Deutsch          | ❌       |
+
+| Language         | Supported |
+| ---------------- | --------- |
+| 简体中文         | ✅️      |
+| 繁体中文         | ❌        |
+| English          | ❌        |
+| 日本語           | ❌        |
+| 한국어           | ❌        |
+| Italiano         | ❌        |
+| Lengua española | ❌        |
+| Français        | ❌        |
+| Русский   | ❌        |
+| Deutsch          | ❌        |
 
 ## Acknowledgements
 
 * This project exists because of everyone's support and contributions.
 * To everyone who loves Terraria.
+
+# Shame List  There aren't any "capitalists" for now.~

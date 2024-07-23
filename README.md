@@ -11,6 +11,7 @@
 
 * [ByNameModding](https://github.com/ByNameModding/BNM-Android)
 * [LSPatch](https://github.com/LSPosed/LSPatch)
+* [ShadowHook](https://github.com/bytedance/android-inline-hook)
 
 # Terraria ToolBox 功能
 
@@ -44,3 +45,8 @@
 
 * 因大家的支持和贡献才存在这个项目
 * 致热爱Terraria的每一位人
+
+# 耻辱榜
+
+暂时没有“资本家”呢～
+
