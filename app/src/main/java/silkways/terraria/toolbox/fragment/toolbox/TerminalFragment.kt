@@ -1,7 +1,6 @@
 package silkways.terraria.toolbox.fragment.toolbox
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -17,6 +16,7 @@ import androidx.fragment.app.Fragment
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.ToolboxFragmentTerminalBinding
 import silkways.terraria.toolbox.logic.AddRes
+import silkways.terraria.toolbox.logic.ApkBuilder
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -150,7 +150,8 @@ class TerminalFragment: Fragment() {
         commandExecutors["clear"] = { clearScreen() }
         commandExecutors["start"] = { startGame() }
         commandExecutors["exit"] = { requireActivity().finish() }
-        commandExecutors["add_res"] = { 
+        commandExecutors["add_res"] = {
+            //ApkBuilder.packDirectoryAsApkWithAssetsStored(File("${requireActivity().getExternalFilesDir(null)}/Resources"), "/data/data/com.and.games505.TerrariaPaid/lspatch/origin/Resources.apk")
             AddRes.compressDirectoryToZip(File("${requireActivity().getExternalFilesDir(null)}/Resources"), "/data/data/com.and.games505.TerrariaPaid/lspatch/origin/Resources.apk")
         }
         commandExecutors["add_res2"] = {

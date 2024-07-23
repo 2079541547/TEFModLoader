@@ -11,8 +11,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.PointerIcon;
 import android.view.View;
-
 import androidx.annotation.NonNull;
+import com.bytedance.shadowhook.ShadowHook;
 
 
 /**
@@ -53,6 +53,12 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         return str;
     }
 
+    public static void init() {
+        ShadowHook.init(new ShadowHook.ConfigBuilder()
+                .setMode(ShadowHook.Mode.SHARED)
+                .build());
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle bundle) {
@@ -73,6 +79,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         // 设置触摸和运动事件监听器
         this.mUnityPlayer.setOnTouchListener(this);
         this.mUnityPlayer.setOnGenericMotionListener(this);
+        init();
     }
 
     @Override

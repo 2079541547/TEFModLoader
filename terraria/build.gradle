@@ -44,6 +44,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        prefab true
     }
 
     ndkVersion = "27.0.11902837 rc2"
@@ -56,7 +57,7 @@ android {
 }
 
 dependencies {
-
+    implementation libs.shadowhook
     implementation libs.androidx.appcompat
     implementation libs.material
     implementation files('libs/classes.jar')

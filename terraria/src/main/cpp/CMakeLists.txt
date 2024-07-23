@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22.1)
 
 
-project("../../../../ToolBox")
+project("ToolBox")
 
 set(BNM_LINK_LOG OFF)
 
@@ -53,15 +53,16 @@ if (${BNM_LINK_LOG})
 endif ()
 
 
-
-
-
 set_property(TARGET BNM PROPERTY BNM_INCLUDE_DIRECTORIES ${PUBLIC_INCLUDE_DIRS})
+
+find_package(shadowhook REQUIRED CONFIG)
+
 
     add_library(toolbox
             SHARED
             toolbox.cpp
     )
+
 
     target_link_libraries(
             toolbox
@@ -69,4 +70,5 @@ set_property(TARGET BNM PROPERTY BNM_INCLUDE_DIRECTORIES ${PUBLIC_INCLUDE_DIRS})
             BNM
             log
             android
+            shadowhook::shadowhook
     )
