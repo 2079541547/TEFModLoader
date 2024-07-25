@@ -89,7 +89,8 @@ static_assert(false, "ByNameModding требуется C++20 и выше!");
 #define OBFUSCATE_BNM(str) str // const char *
 
 // Shadowhook
-/*
+#include "shadowhook.h"
+
 template<typename PTR_T, typename NEW_T, typename T_OLD>
 inline void *HOOK(PTR_T ptr, NEW_T newMethod, T_OLD &oldBytes) {
     if ((void *) ptr != nullptr) return shadowhook_hook_func_addr((void *)ptr, (void *) newMethod, (void **) &oldBytes);
@@ -106,7 +107,7 @@ template<typename PTR_T>
 inline void UNHOOK(PTR_T ptr) {
     if ((void *) ptr != nullptr) shadowhook_unhook((void *)ptr);
 }
-*/
+
 
 
 // Dobby
@@ -132,6 +133,7 @@ inline void UNHOOK(PTR_T ptr) {
 */
 
 // Dummy
+/*
 #include <cassert>
 
 template<typename PTR_T, typename NEW_T, typename T_OLD>
@@ -153,6 +155,7 @@ inline void UNHOOK(PTR_T ptr) {
     assert("Нет ПО для подмены! (No hooking software!)");
     if ((void *) ptr != nullptr) ((void)0);
 }
+*/
 
 #include <dlfcn.h>
 
