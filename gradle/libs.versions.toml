@@ -1,5 +1,5 @@
 [versions]
-agp = "8.5.0-alpha06"
+agp = "8.7.0-alpha02"
 androidServicemanagerVersion = "1.0.5"
 chaquopyNumpy = "latest-version"
 chaquopy = "latest-version"

@@ -47,7 +47,7 @@ android {
         prefab true
     }
 
-    ndkVersion = "27.0.11902837 rc2"
+    ndkVersion = '27.0.12077973'
 
     aaptOptions {
         noCompress.add("assets/bin/Data/data.unity3d")
