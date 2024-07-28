@@ -2,9 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     android:versionCode="301081"
     android:versionName="1.4.4.9.5"
-    android:installLocation="preferExternal"
-    android:sharedUserId="silkways.terraria.toolbox"
-    package="com.and.games505.TerrariaPaid">
+    android:installLocation="preferExternal">
     <uses-sdk
         android:minSdkVersion="23"
         android:targetSdkVersion="34"/>

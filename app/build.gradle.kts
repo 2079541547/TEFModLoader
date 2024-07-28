@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "silkways.terraria.toolbox"
-        minSdk = 28
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -22,7 +22,6 @@ android {
             }
         }
         ndk {
-            //noinspection ChromeOsAbiSupport
             abiFilters += listOf("arm64-v8a")
         }
     }
@@ -45,19 +44,26 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        prefab = true
     }
     ndkVersion = "27.0.12077973"
     externalNativeBuild {
         cmake {
-            path = file("src/main/cpp/CMakeLists.txt")
+            path("src/main/cpp/CMakeLists.txt")
             version = "3.22.1"
         }
+    }
+    aaptOptions {
+        noCompress.add("assets/bin/Data/data.unity3d")
+        noCompress.add("assets/bin/Data/resources.resource")
+        noCompress.add("assets/bin/Data/unity default resources")
     }
     buildToolsVersion = "35.0.0"
 }
 
 
 dependencies{
+    implementation(libs.shadowhook)
     implementation(libs.commons.compress)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -68,6 +74,7 @@ dependencies{
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.ui.android)
+    implementation(files("libs/classes.jar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

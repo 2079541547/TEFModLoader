@@ -61,8 +61,10 @@ set_property(TARGET BNM PROPERTY BNM_INCLUDE_DIRECTORIES ${PUBLIC_INCLUDE_DIRS})
 add_library(Major
         SHARED
         native-lib.cpp
-        Future/loadAndInvokeFunctions.cpp
 )
+
+
+
 
 
 target_link_libraries(Major

@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.22.1)
 
 
-project("../../../../ToolBox")
+project("Major")
 
-set(BNM_LINK_LOG OFF)
+find_package(shadowhook REQUIRED CONFIG)
 
 set(PUBLIC_INCLUDE_DIRS
         BNM/include
@@ -44,29 +44,45 @@ target_include_directories(
         ${INCLUDE_DIRS}
 )
 
-if (${BNM_LINK_LOG})
-    target_link_libraries(
-            BNM
-            PUBLIC
-            log
-    )
-endif ()
 
 
-
+target_link_libraries(
+        BNM
+        PUBLIC
+        log
+        shadowhook::shadowhook
+)
 
 
 set_property(TARGET BNM PROPERTY BNM_INCLUDE_DIRECTORIES ${PUBLIC_INCLUDE_DIRS})
 
-    add_library(toolbox
-            SHARED
-            toolbox.cpp
-    )
 
-    target_link_libraries(
-            toolbox
-            PUBLIC
-            BNM
-            log
-            android
-    )
+add_library(MyMod
+        SHARED
+        example/example1.cpp
+)
+
+target_link_libraries(MyMod
+        PUBLIC
+        BNM
+        log
+        android
+)
+
+
+
+add_library(Major
+        SHARED
+        native-lib.cpp
+)
+
+
+
+
+
+target_link_libraries(Major
+        PUBLIC
+        BNM
+        log
+        android
+)

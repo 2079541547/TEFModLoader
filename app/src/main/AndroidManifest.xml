@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:installLocation="preferExternal"
-    android:sharedUserId="silkways.terraria.toolbox"
     tools:ignore="MissingLeanbackLauncher">
     <supports-screens
         android:anyDensity="true"
@@ -27,9 +26,6 @@
     <uses-feature
         android:name="android.hardware.touchscreen.multitouch.distinct"
         android:required="false"/>
-    <uses-feature
-        android:name="android.software.leanback"
-        android:required="false" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
@@ -56,16 +52,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:isGame="true"
+            android:theme="@style/UnityThemeSelector"
             android:name="com.unity3d.player.UnityPlayerActivity"
             android:exported="true"
-            android:theme="@style/UnityThemeSelector"
             android:launchMode="singleTask"
             android:screenOrientation="userLandscape"
             android:configChanges="fontScale|layoutDirection|density|smallestScreenSize|screenSize|uiMode|screenLayout|orientation|navigation|keyboardHidden|keyboard|touchscreen|locale|mnc|mcc"
             android:hardwareAccelerated="false"
-            android:resizeableActivity="true">
+            android:resizeableActivity="false">
             <meta-data
                 android:name="unityplayer.UnityActivity"
                 android:value="true"/>
@@ -73,6 +70,7 @@
                 android:name="android.notch_support"
                 android:value="true"/>
         </activity>
+
         <meta-data
             android:name="unity.splash-mode"
             android:value="1"/>
@@ -92,5 +90,4 @@
             android:name="com.android.dynamic.apk.fused.modules"
             android:value="base"/>
     </application>
-
 </manifest>
