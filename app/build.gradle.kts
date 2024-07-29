@@ -64,7 +64,7 @@ android {
 
 dependencies{
     implementation(libs.shadowhook)
-    implementation(libs.commons.compress)
+    implementation("com.android.tools.build:apkzlib:8.5.1")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

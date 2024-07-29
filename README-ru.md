@@ -5,6 +5,10 @@
 * Группа ответов: silkways
 * Совместим с Android 7-14
 
+# Текущая проблема:
+* Невозможно упаковать APK/изменить APK
+
+
 ## Используемые проекты
 
 * [ByNameModding](https://github.com/ByNameModding/BNM-Android)

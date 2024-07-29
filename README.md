@@ -7,6 +7,9 @@
 * 群答案：silkways
 * 兼容安卓7—14
 
+# 目前遇到的问题
+* 无法打包apk/修改apk
+
 # 使用的项目
 
 * [ByNameModding](https://github.com/ByNameModding/BNM-Android)

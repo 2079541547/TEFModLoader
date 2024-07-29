@@ -15,11 +15,13 @@ import androidx.fragment.app.Fragment
 import com.unity3d.player.UnityPlayerActivity
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.ToolboxFragmentTerminalBinding
+import silkways.terraria.toolbox.logic.JsonConfigModifier
 import silkways.terraria.toolbox.logic.game.AddRes
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import kotlin.math.log
 
 
 class TerminalFragment: Fragment() {
@@ -161,13 +163,20 @@ class TerminalFragment: Fragment() {
         commandExecutors["add_res"] = {
             val file = File("${requireActivity().cacheDir}/lspatch/origin/")
             val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
-            AddRes.compressDirectoryToZip(File("${requireActivity().getExternalFilesDir(null)}/Resources"), "${requireActivity().cacheDir}/lspatch/origin/${files[0].name}")
+            //AddRes.compressDirectoryToZip(File("${requireActivity().getExternalFilesDir(null)}/Resources"), "${requireActivity().cacheDir}/lspatch/origin/${files[0].name}")
+            //AddRes.compressDirectoryToZip(File("${requireActivity().getExternalFilesDir(null)}/Resources"), "${requireActivity().getExternalFilesDir(null)}/0.apk")
+            Thread {
+                AddRes.addLib("${requireActivity().getExternalFilesDir(null)}/Resources.apk", "${requireActivity().getExternalFilesDir(null)}/lib0.so",arrayOf("lib0.so"))
+                println("线程运行中...")
+            }.start()
         }
 
         commandExecutors["add_res2"] = {
             val file = File("${requireActivity().cacheDir}/lspatch/origin/")
             val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
             copyFileWithOverride("${requireActivity().getExternalFilesDir(null)}/Resources.apk", "${requireActivity().cacheDir}/lspatch/origin/${files[0].name}")
+        }
+        commandExecutors["json"] = {
         }
         commandExecutors["0"] = {  File("${requireActivity().getExternalFilesDir(null)}/assets").mkdir()  }
     }

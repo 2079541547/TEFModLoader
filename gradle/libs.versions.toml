@@ -1,6 +1,7 @@
 [versions]
 agp = "8.7.0-alpha02"
 androidServicemanagerVersion = "1.0.5"
+apkzlib = "8.5.1"
 chaquopyNumpy = "latest-version"
 chaquopy = "latest-version"
 collection = "1.2.0"
@@ -32,8 +33,9 @@ uiAndroid = "1.6.8"
 
 [libraries]
 androidx-collection = { module = "androidx.collection:collection", version.ref = "collection" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.12.0-alpha01" }
 androidzip = { module = "com.github.buggysofts-com:AndroidZip", version.ref = "githubStreamzip" }
+apkzlib = { module = "com.android.tools.build:apkzlib", version.ref = "apkzlib" }
 build-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradleVersion" }
 chaquopy = { module = "com.chaquo.chaquopy:chaquopy", version.ref = "chaquopy" }
 chaquopy-numpy = { module = "com.chaquo.chaquopy:chaquopy-numpy", version.ref = "chaquopyNumpy" }
