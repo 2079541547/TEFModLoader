@@ -1,0 +1,23 @@
+[
+    [
+      {
+        "author": "Name",
+        "modName": "MyMod",
+        "libname": "libMyMod.so"
+      },
+      [
+          {
+            "position": "Assembly-CSharp.Cursor.Id",
+            "function": ["func1"],
+            "type": "int",
+            "arrays": 0
+          },
+          {
+            "position": "Assembly-CSharp.Terraria.NPC.GetNPCLocation", 
+            "function": ["func2"],
+            "type": "bool",
+            "arrays": 0
+          }
+      ]
+    ]
+  ]

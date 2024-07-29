@@ -1,0 +1,12 @@
+[
+    {
+        "author": "Name",
+        "modName": "MyMod",
+        "build": "1.0.0",
+        "modIntroduce": "This is my mod",
+        "Opencode": false,
+        "OpencodeUrl": null,
+        "enable": false,
+        "enableLibName": "libMyMod.so"
+    }
+]
