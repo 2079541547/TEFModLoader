@@ -3,11 +3,7 @@
 * Уникальный мощный инструмент для мобильной версии Terraria.
 * [Внести вклад в проект](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=4_FgF6B2vAHURKYQeM-iU3hgXgLa5yao&authKey=uVaNXW3raKeD3M6lx9RryVaH0xC6hRsxfklNoYYB1FMIeOLlEChlrfD%2FbW9TsRkC&noverify=0&group_code=960014110)
 * Группа ответов: silkways
-* Совместим с Android 7-14
-
-# Текущая проблема:
-* Невозможно упаковать APK/изменить APK
-
+* Совместим с Android 9-14
 
 ## Используемые проекты
 
