@@ -9,6 +9,8 @@ commonsCompress = "1.26.2"
 githubStreamzip = "v1.0.6"
 gradleVersion = "7.4.2"
 gsonVersion = "2.10.1"
+guava = "32.0.1-jre"
+jsr305 = "3.0.2"
 jythonStandalone = "2.7.3"
 kotlin = "1.9.0"
 coreKtx = "1.10.1"
@@ -30,6 +32,8 @@ python = "15.0.1"
 plugin = "15.0.1"
 shadowhook = "1.0.9"
 uiAndroid = "1.6.8"
+zip4j = "2.11.5"
+firebaseCrashlyticsBuildtools = "3.0.2"
 
 [libraries]
 androidx-collection = { module = "androidx.collection:collection", version.ref = "collection" }
@@ -42,6 +46,8 @@ chaquopy-numpy = { module = "com.chaquo.chaquopy:chaquopy-numpy", version.ref = 
 commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
 github-streamzip = { module = "com.github.buggysofts-com:StreamZip", version.ref = "githubStreamzip" }
 google-gson = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -62,6 +68,8 @@ python = { module = "org.chaquopy:python", version.ref = "python" }
 shadowhook = { module = "com.bytedance.android:shadowhook", version.ref = "shadowhook" }
 support-android-servicemanager = { module = "com.limpoxe.support:android-servicemanager", version.ref = "androidServicemanagerVersion" }
 androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "uiAndroid" }
+zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

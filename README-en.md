@@ -3,10 +3,7 @@
 * A powerful tool dedicated to the mobile version of Terraria.
 * [Contribute to the project](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=4_FgF6B2vAHURKYQeM-iU3hgXgLa5yao&authKey=uVaNXW3raKeD3M6lx9RryVaH0xC6hRsxfklNoYYB1FMIeOLlEChlrfD%2FbW9TsRkC&noverify=0&group_code=960014110)
 * Group answer: silkways
-* Compatible with Android 7-14
-
-# The current issue encountered is:
-* Unable to package APK/modify APK
+* Compatible with Android 9-14
 
 ## Projects in use
 

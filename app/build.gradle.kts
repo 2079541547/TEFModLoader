@@ -64,7 +64,10 @@ android {
 
 dependencies{
     implementation(libs.shadowhook)
-    implementation("com.android.tools.build:apkzlib:8.5.1")
+    //implementation("com.android.tools.build:apkzlib:8.7.0-alpha03")
+    //implementation(libs.zip4j)
+    //implementation(libs.firebase.crashlytics.buildtools)
+    implementation(project(":apkzlib"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
