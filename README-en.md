@@ -42,7 +42,7 @@
           {
               "author": "Name", // Author's name
               "modName": "MyMod", // Mod name
-              "build": "1.0.0", // Version
+              "build": 1, // Version
               "modIntroduce": "This is my mod", // Mod introduction
               "Opencode": false, // Whether it is open source
               "OpencodeUrl": null, // If open source, fill in the open source link
