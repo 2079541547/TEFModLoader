@@ -45,7 +45,7 @@
           {
               "author": "Name", //作者名称
               "modName": "MyMod", //模组名称
-              "build": "1.0.0", //版本
+              "build": 1, //版本
               "modIntroduce": "This is my mod", //模组介绍
               "Opencode": false, //是否开源
               "OpencodeUrl": null, //如果开源则填写开源链接
