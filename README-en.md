@@ -46,7 +46,6 @@
               "modIntroduce": "This is my mod", // Mod introduction
               "Opencode": false, // Whether it is open source
               "OpencodeUrl": null, // If open source, fill in the open source link
-              "enable": false, // Whether it is enabled, must be filled with false
               "enableLibName": "libMyMod.so" // The full name of the so library called
           }
       ]
@@ -60,6 +59,7 @@
           {
             "author": "Name", // Author's name
             "modName": "MyMod", // Mod name
+            "enable": false, // Whether it is enabled, must be filled with false
             "libname": "libMyMod.so" // Full name of the mod's so library
           },
           [
