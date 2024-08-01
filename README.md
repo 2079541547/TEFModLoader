@@ -49,7 +49,6 @@
               "modIntroduce": "This is my mod", //模组介绍
               "Opencode": false, //是否开源
               "OpencodeUrl": null, //如果开源则填写开源链接
-              "enable": false, //是否已启用，必须填写false
               "enableLibName": "libMyMod.so" //调用的so库完整名称
           }
       ]
@@ -62,6 +61,7 @@
           {
             "author": "Name", //作者名称
             "modName": "MyMod", //模组名称
+            "enable": false, //是否已启用，必须填写false
             "libname": "libMyMod.so" //模组的完整so库名称
           },
           [
