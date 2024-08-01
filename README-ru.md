@@ -46,7 +46,6 @@
               "modIntroduce": "Это мой мод", // Описание мода
               "Opencode": false, // Открытый код или нет
               "OpencodeUrl": null, // URL открытого кода, если таковые имеются
-              "enable": false, // Активирован ли мод, должно быть false
               "enableLibName": "libMyMod.so" // Полное имя библиотеки so, вызываемой модом
           }
       ]
@@ -60,6 +59,7 @@
           {
             "author": "Name", // Имя автора
             "modName": "MyMod", // Название мода
+            "enable": false, // Активирован ли мод, должно быть false
             "libname": "libMyMod.so" // Полное имя библиотеки so мода
           },
           [
