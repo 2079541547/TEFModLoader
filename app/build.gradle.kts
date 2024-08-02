@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "silkways.terraria.toolbox"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -67,6 +67,7 @@ dependencies{
     //implementation("com.android.tools.build:apkzlib:8.7.0-alpha03")
     //implementation(libs.zip4j)
     //implementation(libs.firebase.crashlytics.buildtools)
+    //implementation(libs.json)
     implementation(project(":apkzlib"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

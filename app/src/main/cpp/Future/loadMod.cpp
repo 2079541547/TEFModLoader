@@ -9,11 +9,19 @@ using json = nlohmann::json;
 
 // 模拟 LoadHH 函数
 void LoadHH(const std::string& libname, const std::vector<std::string>& functions) {
+    try
+    {
+       
     std::cout << "Loading library: " << libname << " with functions: ";
     for (const auto& func : functions) {
         std::cout << func << ", ";
     }
     std::cout << std::endl;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 }
 
 void getSZ(int arrays) {
@@ -35,9 +43,10 @@ void loadMod(const std::string data_path){
 
     for (const auto& array : j) {
         const std::string& libname = array[0]["libname"];
-        std::cout << "libname: " << libname << std::endl;
+        //std::cout << "libname: " << libname << std::endl;
         for (const auto& item : array[1]) {
-            if (item["position"] == "Position1") {
+            if (array[0]["enable"] == true && item["position"] == "Position1") {
+                
                 const std::vector<std::string>& functions = item["function"];
                 int arrays = item["arrays"];
                 LoadHH(libname, functions);
@@ -55,3 +64,7 @@ void loadMod(const std::string data_path){
     infile.close();
 }
 
+int main(){
+    loadMod("/home/eternalfuture/测试/mod_data/Mod_data.json");
+    return 0;
+}

@@ -16,14 +16,11 @@ import com.unity3d.player.UnityPlayerActivity
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.ToolboxFragmentTerminalBinding
 import silkways.terraria.toolbox.logic.ApkPatcher
-import silkways.terraria.toolbox.logic.JsonConfigModifier
-import silkways.terraria.toolbox.logic.ModConfigManager
-import silkways.terraria.toolbox.logic.game.AddRes
+import silkways.terraria.toolbox.logic.mod.ModJsonManager
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import kotlin.math.log
 
 
 class TerminalFragment: Fragment() {
@@ -181,7 +178,23 @@ class TerminalFragment: Fragment() {
             File("${requireActivity().getExternalFilesDir(null)}/data/Mod_Data").mkdir()
         }
         commandExecutors["install mod"] = {
-            //ModConfigManager.Install_Mod(arrayListOf("${requireActivity().getExternalFilesDir(null)}/MyMod-Name.efmod"), "${requireActivity().getExternalFilesDir(null)}/Mod_Data")
+            fun install_mod(zipFilePaths: List<String>, extractToPath: String) {
+                ModJsonManager.extractAndMergeJsonFiles(zipFilePaths, extractToPath)
+
+                // 添加调试输出
+                println("合并后的 mod_data.json:")
+                println(ModJsonManager.readJsonArray(extractToPath + "mod_data.json").toString())
+                println("合并后的 mod_info.json:")
+                println(ModJsonManager.readJsonArray(extractToPath + "mod_info.json").toString())
+
+                ModJsonManager.normalizeLibnames(extractToPath + "mod_data.json", extractToPath + "mod_info.json")
+                ModJsonManager.filterAndGroupModData(extractToPath + "mod_data.json", extractToPath + "mod_info.json")
+                //ModJsonManager.synchronizeLibnames(extractToPath + "mod_data.json", extractToPath + "mod_info.json")
+                //ModJsonManager.filterAndGroupModData(extractToPath + "mod_data.json", extractToPath + "mod_info.json")
+            }
+
+            install_mod(listOf("${requireActivity().getExternalFilesDir(null)}/MyMod1-Name1.efmod", "${requireActivity().getExternalFilesDir(null)}/MyMod2-Name2.efmod"), "${requireActivity().getExternalFilesDir(null)}/data/mod_data/")
+
         }
     }
 
