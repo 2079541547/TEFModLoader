@@ -24,11 +24,18 @@ def create_mod_zip(mod_dir):
     with zipfile.ZipFile(final_zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         # 遍历目录中的所有文件和子目录
         for root, dirs, files in os.walk(mod_dir):
+            # 计算相对路径
+            arc_root = os.path.relpath(root, mod_dir)
+
+            # 如果当前目录不是模组根目录，则添加该目录到zip文件
+            if arc_root != '.':
+                zipf.write(root, arcname=os.path.join(mod_name, arc_root))
+
             for file in files:
                 # 创建文件的完整路径
                 file_path = os.path.join(root, file)
                 # 添加文件到zip文件中，arcname为相对于mod_dir的路径
-                zipf.write(file_path, arcname=os.path.relpath(file_path, mod_dir))
+                zipf.write(file_path, arcname=os.path.join(mod_name, arc_root, file))
 
     print(f"模组打包完成，文件已保存到：{final_zip_path}")
 
