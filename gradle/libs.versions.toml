@@ -6,10 +6,12 @@ chaquopyNumpy = "latest-version"
 chaquopy = "latest-version"
 collection = "1.2.0"
 commonsCompress = "1.26.2"
+fastjson = "2.0.52"
 githubStreamzip = "v1.0.6"
 gradleVersion = "7.4.2"
 gsonVersion = "2.10.1"
-guava = "32.0.1-jre"
+guava = "33.2.1-jre"
+json = "20240303"
 jsr305 = "3.0.2"
 jythonStandalone = "2.7.3"
 kotlin = "1.9.0"
@@ -44,9 +46,11 @@ build-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradl
 chaquopy = { module = "com.chaquo.chaquopy:chaquopy", version.ref = "chaquopy" }
 chaquopy-numpy = { module = "com.chaquo.chaquopy:chaquopy-numpy", version.ref = "chaquopyNumpy" }
 commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
+fastjson = { module = "com.alibaba:fastjson", version.ref = "fastjson" }
 github-streamzip = { module = "com.github.buggysofts-com:StreamZip", version.ref = "githubStreamzip" }
 google-gson = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
+json = { module = "org.json:json", version.ref = "json" }
 jsr305 = { module = "com.google.code.findbugs:jsr305", version.ref = "jsr305" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
