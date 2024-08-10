@@ -59,6 +59,7 @@
           {
             "author": "Name", // Имя автора
             "modName": "MyMod", // Название мода
+            "build": 1, // Версия
             "enable": false, // Активирован ли мод, должно быть false
             "libname": "libMyMod.so" // Полное имя библиотеки so мода
           },
