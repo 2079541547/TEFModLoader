@@ -13,7 +13,6 @@
             android:id="@+id/materialCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="5dp"
             app:cardElevation="5dp"
             app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="true"
@@ -28,7 +27,7 @@
                     android:id="@+id/shapeableImageView"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:src="@drawable/ic_home"
+                    android:src="@drawable/icon"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -66,112 +65,23 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/materialCardView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="5dp"
             app:cardElevation="5dp"
             app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="true"
             app:contentPadding="10dp"
             app:layout_constraintTop_toBottomOf="@+id/materialCardView"
-            tools:ignore="MissingConstraints">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/writer"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                tools:listitem="@layout/writer_layout" />
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="5dp"
-            app:cardPreventCornerOverlap="true"
-            app:cardUseCompatPadding="true"
-            app:contentPadding="10dp"
-            app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
             tools:ignore="MissingConstraints" >
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list"
+                tools:listitem="@layout/home_about_list_item"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"/>
 
-                <LinearLayout
-                    android:id="@+id/warehouse"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:src="@drawable/ic_home"
-                        app:shapeAppearanceOverlay="@style/CircularImageView"
-                        tools:ignore="MissingConstraints" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
-                        android:text="@string/github_text"
-                        android:textStyle="bold"
-                        tools:ignore="RtlHardcoded" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/licence"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@+id/warehouse">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:src="@drawable/ic_home"
-                        app:shapeAppearanceOverlay="@style/CircularImageView"
-                        tools:ignore="MissingConstraints" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
-                        android:text="@string/licence"
-                        android:textStyle="bold"
-                        tools:ignore="RtlHardcoded" />
-
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/QQ"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintTop_toBottomOf="@+id/licence">
-
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:src="@drawable/ic_home"
-                        app:shapeAppearanceOverlay="@style/CircularImageView"
-                        tools:ignore="MissingConstraints" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center|left"
-                        android:text="@string/QQ"
-                        android:textStyle="bold"
-                        tools:ignore="RtlHardcoded" />
-
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+   </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

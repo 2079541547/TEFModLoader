@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "silkways.terraria.toolbox"
-        minSdk = 26
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -28,7 +28,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -64,10 +64,6 @@ android {
 
 dependencies{
     implementation(libs.shadowhook)
-    //implementation("com.android.tools.build:apkzlib:8.7.0-alpha03")
-    //implementation(libs.zip4j)
-    //implementation(libs.firebase.crashlytics.buildtools)
-    //implementation(libs.json)
     implementation(project(":apkzlib"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -79,6 +75,7 @@ dependencies{
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.ui.android)
     implementation(files("libs/classes.jar"))
+    implementation(libs.core.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

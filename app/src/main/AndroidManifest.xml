@@ -39,8 +39,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TerrariaToolBox"
-        tools:targetApi="31"
+        android:theme="@style/AppTheme"
+        tools:targetApi="34"
         tools:ignore="MissingClass">
         <activity
             android:name=".MainActivity"
@@ -89,5 +89,11 @@
         <meta-data
             android:name="com.android.dynamic.apk.fused.modules"
             android:value="base"/>
+        <meta-data
+            android:name="android.notch_support"
+            android:value="true"/>
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="ratio_float" />
     </application>
 </manifest>

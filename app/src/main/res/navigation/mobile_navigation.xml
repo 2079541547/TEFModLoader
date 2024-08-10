@@ -33,9 +33,6 @@ from EternalFuture゙
             app:destination="@id/navigation_home"
             app:popUpTo="@+id/navigation_home"
             app:popUpToInclusive="false"/>
-        <action
-            android:id="@+id/action_navigation_home_to_navigation_more"
-            app:destination="@id/navigation_more" />
 
     </fragment>
 
@@ -51,10 +48,5 @@ from EternalFuture゙
         android:name="silkways.terraria.toolbox.ui.fragment.main.manage.ManageFragment"
         tools:layout="@layout/main_fragment_manage" />
 
-    <fragment
-        android:label="@string/more"
-        android:id="@+id/navigation_more"
-        android:name="silkways.terraria.toolbox.ui.fragment.main.more.MoreFragment"
-        tools:layout="@layout/main_fragment_more" />
 
 </navigation>

@@ -1,30 +1,22 @@
 <resources>
     <string name="app_name">Terraria ToolBox</string>
 
-    <string name="home">主页</string>
-    <string name="toolbox">工具箱</string>
     <string name="manage">管理</string>
     <string name="more">更多</string>
-    <string name="settings">设置</string>
-    <string name="about">关于</string>
-    <string name="app_text">致力打造最好的工具</string>
+    <string name="toolbox">工具箱</string>
     <string name="github_text">开源仓库</string>
     <string name="licence">开源许可证</string>
     <string name="QQ">QQ交流群</string>
 
 
-    <string name="about_text">了解更多关于Terraria ToolBox的事吧！</string>
+
     <string name="game">游戏面板</string>
     <string name="game_text">快捷地启动游戏工具箱</string>
     <string name="settings_text">更多个性化设置</string>
-    <string name="logs">更新日志</string>
     <string name="logs_text">了解近期更新内容</string>
     <string name="techsupport">技术支持</string>
     <string name="techsupport_text">你的支持便是我们坚持的理由</string>
-    <string name="writer_text1">开发者</string>
 
-    <string name="logs_title_1">1.0.0</string>
-    <string name="logs_text_1">1.多种语言</string>
 
     <string name="FreeformWindowOrientation_landscape" />
     <string name="FreeformWindowOrientation_portrait" />
@@ -32,4 +24,57 @@
     <string name="FreeformWindowSize_phone" />
     <string name="FreeformWindowSize_tablet" />
     <string name="terminal">终端</string>
+
+
+
+    <!--
+     主页
+     -->
+    <string name="home">主页</string>
+    <string name="greetings_1">ヽ(。ゝω・)ノ☆;:*早上好*:;☆</string>
+    <string name="greetings_2">ヽ(´･∀･｀)ﾉ〔*…..**★中午好★**…..*〕</string>
+    <string name="greetings_3">(=^･ω･)ﾉ 晚上好♪</string>
+    <string name="greetings_4">○Ｏo。.（T￢T)/~~~晚安</string>
+    <string name="greetings_5">下午好！同志</string>
+    <string name="feedback">反馈</string>
+
+    <!-- 更新日志 -->
+    <string name="logs">更新日志|x･`)(一定会按时更新的)</string>
+    <string name="logs_title_1">1.0.0</string>
+    <string name="logs_text_1">1.多种语言</string>
+
+    <!-- 关于 -->
+    <string name="about">关于</string>
+    <string name="app_text">致力打造最好的工具</string>
+
+    <string name="developer">开发者</string>
+    <string name="developer_text">了解开发</string>
+    <string name="developer_Easteregg_1">不要欺负我QAQ</string>
+    <string name="developer_Easteregg_1_1">别戳辣QAQ</string>
+    <string name="developer_Easteregg_2">(*´ー)ﾉ(ノд`)</string>
+    <string name="developer_Easteregg_2_1">再戳要肆辣qwq</string>
+    <string name="developer_Easteregg_3">(っ´ω`)ﾉ(╥ω╥)</string>
+    <string name="developer_Easteregg_3_1">再戳真的要肆辣(╥ω╥)</string>
+    <string name="developer_Easteregg_4">(; ω ; )ヾ(´∀`* )</string>
+    <string name="developer_Easteregg_4_1">我肆了程序会崩溃滴(; ω ; )</string>
+    <string name="developer_Easteregg_5">丸辣！ヾ(*ﾟДﾟ)人(*ﾟдﾟ)ﾉ</string>
+    <string name="developer_Easteregg_5_1">你把开发者戳肆了(ο´･д･)??</string>
+    <string name="developer_Easteregg_5_2">:(´ཀ`」 ∠):我肆了</string>
+
+    <string name="Open_source_license">开源许可证</string>
+    <string name="Open_source_license_text">查看使用的开源项目以及使用的许可证说明</string>
+
+    <string name="Open_source_repository">开源仓库</string>
+    <string name="Open_source_repository_text">查看我们的开源仓库</string>
+
+    <string name="Special_Thanks">特别鸣谢</string>
+    <string name="Special_Thanks_text">查看为项目做出贡献的人</string>
+
+    <string name="Future_plans">未来计划</string>
+    <string name="Future_plans_text">查看未来可能实现的目标</string>
+
+    <string name="help">帮助</string>
+    <string name="settings">设置</string>
+    <string name="yiyan_text">👆(*≧▽≦)ﾉｼ))好听的一言</string>
+
 </resources>

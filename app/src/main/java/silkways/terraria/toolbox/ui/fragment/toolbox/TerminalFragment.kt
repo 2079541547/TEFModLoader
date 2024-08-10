@@ -42,8 +42,8 @@ class TerminalFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val activity = requireActivity() as AppCompatActivity
-        activity.supportActionBar?.title = getString(R.string.terminal)
+        //val activity = requireActivity() as AppCompatActivity
+        //activity.supportActionBar?.title = getString(R.string.terminal)
 
         _binding = ToolboxFragmentTerminalBinding.inflate(inflater, container, false)
 

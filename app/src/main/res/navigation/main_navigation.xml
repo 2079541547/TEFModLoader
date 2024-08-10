@@ -15,7 +15,7 @@ from EternalFuture゙
         android:label="@string/home"
         android:id="@+id/navigation_main"
         android:name="silkways.terraria.toolbox.ui.fragment.FragmentMain"
-        tools:layout="@layout/main_fragment_home" />
+        tools:layout="@layout/fragment_main" />
 
     <fragment
         android:label="@string/settings"
@@ -34,5 +34,12 @@ from EternalFuture゙
         android:id="@+id/navigation_terminal"
         android:name="silkways.terraria.toolbox.ui.fragment.toolbox.TerminalFragment"
         tools:layout="@layout/toolbox_fragment_terminal" />
+
+    <fragment
+        android:label="@string/help"
+        android:id="@+id/navigation_helps"
+        android:name="silkways.terraria.toolbox.ui.fragment.toolbox.TerminalFragment"
+        tools:layout="@layout/toolbox_fragment_terminal" />
+
 
 </navigation>

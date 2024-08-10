@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.appbar.MaterialToolbar
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.MainFragmentManageBinding
 
@@ -24,6 +25,7 @@ class ManageFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
+        requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.manage)
 
         /*
         * @navHostFragment 获取导航控管理器

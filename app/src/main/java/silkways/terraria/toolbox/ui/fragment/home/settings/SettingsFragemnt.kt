@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.appbar.MaterialToolbar
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.HomeFragmentSettingsBinding
 
@@ -22,6 +23,8 @@ class SettingsFragemnt: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.settings)
 
 
         /*

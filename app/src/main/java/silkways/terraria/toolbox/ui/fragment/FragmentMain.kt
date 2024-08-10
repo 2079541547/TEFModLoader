@@ -10,9 +10,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.FragmentMainBinding
+
 
 /**
  * FragmentMain 是应用的主界面Fragment，包含一个底部导航栏。
@@ -35,7 +37,11 @@ class FragmentMain : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+
         _binding = FragmentMainBinding.inflate(inflater, container, false)
+
+
         return binding.root
     }
 
@@ -56,14 +62,12 @@ class FragmentMain : Fragment() {
         val navHostFragment = childFragmentManager.findFragmentById(R.id.nav_host_fragment_main) as NavHostFragment
         val navController = navHostFragment.navController
 
-        // 应用栏配置，指定可以滑动切换的导航项
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home, // 主页
                 R.id.navigation_toolbox, // 工具箱
                 R.id.navigation_manage, // 管理
-                R.id.navigation_more // 更多
-            )
+                )
         )
 
         // 在 AppCompatActivity 上设置 ActionBar 的导航控制器
@@ -72,6 +76,7 @@ class FragmentMain : Fragment() {
         // 在底部导航栏上设置导航控制器
         navView.setupWithNavController(navController)
     }
+
 
     /**
      * 当视图销毁时调用，释放绑定对象以避免内存泄漏。

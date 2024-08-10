@@ -9,10 +9,10 @@ java {
 
 dependencies {
     implementation(libs.jsr305)
-    implementation("org.bouncycastle:bcpkix-jdk15on:1.70")
-    implementation("org.bouncycastle:bcprov-jdk15on:1.70")
+    implementation(libs.bcpkix.jdk15on)
+    implementation(libs.bcprov.jdk15on)
     api(libs.guava)
     api("com.android.tools.build:apksig:8.0.2")
-    compileOnlyApi("com.google.auto.value:auto-value-annotations:1.11.0")
-    annotationProcessor("com.google.auto.value:auto-value:1.11.0")
+    compileOnlyApi(libs.value.auto.value.annotations)
+    annotationProcessor(libs.value.auto.value)
 }
