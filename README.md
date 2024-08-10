@@ -61,6 +61,7 @@
           {
             "author": "Name", //作者名称
             "modName": "MyMod", //模组名称
+            "build": 1, //版本
             "enable": false, //是否已启用，必须填写false
             "libname": "libMyMod.so" //模组的完整so库名称
           },
