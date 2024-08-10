@@ -59,6 +59,7 @@
           {
             "author": "Name", // Author's name
             "modName": "MyMod", // Mod name
+            "build": 1, // Version
             "enable": false, // Whether it is enabled, must be filled with false
             "libname": "libMyMod.so" // Full name of the mod's so library
           },
