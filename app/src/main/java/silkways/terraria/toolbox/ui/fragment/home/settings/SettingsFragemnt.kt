@@ -4,11 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.imageview.ShapeableImageView
+import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.textview.MaterialTextView
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.HomeFragmentSettingsBinding
 
@@ -48,6 +54,150 @@ class SettingsFragemnt: Fragment() {
 
 
         _binding = HomeFragmentSettingsBinding.inflate(inflater, container, false)
+
+        data class SettingTitle(val title: String)
+        data class SettingButton(val title: String, val subTitle: String, val iconResId: Int, val onClick: () -> Unit)
+        data class SettingSwitch(val title: String, val subTitle: String, val iconResId: Int, val isChecked: Boolean, val onCheckedChange: (Boolean) -> Unit)
+        data class Divider(val isDivider: Boolean = true)
+
+
+
+        binding.SettingsRecyclerView.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+            private val VIEW_TYPE_TITLE = 0
+            private val VIEW_TYPE_BUTTON = 1
+            private val VIEW_TYPE_SWITCH = 2
+            private val VIEW_TYPE_DIVIDER = 3
+
+
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                val inflater = LayoutInflater.from(parent.context)
+                return when (viewType) {
+                    VIEW_TYPE_TITLE -> TitleViewHolder(inflater.inflate(R.layout.item_title, parent, false))
+                    VIEW_TYPE_BUTTON -> ButtonViewHolder(inflater.inflate(R.layout.home_setting_item1, parent, false))
+                    VIEW_TYPE_SWITCH -> SwitchViewHolder(inflater.inflate(R.layout.home_setting_item2, parent, false))
+                    VIEW_TYPE_DIVIDER -> DividerViewHolder(inflater.inflate(R.layout.item_divider, parent, false))
+                    else -> throw IllegalArgumentException("Unknown view type")
+                }
+            }
+
+
+            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+                when (holder) {
+                    is TitleViewHolder -> {
+                        val settingTitle = settingsList[position] as SettingTitle
+                        holder.bind(settingTitle.title)
+                    }
+                    is ButtonViewHolder -> {
+                        val settingButton = settingsList[position] as SettingButton
+                        holder.bind(settingButton.title, settingButton.subTitle, settingButton.iconResId, settingButton.onClick)
+                    }
+                    is SwitchViewHolder -> {
+                        val settingSwitch = settingsList[position] as SettingSwitch
+                        holder.bind(settingSwitch.title, settingSwitch.subTitle, settingSwitch.iconResId, settingSwitch.isChecked, settingSwitch.onCheckedChange)
+                    }
+                    is DividerViewHolder -> {}
+                }
+            }
+
+
+            private val settingsList = listOf(
+                SettingTitle("设置"),
+                SettingButton("按钮1", "子标题1", R.drawable.logo) {
+                    Toast.makeText(
+                        requireActivity(),
+                        getString(R.string.developer_Easteregg_5_2),
+                        Toast.LENGTH_SHORT
+                    ).show();
+                },
+                SettingSwitch("开关1", "子标题2", R.drawable.logo, false) { isChecked ->
+                    if (isChecked){
+                        Toast.makeText(
+                            requireActivity(),
+                            getString(R.string.developer_Easteregg_5_2),
+                            Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                },
+                Divider(),
+                SettingButton("按钮2", "子标题3", R.drawable.logo) {
+                    Toast.makeText(
+                        requireActivity(),
+                        getString(R.string.developer_Easteregg_5_2),
+                        Toast.LENGTH_SHORT
+                    ).show();
+                },
+                SettingSwitch("开关2", "子标题4", R.drawable.logo, true) { isChecked ->
+                    if (isChecked) {
+                        Toast.makeText(
+                            requireActivity(),
+                            getString(R.string.developer_Easteregg_5_2),
+                            Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                },
+                Divider()
+            )
+            override fun getItemCount(): Int {
+                return settingsList.size
+            }
+
+
+            override fun getItemViewType(position: Int): Int {
+                return when (settingsList[position]) {
+                    is SettingTitle -> VIEW_TYPE_TITLE
+                    is SettingButton -> VIEW_TYPE_BUTTON
+                    is SettingSwitch -> VIEW_TYPE_SWITCH
+                    is Divider -> VIEW_TYPE_DIVIDER
+                    else -> throw IllegalArgumentException("Unknown item type")
+                }
+            }
+
+
+            inner class TitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+                private val titleTextView: MaterialTextView = itemView.findViewById(R.id.title)
+
+                fun bind(title: String) {
+                    titleTextView.text = title
+                }
+            }
+
+            inner class ButtonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+                private val iconImageView: ShapeableImageView = itemView.findViewById(R.id.icon)
+                private val titleTextView: MaterialTextView = itemView.findViewById(R.id.title)
+                private val subTitleTextView: MaterialTextView = itemView.findViewById(R.id.subtitle)
+
+                fun bind(title: String, subTitle: String, iconResId: Int, onClick: () -> Unit) {
+                    titleTextView.text = title
+                    subTitleTextView.text = subTitle
+                    iconImageView.setImageResource(iconResId)
+                    itemView.setOnClickListener { onClick() }
+                }
+            }
+
+            inner class SwitchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+                private val iconImageView: ShapeableImageView = itemView.findViewById(R.id.icon)
+                private val titleTextView: MaterialTextView = itemView.findViewById(R.id.title)
+                private val subTitleTextView: MaterialTextView = itemView.findViewById(R.id.subtitle)
+                private val switchWidget: MaterialSwitch = itemView.findViewById(R.id.Setting_Switch)
+
+                fun bind(title: String, subTitle: String, iconResId: Int, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+                    titleTextView.text = title
+                    subTitleTextView.text = subTitle
+                    iconImageView.setImageResource(iconResId)
+                    switchWidget.isChecked = isChecked
+                    switchWidget.setOnCheckedChangeListener { _, isChecked ->
+                        onCheckedChange(isChecked)
+                    }
+                }
+            }
+
+            inner class DividerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+        }
+
+
+        binding.SettingsRecyclerView.layoutManager = LinearLayoutManager(requireActivity())
+
 
 
 

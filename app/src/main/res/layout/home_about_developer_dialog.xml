@@ -25,6 +25,7 @@
             android:id="@+id/shapeableImageView2"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:background="?android:attr/selectableItemBackground"
             android:layout_marginStart="10dp"
             android:src="@drawable/eternalfuture"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="3dp"
-            android:text="|´ω｀)ﾉ 你好"
+            android:text="@string/developer_Easteregg_0"
             app:layout_constraintStart_toEndOf="@+id/shapeableImageView2"
             app:layout_constraintTop_toBottomOf="@+id/materialTextView3"
             tools:ignore="MissingConstraints" />
@@ -59,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:text="关闭"
+            android:text="@string/close"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/shapeableImageView2"
             tools:ignore="MissingConstraints" />

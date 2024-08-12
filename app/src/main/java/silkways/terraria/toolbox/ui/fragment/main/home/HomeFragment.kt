@@ -11,6 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -19,7 +20,6 @@ import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.HomeDialogLogsBinding
 import silkways.terraria.toolbox.databinding.MainFragmentHomeBinding
 import silkways.terraria.toolbox.logic.JsonConfigModifier
-import java.time.LocalTime
 import java.util.Calendar
 import kotlin.random.Random
 
@@ -166,13 +166,19 @@ class HomeFragment: Fragment() {
                 // 获取数据列表长度
                 val logsItems = listOf(
                     Pair(getString(R.string.logs_title_1), getString(R.string.logs_text_1)),
+                    Pair(getString(R.string.logs_title_1), getString(R.string.logs_text_1)),
                 )
                 override fun getItemCount(): Int {
                     return logsItems.size
                 }
             }
             dialogBinding?.logsRecyclerView?.layoutManager = LinearLayoutManager(requireActivity())
-
+            dialogBinding?.logsRecyclerView?.addItemDecoration(
+                DividerItemDecoration(
+                    requireActivity(),
+                    DividerItemDecoration.VERTICAL
+                )
+            )
             // 设置对话框关闭监听器
             setOnDismissListener {
                 isDialogShowing = false

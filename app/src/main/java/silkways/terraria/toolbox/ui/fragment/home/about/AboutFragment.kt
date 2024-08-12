@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -39,6 +40,17 @@ class AboutFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
         requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.about)
+
+
+        // 初始化导航选项和导航控制器
+        val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navOptions = NavOptions.Builder()
+            // 设置导航动画
+            .setEnterAnim(R.anim.fragment_anim_enter)
+            .setExitAnim(R.anim.fragment_anim_exit)
+            .setPopEnterAnim(R.anim.fragment_anim_enter)
+            .setPopExitAnim(R.anim.fragment_anim_exit)
+            .build()
 
 
         // 使用DataBindingUtil或ViewBinding inflate布局文件
@@ -97,7 +109,7 @@ class AboutFragment: Fragment() {
 
                             //开源许可证
                             1 -> {
-
+                                navHostFragment.navController.navigate(R.id.nanavigation_licence, null, navOptions)
                             }
 
                             //开源仓库
@@ -108,12 +120,12 @@ class AboutFragment: Fragment() {
 
                             //特别鸣谢
                             3 -> {
-
+                                navHostFragment.navController.navigate(R.id.nanavigation_SpecialThanks, null, navOptions)
                             }
 
                             //未来计划
                             4 -> {
-
+                                navHostFragment.navController.navigate(R.id.nanavigation_FuturePlans, null, navOptions)
                             }
                         }
                     }
@@ -136,19 +148,15 @@ class AboutFragment: Fragment() {
                         setCanceledOnTouchOutside(false) // 设置触摸对话框外部不可取消
                     }
 
-                    dialogBinding?.shapeableImageView2?.setOnClickListener {
-
-                    }
-
-
                     var Click_count = 0
                     dialogBinding?.shapeableImageView2?.setOnClickListener {
                         Click_count++
                         if (Click_count >= 40) {
+                            Click_count = 0
                             Toast.makeText(requireActivity(), getString(R.string.developer_Easteregg_5_2), Toast.LENGTH_SHORT).show();
                             dialogBinding?.shapeableImageView2?.animate()
                                 ?.alpha(0f)
-                                ?.setDuration(1000)
+                                ?.setDuration(500)
                                 ?.withEndAction {
                                     dialogBinding?.shapeableImageView2?.visibility = View.GONE
                                     dialogBinding?.button?.visibility = View.GONE

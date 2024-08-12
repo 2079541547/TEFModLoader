@@ -49,6 +49,7 @@
 
     <string name="developer">开发者</string>
     <string name="developer_text">了解开发</string>
+    <string name="developer_Easteregg_0">|´ω｀)ﾉ 你好</string>
     <string name="developer_Easteregg_1">不要欺负我QAQ</string>
     <string name="developer_Easteregg_1_1">别戳辣QAQ</string>
     <string name="developer_Easteregg_2">(*´ー)ﾉ(ノд`)</string>
@@ -76,5 +77,6 @@
     <string name="help">帮助</string>
     <string name="settings">设置</string>
     <string name="yiyan_text">👆(*≧▽≦)ﾉｼ))好听的一言</string>
+    <string name="close">关闭</string>
 
 </resources>

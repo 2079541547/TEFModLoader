@@ -38,8 +38,25 @@ from EternalFuture゙
     <fragment
         android:label="@string/help"
         android:id="@+id/navigation_helps"
-        android:name="silkways.terraria.toolbox.ui.fragment.toolbox.TerminalFragment"
-        tools:layout="@layout/toolbox_fragment_terminal" />
+        android:name="silkways.terraria.toolbox.ui.fragment.home.help.HelpFragment"
+        tools:layout="@layout/home_fragment_helps" />
 
+    <fragment
+        android:label="@string/Open_source_license"
+        android:id="@+id/nanavigation_licence"
+        android:name="silkways.terraria.toolbox.ui.fragment.home.about.LicenceFragment"
+        tools:layout="@layout/home_about_licence"/>
+
+    <fragment
+        android:label="@string/Special_Thanks"
+        android:id="@+id/nanavigation_SpecialThanks"
+        android:name="silkways.terraria.toolbox.ui.fragment.home.about.SpecialThanksFargmrnt"
+        tools:layout="@layout/home_about_specialthanks"/>
+
+    <fragment
+        android:label="@string/Future_plans"
+        android:id="@+id/nanavigation_FuturePlans"
+        android:name="silkways.terraria.toolbox.ui.fragment.home.about.FuturePlansFragment"
+        tools:layout="@layout/home_about_futureplans"/>
 
 </navigation>

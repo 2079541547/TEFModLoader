@@ -63,6 +63,7 @@ android {
 
 
 dependencies{
+    implementation(libs.commonmark)
     implementation(libs.shadowhook)
     implementation(project(":apkzlib"))
     implementation(libs.androidx.core.ktx)

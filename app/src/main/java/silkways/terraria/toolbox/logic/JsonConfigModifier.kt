@@ -17,7 +17,6 @@ object JsonConfigModifier {
                 reader.readText()
             }
         }
-
         // 解析 JSON 字符串
         val jsonObject = try {
             JSONObject(jsonString)
@@ -25,7 +24,6 @@ object JsonConfigModifier {
             e.printStackTrace()
             return null
         }
-
         // 获取指定键对应的数组
         return jsonObject.optJSONArray(key)
     }

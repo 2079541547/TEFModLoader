@@ -1,4 +1,4 @@
-package silkways.terraria.toolbox.ui.fragment.home.help
+package silkways.terraria.toolbox.ui.fragment.home.about
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -9,16 +9,17 @@ import android.webkit.WebSettings
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import silkways.terraria.toolbox.R
-import silkways.terraria.toolbox.databinding.HomeFragmentHelpsBinding
+import silkways.terraria.toolbox.databinding.HomeAboutLicenceBinding
 import silkways.terraria.toolbox.logic.Markdown
+
 
 /**
  * 关于页面的片段类，用于展示关于应用的信息。
  */
-class HelpFragment: Fragment() {
+class LicenceFragment: Fragment() {
 
     // 使用可空变量存储绑定对象，以便在销毁视图时能够释放资源
-    private var _binding: HomeFragmentHelpsBinding? = null
+    private var _binding: HomeAboutLicenceBinding? = null
     // 提供非空的绑定访问方式
     private val binding get() = _binding!!
 
@@ -28,12 +29,12 @@ class HelpFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.help)
+        requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.Open_source_license)
 
         // 使用DataBindingUtil或ViewBinding inflate布局文件
-        _binding = HomeFragmentHelpsBinding.inflate(inflater, container, false)
+        _binding = HomeAboutLicenceBinding.inflate(inflater, container, false)
 
-        val webView = binding.Helps
+        val webView = binding.Licence
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
         webSettings.useWideViewPort = true
@@ -41,13 +42,15 @@ class HelpFragment: Fragment() {
         webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
         webView.clearCache(true)
 
-        val markdownContent = Markdown.loadMarkdownFromAssets(requireActivity(), "ToolBoxData/Home/Helps/zh-cn.md")
+        val markdownContent = Markdown.loadMarkdownFromAssets(requireActivity(), "ToolBoxData/Home/About/Licence/zh-cn.md")
         val htmlContent = Markdown.markdownToHtml(markdownContent)
         webView.loadDataWithBaseURL(null, htmlContent, "text/html", "utf-8", null)
 
-
         return binding.root
     }
+
+
+
 
     /**
      * 当视图被销毁时调用，释放资源以避免内存泄漏。
