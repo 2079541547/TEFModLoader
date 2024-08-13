@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -16,7 +16,9 @@ import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textview.MaterialTextView
 import silkways.terraria.toolbox.R
+import silkways.terraria.toolbox.data.Settings
 import silkways.terraria.toolbox.databinding.HomeFragmentSettingsBinding
+import silkways.terraria.toolbox.logic.JsonConfigModifier
 
 class SettingsFragemnt: Fragment() {
 
@@ -56,7 +58,7 @@ class SettingsFragemnt: Fragment() {
         _binding = HomeFragmentSettingsBinding.inflate(inflater, container, false)
 
         data class SettingTitle(val title: String)
-        data class SettingButton(val title: String, val subTitle: String, val iconResId: Int, val onClick: () -> Unit)
+        data class SettingButton(val title: String, val subTitle: String, val iconResId: Int, val onClick: (View) -> Unit)
         data class SettingSwitch(val title: String, val subTitle: String, val iconResId: Int, val isChecked: Boolean, val onCheckedChange: (Boolean) -> Unit)
         data class Divider(val isDivider: Boolean = true)
 
@@ -101,15 +103,102 @@ class SettingsFragemnt: Fragment() {
             }
 
 
+            private fun getTheme_text(): String {
+                when(JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.themeKey)){
+                    0 -> return getString(R.string.settings_theme_1)
+                    1 -> return getString(R.string.settings_theme_2)
+                    2 -> return getString(R.string.settings_theme_3)
+                }
+                return "错误"
+            }
+
+            private fun getLanguage_Text(): String {
+                when(JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.languageKey)){
+                    0 -> return getString(R.string.settings_language_1)
+                    1 -> return getString(R.string.settings_language_2)
+                    2 -> return getString(R.string.settings_language_3)
+                    3 -> return getString(R.string.settings_language_4)
+                    4 -> return getString(R.string.settings_language_5)
+                }
+                return "错误"
+            }
+
+
             private val settingsList = listOf(
-                SettingTitle("设置"),
-                SettingButton("按钮1", "子标题1", R.drawable.logo) {
-                    Toast.makeText(
-                        requireActivity(),
-                        getString(R.string.developer_Easteregg_5_2),
-                        Toast.LENGTH_SHORT
-                    ).show();
+
+                //设置标题
+                SettingTitle(getString(R.string.settings_1)),
+
+
+                //主题设置
+                SettingButton(getString(R.string.settings_theme), getTheme_text(), R.drawable.twotone_color_lens_24) {
+
+                    val popupMenu = PopupMenu(requireActivity(), it)
+                    popupMenu.menuInflater.inflate(R.menu.settings_theme_menu, popupMenu.menu)
+
+                    popupMenu.setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.menu_theme_1 -> {
+                                JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.themeKey, 0)
+                                requireActivity().recreate()
+                                true
+                            }
+                            R.id.menu_theme_2 -> {
+                                JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.themeKey, 1)
+                                requireActivity().recreate()
+                                true
+                            }
+                            R.id.menu_theme_3 -> {
+                                JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.themeKey, 2)
+                                requireActivity().recreate()
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                    popupMenu.show()
                 },
+
+                //语言设置
+                SettingButton(getString(R.string.settings_language), getLanguage_Text(), R.drawable.twotone_language_24) {
+                    val popupMenu = PopupMenu(requireActivity(), it)
+                    popupMenu.menuInflater.inflate(R.menu.settings_language_menu, popupMenu.menu)
+
+                    popupMenu.setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.menu_language_1 -> {
+                                JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.languageKey, 0)
+                                requireActivity().recreate()
+                                true
+                            }
+                            R.id.menu_language_2 -> {
+                                JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.languageKey, 1)
+                                requireActivity().recreate()
+                                true
+                            }
+                            R.id.menu_language_3 -> {
+                                JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.languageKey, 2)
+                                requireActivity().recreate()
+                                true
+                            }
+                            R.id.menu_language_4 -> {
+                                JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.languageKey, 3)
+                                requireActivity().recreate()
+                                true
+                            }
+                            R.id.menu_language_5 -> {
+                                JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.languageKey, 4)
+                                requireActivity().recreate()
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                    popupMenu.show()
+                }
+
+                //开关
+                /*
                 SettingSwitch("开关1", "子标题2", R.drawable.logo, false) { isChecked ->
                     if (isChecked){
                         Toast.makeText(
@@ -119,24 +208,10 @@ class SettingsFragemnt: Fragment() {
                         ).show();
                     }
                 },
-                Divider(),
-                SettingButton("按钮2", "子标题3", R.drawable.logo) {
-                    Toast.makeText(
-                        requireActivity(),
-                        getString(R.string.developer_Easteregg_5_2),
-                        Toast.LENGTH_SHORT
-                    ).show();
-                },
-                SettingSwitch("开关2", "子标题4", R.drawable.logo, true) { isChecked ->
-                    if (isChecked) {
-                        Toast.makeText(
-                            requireActivity(),
-                            getString(R.string.developer_Easteregg_5_2),
-                            Toast.LENGTH_SHORT
-                        ).show();
-                    }
-                },
-                Divider()
+                */
+
+                //分割线
+                //Divider()
             )
             override fun getItemCount(): Int {
                 return settingsList.size
@@ -167,11 +242,13 @@ class SettingsFragemnt: Fragment() {
                 private val titleTextView: MaterialTextView = itemView.findViewById(R.id.title)
                 private val subTitleTextView: MaterialTextView = itemView.findViewById(R.id.subtitle)
 
-                fun bind(title: String, subTitle: String, iconResId: Int, onClick: () -> Unit) {
+                fun bind(title: String, subTitle: String, iconResId: Int, onClick: (View) -> Unit) {
                     titleTextView.text = title
                     subTitleTextView.text = subTitle
                     iconImageView.setImageResource(iconResId)
-                    itemView.setOnClickListener { onClick() }
+                    itemView.setOnClickListener { it ->
+                        onClick(it)
+                    }
                 }
             }
 

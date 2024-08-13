@@ -9,7 +9,10 @@ import android.webkit.WebSettings
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import silkways.terraria.toolbox.R
+import silkways.terraria.toolbox.data.Settings
 import silkways.terraria.toolbox.databinding.HomeAboutSpecialthanksBinding
+import silkways.terraria.toolbox.logic.JsonConfigModifier
+import silkways.terraria.toolbox.logic.LanguageHelper
 import silkways.terraria.toolbox.logic.Markdown
 
 
@@ -42,7 +45,12 @@ class SpecialThanksFargmrnt: Fragment() {
         webSettings.cacheMode = WebSettings.LOAD_NO_CACHE
         webView.clearCache(true)
 
-        val markdownContent = Markdown.loadMarkdownFromAssets(requireActivity(), "ToolBoxData/Home/About/SpecialThanks/zh-cn.md")
+        val markdownContent = Markdown.loadMarkdownFromAssets(requireActivity(), LanguageHelper.getMDLanguage(
+            JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.languageKey),
+            requireActivity(),
+            "Home/About/SpecialThanks"),
+        )
+
         val htmlContent = Markdown.markdownToHtml(markdownContent)
         webView.loadDataWithBaseURL(null, htmlContent, "text/html", "utf-8", null)
 

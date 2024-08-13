@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="manage">Management</string>
+    <string name="more">More</string>
+    <string name="toolbox">Toolbox</string>
+    <string name="github_text">Open Source Repository</string>
+    <string name="licence">Open Source License</string>
+    <string name="QQ">QQ Discussion Group</string>
+
+    <string name="game">Game Panel</string>
+    <string name="game_text">Quickly launch the game toolbox</string>
+    <string name="settings_text">More personalized settings</string>
+    <string name="logs_text">Learn about recent updates</string>
+    <string name="techsupport">Technical Support</string>
+    <string name="techsupport_text">Your support is the reason we persist</string>
+
+    <string name="terminal">Terminal</string>
+
+    <!--
+    Home Page
+    -->
+    <string name="home">Home</string>
+    <string name="greetings_1">ヽ(。ゝω・)ノ☆;:*Good morning*:;☆</string>
+    <string name="greetings_2">ヽ(´･∀･｀)ﾉ〔*…..**Good afternoon**…..*〕</string>
+    <string name="greetings_3">(=^･ω･)ﾉ Good evening♪</string>
+    <string name="greetings_4">○Ｏo。.（T￢T)/~~~Good night</string>
+    <string name="greetings_5">Good afternoon! Comrade</string>
+    <string name="feedback">Feedback</string>
+
+    <!-- Update Log -->
+    <string name="logs">Update Log |*･`)(I will update on time)</string>
+    <string name="logs_title_1">1.0.0</string>
+    <string name="logs_text_1">1. Multiple languages</string>
+
+    <!-- About -->
+    <string name="about">About</string>
+    <string name="app_text">Committed to creating the best tools</string>
+
+    <string name="developer">Developer</string>
+    <string name="developer_text">Learn about development</string>
+    <string name="developer_Easteregg_0">|´ω｀)ﾉ Hello</string>
+    <string name="developer_Easteregg_1">Don\'t bully me QAQ</string>
+    <string name="developer_Easteregg_1_1">Don\'t poke me QAQ</string>
+    <string name="developer_Easteregg_2_1">Poking again will be bad</string>
+    <string name="developer_Easteregg_3_1">Poking again really will be bad(╥ω╥)</string>
+    <string name="developer_Easteregg_4_1">I\'m gone and the program will crash(; ω ; )</string>
+    <string name="developer_Easteregg_5">It\'s over!ヾ(*ﾟДﾟ)人(*ﾟдﾟ)ﾉ</string>
+    <string name="developer_Easteregg_5_1">You\'ve poked the developer to death(ο´･д･)??</string>
+    <string name="developer_Easteregg_5_2">:(´ཀ`」 ∠): I\'m gone</string>
+
+    <string name="Open_source_license">Open Source License</string>
+    <string name="Open_source_license_text">View the open source projects used and their license information</string>
+
+    <string name="Open_source_repository">Open Source Repository</string>
+    <string name="Open_source_repository_text">View our open source repository</string>
+
+    <string name="Special_Thanks">Special Thanks</string>
+    <string name="Special_Thanks_text">View contributors to the project</string>
+
+    <string name="Future_plans">Future Plans</string>
+    <string name="Future_plans_text">View potential future goals</string>
+
+    <string name="help">Help</string>
+
+    <string name="settings">Settings</string>
+    <string name="settings_1">General</string>
+
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_1">Follow system</string>
+    <string name="settings_theme_2">Light theme</string>
+    <string name="settings_theme_3">Dark theme</string>
+
+    <string name="settings_language">Language</string>
+    <string name="settings_language_1">Follow system</string>
+
+    <string name="settings_language_dialog_close">Clicked by mistake</string>
+
+    <string name="yiyan_text">👆(*≧▽≦)ﾉｼ))A nice saying</string>
+    <string name="close">Close</string>
+</resources>

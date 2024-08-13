@@ -1,15 +1,23 @@
 package silkways.terraria.toolbox
 
 import android.app.Activity
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
+import android.os.LocaleList
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.fragment.NavHostFragment
-import com.google.android.material.appbar.MaterialToolbar
+import silkways.terraria.toolbox.data.Settings
 import silkways.terraria.toolbox.databinding.ActivityMainBinding
+import silkways.terraria.toolbox.logic.JsonConfigModifier
+import silkways.terraria.toolbox.logic.LanguageHelper
+import java.io.File
+import java.util.Locale
 
 
 /**
@@ -34,12 +42,51 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // 初始化布局绑定
+
+        //设置语言
+        when(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.languageKey)){
+            0 -> {
+                when(LanguageHelper.getLanguageAsNumber(this)){
+                    2 -> LanguageHelper.setAppLanguage(this, "")
+                    3 -> LanguageHelper.setAppLanguage(this, "")
+                    4 -> LanguageHelper.setAppLanguage(this, "en")
+                }
+            }
+
+            2 -> LanguageHelper.setAppLanguage(this, "")
+            3 -> LanguageHelper.setAppLanguage(this, "")
+            4 -> LanguageHelper.setAppLanguage(this, "en")
+        }
+
+
+
+        //设置主题
+        when(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.themeKey)){
+            0 -> {
+                val isDarkModeEnabled = AppCompatDelegate.getDefaultNightMode()
+                if (isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_YES){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }else if(isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_NO){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+
+            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        actionBar?.hide();
+
+        File("${this.getExternalFilesDir(null)}/ToolBoxData/ModData").mkdirs()
+        File("${this.getExternalFilesDir(null)}/ToolBoxData/Resources").mkdirs()
+        File("${this.getExternalFilesDir(null)}/ToolBoxData/bak").mkdirs()
+
+
+        actionBar?.hide()
 
         if (Build.VERSION.SDK_INT >= 28) {
             window.attributes.layoutInDisplayCutoutMode =
@@ -60,8 +107,6 @@ class MainActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-        //supportActionBar?.hide()
-
         // 获取 NavHostFragment，它是 Jetpack Navigation 的核心组件
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
@@ -69,7 +114,14 @@ class MainActivity : AppCompatActivity() {
         // 获取 NavHostFragment 内的 NavController，用于控制界面间的导航
         navHostFragment.navController
         //navHostFragment.navController.navigate(R.id.navigation_terminal)
+
+
+
+        JsonConfigModifier.createJsonConfig(this, Settings.jsonPath, Settings.SettingsData);
     }
+
+
+
 
 
     fun setDisplayInNotch(activity: Activity) {
@@ -83,7 +135,6 @@ class MainActivity : AppCompatActivity() {
         } catch (ignore: Exception) {
         }
     }
-
 
 
 }

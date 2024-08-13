@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Terraria ToolBox</string>
+    <string name="app_name" translatable="false">Terraria ToolBox</string>
 
     <string name="manage">管理</string>
     <string name="more">更多</string>
@@ -18,11 +18,11 @@
     <string name="techsupport_text">你的支持便是我们坚持的理由</string>
 
 
-    <string name="FreeformWindowOrientation_landscape" />
-    <string name="FreeformWindowOrientation_portrait" />
-    <string name="FreeformWindowSize_maximize" />
-    <string name="FreeformWindowSize_phone" />
-    <string name="FreeformWindowSize_tablet" />
+    <string name="FreeformWindowOrientation_landscape" translatable="false" />
+    <string name="FreeformWindowOrientation_portrait" translatable="false" />
+    <string name="FreeformWindowSize_maximize" translatable="false" />
+    <string name="FreeformWindowSize_phone" translatable="false" />
+    <string name="FreeformWindowSize_tablet" translatable="false" />
     <string name="terminal">终端</string>
 
 
@@ -52,11 +52,11 @@
     <string name="developer_Easteregg_0">|´ω｀)ﾉ 你好</string>
     <string name="developer_Easteregg_1">不要欺负我QAQ</string>
     <string name="developer_Easteregg_1_1">别戳辣QAQ</string>
-    <string name="developer_Easteregg_2">(*´ー)ﾉ(ノд`)</string>
+    <string name="developer_Easteregg_2" translatable="false">(*´ー)ﾉ(ノд`)</string>
     <string name="developer_Easteregg_2_1">再戳要肆辣qwq</string>
-    <string name="developer_Easteregg_3">(っ´ω`)ﾉ(╥ω╥)</string>
+    <string name="developer_Easteregg_3" translatable="false">(っ´ω`)ﾉ(╥ω╥)</string>
     <string name="developer_Easteregg_3_1">再戳真的要肆辣(╥ω╥)</string>
-    <string name="developer_Easteregg_4">(; ω ; )ヾ(´∀`* )</string>
+    <string name="developer_Easteregg_4" translatable="false">(; ω ; )ヾ(´∀`* )</string>
     <string name="developer_Easteregg_4_1">我肆了程序会崩溃滴(; ω ; )</string>
     <string name="developer_Easteregg_5">丸辣！ヾ(*ﾟДﾟ)人(*ﾟдﾟ)ﾉ</string>
     <string name="developer_Easteregg_5_1">你把开发者戳肆了(ο´･д･)??</string>
@@ -75,7 +75,24 @@
     <string name="Future_plans_text">查看未来可能实现的目标</string>
 
     <string name="help">帮助</string>
+
     <string name="settings">设置</string>
+    <string name="settings_1">常规</string>
+
+    <string name="settings_theme">主题</string>
+    <string name="settings_theme_1">跟随系统</string>
+    <string name="settings_theme_2">亮色主题</string>
+    <string name="settings_theme_3">暗色主题</string>
+
+    <string name="settings_language">语言</string>
+    <string name="settings_language_1">跟随系统</string>
+    <string name="settings_language_2" translatable="false">简体中文</string>
+    <string name="settings_language_3" translatable="false">繁體中文</string>
+    <string name="settings_language_4" translatable="false">Русский язык</string>
+    <string name="settings_language_5" translatable="false">English</string>
+
+    <string name="settings_language_dialog_close">点错了QAQ</string>
+
     <string name="yiyan_text">👆(*≧▽≦)ﾉｼ))好听的一言</string>
     <string name="close">关闭</string>
 

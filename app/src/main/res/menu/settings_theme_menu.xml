@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_theme_1"
+        android:icon="@drawable/twotone_settings_24"
+        android:title="@string/settings_theme_1" />
+    <item
+        android:id="@+id/menu_theme_2"
+        android:icon="@drawable/twotone_brightness_high_24"
+        android:title="@string/settings_theme_2" />
+    <item
+        android:id="@+id/menu_theme_3"
+        android:icon="@drawable/twotone_brightness_4_24"
+        android:title="@string/settings_theme_3" />
+</menu>
