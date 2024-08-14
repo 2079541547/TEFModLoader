@@ -10,7 +10,6 @@
 # 使用的项目
 
 * [ByNameModding](https://github.com/ByNameModding/BNM-Android)
-* [LSPatch](https://github.com/LSPosed/LSPatch)
 * [ShadowHook](https://github.com/bytedance/android-inline-hook)
 
 # Terraria ToolBox 功能
