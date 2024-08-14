@@ -35,22 +35,6 @@
 
     ## 2. Создайте конфигурационный JSON мода
 
-    * mod_info
-
-      ```Json
-      [
-          {
-              "author": "Name", // Имя автора
-              "modName": "MyMod", // Название мода
-              "build": 1, // Версия
-              "modIntroduce": "Это мой мод", // Описание мода
-              "Opencode": false, // Открытый код или нет
-              "OpencodeUrl": null, // URL открытого кода, если таковые имеются
-              "enableLibName": "libMyMod.so" // Полное имя библиотеки so, вызываемой модом
-          }
-      ]
-      ```
-
     * mod_data
 
       ```Json
@@ -59,6 +43,9 @@
           {
             "author": "Name", // Имя автора
             "modName": "MyMod", // Название мода
+            "modIntroduce": "Это мой мод", // Описание мода
+            "Opencode": false, // Открытый код или нет
+            "OpencodeUrl": null, // URL открытого кода, если таковые имеются
             "build": 1, // Версия
             "enable": false, // Активирован ли мод, должно быть false
             "libname": "libMyMod.so" // Полное имя библиотеки so мода

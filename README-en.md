@@ -35,22 +35,6 @@
 
     ## 2. Create the mod configuration JSON
 
-    * mod_info
-
-      ```Json
-      [
-          {
-              "author": "Name", // Author's name
-              "modName": "MyMod", // Mod name
-              "build": 1, // Version
-              "modIntroduce": "This is my mod", // Mod introduction
-              "Opencode": false, // Whether it is open source
-              "OpencodeUrl": null, // If open source, fill in the open source link
-              "enableLibName": "libMyMod.so" // The full name of the so library called
-          }
-      ]
-      ```
-
     * mod_data
 
       ```Json
@@ -59,6 +43,9 @@
           {
             "author": "Name", // Author's name
             "modName": "MyMod", // Mod name
+            "modIntroduce": "This is my mod", // Mod introduction
+            "Opencode": false, // Whether it is open source
+            "OpencodeUrl": null, // If open source, fill in the open source link
             "build": 1, // Version
             "enable": false, // Whether it is enabled, must be filled with false
             "libname": "libMyMod.so" // Full name of the mod's so library
