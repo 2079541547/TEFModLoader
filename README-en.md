@@ -8,7 +8,6 @@
 ## Projects in use
 
 * [ByNameModding](https://github.com/ByNameModding/BNM-Android)
-* [LSPatch](https://github.com/LSPosed/LSPatch)
 * [ShadowHook](https://github.com/bytedance/android-inline-hook)
 
 # What Can Terraria ToolBox Do?
