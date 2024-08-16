@@ -3,10 +3,12 @@ package com.unity3d.player;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -14,6 +16,13 @@ import android.view.PointerIcon;
 import android.view.View;
 import androidx.annotation.NonNull;
 import com.bytedance.shadowhook.ShadowHook;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Objects;
 
 
 /**
@@ -85,6 +94,7 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
 
 
         System.loadLibrary("Major"); //加载模组主库
+        getJsonContent(readFileContent(this));
     }
 
     @Override
@@ -264,4 +274,21 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         }
         return true;
     }
+
+    public static String readFileContent(Context context) {
+        File file = new File(Objects.requireNonNull(context.getExternalFilesDir(null)).getAbsolutePath() + "/ToolBoxData/ModData/mod_data.json");
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+            return sb.toString();
+        } catch (IOException e) {
+            Log.e("TAG", "Error reading file: ", e);
+            return "";
+        }
+    }
+
+    public native void getJsonContent(String content);
 }

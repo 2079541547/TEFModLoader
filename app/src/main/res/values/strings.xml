@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name" translatable="false">Terraria ToolBox</string>
 
-    <string name="manage">管理</string>
-    <string name="more">更多</string>
-    <string name="toolbox">工具箱</string>
+
+
     <string name="github_text">开源仓库</string>
     <string name="licence">开源许可证</string>
     <string name="QQ">QQ交流群</string>
@@ -23,7 +22,6 @@
     <string name="FreeformWindowSize_maximize" translatable="false" />
     <string name="FreeformWindowSize_phone" translatable="false" />
     <string name="FreeformWindowSize_tablet" translatable="false" />
-    <string name="terminal">终端</string>
 
 
 
@@ -95,5 +93,66 @@
 
     <string name="yiyan_text">👆(*≧▽≦)ﾉｼ))好听的一言</string>
     <string name="close">关闭</string>
+
+
+
+    <!--
+        工具箱
+    -->
+    <string name="toolbox">工具箱</string>
+    <string name="Import_Archive">导入存档</string>
+    <string name="Export_Archive">导出存档</string>
+    <string name="file_management">文件管理</string>
+    <string name="file_management_1">内置编辑器打开</string>
+    <string name="file_management_2">其他方式打开</string>
+    <string name="file_management_3">移动到回收站</string>
+    <string name="file_management_4">永久删除</string>
+
+    <!-- 游戏面板 -->
+    <string name="GamePanel">游戏面板</string>
+    <string name="GamePanel_Text">额外游戏功能(＞◡＜)</string>
+    <string name="GamePanel_1">悬浮窗</string>
+    <string name="GamePanel_2">调试工具</string>
+    <string name="GamePanel_Start">Terraria启动！(👍ᐛ )</string>
+
+
+    <string name="terminal">终端</string>
+    <string name="terminal_Command">终端命令</string>
+    <string name="terminal_runCommand">执行命令(¬ -̮ ¬)</string>
+    <string name="terminal_Command_Text">输入 help 或者 help -command 可获取帮助(★≧▽^))★☆</string>
+    <string name="Unknown_command">未知命令(｡・ω・｡)?: </string>
+
+
+    <!--
+        管理
+    -->
+    <string name="manage">管理</string>
+    <string name="install_efmod">安装EFMod</string>
+    <string name="install_res">安装资源包</string>
+
+    <string name="efmod_manager">EFMod管理</string>
+    <string name="res_manager">资源包管理</string>
+    <string name="author_text">作者:</string>
+    <string name="build_text">版本:</string>
+    <string name="modIntroduce_text">介绍:</string>
+    <string name="Opencode_text1">开源信息:</string>
+    <string name="Opencode_text2">开源</string>
+    <string name="Opencode_text3">开源链接:</string>
+    <string name="Opencode_text4">闭源</string>
+    <string name="mod_more_info">函数挂钩:</string>
+    <string name="position_text">位置:</string>
+    <string name="functions_text">函数:</string>
+    <string name="type_text">类型:</string>
+    <string name="arrays_text">返回的数组引索:</string>
+    <string name="determine">确定</string>
+    <string name="Please_enter_a_new_value">请输入新值</string>
+
+    <string name="Jump_to_open_source_URL">跳转开源链接</string>
+    <string name="APK_Status">APK状态</string>
+    <string name="Update_APK">更新APK(长按重新修补)</string>
+
+    <string name="Copy_successful">复制成功</string>
+    <string name="UpdateAPK">APK更新成功</string>
+    <string name="APK_repair">APK修补成功</string>
 
 </resources>

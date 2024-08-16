@@ -26,8 +26,7 @@ object Markdown {
     /**
      * 将 Markdown 字符串转换为 HTML
      */
-
-    fun markdownToHtml(markdown: String): String {
+    fun markdownToHtml(markdown: String, colorScheme: Any?): String {
         val extensions: List<Extension> = emptyList() // 不需要任何扩展
         val parser = Parser.builder().extensions(extensions).build()
         val renderer = HtmlRenderer.builder().extensions(extensions).build()
@@ -42,13 +41,13 @@ object Markdown {
             <style>
                 body {
                     font-size: 28px;
-                    color: #000; /* 默认字体颜色 */
-                    background-color: #fff; /* 默认背景颜色 */
+                    color: ${if (colorScheme == 1) "#000" else if (colorScheme == 2) "#fff" else "auto"};
+                    background-color: ${if (colorScheme == 1) "#fff" else if (colorScheme == 2) "#0F1416" else "auto"};
                 }
                 hr {
                     border: none;
                     height: 1px;
-                    background-color: #4C626B; /* 分割线的颜色 */
+                    background-color: ${if (colorScheme == 1) "#4C626B" else if (colorScheme == 2) "#B3CAD5" else "auto"};
                 }
                 
                 /* 导航链接样式 */
@@ -56,21 +55,7 @@ object Markdown {
                     display: inline-block;
                     margin-right: 1em;
                     text-decoration: none;
-                    color: #226488 !important; /* 链接颜色 */
-                }
-                
-                /* 适应深色模式 */
-                @media (prefers-color-scheme: dark) {
-                    body {
-                        color: #fff; /* 深色模式下的字体颜色 */
-                        background-color: #0F1416; /* 深色模式下的背景颜色 */
-                    }
-                    hr {
-                        background-color: #B3CAD5; /* 深色模式下的分割线颜色 */
-                    }
-                    div.nav-links a {
-                        color: #92CDF6 !important; /* 深色模式下的链接颜色 */
-                    }
+                    color: ${if (colorScheme == 1) "#226488" else if (colorScheme == 2) "#92CDF6" else "auto"} !important;
                 }
             </style>
         </head>

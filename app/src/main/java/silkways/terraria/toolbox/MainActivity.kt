@@ -2,22 +2,23 @@ package silkways.terraria.toolbox
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.os.LocaleList
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.fragment.NavHostFragment
+import silkways.terraria.toolbox.data.GameSettings
 import silkways.terraria.toolbox.data.Settings
 import silkways.terraria.toolbox.databinding.ActivityMainBinding
 import silkways.terraria.toolbox.logic.JsonConfigModifier
 import silkways.terraria.toolbox.logic.LanguageHelper
 import java.io.File
-import java.util.Locale
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 /**
@@ -47,12 +48,13 @@ class MainActivity : AppCompatActivity() {
         when(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.languageKey)){
             0 -> {
                 when(LanguageHelper.getLanguageAsNumber(this)){
+                    1 -> LanguageHelper.setAppLanguage(this, "")
                     2 -> LanguageHelper.setAppLanguage(this, "")
                     3 -> LanguageHelper.setAppLanguage(this, "")
                     4 -> LanguageHelper.setAppLanguage(this, "en")
                 }
             }
-
+            1 -> LanguageHelper.setAppLanguage(this, "")
             2 -> LanguageHelper.setAppLanguage(this, "")
             3 -> LanguageHelper.setAppLanguage(this, "")
             4 -> LanguageHelper.setAppLanguage(this, "en")
@@ -84,6 +86,7 @@ class MainActivity : AppCompatActivity() {
         File("${this.getExternalFilesDir(null)}/ToolBoxData/ModData").mkdirs()
         File("${this.getExternalFilesDir(null)}/ToolBoxData/Resources").mkdirs()
         File("${this.getExternalFilesDir(null)}/ToolBoxData/bak").mkdirs()
+        File("${this.getExternalFilesDir(null)}/ToolBoxData/APK").mkdirs()
 
 
         actionBar?.hide()
@@ -116,12 +119,61 @@ class MainActivity : AppCompatActivity() {
         //navHostFragment.navController.navigate(R.id.navigation_terminal)
 
 
+        //创建配置
+        JsonConfigModifier.createJsonConfig(this, Settings.jsonPath, Settings.Data)
+        JsonConfigModifier.createJsonConfig(this, GameSettings.jsonPath, GameSettings.Data)
+        checkAndWriteFile(this)
 
-        JsonConfigModifier.createJsonConfig(this, Settings.jsonPath, Settings.SettingsData);
+
+
+        val file = File("${this.cacheDir}/lspatch/origin/")
+        val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
+        copyFileIfNotExists("${this.cacheDir}/lspatch/origin/${files?.get(0)?.name}", "${this.getExternalFilesDir(null)}/ToolBoxData/APK/base.apk")
+
     }
 
 
+    fun copyFileIfNotExists(sourcePath: String?, destinationPath: String?) {
+        val sourceFile = File(sourcePath)
+        val destFile = File(destinationPath)
+        // 检查目标文件是否已经存在
+        if (destFile.exists()) {
+            println("文件已存在")
+            // 文件已存在，不做任何操作
+            return
+        }
+        try {
+            FileInputStream(sourceFile).use { fis ->
+                FileOutputStream(destFile).use { fos ->
+                    fis.channel.use { inputChannel ->
+                        fos.channel.use { outputChannel ->
 
+                            // 直接使用FileChannel进行高效复制
+                            inputChannel.transferTo(0, inputChannel.size(), outputChannel)
+                        }
+                    }
+                }
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+
+    private fun checkAndWriteFile(context: Context) {
+
+        val content = "[]"
+        val file = File("${context.getExternalFilesDir(null)}/ToolBoxData/ModData/mod_data.json")
+
+        if (!file.exists()) {
+            try {
+                file.createNewFile()
+                file.writeText(content)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 
 
     fun setDisplayInNotch(activity: Activity) {

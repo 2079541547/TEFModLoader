@@ -1,6 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="MissingConstraints">
+
+    <Button
+        android:id="@+id/terminal"
+        android:layout_width="0dp"
+
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:text="@string/terminal"
+        app:icon="@drawable/twotone_terminal_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.45"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/game_Panel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="@string/GamePanel"
+        app:icon="@drawable/twotone_videogame_asset_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent="0.45"
+        tools:ignore="MissingConstraints" />
+
+    <Button
+        android:id="@+id/Import_Archive"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:text="@string/Import_Archive"
+        app:icon="@drawable/twotone_drive_file_move_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/game_Panel"
+        app:layout_constraintWidth_percent="0.45" />
+
+    <Button
+        android:id="@+id/Export_Archive"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:text="@string/Export_Archive"
+        app:icon="@drawable/twotone_drive_file_move_rtl_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/terminal"
+        app:layout_constraintWidth_percent="0.45" />
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        app:cardElevation="5dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/Export_Archive">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/materialTextView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/file_management"
+                android:textSize="16sp"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/file_List"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="25dp"
+                app:layout_constraintTop_toBottomOf="@+id/materialTextView4" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

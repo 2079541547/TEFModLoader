@@ -65,4 +65,28 @@ object LanguageHelper {
         return Path
     }
 
+    fun getFileLanguage(LanguageCode: Any?, context: Context, PathName: String, file_extension: String): String{
+        val Language_Code = when(LanguageCode){
+            0 -> {
+                when(getLanguageAsNumber(context)){
+                    1 -> "zh-cn"
+                    2 -> "zh-hant"
+                    3 -> "ru"
+                    4 -> "en"
+                    else -> null
+                }
+            }
+
+            1 -> "zh-cn"
+            2 -> "zh-hant"
+            3 -> "ru"
+            4 -> "en"
+            else -> null
+        }
+
+        val Path = "ToolBoxData/$PathName/$Language_Code$file_extension"
+
+        return Path
+    }
+
 }

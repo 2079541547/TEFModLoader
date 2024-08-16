@@ -8,7 +8,7 @@ object Settings {
     val languageKey = "language"
 
     //json数据
-    val SettingsData = mapOf(
+    val Data = mapOf(
         themeKey to 0,
         languageKey to 0,
     )

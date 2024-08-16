@@ -19,12 +19,13 @@ std::vector<int> loadAndInvokeIntFunctions(const std::string& soName, const std:
     void* handle = dlopen(soName.c_str(), RTLD_LAZY);
     if (!handle) {
         LOGE("无法打开库：%s", dlerror());
-        return results;
+        return results; // 返回空的结果向量
     }
     for (const std::string& methodName : methodNames) {
         IntFunctionPtr func = (IntFunctionPtr) dlsym(handle, methodName.c_str());
         if (!func) {
             LOGE("无法调用方法：%s", dlerror());
+            results.push_back(0); // 在遇到错误时返回 0
             continue;
         }
         int result = func();
@@ -34,7 +35,6 @@ std::vector<int> loadAndInvokeIntFunctions(const std::string& soName, const std:
     dlclose(handle);
     return results;
 }
-
 
 typedef bool (*BoolFunctionPtr)();
 std::vector<bool> loadAndInvokeBoolFunctions(const std::string& soName, const std::vector<std::string>& methodNames) {

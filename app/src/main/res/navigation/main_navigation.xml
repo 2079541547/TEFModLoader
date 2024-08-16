@@ -59,4 +59,18 @@ from EternalFuture゙
         android:name="silkways.terraria.toolbox.ui.fragment.home.about.FuturePlansFragment"
         tools:layout="@layout/home_about_futureplans"/>
 
+
+
+    <fragment
+        android:label="@string/GamePanel"
+        android:id="@+id/nanavigation_GamePanel"
+        android:name="silkways.terraria.toolbox.ui.fragment.toolbox.GamePanelFragment"
+        tools:layout="@layout/toolbox_fragment_gamepanel"/>
+
+    <fragment
+        android:label="@string/efmod_manager"
+        android:id="@+id/nanavigation_EFModManager"
+        android:name="silkways.terraria.toolbox.ui.fragment.manage.EFModFragment"
+        tools:layout="@layout/manage_fragment_efmod"/>
+
 </navigation>

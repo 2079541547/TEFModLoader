@@ -1,46 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/lineNumberContainer"
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:background="#333131"
-        android:clickable="false"
-        android:focusable="false"
-        android:gravity="end|center_vertical"
-        android:minWidth="48dp"
-        android:paddingEnd="8dp"
-        android:textColor="#FFFFFF"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/codeEditor"
-        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        app:hintAnimationEnabled="true"
+        app:hintEnabled="true"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/codeEditor" />
+        tools:ignore="MissingConstraints">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05" />
+        <AutoCompleteTextView
+            android:id="@+id/terminal_Command"
+            style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/terminal_Command" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:textColor="#FFFFFF"
-        android:id="@+id/codeEditor"
+    <Button
+        android:id="@+id/runCommand"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/terminal_runCommand"
+        app:icon="@drawable/twotone_terminal_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+
+
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#504D4D"
-        android:fontFamily="monospace"
-        android:gravity="start|top"
-        android:paddingLeft="16dp"
-        android:scrollbars="vertical"
+        app:cardElevation="5dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/runCommand"
+        tools:ignore="MissingConstraints" >
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/terminal_Command_Text" />
+        </ScrollView>
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

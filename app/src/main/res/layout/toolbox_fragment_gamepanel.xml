@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="5dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="10dp"
+        tools:ignore="MissingConstraints">
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/GamePanel_Text"
+                android:textSize="16sp" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/Suspended_Window"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/GamePanel_1"
+                app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/debug_game"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/GamePanel_2"
+                app:layout_constraintTop_toBottomOf="@+id/Suspended_Window" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <Button
+        android:id="@+id/Start_Game"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:text="@string/GamePanel_Start"
+        app:icon="@drawable/twotone_sports_esports_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView2"
+        tools:ignore="MissingConstraints" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

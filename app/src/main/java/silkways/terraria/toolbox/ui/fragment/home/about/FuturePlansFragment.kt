@@ -51,7 +51,7 @@ class FuturePlansFragment: Fragment() {
             "Home/About/FuturePlans"),
         )
 
-        val htmlContent = Markdown.markdownToHtml(markdownContent)
+        val htmlContent = Markdown.markdownToHtml(markdownContent, JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.themeKey))
         webView.loadDataWithBaseURL(null, htmlContent, "text/html", "utf-8", null)
 
         return binding.root

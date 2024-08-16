@@ -57,17 +57,12 @@ target_link_libraries(
 set_property(TARGET BNM PROPERTY BNM_INCLUDE_DIRECTORIES ${PUBLIC_INCLUDE_DIRS})
 
 
-add_library(MyMod
+add_library(LuckyDamageEternalFuture
         SHARED
-        example/example1.cpp
+        example/LuckyDamage/main.cpp
 )
 
-target_link_libraries(MyMod
-        PUBLIC
-        BNM
-        log
-        android
-)
+
 
 
 

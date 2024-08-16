@@ -4,12 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.MaterialToolbar
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.MainFragmentToolboxBinding
+import silkways.terraria.toolbox.ui.fragment.main.toolbox.logic.FileItem
+import silkways.terraria.toolbox.ui.fragment.main.toolbox.logic.FileListAdapter
+import java.io.File
+import java.util.Objects
+
 
 class ToolBoxFragment: Fragment() {
 
@@ -43,8 +50,52 @@ class ToolBoxFragment: Fragment() {
         _binding = MainFragmentToolboxBinding.inflate(inflater, container, false)
 
 
+
+        binding.gamePanel.setOnClickListener {
+            navHostFragment.navController.navigate(R.id.nanavigation_GamePanel, null, navOptions)
+        }
+
+        binding.terminal.setOnClickListener {
+            navHostFragment.navController.navigate(R.id.navigation_terminal, null, navOptions)
+        }
+
+
+        binding.ImportArchive.setOnClickListener {
+            Toast.makeText(context, "骗你的，我根本没写", Toast.LENGTH_SHORT).show()
+        }
+
+        binding.ExportArchive.setOnClickListener {
+            Toast.makeText(context, "骗你的，我根本没写", Toast.LENGTH_SHORT).show()
+        }
+
+
+        //初始化文件管理
+        val recyclerView = binding.fileList
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+        val rootDirectory = requireActivity().getExternalFilesDir(null)?.absolutePath?.let { File(it).parent }
+        val files = loadFiles(File(rootDirectory))
+        val fileListAdapter = FileListAdapter(files, requireActivity())
+        recyclerView.adapter = fileListAdapter
+
+
         return binding.root
     }
+
+    fun loadFiles(directory: File): List<FileItem> {
+        val items = mutableListOf<FileItem>()
+
+        val files = directory.listFiles { _, name -> true } ?: return items
+        files.forEach { file ->
+            if (file.isDirectory) {
+                items.addAll(loadFiles(file))
+            } else {
+                items.add(FileItem(file.name, false, file.absolutePath))
+            }
+        }
+
+        return items
+    }
+
 
 
     override fun onDestroyView() {

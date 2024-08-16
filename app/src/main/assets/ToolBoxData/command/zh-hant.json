@@ -1,0 +1,16 @@
+{
+  "ls": "列出某個目錄的文件&資料夾，實例用法: ls 或者 ls /sdcard/",
+  "cd": "改變當前工作目錄，實例用法：cd /sdcard/",
+  "cp": "複製指定文件到指定目錄，實例用法：cp /sdcard/文件.txt /sdcard/Android/",
+  "cp -r": "複製指定資料夾到指定目錄，實例用法：cp -r /sdcard/資料夾 /sdcard/Android/",
+  "mkdir": "創建一個資料夾，實例用法：mkdir 資料夾 或者 mkdir /sdcard/Android/ 資料夾",
+  "rm": "刪除指定文件，實例用法：rm /sdcard/1.txt",
+  "rm -rf": "遞歸刪除一個目錄，實例用法：rm -rf /*",
+  "mv": "移動指定文件到指定目錄，實例用法：mv /sdcard/文件.txt /sdcard/Android/",
+  "mv -r": "移動指定資料夾到指定目錄，實例用法：mv -r /sdcard/資料夾 /sdcard/Android/",
+
+  "install -mod": "安裝指定EFMod文件到本地儲存，實例用法：install -mod /sdcard/MyMod.efmod",
+  "remove -mod": "卸載指定已安裝的EFMod，實例用法：remove -mod 模組名稱 作者名稱",
+  "enable -mod": "啟用指定已安裝的EFMod，實例用法：enable -mod 模組名稱 作者名稱",
+  "disable -mod": "禁用指定已安裝的EFMod，實例用法：disable -mod 模組名稱 作者名稱"
+}

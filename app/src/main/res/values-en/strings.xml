@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="manage">Management</string>
-    <string name="more">More</string>
     <string name="toolbox">Toolbox</string>
     <string name="github_text">Open Source Repository</string>
     <string name="licence">Open Source License</string>
