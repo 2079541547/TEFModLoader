@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -100,14 +101,14 @@ class ManageFragment: Fragment() {
         binding.UpdateAPK.setOnClickListener {
             val file = File("${requireActivity().cacheDir}/lspatch/origin/")
             val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
-            copyFileOverwritingExisting("${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}", "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk")
+            copyFileOverwritingExisting("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk", "${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}")
 
             Snackbar.make(it, getString(R.string.UpdateAPK), Snackbar.LENGTH_SHORT).show()
         }
 
         binding.UpdateAPK.setOnLongClickListener {
             ApkPatcher.addSOsToAPK("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk", "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/ModData")
-            Snackbar.make(it, getString(R.string.UpdateAPK), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(it, getString(R.string.APK_repair), Snackbar.LENGTH_SHORT).show()
             true
         }
 
@@ -140,11 +141,11 @@ class ManageFragment: Fragment() {
                 extractAndMergeJsonFiles(efmodFilePaths, extractToPath)
                 ApkPatcher.addSOsToAPK("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk", extractToPath)
 
-                val file = File("${requireActivity().cacheDir}/lspatch/origin/")
-                val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
-                copyFileOverwritingExisting("${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}", "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk")
+                //val file = File("${requireActivity().cacheDir}/lspatch/origin/")
+                //val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
+                //copyFileOverwritingExisting("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk", "${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}")
             } else {
-                println("No valid files selected.")
+                                 println("No valid files selected.")
             }
         }
     }
@@ -174,6 +175,17 @@ class ManageFragment: Fragment() {
     fun copyFileOverwritingExisting(sourcePath: String?, destinationPath: String?) {
         val sourceFile = File(sourcePath)
         val destFile = File(destinationPath)
+
+        // 删除文件
+        if (destFile.exists()) {
+            if (destFile.delete()) {
+                Log.d("FileDeleted", "文件删除成功: ${destFile.absolutePath}")
+            } else {
+                Log.e("FileDeleteError", "文件删除失败: ${destFile.absolutePath}")
+            }
+        } else {
+            Log.i("FileNotFound", "文件不存在: ${destFile.absolutePath}")
+        }
 
         try {
             FileInputStream(sourceFile).use { fis ->
