@@ -4,9 +4,12 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -16,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.HomeDialogLogsBinding
 import silkways.terraria.toolbox.databinding.MainFragmentHomeBinding
@@ -94,6 +98,24 @@ class HomeFragment: Fragment() {
         //显示更新日志弹窗
         binding.UpdateLog.setOnClickListener { showLogsDialog() }
 
+
+        // 注册 onBackPressedDispatcher
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (SystemClock.elapsedRealtime() - backPressedTime < timeInterval) {
+
+
+                    activity?.finishAffinity()
+
+
+                } else {
+                    backPressedTime = SystemClock.elapsedRealtime()
+                    Snackbar.make(binding.root, getString(R.string.onBackPressedDispatcher_exit), Snackbar.LENGTH_SHORT).show()
+                }
+            }
+        })
+
+
         return binding.root
     }
 
@@ -123,7 +145,7 @@ class HomeFragment: Fragment() {
      *
      * 检查对话框是否已显示，如果已显示则直接返回。
      * 使用[LayoutInflater]从布局文件中创建[HomeDialogLogsBinding]对象。
-     * 创建一个[AlertDialog.Builder]，设置不可取消并添加绑定的视图。
+     * 创建一个[MaterialAlertDialogBuilder.Builder]，设置不可取消并添加绑定的视图。
      * 通过[AlertDialog.Builder.create()]创建对话框实例，并应用额外的配置，如背景透明度和触摸外部可取消。
      * 初始化[RecyclerView]，包括适配器和布局管理器。
      * 设置对话框关闭监听器，更新[isDialogShowing]标志位并释放[HomeDialogLogsBinding]对象。
@@ -144,7 +166,6 @@ class HomeFragment: Fragment() {
         val dialog = builder.create().apply {
             // 设置对话框窗口属性
             window?.let { dialogWindow ->
-                dialogWindow.setBackgroundDrawable(ColorDrawable(0x000000001)) // 设置背景透明
                 setCanceledOnTouchOutside(true) // 设置触摸对话框外部可取消
             }
 
@@ -190,6 +211,9 @@ class HomeFragment: Fragment() {
         isDialogShowing = true
         dialog.show()
     }
+
+    private var backPressedTime: Long = 0
+    private val timeInterval: Long = 2000 // 设置两次按键之间的时间间隔（毫秒）
 
 
     /**

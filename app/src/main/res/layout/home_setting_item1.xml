@@ -24,7 +24,6 @@
         android:layout_marginStart="3dp"
         android:text="标题"
         android:textSize="18sp"
-        android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/icon"
         app:layout_constraintTop_toTopOf="parent" />
 

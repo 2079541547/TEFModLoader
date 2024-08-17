@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -234,6 +235,7 @@ class SettingsFragment: Fragment() {
 
                 fun bind(title: String) {
                     titleTextView.text = title
+                    titleTextView.setTextColor(ContextCompat.getColor(requireActivity(), R.color.md_theme_primary))
                 }
             }
 

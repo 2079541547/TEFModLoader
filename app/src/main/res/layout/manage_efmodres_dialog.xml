@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:padding="20dp">
 
     <TextView
         android:id="@+id/title"
-        android:text="标题"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="标题"
         android:textSize="18sp" />
 
     <ScrollView

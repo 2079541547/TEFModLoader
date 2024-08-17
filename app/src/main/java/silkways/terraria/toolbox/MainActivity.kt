@@ -78,6 +78,8 @@ class MainActivity : AppCompatActivity() {
             2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
 
+        actionBar?.hide()
+
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -89,7 +91,6 @@ class MainActivity : AppCompatActivity() {
         File("${this.getExternalFilesDir(null)}/ToolBoxData/APK").mkdirs()
 
 
-        actionBar?.hide()
 
         if (Build.VERSION.SDK_INT >= 28) {
             window.attributes.layoutInDisplayCutoutMode =

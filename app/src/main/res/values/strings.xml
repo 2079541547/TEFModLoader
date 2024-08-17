@@ -155,4 +155,6 @@
     <string name="UpdateAPK">APK更新成功</string>
     <string name="APK_repair">APK修补成功</string>
 
+    <string name="onBackPressedDispatcher_exit">再按一次退出</string>
+
 </resources>

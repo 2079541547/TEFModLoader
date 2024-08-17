@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval"> <!-- 使用 oval 形状来创建一个圆形 -->
+
+    <solid android:color="@color/md_theme_background" /> <!-- 圆形的颜色 -->
+
+    <size
+        android:width="60dp"
+        android:height="60dp" /> <!-- 圆形的大小 -->
+
+</shape>

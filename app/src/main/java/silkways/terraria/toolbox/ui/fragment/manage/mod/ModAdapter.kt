@@ -44,7 +44,6 @@ class ModAdapter(private val modList: MutableList<ModDetail>, private val contex
 
         holder.settingSwitch.isChecked = currentMod.enable
         holder.settingSwitch.setOnCheckedChangeListener { _, isChecked ->
-            ///sdcard/Android/data/silkways.terraria.toolbox/files/ToolBoxData/ModData/mod_data.json
             ModJsonManager.updateEnableByAuthorAndModName("${context.getExternalFilesDir(null)}/ToolBoxData/ModData/mod_data.json", currentMod.author, currentMod.modName, isChecked)
         }
     }
@@ -61,7 +60,6 @@ class ModAdapter(private val modList: MutableList<ModDetail>, private val contex
         val dialog = builder.create().apply{
             //设置窗口特性
             window?.let { dialogWindow ->
-                dialogWindow.setBackgroundDrawable(ColorDrawable(0x000000001)) // 设置背景透明
                 setCanceledOnTouchOutside(false) // 设置触摸对话框外部不可取消
             }
 
@@ -121,7 +119,6 @@ class ModAdapter(private val modList: MutableList<ModDetail>, private val contex
         val dialog = builder.create().apply{
             //设置窗口特性
             window?.let { dialogWindow ->
-                dialogWindow.setBackgroundDrawable(ColorDrawable(0x000000001)) // 设置背景透明
                 setCanceledOnTouchOutside(false) // 设置触摸对话框外部不可取消
             }
 
