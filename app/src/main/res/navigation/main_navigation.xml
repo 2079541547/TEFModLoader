@@ -20,7 +20,7 @@ from EternalFuture゙
     <fragment
         android:label="@string/settings"
         android:id="@+id/navigation_settings"
-        android:name="silkways.terraria.toolbox.ui.fragment.home.settings.SettingsFragemnt"
+        android:name="silkways.terraria.toolbox.ui.fragment.home.settings.SettingsFragment"
         tools:layout="@layout/home_fragment_settings" />
 
     <fragment
