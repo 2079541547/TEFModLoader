@@ -45,52 +45,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         //设置语言
-        when(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.languageKey)){
-            0 -> {
-                when(LanguageHelper.getLanguageAsNumber(this)){
-                    1 -> LanguageHelper.setAppLanguage(this, "")
-                    2 -> LanguageHelper.setAppLanguage(this, "")
-                    3 -> LanguageHelper.setAppLanguage(this, "")
-                    4 -> LanguageHelper.setAppLanguage(this, "en")
-                }
-            }
-            1 -> LanguageHelper.setAppLanguage(this, "")
-            2 -> LanguageHelper.setAppLanguage(this, "")
-            3 -> LanguageHelper.setAppLanguage(this, "")
-            4 -> LanguageHelper.setAppLanguage(this, "en")
-        }
-
-
+        setupLanguage()
 
         //设置主题
-        when(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.themeKey)){
-            0 -> {
-                val isDarkModeEnabled = AppCompatDelegate.getDefaultNightMode()
-                if (isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_YES){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                }else if(isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_NO){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
-            }
-
-            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
-            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        }
-
+        setupTheme()
         actionBar?.hide()
-
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         File("${this.getExternalFilesDir(null)}/ToolBoxData/ModData").mkdirs()
         File("${this.getExternalFilesDir(null)}/ToolBoxData/Resources").mkdirs()
         File("${this.getExternalFilesDir(null)}/ToolBoxData/bak").mkdirs()
         File("${this.getExternalFilesDir(null)}/ToolBoxData/APK").mkdirs()
-
-
 
         if (Build.VERSION.SDK_INT >= 28) {
             window.attributes.layoutInDisplayCutoutMode =
@@ -105,9 +72,6 @@ class MainActivity : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
 
-
-
-
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
@@ -119,18 +83,14 @@ class MainActivity : AppCompatActivity() {
         navHostFragment.navController
         //navHostFragment.navController.navigate(R.id.navigation_terminal)
 
-
         //创建配置
         JsonConfigModifier.createJsonConfig(this, Settings.jsonPath, Settings.Data)
         JsonConfigModifier.createJsonConfig(this, GameSettings.jsonPath, GameSettings.Data)
         checkAndWriteFile(this)
 
-
-
         val file = File("${this.cacheDir}/lspatch/origin/")
         val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
         copyFileIfNotExists("${this.cacheDir}/lspatch/origin/${files?.get(0)?.name}", "${this.getExternalFilesDir(null)}/ToolBoxData/APK/base.apk")
-
     }
 
 
@@ -162,7 +122,6 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun checkAndWriteFile(context: Context) {
-
         val content = "[]"
         val file = File("${context.getExternalFilesDir(null)}/ToolBoxData/ModData/mod_data.json")
 
@@ -189,5 +148,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun setupLanguage() {
+        var type: String = ""
+        
+        when(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.languageKey)){
+            0 -> {
+                type = when(LanguageHelper.getLanguageAsNumber(this)) {
+                    1, 2, 3 -> ""
+                    4 -> "en"
+                }
+            }
+            1, 2, 3 -> type = ""
+            4 -> type= "en"
+        }
+        LanguageHelper.setAppLanguage(this, type)
+    }
 
+    fun setupTheme() {
+        when(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.themeKey)) {
+            0 -> {
+                val isDarkModeEnabled = AppCompatDelegate.getDefaultNightMode()
+                if (isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_YES) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }else if(isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_NO){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+
+            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+    }
 }
