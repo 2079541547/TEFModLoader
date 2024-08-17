@@ -38,7 +38,7 @@
     
     ## 2.创建模组配置的json
 
-    * mod_info
+    * mod_data
       
       ```Json
       [
