@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textview.MaterialTextView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.HomeDialogLogsBinding
 import silkways.terraria.toolbox.databinding.MainFragmentHomeBinding
@@ -136,7 +136,7 @@ class HomeFragment: Fragment() {
         var dialogBinding: HomeDialogLogsBinding? = HomeDialogLogsBinding.inflate(LayoutInflater.from(requireActivity()))
 
         // 创建对话框构建器
-        val builder = AlertDialog.Builder(requireActivity())
+        val builder = MaterialAlertDialogBuilder(requireActivity())
             .setCancelable(false)
             .setView(dialogBinding?.root)
 

@@ -20,7 +20,7 @@ import silkways.terraria.toolbox.data.Settings
 import silkways.terraria.toolbox.databinding.HomeFragmentSettingsBinding
 import silkways.terraria.toolbox.logic.JsonConfigModifier
 
-class SettingsFragemnt: Fragment() {
+class SettingsFragment: Fragment() {
 
     private var _binding: HomeFragmentSettingsBinding? = null
     private val binding get() = _binding!!

@@ -11,11 +11,11 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textview.MaterialTextView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.ManageEfmodresDialogBinding
 import silkways.terraria.toolbox.databinding.ManageEfmodsettingDialogBinding
@@ -55,7 +55,7 @@ class ModAdapter(private val modList: MutableList<ModDetail>, private val contex
 
         var dialogBinding: ManageEfmodresDialogBinding? = ManageEfmodresDialogBinding.inflate(LayoutInflater.from(context))
 
-        val builder = AlertDialog.Builder(context)
+        val builder = MaterialAlertDialogBuilder(context)
             .setCancelable(false)
             .setView(dialogBinding?.root)
         val dialog = builder.create().apply{
@@ -115,7 +115,7 @@ class ModAdapter(private val modList: MutableList<ModDetail>, private val contex
 
         var dialogBinding: ManageEfmodsettingDialogBinding? = ManageEfmodsettingDialogBinding.inflate(LayoutInflater.from(context))
 
-        val builder = AlertDialog.Builder(context)
+        val builder = MaterialAlertDialogBuilder(context)
             .setCancelable(false)
             .setView(dialogBinding?.root)
         val dialog = builder.create().apply{

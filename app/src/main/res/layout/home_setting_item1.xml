@@ -11,7 +11,7 @@
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/icon"
         android:layout_width="45dp"
-        android:tint="@color/md_theme_primary"
+        android:tint="@color/md_theme_secondary"
         android:layout_height="45dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,6 +24,7 @@
         android:layout_marginStart="3dp"
         android:text="标题"
         android:textSize="18sp"
+        android:layout_marginStart="8dp"
         app:layout_constraintStart_toEndOf="@id/icon"
         app:layout_constraintTop_toTopOf="parent" />
 
