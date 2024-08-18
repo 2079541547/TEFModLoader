@@ -13,18 +13,18 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import silkways.terraria.toolbox.R
-import silkways.terraria.toolbox.databinding.FragmentMainBinding
+import silkways.terraria.toolbox.databinding.MainFragmentBinding
 
 
 /**
  * FragmentMain 是应用的主界面Fragment，包含一个底部导航栏。
  */
-class FragmentMain : Fragment() {
+class MainFragment : Fragment() {
 
     /**
      * 使用 Data Binding 的延迟初始化变量，用于绑定 fragment_main.xml 布局。
      */
-    private var _binding: FragmentMainBinding? = null
+    private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
 
     /**
@@ -39,7 +39,7 @@ class FragmentMain : Fragment() {
     ): View {
 
 
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
+        _binding = MainFragmentBinding.inflate(inflater, container, false)
 
 
         return binding.root
@@ -67,7 +67,7 @@ class FragmentMain : Fragment() {
                 R.id.navigation_home, // 主页
                 R.id.navigation_toolbox, // 工具箱
                 R.id.navigation_manage, // 管理
-                )
+            )
         )
 
         // 在 AppCompatActivity 上设置 ActionBar 的导航控制器
