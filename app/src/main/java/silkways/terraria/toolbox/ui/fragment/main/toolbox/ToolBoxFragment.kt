@@ -15,7 +15,6 @@ import silkways.terraria.toolbox.databinding.MainFragmentToolboxBinding
 import silkways.terraria.toolbox.ui.fragment.main.toolbox.logic.FileItem
 import silkways.terraria.toolbox.ui.fragment.main.toolbox.logic.FileListAdapter
 import java.io.File
-import java.util.Objects
 
 
 class ToolBoxFragment: Fragment() {
@@ -64,7 +63,7 @@ class ToolBoxFragment: Fragment() {
             Toast.makeText(context, "骗你的，我根本没写", Toast.LENGTH_SHORT).show()
         }
 
-        binding.ExportArchive.setOnClickListener {
+        binding.ImportConfiguration.setOnClickListener {
             Toast.makeText(context, "骗你的，我根本没写", Toast.LENGTH_SHORT).show()
         }
 
@@ -73,18 +72,18 @@ class ToolBoxFragment: Fragment() {
         val recyclerView = binding.fileList
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         val rootDirectory = requireActivity().getExternalFilesDir(null)?.absolutePath?.let { File(it).parent }
-        val files = loadFiles(File(rootDirectory))
-        val fileListAdapter = FileListAdapter(files, requireActivity())
+        val files = rootDirectory?.let { File(it) }?.let { loadFiles(it) }
+        val fileListAdapter = files?.let { FileListAdapter(it, requireActivity()) }
         recyclerView.adapter = fileListAdapter
 
 
         return binding.root
     }
 
-    fun loadFiles(directory: File): List<FileItem> {
+    private fun loadFiles(directory: File): List<FileItem> {
         val items = mutableListOf<FileItem>()
 
-        val files = directory.listFiles { _, name -> true } ?: return items
+        val files = directory.listFiles { _, _ -> true } ?: return items
         files.forEach { file ->
             if (file.isDirectory) {
                 items.addAll(loadFiles(file))

@@ -62,25 +62,6 @@ class ManageFragment: Fragment() {
         _binding = MainFragmentManageBinding.inflate(inflater, container, false)
 
 
-        fun getFileSize(file: File): Long {
-            return if (file.exists()) {
-                file.length()
-            } else {
-                0L
-            }
-        }
-
-        fun getFileSizes(file1: File, file2: File): Pair<String, String> {
-            val size1 = getFileSize(file1)
-            val size2 = getFileSize(file2)
-
-            val result1 = "${file1.absolutePath}: $size1 byte"
-            val result2 = "${file2.absolutePath}: $size2 byte"
-
-            return Pair(result1, result2)
-        }
-
-
         binding.materialCardView.setOnLongClickListener {
             val file = File("${requireActivity().cacheDir}/lspatch/origin/")
             val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
@@ -89,13 +70,6 @@ class ManageFragment: Fragment() {
             Snackbar.make(it, getString(R.string.Copy_successful), Snackbar.LENGTH_SHORT).show()
             true
         }
-
-        /*
-        if(true){
-            val (result1, result2) = getFileSizes(File("${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}"), File("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk"))
-            binding.textView6.text = result1 + "\n" + result2
-        }
-         */
 
 
         binding.UpdateAPK.setOnClickListener {
@@ -141,11 +115,12 @@ class ManageFragment: Fragment() {
                 extractAndMergeJsonFiles(efmodFilePaths, extractToPath)
                 ApkPatcher.addSOsToAPK("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk", extractToPath)
 
-                //val file = File("${requireActivity().cacheDir}/lspatch/origin/")
-                //val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
-                //copyFileOverwritingExisting("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk", "${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}")
+
+                val file = File("${requireActivity().cacheDir}/lspatch/origin/")
+                val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
+                copyFileOverwritingExisting("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk", "${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}")
             } else {
-                                 println("No valid files selected.")
+                println("No valid files selected.")
             }
         }
     }
@@ -172,19 +147,21 @@ class ManageFragment: Fragment() {
     }
 
 
-    fun copyFileOverwritingExisting(sourcePath: String?, destinationPath: String?) {
-        val sourceFile = File(sourcePath)
-        val destFile = File(destinationPath)
+    private fun copyFileOverwritingExisting(sourcePath: String?, destinationPath: String?) {
+        val sourceFile = sourcePath?.let { File(it) }
+        val destFile = destinationPath?.let { File(it) }
 
         // 删除文件
-        if (destFile.exists()) {
-            if (destFile.delete()) {
-                Log.d("FileDeleted", "文件删除成功: ${destFile.absolutePath}")
+        if (destFile != null) {
+            if (destFile.exists()) {
+                if (destFile.delete()) {
+                    Log.d("FileDeleted", "文件删除成功: ${destFile.absolutePath}")
+                } else {
+                    Log.e("FileDeleteError", "文件删除失败: ${destFile.absolutePath}")
+                }
             } else {
-                Log.e("FileDeleteError", "文件删除失败: ${destFile.absolutePath}")
+                Log.i("FileNotFound", "文件不存在: ${destFile.absolutePath}")
             }
-        } else {
-            Log.i("FileNotFound", "文件不存在: ${destFile.absolutePath}")
         }
 
         try {
@@ -204,14 +181,16 @@ class ManageFragment: Fragment() {
     }
 
 
-    fun copyFileIfNotExists(sourcePath: String?, destinationPath: String?) {
-        val sourceFile = File(sourcePath)
-        val destFile = File(destinationPath)
+    private fun copyFileIfNotExists(sourcePath: String?, destinationPath: String?) {
+        val sourceFile = sourcePath?.let { File(it) }
+        val destFile = destinationPath?.let { File(it) }
         // 检查目标文件是否已经存在
-        if (destFile.exists()) {
-            println("文件已存在")
-            // 文件已存在，不做任何操作
-            return
+        if (destFile != null) {
+            if (destFile.exists()) {
+                println("文件已存在")
+                // 文件已存在，不做任何操作
+                return
+            }
         }
         try {
             FileInputStream(sourceFile).use { fis ->

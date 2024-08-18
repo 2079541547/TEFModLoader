@@ -101,7 +101,7 @@
     -->
     <string name="toolbox">工具箱</string>
     <string name="Import_Archive">导入存档</string>
-    <string name="Export_Archive">导出存档</string>
+    <string name="Import_Configuration">导入配置</string>
     <string name="file_management">文件管理</string>
     <string name="file_management_1">内置编辑器打开</string>
     <string name="file_management_2">其他方式打开</string>
