@@ -3,7 +3,7 @@
 - [重要贡献](#important-contribution)
 - [代码贡献](#code-contribution)
 - [设计贡献](#design-contribution)
-- [文档贡献](#documentation-contribution)
+- [文档贡献](#application/octet-streamdocumentation-contribution)
 - [社区贡献](#community-contribution)
 - [其他贡献](#other-contributions)
 
@@ -36,5 +36,8 @@
 ---
 
 # 其他贡献 <a id="other-contributions"></a>
+
+## aaa1115910
+- 指导文件如何才能以TR Save Editor方式打开
 
 ---

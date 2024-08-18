@@ -65,7 +65,6 @@ class MainActivity : AppCompatActivity() {
 
         File("${this.getExternalFilesDir(null)}/ToolBoxData/ModData").mkdirs()
         File("${this.getExternalFilesDir(null)}/ToolBoxData/Resources").mkdirs()
-        File("${this.getExternalFilesDir(null)}/ToolBoxData/bak").mkdirs()
         File("${this.getExternalFilesDir(null)}/ToolBoxData/APK").mkdirs()
 
         /*

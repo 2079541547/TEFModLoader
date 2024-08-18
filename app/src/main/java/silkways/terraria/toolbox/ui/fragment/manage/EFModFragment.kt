@@ -57,9 +57,6 @@ class EFModFragment: Fragment() {
         loadModDataFromJson()
 
 
-
-
-
         return binding.root
     }
 

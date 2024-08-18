@@ -45,7 +45,6 @@ void OnLoaded_Class_Main(){
 
 
 
-
 bool (*old_CanFly)(BNM::UnityEngine::Object *);
 bool new_CanFly(){
     return loadMod_bool(g_jsonContent, "Assembly-CSharp.Terraria.Mount.CanFly");

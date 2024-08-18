@@ -1,6 +1,11 @@
 package silkways.terraria.toolbox.ui.fragment.main.toolbox.logic
 
+import android.content.ActivityNotFoundException
 import android.content.Context
+import android.content.Intent
+import android.content.Intent.ACTION_EDIT
+import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +13,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.FileProvider
 import androidx.recyclerview.widget.RecyclerView
 import silkways.terraria.toolbox.R
+import java.io.File
 
 
 class FileListAdapter(private val fileItems: List<FileItem>, private val context: Context) :
@@ -56,25 +63,11 @@ class FileListAdapter(private val fileItems: List<FileItem>, private val context
         val popupMenu = PopupMenu(context, view)
         popupMenu.menuInflater.inflate(R.menu.toolbox_file_menu, popupMenu.menu)
 
-        if (fileItem.isDirectory) {
-            popupMenu.menu.findItem(R.id.action_open_with_editor).isVisible = false
-        } else {
-            popupMenu.menu.findItem(R.id.action_open_with_editor).isVisible =
-                fileItem.name.endsWith(".txt", true) || fileItem.name.endsWith(".json", true)
-        }
 
         popupMenu.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.action_open_with_editor -> {
-                    openWithEditor(fileItem.path)
-                    true
-                }
                 R.id.action_open_with_other_app -> {
-                    openWithOtherApp(fileItem.path)
-                    true
-                }
-                R.id.action_move_to_trash -> {
-                    moveToTrash(fileItem.path)
+                    shareFile(context, fileItem.path)
                     true
                 }
                 R.id.action_delete_permanently -> {
@@ -87,19 +80,64 @@ class FileListAdapter(private val fileItems: List<FileItem>, private val context
         popupMenu.show()
     }
 
-    private fun openWithEditor(path: String) {
-        Toast.makeText(context, "骗你的，我根本没写", Toast.LENGTH_SHORT).show()
-    }
 
-    private fun openWithOtherApp(path: String) {
-        Toast.makeText(context, "骗你的，我根本没写", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun moveToTrash(path: String) {
-        Toast.makeText(context, "骗你的，我根本没写", Toast.LENGTH_SHORT).show()
-    }
 
     private fun deletePermanently(path: String) {
-        Toast.makeText(context, "骗你的，我根本没写", Toast.LENGTH_SHORT).show()
+        val file = File(path)
+        if (file.exists()) {
+            if (file.delete()) {
+                Toast.makeText(context, context.getString(R.string.Delete_file_1), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, context.getString(R.string.Delete_file_2), Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(context, context.getString(R.string.Delete_file_3), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
+    fun shareFile(context: Context, fileName: String) {
+        val uri = getUriForFile(context, fileName)
+        if (uri != null) {
+            Log.i("MainActivity", "URI: $uri")
+
+            // 创建 Intent
+            val intent = Intent(Intent.ACTION_EDIT)
+            intent.type = "application/octet-stream"
+            intent.setDataAndType(uri, "application/octet-stream")
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+
+            // 启动 Intent
+            try {
+                context.startActivity(intent)
+            } catch (e: ActivityNotFoundException) {
+                Log.e("MainActivity", "没有应用可以处理此 Intent", e)
+            }
+        } else {
+            Log.e("MainActivity", "无法获取文件的 Uri")
+        }
+    }
+
+
+    private fun getUriForFile(context: Context, fileName: String): Uri? {
+        val externalFilesDir = context.getExternalFilesDir(null)
+        if (externalFilesDir != null) {
+            val file = File(fileName)
+            if (file.exists()) {
+                Log.i("MainActivity", "文件存在: ${file.absolutePath}")
+                return FileProvider.getUriForFile(
+                    context,
+                    "${context.packageName}.fileprovider",
+                    file
+                )
+            } else {
+                Log.i("MainActivity", "文件不存在: ${file.absolutePath}")
+                return null
+            }
+        } else {
+            Log.i("MainActivity", "无法获取外部文件目录")
+            return null
+        }
     }
 }

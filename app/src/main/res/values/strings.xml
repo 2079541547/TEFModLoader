@@ -110,6 +110,10 @@
 
     <string name="CoveringFiles_dialog_title">文件已存在</string>
     <string name="CoveringFiles_dialog_message">文件已存在于目标位置。你想替换它吗？</string>
+    
+    <string name="Delete_file_1">删除成功</string>
+    <string name="Delete_file_2">删除失败</string>
+    <string name="Delete_file_3">文件不存在</string>
 
     <!-- 游戏面板 -->
     <string name="GamePanel">游戏面板</string>
