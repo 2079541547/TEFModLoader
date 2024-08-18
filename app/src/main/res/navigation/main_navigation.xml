@@ -14,7 +14,7 @@ from EternalFuture゙
     <fragment
         android:label="@string/home"
         android:id="@+id/navigation_main"
-        android:name="silkways.terraria.toolbox.ui.fragment.FragmentMain"
+        android:name="silkways.terraria.toolbox.ui.fragment.MainFragment"
         tools:layout="@layout/fragment_main" />
 
     <fragment
