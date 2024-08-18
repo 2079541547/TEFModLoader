@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
 }
+
 android {
     namespace = "silkways.terraria.toolbox"
     compileSdk = 34
@@ -78,6 +79,7 @@ dependencies{
     implementation(libs.androidx.ui.android)
     implementation(files("libs/classes.jar"))
     implementation(libs.core.ktx)
+    implementation(libs.androidx.activity)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
