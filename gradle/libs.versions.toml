@@ -20,6 +20,7 @@ junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 appcompat = "1.6.1"
+activity = "1.9.1"
 luajJse = "3.0.2"
 luajJseVersion = "3.0.1"
 material = "1.12.0"
@@ -74,6 +75,7 @@ support-android-servicemanager = { module = "com.limpoxe.support:android-service
 androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "uiAndroid" }
 zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
