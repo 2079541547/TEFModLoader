@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -21,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.HomeAboutDeveloperDialogBinding
 import silkways.terraria.toolbox.databinding.HomeFragmentAboutBinding
@@ -137,14 +137,14 @@ class AboutFragment: Fragment() {
 
                 var dialogBinding: HomeAboutDeveloperDialogBinding? = HomeAboutDeveloperDialogBinding.inflate(LayoutInflater.from(requireActivity()))
 
-                val builder = AlertDialog.Builder(requireActivity())
+                val builder = MaterialAlertDialogBuilder(requireActivity())
                     .setCancelable(false)
                     .setView(dialogBinding?.root)
+                    .setPositiveButton(getString(R.string.close), null)
 
-                val dialog = builder.create().apply{
+                val dialog = builder.create().apply {
                     //设置窗口特性
                     window?.let { dialogWindow ->
-                        dialogWindow.setBackgroundDrawable(ColorDrawable(0x000000001)) // 设置背景透明
                         setCanceledOnTouchOutside(false) // 设置触摸对话框外部不可取消
                     }
 
@@ -186,12 +186,8 @@ class AboutFragment: Fragment() {
 
                     // 设置对话框关闭监听器
                     setOnDismissListener {
-                        dialogBinding = null //毁尸灭迹
+                        dialogBinding = null // 毁尸灭迹（不是哥们
                     }
-                }
-
-                dialogBinding?.button?.setOnClickListener {
-                    dialog.dismiss()
                 }
 
                 dialog.show()
@@ -200,7 +196,6 @@ class AboutFragment: Fragment() {
         }
 
         binding.list.layoutManager = LinearLayoutManager(requireActivity())
-
 
         return binding.root
     }
