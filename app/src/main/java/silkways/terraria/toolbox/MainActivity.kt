@@ -47,6 +47,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //创建配置
+        JsonConfigModifier.createJsonConfig(this, Settings.jsonPath, Settings.Data)
+        JsonConfigModifier.createJsonConfig(this, GameSettings.jsonPath, GameSettings.Data)
+        checkAndWriteFile(this)
+
         //设置语言
         setupLanguage()
 
@@ -98,11 +103,6 @@ class MainActivity : AppCompatActivity() {
         // 获取 NavHostFragment 内的 NavController，用于控制界面间的导航
         navHostFragment.navController
         //navHostFragment.navController.navigate(R.id.navigation_terminal)
-
-        //创建配置
-        JsonConfigModifier.createJsonConfig(this, Settings.jsonPath, Settings.Data)
-        JsonConfigModifier.createJsonConfig(this, GameSettings.jsonPath, GameSettings.Data)
-        checkAndWriteFile(this)
 
         val file = File("${this.cacheDir}/lspatch/origin/")
         val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }

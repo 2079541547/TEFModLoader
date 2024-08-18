@@ -108,6 +108,9 @@
     <string name="file_management_3">移动到回收站</string>
     <string name="file_management_4">永久删除</string>
 
+    <string name="CoveringFiles_dialog_title">文件已存在</string>
+    <string name="CoveringFiles_dialog_message">文件已存在于目标位置。你想替换它吗？</string>
+
     <!-- 游戏面板 -->
     <string name="GamePanel">游戏面板</string>
     <string name="GamePanel_Text">额外游戏功能(＞◡＜)</string>

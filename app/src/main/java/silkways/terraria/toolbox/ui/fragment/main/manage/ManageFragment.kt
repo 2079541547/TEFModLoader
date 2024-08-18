@@ -114,11 +114,6 @@ class ManageFragment: Fragment() {
             if (efmodFilePaths.isNotEmpty()) {
                 extractAndMergeJsonFiles(efmodFilePaths, extractToPath)
                 ApkPatcher.addSOsToAPK("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk", extractToPath)
-
-
-                val file = File("${requireActivity().cacheDir}/lspatch/origin/")
-                val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
-                copyFileOverwritingExisting("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk", "${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}")
             } else {
                 println("No valid files selected.")
             }
