@@ -9,6 +9,9 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.activity.enableEdgeToEdge
 import androidx.navigation.fragment.NavHostFragment
 import silkways.terraria.toolbox.data.GameSettings
 import silkways.terraria.toolbox.data.Settings
@@ -59,6 +62,14 @@ class MainActivity : AppCompatActivity() {
         File("${this.getExternalFilesDir(null)}/ToolBoxData/bak").mkdirs()
         File("${this.getExternalFilesDir(null)}/ToolBoxData/APK").mkdirs()
 
+        enableEdgeToEdge()
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.mainLayout)) { v, insets –>
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        /*
         if (Build.VERSION.SDK_INT >= 28) {
             window.attributes.layoutInDisplayCutoutMode =
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
@@ -73,7 +84,8 @@ class MainActivity : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+        */
+        setDisplayInNotch(this)
 
         // 获取 NavHostFragment，它是 Jetpack Navigation 的核心组件
         val navHostFragment =
