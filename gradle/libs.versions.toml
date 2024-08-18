@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.0-alpha02"
+agp = "8.7.0-alpha03"
 androidServicemanagerVersion = "1.0.5"
 apkzlib = "8.5.1"
 chaquopyNumpy = "latest-version"
@@ -10,7 +10,7 @@ fastjson = "2.0.52"
 githubStreamzip = "v1.0.6"
 gradleVersion = "7.4.2"
 gsonVersion = "2.10.1"
-guava = "33.2.1-jre"
+guava = "33.3.0-jre"
 json = "20240303"
 jsr305 = "3.0.2"
 jythonStandalone = "2.7.3"
@@ -33,15 +33,15 @@ navigationUiKtx = "2.6.0"
 cardviewV7 = "28.0.0"
 python = "15.0.1"
 plugin = "15.0.1"
-shadowhook = "1.0.9"
+shadowhook = "1.0.10"
 uiAndroid = "1.6.8"
 zip4j = "2.11.5"
 firebaseCrashlyticsBuildtools = "3.0.2"
 
 [libraries]
 androidx-collection = { module = "androidx.collection:collection", version.ref = "collection" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.12.0-alpha01" }
 androidzip = { module = "com.github.buggysofts-com:AndroidZip", version.ref = "githubStreamzip" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.12.0-alpha01" }
 apkzlib = { module = "com.android.tools.build:apkzlib", version.ref = "apkzlib" }
 build-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradleVersion" }
 chaquopy = { module = "com.chaquo.chaquopy:chaquopy", version.ref = "chaquopy" }

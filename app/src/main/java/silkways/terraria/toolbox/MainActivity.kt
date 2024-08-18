@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
 
         //设置主题
         setupTheme()
+
         actionBar?.hide()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -62,14 +63,17 @@ class MainActivity : AppCompatActivity() {
         File("${this.getExternalFilesDir(null)}/ToolBoxData/bak").mkdirs()
         File("${this.getExternalFilesDir(null)}/ToolBoxData/APK").mkdirs()
 
+        /*
+        //无法使用啊QAQ
+
         enableEdgeToEdge()
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.mainLayout)) { v, insets –>
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.mainLayout)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+         */
 
-        /*
         if (Build.VERSION.SDK_INT >= 28) {
             window.attributes.layoutInDisplayCutoutMode =
                 WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
@@ -84,7 +88,7 @@ class MainActivity : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        */
+
         setDisplayInNotch(this)
 
         // 获取 NavHostFragment，它是 Jetpack Navigation 的核心组件
@@ -148,7 +152,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun setDisplayInNotch(activity: Activity) {
+    private fun setDisplayInNotch(activity: Activity) {
         val flag = 0x00000100 or 0x00000200 or 0x00000400
         try {
             val method = Window::class.java.getMethod(
@@ -160,7 +164,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setupLanguage() {
+    private fun setupLanguage() {
         var type: String = ""
         
         when(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.languageKey)){
@@ -168,6 +172,7 @@ class MainActivity : AppCompatActivity() {
                 type = when(LanguageHelper.getLanguageAsNumber(this)) {
                     1, 2, 3 -> ""
                     4 -> "en"
+                    else -> ({}).toString()
                 }
             }
             1, 2, 3 -> type = ""
@@ -176,7 +181,7 @@ class MainActivity : AppCompatActivity() {
         LanguageHelper.setAppLanguage(this, type)
     }
 
-    fun setupTheme() {
+    private fun setupTheme() {
         when(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.themeKey)) {
             0 -> {
                 val isDarkModeEnabled = AppCompatDelegate.getDefaultNightMode()

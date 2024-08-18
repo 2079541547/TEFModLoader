@@ -11,7 +11,7 @@ android {
     defaultConfig {
         applicationId = "silkways.terraria.toolbox"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -65,7 +65,7 @@ android {
 
 
 dependencies{
-    implementation(libs.commonmark)
+    implementation("org.commonmark:commonmark:0.22.0")
     implementation(libs.shadowhook)
     implementation(project(":apkzlib"))
     implementation(libs.androidx.core.ktx)
@@ -78,7 +78,7 @@ dependencies{
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.ui.android)
     implementation(files("libs/classes.jar"))
-    implementation(libs.core.ktx)
+    implementation("androidx.core:core-ktx:1.12.0-alpha01")
     implementation(libs.androidx.activity)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

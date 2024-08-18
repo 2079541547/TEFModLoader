@@ -153,13 +153,13 @@ class AboutFragment: Fragment() {
                         Click_count++
                         if (Click_count >= 40) {
                             Click_count = 0
-                            Toast.makeText(requireActivity(), getString(R.string.developer_Easteregg_5_2), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireActivity(), getString(R.string.developer_Easteregg_5_2), Toast.LENGTH_SHORT).show()
                             dialogBinding?.shapeableImageView2?.animate()
                                 ?.alpha(0f)
                                 ?.setDuration(500)
                                 ?.withEndAction {
                                     dialogBinding?.shapeableImageView2?.visibility = View.GONE
-                                    dialogBinding?.button?.visibility = View.GONE
+                                    //dialogBinding?.button?.visibility = View.GONE
                                 }
                                 ?.start()
                             dialogBinding?.text?.text = getString(R.string.developer_Easteregg_5_1)
