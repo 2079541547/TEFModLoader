@@ -1,10 +1,13 @@
 package silkways.terraria.toolbox.ui.fragment.main.home
 
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.SystemClock
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +27,7 @@ import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.HomeDialogLogsBinding
 import silkways.terraria.toolbox.databinding.MainFragmentHomeBinding
 import silkways.terraria.toolbox.logic.JsonConfigModifier
+import java.io.File
 import java.util.Calendar
 import kotlin.random.Random
 
@@ -36,6 +40,8 @@ class HomeFragment: Fragment() {
     // 绑定视图的变量，使用可空类型并在onDestroyView时置为null
     private var _binding: MainFragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private var backPressedTime: Long = 0
+    private val timeInterval: Long = 2000 // 设置两次按键之间的时间间隔（毫秒）
 
 
     /**
@@ -68,6 +74,8 @@ class HomeFragment: Fragment() {
 
         // 使用绑定来加载布局文件
         _binding = MainFragmentHomeBinding.inflate(inflater, container, false)
+
+
 
         binding.greetings.text = getGreeting() //设置问候语
 
@@ -104,9 +112,11 @@ class HomeFragment: Fragment() {
             override fun handleOnBackPressed() {
                 if (SystemClock.elapsedRealtime() - backPressedTime < timeInterval) {
 
-
-                    activity?.finishAffinity()
-
+                    if(JsonConfigModifier.readJsonValue(requireActivity(), silkways.terraria.toolbox.data.Settings.jsonPath, silkways.terraria.toolbox.data.Settings.CleanDialog) as Boolean){
+                        showCleanDialog()
+                    } else {
+                        activity?.finishAffinity()
+                    }
 
                 } else {
                     backPressedTime = SystemClock.elapsedRealtime()
@@ -133,6 +143,9 @@ class HomeFragment: Fragment() {
             else -> getString(R.string.greetings_4)
         }
     }
+
+
+
 
 
     /**
@@ -212,8 +225,35 @@ class HomeFragment: Fragment() {
         dialog.show()
     }
 
-    private var backPressedTime: Long = 0
-    private val timeInterval: Long = 2000 // 设置两次按键之间的时间间隔（毫秒）
+
+    private fun showCleanDialog(){
+        val builder = MaterialAlertDialogBuilder(requireActivity())
+
+
+        builder.setTitle(getString(R.string.Clear_cache_title))
+        builder.setMessage(getString(R.string.Clear_cache_message))
+
+        builder.setPositiveButton(getString(R.string.Clear_cache)) { dialog: DialogInterface, _: Int ->
+            val file = File("${requireActivity().cacheDir}/lspatch/origin/")
+            val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
+            val file1 = File("${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}")
+            file1.exists()
+
+            dialog.dismiss()
+            activity?.finishAffinity()
+        }
+
+        builder.setNegativeButton(getString(R.string.NOClear_cache)) { dialog: DialogInterface, _: Int ->
+            dialog.dismiss()
+            activity?.finishAffinity()
+        }
+
+        val dialog: Dialog = builder.create()
+        dialog.show()
+
+    }
+
+
 
 
     /**

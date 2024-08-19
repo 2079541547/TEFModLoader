@@ -2,26 +2,36 @@ package silkways.terraria.toolbox
 
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.fragment.NavHostFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import silkways.terraria.toolbox.data.GameSettings
 import silkways.terraria.toolbox.data.Settings
 import silkways.terraria.toolbox.databinding.ActivityMainBinding
+import silkways.terraria.toolbox.databinding.HomeDialogAgreementBinding
 import silkways.terraria.toolbox.logic.JsonConfigModifier
 import silkways.terraria.toolbox.logic.LanguageHelper
+import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
+import java.io.InputStreamReader
 
 
 /**
@@ -106,10 +116,75 @@ class MainActivity : AppCompatActivity() {
         val file = File("${this.cacheDir}/lspatch/origin/")
         val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
         copyFileIfNotExists("${this.cacheDir}/lspatch/origin/${files?.get(0)?.name}", "${this.getExternalFilesDir(null)}/ToolBoxData/APK/base.apk")
+
+        if(!(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.agreement) as Boolean)){
+            showAgreement_Dialog(this)
+        }
+
+
     }
 
 
-    fun copyFileIfNotExists(sourcePath: String?, destinationPath: String?) {
+    /*
+    *请相信我，这段代码真的不是复制的QAQ
+     */
+    private fun showAgreement_Dialog(context: Context){
+
+        var dialogBinding: HomeDialogAgreementBinding? = HomeDialogAgreementBinding.inflate(
+            LayoutInflater.from(this))
+
+        val builder = MaterialAlertDialogBuilder(this)
+            .setCancelable(false)
+            .setView(dialogBinding?.root)
+            .setTitle(R.string.Agreement_title)
+
+
+        builder.setPositiveButton(getString(R.string.Agreement_ok)) { dialog: DialogInterface, _: Int ->
+            JsonConfigModifier.modifyJsonConfig(this, Settings.jsonPath, Settings.agreement, true)
+            dialog.dismiss()
+        }
+
+
+        builder.setNegativeButton(getString(R.string.Agreement_no)) { dialog: DialogInterface, _: Int ->
+            dialog.dismiss()
+            finishAffinity()
+        }
+
+        val dialog = builder.create().apply {
+            //设置窗口特性
+            window?.let { dialogWindow ->
+                setCanceledOnTouchOutside(false) // 设置触摸对话框外部不可取消
+            }
+
+            dialogBinding?.AgreementContent?.text = readFileFromAssets(LanguageHelper.getFileLanguage(JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.languageKey), context, "agreement", ""))
+
+            // 设置对话框关闭监听器
+            setOnDismissListener {
+                dialogBinding = null // 毁尸灭迹（不是哥们
+            }
+        }
+
+        dialog.show()
+    }
+
+    @Throws(IOException::class)
+    private fun readFileFromAssets(fileName: String): String {
+        val stringBuilder = StringBuilder()
+        val inputStream = assets.open(fileName)
+        val reader = BufferedReader(InputStreamReader(inputStream))
+
+        var line: String?
+        while (reader.readLine().also { line = it } != null) {
+            stringBuilder.append(line)
+        }
+
+        reader.close()
+        inputStream.close()
+
+        return stringBuilder.toString()
+    }
+
+    private fun copyFileIfNotExists(sourcePath: String?, destinationPath: String?) {
         val sourceFile = File(sourcePath)
         val destFile = File(destinationPath)
         // 检查目标文件是否已经存在

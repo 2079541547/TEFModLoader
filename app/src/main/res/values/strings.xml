@@ -24,6 +24,9 @@
     <string name="FreeformWindowSize_tablet" translatable="false" />
 
 
+    <string name="Agreement_title">请同意以下协议</string>
+    <string name="Agreement_ok">我已了解并同意</string>
+    <string name="Agreement_no">拒绝并退出</string>
 
     <!--
      主页
@@ -33,7 +36,7 @@
     <string name="greetings_2">ヽ(´･∀･｀)ﾉ〔*…..**★中午好★**…..*〕</string>
     <string name="greetings_3">(=^･ω･)ﾉ 晚上好♪</string>
     <string name="greetings_4">○Ｏo。.（T￢T)/~~~晚安</string>
-    <string name="greetings_5">下午好！同志</string>
+    <string name="greetings_5">下午好！(*´∀｀)ﾉ</string>
     <string name="feedback">反馈</string>
 
     <!-- 更新日志 -->
@@ -41,6 +44,11 @@
     <string name="logs_title_1">1.0.0</string>
     <string name="logs_text_1">1.多种语言</string>
 
+    <string name="Clear_cache_title">是否清除缓存？</string>
+    <string name="Clear_cache_message">此工具会缓存一个apk文件作为热更新对象，跟您的游戏包一样大小，这将占用大概3倍的内存</string>
+    <string name="Clear_cache">清除缓存</string>
+    <string name="NOClear_cache">直接退出</string>
+    
     <!-- 关于 -->
     <string name="about">关于</string>
     <string name="app_text">致力打造最好的工具</string>
