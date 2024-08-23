@@ -23,3 +23,6 @@ dependencyResolutionManagement {
 rootProject.name = "Terraria ToolBox"
 include(":app")
 include(":apkzlib")
+
+include(":game-assets")
+include(":core")

@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
-import com.unity3d.player.UnityPlayerActivity
+import silkways.terraria.toolbox.GameActivity
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.data.GameSettings
 import silkways.terraria.toolbox.databinding.ToolboxFragmentGamepanelBinding
@@ -35,7 +35,7 @@ class GamePanelFragment: Fragment() {
         _binding = ToolboxFragmentGamepanelBinding.inflate(inflater, container, false)
 
         binding.StartGame.setOnClickListener {
-            val intent = Intent(requireContext(), UnityPlayerActivity::class.java)
+            val intent = Intent(requireContext(), GameActivity::class.java)
             startActivity(intent)
         }
 

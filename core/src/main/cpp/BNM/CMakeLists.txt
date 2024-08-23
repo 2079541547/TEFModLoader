@@ -13,15 +13,15 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(PUBLIC_INCLUDE_DIRS
-    include
-    external/include
+        include
+        external/include
 )
 
 set(INCLUDE_DIRS
-    include
-    external/include
-    external
-    external/utf8
+        include
+        external/include
+        external
+        external/utf8
     src/BNM_data
 )
 

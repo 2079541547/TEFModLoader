@@ -129,7 +129,7 @@ void OnLoaded_Class_Mount(){
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_unity3d_player_UnityPlayerActivity_getJsonContent(JNIEnv *env, jobject thiz,
+Java_silkways_terraria_toolbox_GameActivity_getJsonContent(JNIEnv *env, jobject thiz,
                                                            jstring content) {
     // 如果已经有先前的内容，则释放它
     if (g_jsonContent != nullptr) {

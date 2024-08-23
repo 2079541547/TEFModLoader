@@ -68,16 +68,27 @@ add_library(LuckyDamageEternalFuture
 
 add_library(Major
         SHARED
-        native-lib.cpp
+        Major/Major.cpp
 )
 
 
-
+add_library(Redirect
+        SHARED
+        redirect.cpp
+)
 
 
 target_link_libraries(Major
         PUBLIC
         BNM
+        log
+        android
+)
+
+
+target_link_libraries(Redirect
+        PUBLIC
+        shadowhook::shadowhook
         log
         android
 )

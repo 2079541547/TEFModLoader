@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "silkways.terraria.toolbox"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "silkways.terraria.toolbox"
@@ -16,12 +16,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        externalNativeBuild {
-            cmake {
-                cppFlags += "-std=c++20"
-                abiFilters += listOf("arm64-v8a")
-            }
-        }
         ndk {
             abiFilters += listOf("arm64-v8a")
         }
@@ -48,13 +42,12 @@ android {
         viewBinding = true
         prefab = true
     }
-    ndkVersion = "27.0.12077973"
-    externalNativeBuild {
-        cmake {
-            path("src/main/cpp/CMakeLists.txt")
-            version = "3.22.1"
-        }
+    packagingOptions {
+        pickFirst("**/libshadowhook.so")
     }
+
+    ndkVersion = "27.0.12077973"
+
     aaptOptions {
         noCompress.add("assets/bin/Data/data.unity3d")
         noCompress.add("assets/bin/Data/resources.resource")
@@ -65,7 +58,9 @@ android {
 
 
 dependencies{
-    implementation("org.commonmark:commonmark:0.22.0")
+    implementation(project(":core"))
+    implementation(project(":game-assets"))
+    implementation(libs.commonmark)
     implementation(libs.shadowhook)
     implementation(project(":apkzlib"))
     implementation(libs.androidx.core.ktx)
@@ -77,9 +72,9 @@ dependencies{
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.ui.android)
-    implementation(files("libs/classes.jar"))
-    implementation("androidx.core:core-ktx:1.12.0-alpha01")
+    implementation(libs.androidx.core.ktx.v1130)
     implementation(libs.androidx.activity)
+    implementation(files("libs/classes.jar"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

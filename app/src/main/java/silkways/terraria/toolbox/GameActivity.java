@@ -1,4 +1,4 @@
-package com.unity3d.player;
+package silkways.terraria.toolbox;
 
 
 import android.annotation.SuppressLint;
@@ -16,6 +16,9 @@ import android.view.PointerIcon;
 import android.view.View;
 import androidx.annotation.NonNull;
 import com.bytedance.shadowhook.ShadowHook;
+import com.unity3d.player.IUnityPlayerLifecycleEvents;
+import com.unity3d.player.MultiWindowSupport;
+import com.unity3d.player.UnityPlayer;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -29,7 +32,7 @@ import java.util.Objects;
  * UnityPlayerActivity类是Unity播放器在Android上的活动容器。
  * 它负责管理Unity播放器的生命周期事件，并处理与Unity的交互。
  */
-public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecycleEvents, View.OnTouchListener, View.OnGenericMotionListener {
+public class GameActivity extends Activity implements IUnityPlayerLifecycleEvents, View.OnTouchListener, View.OnGenericMotionListener {
 
     boolean[] PressedStates = new boolean[330]; // 用于跟踪按键状态
     protected UnityPlayer mUnityPlayer; // Unity播放器实例
@@ -64,16 +67,11 @@ public class UnityPlayerActivity extends Activity implements IUnityPlayerLifecyc
         return str;
     }
 
-    public static void init() {
-        ShadowHook.init(new ShadowHook.ConfigBuilder()
-                .setMode(ShadowHook.Mode.UNIQUE)
-                .build());
-    }
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle bundle) {
-        init();
         requestWindowFeature(1);
         super.onCreate(bundle);
         // 更新Unity的命令行参数并初始化Unity播放器
