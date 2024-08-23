@@ -5,7 +5,9 @@ apkzlib = "8.5.1"
 chaquopyNumpy = "latest-version"
 chaquopy = "latest-version"
 collection = "1.2.0"
+commonmark = "0.22.0"
 commonsCompress = "1.26.2"
+coreKtxVersion = "1.13.0"
 fastjson = "2.0.52"
 githubStreamzip = "v1.0.6"
 gradleVersion = "7.4.2"
@@ -40,12 +42,14 @@ firebaseCrashlyticsBuildtools = "3.0.2"
 
 [libraries]
 androidx-collection = { module = "androidx.collection:collection", version.ref = "collection" }
+androidx-core-ktx-v1130 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
 androidzip = { module = "com.github.buggysofts-com:AndroidZip", version.ref = "githubStreamzip" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.12.0-alpha01" }
 apkzlib = { module = "com.android.tools.build:apkzlib", version.ref = "apkzlib" }
 build-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradleVersion" }
 chaquopy = { module = "com.chaquo.chaquopy:chaquopy", version.ref = "chaquopy" }
 chaquopy-numpy = { module = "com.chaquo.chaquopy:chaquopy-numpy", version.ref = "chaquopyNumpy" }
+commonmark = { module = "org.commonmark:commonmark", version.ref = "commonmark" }
 commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commonsCompress" }
 fastjson = { module = "com.alibaba:fastjson", version.ref = "fastjson" }
 github-streamzip = { module = "com.github.buggysofts-com:StreamZip", version.ref = "githubStreamzip" }
