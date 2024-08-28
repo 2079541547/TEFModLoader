@@ -105,6 +105,7 @@ class MainActivity : AppCompatActivity() {
 
         setDisplayInNotch(this)
 
+
         // 获取 NavHostFragment，它是 Jetpack Navigation 的核心组件
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment

@@ -1,6 +1,12 @@
 package silkways.terraria.toolbox.ui.fragment.home.settings
 
+import android.app.Dialog
+import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +19,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textview.MaterialTextView
@@ -20,6 +27,8 @@ import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.data.Settings
 import silkways.terraria.toolbox.databinding.HomeFragmentSettingsBinding
 import silkways.terraria.toolbox.logic.JsonConfigModifier
+import java.io.File
+import kotlin.system.exitProcess
 
 class SettingsFragment: Fragment() {
 
@@ -53,7 +62,6 @@ class SettingsFragment: Fragment() {
 
         // 设置ActionBar的标题
         val activity = requireActivity() as AppCompatActivity
-        activity.supportActionBar?.title = getString(R.string.settings)
 
 
         _binding = HomeFragmentSettingsBinding.inflate(inflater, container, false)
@@ -124,6 +132,31 @@ class SettingsFragment: Fragment() {
                 return "错误"
             }
 
+            fun restartApp(context: Context) {
+                val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
+                intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // 清除到这个Activity之上的所有Activity
+                intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // 以新的任务栈项的形式启动
+                context.startActivity(intent)
+            }
+
+            fun showRestartDialog(){
+                val builder = MaterialAlertDialogBuilder(requireActivity())
+
+                builder.setTitle(getString(R.string.RestartDialog_title))
+
+                builder.setPositiveButton(getString(R.string.RestartApp)) { dialog: DialogInterface, _: Int ->
+                    dialog.dismiss()
+                    restartApp(requireActivity())
+                }
+
+                builder.setNegativeButton(getString(R.string.close)) { dialog: DialogInterface, _: Int ->
+                    dialog.dismiss()
+                }
+
+                val dialog: Dialog = builder.create()
+                dialog.show()
+            }
+
 
             private val settingsList = listOf(
 
@@ -141,17 +174,17 @@ class SettingsFragment: Fragment() {
                         when (menuItem.itemId) {
                             R.id.menu_theme_1 -> {
                                 JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.themeKey, 0)
-                                requireActivity().recreate()
+                                showRestartDialog()
                                 true
                             }
                             R.id.menu_theme_2 -> {
                                 JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.themeKey, 1)
-                                requireActivity().recreate()
+                                showRestartDialog()
                                 true
                             }
                             R.id.menu_theme_3 -> {
                                 JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.themeKey, 2)
-                                requireActivity().recreate()
+                                showRestartDialog()
                                 true
                             }
                             else -> false
@@ -169,47 +202,44 @@ class SettingsFragment: Fragment() {
                         when (menuItem.itemId) {
                             R.id.menu_language_1 -> {
                                 JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.languageKey, 0)
-                                requireActivity().recreate()
+                                showRestartDialog()
                                 true
                             }
                             R.id.menu_language_2 -> {
                                 JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.languageKey, 1)
-                                requireActivity().recreate()
+                                showRestartDialog()
                                 true
                             }
                             R.id.menu_language_3 -> {
                                 JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.languageKey, 2)
-                                requireActivity().recreate()
+                                showRestartDialog()
                                 true
                             }
                             R.id.menu_language_4 -> {
                                 JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.languageKey, 3)
-                                requireActivity().recreate()
+                                showRestartDialog()
                                 true
                             }
                             R.id.menu_language_5 -> {
                                 JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.languageKey, 4)
-                                requireActivity().recreate()
+                                showRestartDialog()
                                 true
                             }
                             else -> false
                         }
                     }
                     popupMenu.show()
-                }
-
-                //开关
-                /*
-                SettingSwitch("开关1", "子标题2", R.drawable.logo, false) { isChecked ->
-                    if (isChecked){
-                        Toast.makeText(
-                            requireActivity(),
-                            getString(R.string.developer_Easteregg_5_2),
-                            Toast.LENGTH_SHORT
-                        ).show();
-                    }
                 },
-                */
+
+                SettingSwitch(getString(R.string.Automatically_clear_cache), getString(R.string.Automatically_clear_cache_subTitle),
+                    R.drawable.twotone_cleaning_services_24, JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.autoClean) as Boolean) { isChecked ->
+                    JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.autoClean, isChecked)
+                },
+
+                SettingSwitch(getString(R.string.clear_dialogs), getString(R.string.clear_dialogs_subtitle),
+                    R.drawable.twotone_clear_all_24, JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.CleanDialog) as Boolean) { isChecked ->
+                    JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.CleanDialog, isChecked)
+                },
 
                 //分割线
                 //Divider()

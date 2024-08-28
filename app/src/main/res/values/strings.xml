@@ -99,6 +99,15 @@
 
     <string name="settings_language_dialog_close">点错了QAQ</string>
 
+    <string name="RestartDialog_title">设置不会立即生效，是否现在重启？</string>
+    <string name="RestartApp">重启</string>
+
+    <string name="Automatically_clear_cache">自动清除缓存</string>
+    <string name="Automatically_clear_cache_subTitle">每次退出都会自动清除缓存</string>
+
+    <string name="clear_dialogs">弹出清除弹窗</string>
+    <string name="clear_dialogs_subtitle">每次退出都询问是否清除缓存</string>
+
     <string name="yiyan_text">👆(*≧▽≦)ﾉｼ))好听的一言</string>
     <string name="close">关闭</string>
 

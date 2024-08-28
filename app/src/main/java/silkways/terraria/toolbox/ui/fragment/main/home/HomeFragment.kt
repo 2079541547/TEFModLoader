@@ -112,12 +112,13 @@ class HomeFragment: Fragment() {
             override fun handleOnBackPressed() {
                 if (SystemClock.elapsedRealtime() - backPressedTime < timeInterval) {
 
-                    if(JsonConfigModifier.readJsonValue(requireActivity(), silkways.terraria.toolbox.data.Settings.jsonPath, silkways.terraria.toolbox.data.Settings.CleanDialog) as Boolean){
+                    if(JsonConfigModifier.readJsonValue(requireActivity(), silkways.terraria.toolbox.data.Settings.jsonPath, silkways.terraria.toolbox.data.Settings.CleanDialog) as Boolean &&
+                        !(JsonConfigModifier.readJsonValue(requireActivity(), silkways.terraria.toolbox.data.Settings.jsonPath, silkways.terraria.toolbox.data.Settings.autoClean) as Boolean)
+                        ){
                         showCleanDialog()
                     } else {
                         activity?.finishAffinity()
                     }
-
                 } else {
                     backPressedTime = SystemClock.elapsedRealtime()
                     Snackbar.make(binding.root, getString(R.string.onBackPressedDispatcher_exit), Snackbar.LENGTH_SHORT).show()
