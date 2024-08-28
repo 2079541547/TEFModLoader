@@ -1,6 +1,8 @@
 package silkways.terraria.toolbox.data
 
 object Settings {
+
+
     val jsonPath = "ToolBoxData/settings.json"
 
     //键
@@ -9,7 +11,7 @@ object Settings {
     val agreement = "agreement" //是否同意协议
     val autoClean = "autoClean" //是否自动清除缓存
     val CleanDialog = "CleanDialog" //是否弹出清除缓存弹窗
-
+    val CoveringFiles = "CoveringFiles"
 
     //json数据
     val Data = mapOf(
@@ -18,5 +20,6 @@ object Settings {
         agreement to false,
         autoClean to false,
         CleanDialog to true,
+        CoveringFiles to false
     )
 }

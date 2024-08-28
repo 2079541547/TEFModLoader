@@ -231,6 +231,11 @@ class SettingsFragment: Fragment() {
                     popupMenu.show()
                 },
 
+                SettingSwitch(getString(R.string.Directly_replace_the_file), getString(R.string.Directly_replace_the_file_subtitle),
+                    R.drawable.twotone_auto_awesome_motion_24, JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.CoveringFiles) as Boolean) { isChecked ->
+                    JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.CoveringFiles, isChecked)
+                },
+
                 SettingSwitch(getString(R.string.Automatically_clear_cache), getString(R.string.Automatically_clear_cache_subTitle),
                     R.drawable.twotone_cleaning_services_24, JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.autoClean) as Boolean) { isChecked ->
                     JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.autoClean, isChecked)
@@ -243,6 +248,8 @@ class SettingsFragment: Fragment() {
 
                 //分割线
                 //Divider()
+
+
             )
             override fun getItemCount(): Int {
                 return settingsList.size

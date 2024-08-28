@@ -116,6 +116,13 @@ class HomeFragment: Fragment() {
                         !(JsonConfigModifier.readJsonValue(requireActivity(), silkways.terraria.toolbox.data.Settings.jsonPath, silkways.terraria.toolbox.data.Settings.autoClean) as Boolean)
                         ){
                         showCleanDialog()
+                    } else if(JsonConfigModifier.readJsonValue(requireActivity(), silkways.terraria.toolbox.data.Settings.jsonPath, silkways.terraria.toolbox.data.Settings.autoClean) as Boolean){
+                        val file = File("${requireActivity().cacheDir}/lspatch/origin/")
+                        val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
+                        val file1 = File("${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}")
+                        file1.exists()
+
+                        activity?.finishAffinity()
                     } else {
                         activity?.finishAffinity()
                     }

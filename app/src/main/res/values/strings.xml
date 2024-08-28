@@ -102,6 +102,9 @@
     <string name="RestartDialog_title">设置不会立即生效，是否现在重启？</string>
     <string name="RestartApp">重启</string>
 
+    <string name="Directly_replace_the_file">直接替换文件</string>
+    <string name="Directly_replace_the_file_subtitle">文件存在时直接替换文件</string>
+
     <string name="Automatically_clear_cache">自动清除缓存</string>
     <string name="Automatically_clear_cache_subTitle">每次退出都会自动清除缓存</string>
 
