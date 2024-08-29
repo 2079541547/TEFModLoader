@@ -3,19 +3,30 @@ package silkways.terraria.toolbox;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.InputDevice;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.PointerIcon;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+
 import androidx.annotation.NonNull;
-import com.bytedance.shadowhook.ShadowHook;
+
 import com.unity3d.player.IUnityPlayerLifecycleEvents;
 import com.unity3d.player.MultiWindowSupport;
 import com.unity3d.player.UnityPlayer;
@@ -27,6 +38,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Objects;
 
+import silkways.terraria.toolbox.databinding.FullScreenLayoutBinding;
+import silkways.terraria.toolbox.ui.gametool.GameStatus;
+import silkways.terraria.toolbox.ui.gametool.OnlineVideo;
+import silkways.terraria.toolbox.ui.gametool.RunningLogs;
+import silkways.terraria.toolbox.ui.gametool.Wiki;
+
 
 /**
  * UnityPlayerActivity类是Unity播放器在Android上的活动容器。
@@ -35,7 +52,15 @@ import java.util.Objects;
 public class GameActivity extends Activity implements IUnityPlayerLifecycleEvents, View.OnTouchListener, View.OnGenericMotionListener {
 
     boolean[] PressedStates = new boolean[330]; // 用于跟踪按键状态
-    protected UnityPlayer mUnityPlayer; // Unity播放器实例
+    protected UnityPlayer mUnityPlayer; //
+
+    private float initialX, initialY; // 记录初始触摸位置的原始坐标
+    private int screenWidth; // 屏幕宽度
+    private int screenHeight; // 屏幕高度
+    private boolean isMenu = false;
+    private FragmentManager fragmentManager;
+
+
 
     private static final String MAPPING = "abcdefghijklmnopqrstuvwxyz1234567890"; // 键盘映射字符串
     private static final int[][] SPECIAL_CASES = {{111, 27}, {4, 27}, {68, 96}, {7, 48}, {62, 32}, {69, 45},
@@ -69,7 +94,7 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
 
 
 
-    @SuppressLint("ClickableViewAccessibility")
+    @SuppressLint({"ClickableViewAccessibility", "InflateParams"})
     @Override
     protected void onCreate(Bundle bundle) {
         requestWindowFeature(1);
@@ -82,9 +107,7 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
         this.mUnityPlayer.requestFocus();
         // 如果设备支持触摸屏，设置指针图标
         if (getApplicationContext().getPackageManager().hasSystemFeature("android.hardware.touchscreen")) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                this.mUnityPlayer.setPointerIcon(PointerIcon.getSystemIcon(getBaseContext(), 0));
-            }
+            this.mUnityPlayer.setPointerIcon(PointerIcon.getSystemIcon(getBaseContext(), 0));
         }
         // 设置触摸和运动事件监听器
         this.mUnityPlayer.setOnTouchListener(this);
@@ -93,7 +116,79 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
 
         System.loadLibrary("Major"); //加载模组主库
         getJsonContent(readFileContent(this));
+
+
+
+        ViewGroup rootView = new FrameLayout(this);
+        setContentView(rootView);
+
+        // 初始化UnityPlayer
+        mUnityPlayer = new UnityPlayer(this, this);
+        FrameLayout.LayoutParams unityParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT);
+        rootView.addView(mUnityPlayer, unityParams);
+
+
+        // 初始化悬浮按钮
+        // 悬浮按钮视图
+        View floatingButton = LayoutInflater.from(this).inflate(R.layout.draggable_view, rootView, false);
+
+        // 直接在代码中设置悬浮按钮的尺寸（50dp x 50dp）
+        int sizeInPx = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 50, getResources().getDisplayMetrics());
+        FrameLayout.LayoutParams floatParams = new FrameLayout.LayoutParams(sizeInPx, sizeInPx);
+
+        // 设置悬浮按钮的初始位置（这里以右上角为例）
+        floatParams.gravity = Gravity.TOP | Gravity.START;
+        rootView.addView(floatingButton, floatParams);
+
+        floatingButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) v.getLayoutParams();
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // 记录按下时的原始坐标
+                        initialX = event.getRawX() - layoutParams.leftMargin;
+                        initialY = event.getRawY() - layoutParams.topMargin;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        // 计算新的位置，并确保按钮不会超出屏幕边界
+                        int newX = (int) (event.getRawX());
+                        int newY = (int) (event.getRawY());
+
+                        // 检查X坐标是否小于0或大于屏幕宽度减去按钮宽度
+                        newX = Math.max(0, Math.min(newX, screenWidth - layoutParams.width));
+                        // 检查Y坐标是否小于0或大于屏幕高度减去按钮高度
+                        newY = Math.max(0, Math.min(newY, screenHeight - layoutParams.height));
+
+                        // 更新悬浮按钮的位置
+                        layoutParams.leftMargin = newX;
+                        layoutParams.topMargin = newY;
+                        v.setLayoutParams(layoutParams);
+                        break;
+                }
+                return false; // 返回false不拦截触摸事件
+            }
+        });
+
+        // 获取屏幕的宽度和高度
+        WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
+        screenHeight = size.y;
+
+        floatingButton.setOnClickListener(v -> {
+            if (!isMenu){
+                isMenu = true;
+                addNewLayoutToRootView(rootView);
+            }
+        });
+
     }
+
 
     @Override
     public void onUnityPlayerUnloaded() {
@@ -272,6 +367,121 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
         }
         return true;
     }
+
+
+    @SuppressLint("ResourceAsColor")
+    public void addNewLayoutToRootView(ViewGroup rootView) {
+        LayoutInflater inflater = LayoutInflater.from(this);
+        final silkways.terraria.toolbox.databinding.FullScreenLayoutBinding[] binding = {FullScreenLayoutBinding.inflate(inflater, rootView, false)};
+
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        layoutParams.gravity = Gravity.CENTER;
+
+        rootView.addView(binding[0].getRoot(), layoutParams);
+
+        fragmentManager = getFragmentManager();
+
+        loadFragment(new Wiki());
+        binding[0].TrWiki.setTextColor(R.color.md_theme_primaryContainer_highContrast);
+
+        binding[0].TrWiki.setOnClickListener(v -> {
+            binding[0].TrWiki.setTextColor(R.color.md_theme_primaryContainer_highContrast);
+            binding[0].OnlineVideo.setTextColor(R.color.md_theme_onSurface_highContrast);
+            binding[0].GameStatus.setTextColor(R.color.md_theme_onSurface_highContrast);
+            binding[0].RunningLogs.setTextColor(R.color.md_theme_onSurface_highContrast);
+
+
+            switchToCustomFragment(new Wiki(), Wiki.class);
+        });
+
+        binding[0].OnlineVideo.setOnClickListener(v -> {
+            binding[0].TrWiki.setTextColor(R.color.md_theme_onSurface_highContrast);
+            binding[0].OnlineVideo.setTextColor(R.color.md_theme_primaryContainer_highContrast);
+            binding[0].GameStatus.setTextColor(R.color.md_theme_onSurface_highContrast);
+            binding[0].RunningLogs.setTextColor(R.color.md_theme_onSurface_highContrast);
+
+
+            switchToCustomFragment(new OnlineVideo(), OnlineVideo.class);
+        });
+
+        binding[0].GameStatus.setOnClickListener(v -> {
+            binding[0].TrWiki.setTextColor(R.color.md_theme_onSurface_highContrast);
+            binding[0].OnlineVideo.setTextColor(R.color.md_theme_onSurface_highContrast);
+            binding[0].GameStatus.setTextColor(R.color.md_theme_primaryContainer_highContrast);
+            binding[0].RunningLogs.setTextColor(R.color.md_theme_onSurface_highContrast);
+
+
+            switchToCustomFragment(new GameStatus(), GameStatus.class);
+        });
+
+        binding[0].RunningLogs.setOnClickListener(v -> {
+            binding[0].TrWiki.setTextColor(R.color.md_theme_onSurface_highContrast);
+            binding[0].OnlineVideo.setTextColor(R.color.md_theme_onSurface_highContrast);
+            binding[0].GameStatus.setTextColor(R.color.md_theme_onSurface_highContrast);
+            binding[0].RunningLogs.setTextColor(R.color.md_theme_primaryContainer_highContrast);
+
+
+            switchToCustomFragment(new RunningLogs(), RunningLogs.class);
+        });
+
+        // 设置点击事件
+        binding[0].closeButton.setOnClickListener(v -> {
+            rootView.removeView(binding[0].getRoot());
+            binding[0] = null; // 如果有垃圾回收的需求，这里可以置null
+
+            // 获取FragmentManager
+            FragmentManager fragmentManager = getFragmentManager();
+
+            // 移除回退栈中的所有Fragment
+            int backStackEntryCount = fragmentManager.getBackStackEntryCount();
+            for (int i = 0; i < backStackEntryCount; i++) {
+                fragmentManager.popBackStackImmediate();
+            }
+
+            // 移除当前显示的Fragment
+            Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment);
+            if (currentFragment != null) {
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.remove(currentFragment);
+                transaction.commitAllowingStateLoss();
+            }
+
+            isMenu = false;
+        });
+
+        binding[0].getRoot();
+    }
+
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.fragment, fragment);
+        transaction.commit();
+    }
+
+    private void switchToCustomFragment(Fragment fragment, Class<?> fragmentClassToKeep) {
+        // 移除所有其他Fragment
+        removeAllOtherFragments(fragmentClassToKeep);
+        loadFragment(fragment);
+    }
+
+    private void removeAllOtherFragments(Class<?> fragmentClassToKeep) {
+        // 移除回退栈中的所有Fragment
+        int backStackEntryCount = fragmentManager.getBackStackEntryCount();
+        for (int i = 0; i < backStackEntryCount; i++) {
+            fragmentManager.popBackStackImmediate();
+        }
+
+        // 移除当前显示的Fragment，但保留指定的Fragment类型
+        Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment);
+        if (currentFragment != null && !currentFragment.getClass().equals(fragmentClassToKeep)) {
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.remove(currentFragment);
+            transaction.commitAllowingStateLoss();
+        }
+    }
+
 
     public static String readFileContent(Context context) {
         File file = new File(Objects.requireNonNull(context.getExternalFilesDir(null)).getAbsolutePath() + "/ToolBoxData/ModData/mod_data.json");

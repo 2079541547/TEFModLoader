@@ -75,6 +75,7 @@ dependencies{
     implementation(libs.androidx.core.ktx.v1130)
     implementation(libs.androidx.activity)
     implementation(files("libs/classes.jar"))
+    implementation(libs.androidx.lifecycle.service)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

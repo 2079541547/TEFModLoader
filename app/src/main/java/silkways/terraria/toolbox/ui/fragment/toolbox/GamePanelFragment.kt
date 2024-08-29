@@ -13,60 +13,89 @@ import silkways.terraria.toolbox.data.GameSettings
 import silkways.terraria.toolbox.databinding.ToolboxFragmentGamepanelBinding
 import silkways.terraria.toolbox.logic.JsonConfigModifier
 
-
 /**
- * 关于页面的片段类，用于展示关于应用的信息。
+ * GamePanelFragment 类表示一个用于启动游戏和调整游戏设置的界面片段。
  */
-class GamePanelFragment: Fragment() {
+class GamePanelFragment : Fragment() {
 
-    // 使用可空变量存储绑定对象，以便在销毁视图时能够释放资源
+    // 使用可空变量存储绑定对象，以便在销毁视图时能够安全地释放资源
     private var _binding: ToolboxFragmentGamepanelBinding? = null
-    // 提供非空的绑定访问方式
+    // 提供非空的绑定访问方式，用于在视图存在期间访问绑定对象
     private val binding get() = _binding!!
 
+    /**
+     * 创建视图。
+     *
+     * @param inflater 用于从布局文件创建视图的LayoutInflater对象。
+     * @param container 如果非空，则此片段应附加到该容器。
+     * @param savedInstanceState 保存的实例状态。
+     * @return 返回创建的视图。
+     */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // 设置顶部应用栏的标题
         requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.GamePanel)
 
-        // 使用DataBindingUtil或ViewBinding inflate布局文件
+        // 通过View Binding方式加载布局
         _binding = ToolboxFragmentGamepanelBinding.inflate(inflater, container, false)
 
+        // 设置开始游戏按钮的点击监听器
         binding.StartGame.setOnClickListener {
+            // 创建意图来启动游戏活动
             val intent = Intent(requireContext(), GameActivity::class.java)
+            // 启动游戏活动
             startActivity(intent)
         }
 
+        // 初始化悬浮窗口复选框的状态
+        binding.SuspendedWindow.isChecked = JsonConfigModifier.readJsonValue(
+            requireActivity(),
+            GameSettings.jsonPath,
+            GameSettings.suspended_window
+        ) as Boolean
 
-        binding.SuspendedWindow.isChecked = JsonConfigModifier.readJsonValue(requireActivity(), GameSettings.jsonPath, GameSettings.suspended_window) as Boolean
-        binding.SuspendedWindow.setOnCheckedChangeListener{ _, isChecked ->
-            JsonConfigModifier.modifyJsonConfig(requireActivity(), GameSettings.jsonPath, GameSettings.suspended_window, isChecked)
+        // 设置悬浮窗口复选框的改变监听器
+        binding.SuspendedWindow.setOnCheckedChangeListener { _, isChecked ->
+            // 修改JSON配置中的悬浮窗口设置
+            JsonConfigModifier.modifyJsonConfig(
+                requireActivity(),
+                GameSettings.jsonPath,
+                GameSettings.suspended_window,
+                isChecked
+            )
         }
 
+        // 初始化调试模式复选框的状态
+        binding.debugGame.isChecked = JsonConfigModifier.readJsonValue(
+            requireActivity(),
+            GameSettings.jsonPath,
+            GameSettings.debug
+        ) as Boolean
 
-
-        binding.debugGame.isChecked = JsonConfigModifier.readJsonValue(requireActivity(), GameSettings.jsonPath, GameSettings.debug) as Boolean
-        binding.debugGame.setOnCheckedChangeListener{ _, isChecked ->
-            JsonConfigModifier.modifyJsonConfig(requireActivity(), GameSettings.jsonPath, GameSettings.debug, isChecked)
+        // 设置调试模式复选框的改变监听器
+        binding.debugGame.setOnCheckedChangeListener { _, isChecked ->
+            // 修改JSON配置中的调试模式设置
+            JsonConfigModifier.modifyJsonConfig(
+                requireActivity(),
+                GameSettings.jsonPath,
+                GameSettings.debug,
+                isChecked
+            )
         }
 
-
-
-
+        // 返回绑定对象的根视图
         return binding.root
     }
 
-
-
-
     /**
-     * 当视图被销毁时调用，释放资源以避免内存泄漏。
+     * 当视图被销毁时调用。
      */
     override fun onDestroyView() {
         super.onDestroyView()
-        // 清理绑定引用，帮助系统回收资源
+        // 清除绑定引用，防止内存泄漏
         _binding = null
     }
 }

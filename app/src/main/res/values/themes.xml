@@ -62,7 +62,7 @@
     <style name="CircularImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
-        <item name="android:foregroundTint">@color/md_theme_outline</item>
+        <item name="android:foregroundTint">@android:color/transparent</item>
     </style>
 
     <style name="ShapeableImageView_theme" parent="">

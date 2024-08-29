@@ -72,7 +72,6 @@ class Welcome : AppCompatActivity() {
                 startActivity(intent)
                 finish() // 结束当前活动
 
-                printAssets()
             }
         }.start()
 
@@ -80,7 +79,7 @@ class Welcome : AppCompatActivity() {
     }
 
 
-    fun setDisplayInNotch(activity: Activity) {
+    private fun setDisplayInNotch(activity: Activity) {
         val flag = 0x00000100 or 0x00000200 or 0x00000400
         try {
             val method = Window::class.java.getMethod(
@@ -93,39 +92,4 @@ class Welcome : AppCompatActivity() {
     }
 
 
-    fun listAssets(assetManager: AssetManager, path: String): List<String> {
-        try {
-            // 获取指定路径下的所有文件名
-            val files = assetManager.list(path)
-            val result: MutableList<String> = ArrayList()
-            for (file in files!!) {
-                // 拼接完整的路径
-                val fullPath = if (path.isEmpty()) file else "$path/$file"
-                result.add(fullPath)
-
-                // 再次尝试获取这个路径下的所有文件名，如果返回值不为空则认为这是一个目录
-                if (assetManager.list(fullPath)!!.size > 0) {
-                    // 如果是目录，则递归调用listAssets
-                    result.addAll(listAssets(assetManager, fullPath))
-                }
-            }
-            return result
-        } catch (e: IOException) {
-            e.printStackTrace()
-            return ArrayList()
-        }
-    }
-
-    fun printAssets() {
-        val assetManager = resources.assets
-        try {
-            // 列出assets根目录下的所有文件和目录
-            val assets = listAssets(assetManager, "")
-            for (asset in assets) {
-                println("Asset: $asset")
-            }
-        } catch (e: java.lang.Exception) {
-            e.printStackTrace()
-        }
-    }
 }

@@ -57,6 +57,8 @@
             android:label="@string/app_name" >
         </activity>
 
+
+
         <activity
             android:isGame="true"
             android:theme="@style/UnityThemeSelector"
@@ -109,8 +111,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
-
-
 
     </application>
 </manifest>
