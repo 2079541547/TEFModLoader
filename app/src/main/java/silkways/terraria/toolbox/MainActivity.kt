@@ -24,6 +24,7 @@ import silkways.terraria.toolbox.data.GameSettings
 import silkways.terraria.toolbox.data.Settings
 import silkways.terraria.toolbox.databinding.ActivityMainBinding
 import silkways.terraria.toolbox.databinding.HomeDialogAgreementBinding
+import silkways.terraria.toolbox.logic.ApplicationSettings
 import silkways.terraria.toolbox.logic.JsonConfigModifier
 import silkways.terraria.toolbox.logic.LanguageHelper
 import java.io.BufferedReader
@@ -63,10 +64,11 @@ class MainActivity : AppCompatActivity() {
         checkAndWriteFile(this)
 
         //设置语言
-        setupLanguage()
+        ApplicationSettings.setupLanguage(this)
 
         //设置主题
-        setupTheme()
+        ApplicationSettings.setupTheme(this)
+
 
         actionBar?.hide()
 
@@ -239,37 +241,5 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupLanguage() {
-        var type: String = ""
-        
-        when(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.languageKey)){
-            0 -> {
-                type = when(LanguageHelper.getLanguageAsNumber(this)) {
-                    1, 2, 3 -> ""
-                    4 -> "en"
-                    else -> ({}).toString()
-                }
-            }
-            1, 2, 3 -> type = ""
-            4 -> type= "en"
-        }
-        LanguageHelper.setAppLanguage(this, type)
-    }
 
-    private fun setupTheme() {
-        when(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.themeKey)) {
-            0 -> {
-                val isDarkModeEnabled = AppCompatDelegate.getDefaultNightMode()
-                if (isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_YES) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                }else if(isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_NO){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
-            }
-
-            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
-            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        }
-    }
 }

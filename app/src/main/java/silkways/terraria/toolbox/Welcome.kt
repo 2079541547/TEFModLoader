@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import silkways.terraria.toolbox.data.Settings
 import silkways.terraria.toolbox.databinding.WelcomeMainBinding
+import silkways.terraria.toolbox.logic.ApplicationSettings
 import silkways.terraria.toolbox.logic.JsonConfigModifier
 import java.io.IOException
 
@@ -25,21 +26,7 @@ class Welcome : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //设置主题
-        when(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.themeKey)){
-            0 -> {
-                val isDarkModeEnabled = AppCompatDelegate.getDefaultNightMode()
-                if (isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_YES){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                }else if(isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_NO){
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                }
-            }
-
-            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-
-            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        }
+        ApplicationSettings.setupTheme(this)
 
         actionBar?.hide()
         binding = WelcomeMainBinding.inflate(layoutInflater)

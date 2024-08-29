@@ -26,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.unity3d.player.IUnityPlayerLifecycleEvents;
 import com.unity3d.player.MultiWindowSupport;
@@ -39,6 +40,7 @@ import java.io.InputStreamReader;
 import java.util.Objects;
 
 import silkways.terraria.toolbox.databinding.FullScreenLayoutBinding;
+import silkways.terraria.toolbox.logic.ApplicationSettings;
 import silkways.terraria.toolbox.ui.gametool.GameStatus;
 import silkways.terraria.toolbox.ui.gametool.OnlineVideo;
 import silkways.terraria.toolbox.ui.gametool.RunningLogs;
@@ -54,7 +56,6 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
     boolean[] PressedStates = new boolean[330]; // 用于跟踪按键状态
     protected UnityPlayer mUnityPlayer; //
 
-    private float initialX, initialY; // 记录初始触摸位置的原始坐标
     private int screenWidth; // 屏幕宽度
     private int screenHeight; // 屏幕高度
     private boolean isMenu = false;
@@ -99,6 +100,10 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
     protected void onCreate(Bundle bundle) {
         requestWindowFeature(1);
         super.onCreate(bundle);
+
+
+
+
         // 更新Unity的命令行参数并初始化Unity播放器
         getIntent().putExtra("unity", updateUnityCommandLineArguments(getIntent().getStringExtra("unity")));
         UnityPlayer unityPlayer = new UnityPlayer(this, this);
@@ -142,34 +147,29 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
         floatParams.gravity = Gravity.TOP | Gravity.START;
         rootView.addView(floatingButton, floatParams);
 
-        floatingButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) v.getLayoutParams();
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        // 记录按下时的原始坐标
-                        initialX = event.getRawX() - layoutParams.leftMargin;
-                        initialY = event.getRawY() - layoutParams.topMargin;
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        // 计算新的位置，并确保按钮不会超出屏幕边界
-                        int newX = (int) (event.getRawX());
-                        int newY = (int) (event.getRawY());
+        floatingButton.setOnTouchListener((v, event) -> {
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) v.getLayoutParams();
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    // 记录按下时的原始坐标
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    // 计算新的位置，并确保按钮不会超出屏幕边界
+                    int newX = (int) (event.getRawX());
+                    int newY = (int) (event.getRawY());
 
-                        // 检查X坐标是否小于0或大于屏幕宽度减去按钮宽度
-                        newX = Math.max(0, Math.min(newX, screenWidth - layoutParams.width));
-                        // 检查Y坐标是否小于0或大于屏幕高度减去按钮高度
-                        newY = Math.max(0, Math.min(newY, screenHeight - layoutParams.height));
+                    // 检查X坐标是否小于0或大于屏幕宽度减去按钮宽度
+                    newX = Math.max(0, Math.min(newX, screenWidth - layoutParams.width));
+                    // 检查Y坐标是否小于0或大于屏幕高度减去按钮高度
+                    newY = Math.max(0, Math.min(newY, screenHeight - layoutParams.height));
 
-                        // 更新悬浮按钮的位置
-                        layoutParams.leftMargin = newX;
-                        layoutParams.topMargin = newY;
-                        v.setLayoutParams(layoutParams);
-                        break;
-                }
-                return false; // 返回false不拦截触摸事件
+                    // 更新悬浮按钮的位置
+                    layoutParams.leftMargin = newX;
+                    layoutParams.topMargin = newY;
+                    v.setLayoutParams(layoutParams);
+                    break;
             }
+            return false; // 返回false不拦截触摸事件
         });
 
         // 获取屏幕的宽度和高度
@@ -372,7 +372,7 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
     @SuppressLint("ResourceAsColor")
     public void addNewLayoutToRootView(ViewGroup rootView) {
         LayoutInflater inflater = LayoutInflater.from(this);
-        final silkways.terraria.toolbox.databinding.FullScreenLayoutBinding[] binding = {FullScreenLayoutBinding.inflate(inflater, rootView, false)};
+        final FullScreenLayoutBinding[] binding = {FullScreenLayoutBinding.inflate(inflater, rootView, false)};
 
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -482,6 +482,29 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
         }
     }
 
+
+    public void setupTheme(Context context) {
+
+        int themeValue = (int) silkways.terraria.toolbox.logic.JsonConfigModifier.readJsonValue(context, "ToolBoxData/settings.json", "theme");
+        switch (themeValue) {
+            case 0:
+                int isDarkModeEnabled = AppCompatDelegate.getDefaultNightMode();
+                if (isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_YES) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                } else if (isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_NO) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                }
+                break;
+
+            case 1:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+
+            case 2:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+        }
+    }
 
     public static String readFileContent(Context context) {
         File file = new File(Objects.requireNonNull(context.getExternalFilesDir(null)).getAbsolutePath() + "/ToolBoxData/ModData/mod_data.json");

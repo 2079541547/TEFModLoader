@@ -105,6 +105,7 @@ object JsonConfigModifier {
     }
 
     //读取值
+    @JvmStatic
     fun readJsonValue(context: Context, fileName: String, key: String): Any? {
 
         val externalStorageDirectory = context.getExternalFilesDir(null)
