@@ -26,7 +26,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import com.unity3d.player.IUnityPlayerLifecycleEvents;
 import com.unity3d.player.MultiWindowSupport;
@@ -100,9 +99,6 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
     protected void onCreate(Bundle bundle) {
         requestWindowFeature(1);
         super.onCreate(bundle);
-
-
-
 
         // 更新Unity的命令行参数并初始化Unity播放器
         getIntent().putExtra("unity", updateUnityCommandLineArguments(getIntent().getStringExtra("unity")));
@@ -186,7 +182,6 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
                 addNewLayoutToRootView(rootView);
             }
         });
-
     }
 
 
@@ -380,6 +375,7 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
         layoutParams.gravity = Gravity.CENTER;
 
         rootView.addView(binding[0].getRoot(), layoutParams);
+        ApplicationSettings.setupLanguage(this);
 
         fragmentManager = getFragmentManager();
 
@@ -482,29 +478,6 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
         }
     }
 
-
-    public void setupTheme(Context context) {
-
-        int themeValue = (int) silkways.terraria.toolbox.logic.JsonConfigModifier.readJsonValue(context, "ToolBoxData/settings.json", "theme");
-        switch (themeValue) {
-            case 0:
-                int isDarkModeEnabled = AppCompatDelegate.getDefaultNightMode();
-                if (isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_YES) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                } else if (isDarkModeEnabled == AppCompatDelegate.MODE_NIGHT_NO) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                }
-                break;
-
-            case 1:
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                break;
-
-            case 2:
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                break;
-        }
-    }
 
     public static String readFileContent(Context context) {
         File file = new File(Objects.requireNonNull(context.getExternalFilesDir(null)).getAbsolutePath() + "/ToolBoxData/ModData/mod_data.json");

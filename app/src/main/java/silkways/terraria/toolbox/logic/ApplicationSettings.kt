@@ -6,21 +6,11 @@ import silkways.terraria.toolbox.data.Settings
 
 object ApplicationSettings {
 
+    @JvmStatic
     fun setupLanguage(context: Context) {
-        var type: String = ""
-
-        when(JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.languageKey)){
-            0 -> {
-                type = when(LanguageHelper.getLanguageAsNumber(context)) {
-                    1, 2, 3 -> ""
-                    4 -> "en"
-                    else -> ({}).toString()
-                }
-            }
-            1, 2, 3 -> type = ""
-            4 -> type= "en"
-        }
+        val type = LanguageHelper.getLanguage(JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.languageKey), context)
         LanguageHelper.setAppLanguage(context, type)
+        println("Language: $type")
     }
 
     fun setupTheme(context: Context) {

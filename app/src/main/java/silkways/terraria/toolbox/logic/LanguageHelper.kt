@@ -15,22 +15,23 @@ object LanguageHelper {
         val script: String = primaryLocale.script
         val country: String = primaryLocale.country
 
+        var languageCode = 1
+
         when (language) {
             "zh" -> if ("Hans" == script) {
-                return 1 // 简体中文
+                languageCode = 1 // 简体中文
             } else if ("Hant" == script) {
-                return if ("TW" == country || "HK" == country) {
-                    2   // 繁体中文
+                languageCode = if ("TW" == country || "HK" == country) {
+                    2 // 繁体中文
                 } else {
-                    3 // 没有则使用国际语言
+                    1
                 }
             }
 
-            "ru" -> return 3 // 俄语
-            "en" -> return 4 // 英语
-            else -> return 3 // 默认或其他语言
+            "ru" -> languageCode = 3 // 俄语
+            "en" -> languageCode = 4 // 英语
         }
-        return 3 // 如果没有匹配到任何情况
+        return languageCode // 如果没有匹配到任何情况
     }
 
     fun setAppLanguage(context: Context, languageCode: String) {
@@ -41,52 +42,40 @@ object LanguageHelper {
     }
 
     fun getMDLanguage(LanguageCode: Any?, context: Context, PathName: String): String{
-
-       val Language_Code = when(LanguageCode){
-            0 -> {
-                when(getLanguageAsNumber(context)){
-                    1 -> "zh-cn"
-                    2 -> "zh-hant"
-                    3 -> "ru"
-                    4 -> "en"
-                    else -> null
-                }
-            }
-
-            1 -> "zh-cn"
-            2 -> "zh-hant"
-            3 -> "ru"
-            4 -> "en"
-           else -> null
-       }
-
-        val Path = "ToolBoxData/$PathName/$Language_Code.md"
-
+        val Path = "ToolBoxData/$PathName/${getLanguage(LanguageCode, context)}.md"
         return Path
     }
 
     fun getFileLanguage(LanguageCode: Any?, context: Context, PathName: String, file_extension: String): String{
-        val Language_Code = when(LanguageCode){
-            0 -> {
-                when(getLanguageAsNumber(context)){
-                    1 -> "zh-cn"
-                    2 -> "zh-hant"
-                    3 -> "ru"
-                    4 -> "en"
-                    else -> null
-                }
-            }
 
-            1 -> "zh-cn"
-            2 -> "zh-hant"
-            3 -> "ru"
-            4 -> "en"
-            else -> null
-        }
-
-        val Path = "ToolBoxData/$PathName/$Language_Code$file_extension"
+        val Path = "ToolBoxData/$PathName/${getLanguage(LanguageCode, context)}$file_extension"
 
         return Path
     }
 
+
+    fun getLanguage(languageCode: Any?, context: Context): String{
+
+        var language = "zh-cn"
+
+        when(languageCode){
+            0 -> {
+                language = when(getLanguageAsNumber(context)){
+                    1 -> "zh-cn"
+                    2 -> "zh-hant"
+                    3 -> "ru"
+                    4 -> "en"
+                    else -> "zh-cn"
+                }
+            }
+
+            1 -> language = "zh-cn"
+            2 -> language = "zh-hant"
+            3 -> language = "ru"
+            4 -> language = "en"
+            else -> language = "zh-cn"
+        }
+
+        return language
+    }
 }
