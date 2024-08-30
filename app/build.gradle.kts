@@ -62,7 +62,6 @@ dependencies{
     implementation(project(":game-assets"))
     implementation(libs.commonmark)
     implementation(libs.shadowhook)
-    implementation(project(":apkzlib"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
