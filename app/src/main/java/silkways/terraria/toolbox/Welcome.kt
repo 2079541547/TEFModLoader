@@ -2,7 +2,6 @@ package silkways.terraria.toolbox
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.AssetManager
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -11,12 +10,8 @@ import android.view.Window
 import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import silkways.terraria.toolbox.data.Settings
 import silkways.terraria.toolbox.databinding.WelcomeMainBinding
 import silkways.terraria.toolbox.logic.ApplicationSettings
-import silkways.terraria.toolbox.logic.JsonConfigModifier
-import java.io.IOException
 
 
 class Welcome : AppCompatActivity() {

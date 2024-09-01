@@ -27,6 +27,7 @@ import android.view.WindowManager
 import android.widget.ScrollView
 import android.widget.TextView
 import silkways.terraria.toolbox.R
+import silkways.terraria.toolbox.logic.ApplicationSettings.isDarkThemeEnabled
 import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.InputStreamReader
@@ -57,6 +58,10 @@ class GameStatus : Fragment() {
         textView = TextView(context)
         textView.text = "" // 初始为空
         textView.setTextColor(resources.getColor(R.color.md_theme_onSurface_highContrast))
+
+        if (isDarkThemeEnabled(context)) {
+            textView.setTextColor(resources.getColor(R.color.md_theme_onPrimary))
+        }
 
         // 将TextView添加到ScrollView中
         scrollView.addView(textView)

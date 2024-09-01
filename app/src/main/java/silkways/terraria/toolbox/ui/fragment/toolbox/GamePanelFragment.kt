@@ -48,6 +48,8 @@ class GamePanelFragment : Fragment() {
             val intent = Intent(requireContext(), GameActivity::class.java)
             // 启动游戏活动
             startActivity(intent)
+
+            requireActivity().finish()
         }
 
         // 初始化悬浮窗口复选框的状态

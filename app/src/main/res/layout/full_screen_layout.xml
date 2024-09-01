@@ -15,6 +15,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginBottom="5dp"
         android:background="@drawable/md3_button_background"
+        android:backgroundTint="@color/md_theme_primary"
         android:text="@string/close"
         android:textColor="@color/md_theme_onPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -25,7 +26,6 @@
         android:id="@+id/cardView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:cardBackgroundColor="@color/md_theme_background"
         app:cardCornerRadius="20dp"
         app:cardElevation="6dp"
         app:cardPreventCornerOverlap="false"
@@ -106,6 +106,7 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:cardBackgroundColor="@color/md_theme_background"

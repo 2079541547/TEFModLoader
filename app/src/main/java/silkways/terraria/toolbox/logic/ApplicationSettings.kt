@@ -3,10 +3,16 @@ package silkways.terraria.toolbox.logic
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import silkways.terraria.toolbox.data.Settings
+import silkways.terraria.toolbox.logic.LanguageHelper.getLanguageAsNumber
 
 object ApplicationSettings {
 
     @JvmStatic
+    fun setAll(context: Context){
+        setupTheme(context)
+        setupLanguage(context)
+    }
+
     fun setupLanguage(context: Context) {
         val type = LanguageHelper.getLanguage(JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.languageKey), context)
         LanguageHelper.setAppLanguage(context, type)
@@ -29,4 +35,21 @@ object ApplicationSettings {
             2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
     }
+
+    @JvmStatic
+    fun isDarkThemeEnabled(context: Context): Boolean {
+        val themeValue = JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.themeKey)
+
+        return when (themeValue) {
+            0 -> AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+            1 -> false
+            2 -> true
+
+            else -> false
+        }
+    }
+
+
+
+
 }

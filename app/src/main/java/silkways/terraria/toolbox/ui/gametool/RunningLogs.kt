@@ -1,6 +1,8 @@
 package silkways.terraria.toolbox.ui.gametool
 
 import android.app.Fragment
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,6 +14,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import silkways.terraria.toolbox.R
+import silkways.terraria.toolbox.logic.ApplicationSettings.isDarkThemeEnabled
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter
@@ -45,6 +48,11 @@ class RunningLogs : Fragment() {
         textView.text = "" // 初始为空
         textView.setTextColor(resources.getColor(R.color.md_theme_onSurface_highContrast))
         textView.movementMethod = ScrollingMovementMethod() // 允许滚动
+
+
+        if (isDarkThemeEnabled(context)) {
+            textView.setTextColor(resources.getColor(R.color.md_theme_onPrimary))
+        }
 
         // 为TextView添加长按监听器
         textView.setOnLongClickListener {

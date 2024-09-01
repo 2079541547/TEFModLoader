@@ -63,11 +63,8 @@ class MainActivity : AppCompatActivity() {
         JsonConfigModifier.createJsonConfig(this, GameSettings.jsonPath, GameSettings.Data)
         checkAndWriteFile(this)
 
-        //设置语言
-        ApplicationSettings.setupLanguage(this)
-
-        //设置主题
-        ApplicationSettings.setupTheme(this)
+        //设置语言&主题
+        ApplicationSettings.setAll(this)
 
 
         actionBar?.hide()
