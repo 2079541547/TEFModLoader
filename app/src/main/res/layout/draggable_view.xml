@@ -5,5 +5,5 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 android:id="@+id/floating_button"
 android:layout_width="50dp"
 android:layout_height="50dp"
-android:src="@drawable/eternalfuture"
+android:src="@mipmap/ic_launcher_round"
 app:shapeAppearanceOverlay="@style/CircularImageView" />

@@ -1,72 +1,71 @@
-//
-// Created by eternalfuture on 2024/8/23.
-//
 #include <jni.h>
-#include <string>
-#include <android/asset_manager_jni.h>
-#include <android/log.h>
-#include <android/asset_manager.h>
-#include "shadowhook.h"
-
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "redirect", __VA_ARGS__))
-#define LOGE(...) ((void)__android_log_print(ANDROID_LOG_ERROR, "redirect", __VA_ARGS__))
+#include <iostream>
+#include <fstream>
+#include <cstring>
 
 
 
-// 定义原始函数指针
-void * (*original_AAssetManager_open)(AAssetManager* mgr, const char* filename, int mode);
 
-// 替换函数
-void replaced_AAssetManager_open(AAssetManager* mgr, const char* filename, int mode) {
-    LOGI("AAssetManager_open 被调用，文件名: %s", filename);
-    void * asset = original_AAssetManager_open(mgr, filename, mode);
-    LOGI("AAssetManager_open 返回的资产对象: %p", asset);
-}
+using namespace std;
 
+// 通用函数声明
+void dumpPointerToFile(const void* ptr, size_t size, const string& filename);
+bool is_pointer_valid(const void* ptr);
 
-
-std::string jstringToString(JNIEnv* env, jstring jstr) {
-    const jclass stringClass = env->FindClass("java/lang/String");
-    const jmethodID getBytes = env->GetMethodID(stringClass, "getBytes", "(Ljava/lang/String;)[B");
-    const jstring charsetName = env->NewStringUTF("UTF-8");
-    const jbyteArray bytes = (jbyteArray) env->CallObjectMethod(jstr, getBytes, charsetName);
-    const jsize alen = env->GetArrayLength(bytes);
-    const jbyte* ba = env->GetByteArrayElements(bytes, JNI_FALSE);
-    std::string result((char*)ba, (size_t)alen);
-    env->ReleaseByteArrayElements(bytes, const_cast<jbyte *>(ba), 0);
-    return result;
-}
-
-
-extern "C"
-JNIEXPORT jboolean JNICALL
-Java_silkways_terraria_toolbox_ToolBox_doHook(JNIEnv *env, jobject thiz) {
-
-
-    if (shadowhook_hook_sym_addr(
-            (void*)AAsset_read,
-            (void*)replaced_AAssetManager_open,
-            reinterpret_cast<void **>(&original_AAssetManager_open))){
-
-        shadowhook_hook_sym_addr(
-                (void*)AAssetManager_open,
-                (void*)replaced_AAssetManager_open,
-                reinterpret_cast<void **>(&original_AAssetManager_open));
-
-        return JNI_TRUE;
-    } else {
-
-        shadowhook_hook_sym_addr(
-                (void*)AAssetManager_open,
-                (void*)replaced_AAssetManager_open,
-                reinterpret_cast<void **>(&original_AAssetManager_open));
-
-
-        return JNI_FALSE;
+// 将指针内容转储到文件
+void dumpPointerToFile(const void* ptr, size_t size, const string& filename) {
+    ofstream file(filename, ios::binary | ios::out);
+    if (!file.is_open()) {
+        cerr << "无法打开文件: " << filename << endl;
+        return;
     }
 
+    // 写入指针内容
+    file.write(reinterpret_cast<const char*>(ptr), size);
+    file.close();
 
-
-
-    return JNI_FALSE;
+    cout << "已将指针内容转储到文件: " << filename << endl;
 }
+
+// 检查指针是否有效
+bool is_pointer_valid(const void* ptr) {
+    // 检查指针是否为nullptr
+    return ptr != nullptr;
+}
+
+// JNI 函数实现
+extern "C"
+JNIEXPORT void JNICALL
+Java_silkways_terraria_toolbox_ui_debug_LoadDebug_dumpzhiz(JNIEnv *env, jobject thiz,
+                                                           jstring string, jobject size) {
+    // 获取指针地址字符串
+    const char* pointerAddress = env->GetStringUTFChars(string, nullptr);
+
+    // 获取大小
+    jint sizeValue = env->CallIntMethod(size, env->GetMethodID(env->GetObjectClass(size), "intValue", "()I"));
+
+    // 将字符串转换为指针
+    void* ptr = reinterpret_cast<void*>(strtoull(pointerAddress, nullptr, 16));
+
+    // 检查指针是否有效
+    if (!is_pointer_valid(ptr)) {
+
+        cerr << "警告: 指定的指针地址无效或无法访问。\n";
+        env->ReleaseStringUTFChars(string, pointerAddress);
+        return;
+    }
+
+    //文件路径
+    std::string filePath = "/data/data/silkways.terraria.toolbox/";
+
+    // 创建文件名
+    std::string filename = filePath + std::string("dump_") + pointerAddress + ".bin";
+
+    // 调用函数转储指针内容到文件
+    dumpPointerToFile(ptr, sizeValue, filename);
+
+    // 释放字符串资源
+    env->ReleaseStringUTFChars(string, pointerAddress);
+}
+
+// 0x150b9f5d0

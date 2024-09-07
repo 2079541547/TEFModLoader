@@ -20,8 +20,7 @@ import com.unity3d.player.IUnityPlayerLifecycleEvents;
 import com.unity3d.player.MultiWindowSupport;
 import com.unity3d.player.UnityPlayer;
 
-import silkways.terraria.toolbox.core.Load;
-import silkways.terraria.toolbox.ui.gametool.LoadTool;
+import silkways.terraria.toolbox.ui.debug.LoadDebug;
 
 /**
  * UnityPlayerActivity类是Unity播放器在Android上的活动容器。
@@ -84,9 +83,6 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
         this.mUnityPlayer.setOnTouchListener(this);
         this.mUnityPlayer.setOnGenericMotionListener(this);
 
-        Load load = new Load();
-        //load.LoadMian(this);
-
         ViewGroup rootView = new FrameLayout(this);
         setContentView(rootView);
 
@@ -98,8 +94,11 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
                 FrameLayout.LayoutParams.MATCH_PARENT);
         rootView.addView(mUnityPlayer, unityParams);
 
-        LoadTool loadTool = new LoadTool();
-        loadTool.LoadMain(rootView, this);
+        LoadDebug loadDebug = new LoadDebug();
+        loadDebug.LoadMain(rootView, this);
+
+        System.loadLibrary("Redirect");
+
 
     }
 
@@ -281,4 +280,6 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
         }
         return true;
     }
+
+
 }
