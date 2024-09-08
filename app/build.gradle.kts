@@ -46,7 +46,7 @@ android {
         pickFirst("**/libshadowhook.so")
     }
 
-    ndkVersion = "27.0.12077973"
+    ndkVersion = "27.1.12297006"
 
     aaptOptions {
         noCompress.add("assets/bin/Data/data.unity3d")
