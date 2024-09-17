@@ -13,10 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.snackbar.Snackbar
 import silkways.terraria.toolbox.R
 import silkways.terraria.toolbox.databinding.MainFragmentManageBinding
-import silkways.terraria.toolbox.logic.ApkPatcher
 import silkways.terraria.toolbox.logic.mod.ModJsonManager.extractAndMergeJsonFiles
 import java.io.File
 import java.io.FileInputStream
@@ -28,11 +26,6 @@ class ManageFragment: Fragment() {
 
     private var _binding: MainFragmentManageBinding? = null
     private val binding get() = _binding!!
-
-
-
-
-
 
 
     @SuppressLint("SetTextI18n")
@@ -62,30 +55,6 @@ class ManageFragment: Fragment() {
         _binding = MainFragmentManageBinding.inflate(inflater, container, false)
 
 
-        binding.materialCardView.setOnLongClickListener {
-            val file = File("${requireActivity().cacheDir}/lspatch/origin/")
-            val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
-            copyFileIfNotExists("${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}", "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk")
-
-            Snackbar.make(it, getString(R.string.Copy_successful), Snackbar.LENGTH_SHORT).show()
-            true
-        }
-
-
-        binding.UpdateAPK.setOnClickListener {
-            val file = File("${requireActivity().cacheDir}/lspatch/origin/")
-            val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
-            copyFileOverwritingExisting("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk", "${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}")
-
-            Snackbar.make(it, getString(R.string.UpdateAPK), Snackbar.LENGTH_SHORT).show()
-        }
-
-        binding.UpdateAPK.setOnLongClickListener {
-            ApkPatcher.addSOsToAPK("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk", "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/ModData")
-            Snackbar.make(it, getString(R.string.APK_repair), Snackbar.LENGTH_SHORT).show()
-            true
-        }
-
 
         binding.efmodManager.setOnClickListener {
             navHostFragment.navController.navigate(R.id.nanavigation_EFModManager, null, navOptions)
@@ -113,7 +82,6 @@ class ManageFragment: Fragment() {
 
             if (efmodFilePaths.isNotEmpty()) {
                 extractAndMergeJsonFiles(efmodFilePaths, extractToPath)
-                ApkPatcher.addSOsToAPK("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/APK/base.apk", extractToPath)
             } else {
                 println("No valid files selected.")
             }
