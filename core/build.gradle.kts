@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "silkways.terraria.toolbox.core"
+    namespace = "silkways.terraria.efmodloader.core"
     compileSdk = 35
 
     defaultConfig {

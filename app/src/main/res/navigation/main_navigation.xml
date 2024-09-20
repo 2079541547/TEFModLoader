@@ -14,49 +14,49 @@ from EternalFuture゙
     <fragment
         android:label="@string/home"
         android:id="@+id/navigation_main"
-        android:name="silkways.terraria.toolbox.ui.fragment.MainFragment"
+        android:name="silkways.terraria.efmodloader.ui.fragment.MainFragment"
         tools:layout="@layout/fragment_main" />
 
     <fragment
         android:label="@string/settings"
         android:id="@+id/navigation_settings"
-        android:name="silkways.terraria.toolbox.ui.fragment.home.settings.SettingsFragment"
+        android:name="silkways.terraria.efmodloader.ui.fragment.home.settings.SettingsFragment"
         tools:layout="@layout/home_fragment_settings" />
 
     <fragment
         android:label="@string/about"
         android:id="@+id/navigation_about"
-        android:name="silkways.terraria.toolbox.ui.fragment.home.about.AboutFragment"
+        android:name="silkways.terraria.efmodloader.ui.fragment.home.about.AboutFragment"
         tools:layout="@layout/home_fragment_about" />
 
     <fragment
         android:label="@string/terminal"
         android:id="@+id/navigation_terminal"
-        android:name="silkways.terraria.toolbox.ui.fragment.toolbox.TerminalFragment"
+        android:name="silkways.terraria.efmodloader.ui.fragment.toolbox.TerminalFragment"
         tools:layout="@layout/toolbox_fragment_terminal" />
 
     <fragment
         android:label="@string/help"
         android:id="@+id/navigation_helps"
-        android:name="silkways.terraria.toolbox.ui.fragment.home.help.HelpFragment"
+        android:name="silkways.terraria.efmodloader.ui.fragment.home.help.HelpFragment"
         tools:layout="@layout/home_fragment_helps" />
 
     <fragment
         android:label="@string/Open_source_license"
         android:id="@+id/nanavigation_licence"
-        android:name="silkways.terraria.toolbox.ui.fragment.home.about.LicenceFragment"
+        android:name="silkways.terraria.efmodloader.ui.fragment.home.about.LicenceFragment"
         tools:layout="@layout/home_about_licence"/>
 
     <fragment
         android:label="@string/Special_Thanks"
         android:id="@+id/nanavigation_SpecialThanks"
-        android:name="silkways.terraria.toolbox.ui.fragment.home.about.SpecialThanksFargmrnt"
+        android:name="silkways.terraria.efmodloader.ui.fragment.home.about.SpecialThanksFargmrnt"
         tools:layout="@layout/home_about_specialthanks"/>
 
     <fragment
         android:label="@string/Future_plans"
         android:id="@+id/nanavigation_FuturePlans"
-        android:name="silkways.terraria.toolbox.ui.fragment.home.about.FuturePlansFragment"
+        android:name="silkways.terraria.efmodloader.ui.fragment.home.about.FuturePlansFragment"
         tools:layout="@layout/home_about_futureplans"/>
 
 
@@ -64,13 +64,13 @@ from EternalFuture゙
     <fragment
         android:label="@string/GamePanel"
         android:id="@+id/nanavigation_GamePanel"
-        android:name="silkways.terraria.toolbox.ui.fragment.toolbox.GamePanelFragment"
+        android:name="silkways.terraria.efmodloader.ui.fragment.toolbox.GamePanelFragment"
         tools:layout="@layout/toolbox_fragment_gamepanel"/>
 
     <fragment
         android:label="@string/efmod_manager"
         android:id="@+id/nanavigation_EFModManager"
-        android:name="silkways.terraria.toolbox.ui.fragment.manage.EFModFragment"
+        android:name="silkways.terraria.efmodloader.ui.fragment.manage.EFModFragment"
         tools:layout="@layout/manage_fragment_efmod"/>
 
 </navigation>

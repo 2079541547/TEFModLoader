@@ -20,7 +20,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Terraria ToolBox"
+rootProject.name = "TEFModLoader"
 include(":app")
 include(":apkzlib")
 

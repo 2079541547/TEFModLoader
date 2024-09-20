@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "silkways.terraria.toolbox"
+    namespace = "silkways.terraria.efmodloader"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "silkways.terraria.toolbox"
+        applicationId = "silkways.terraria.efmodloader"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
