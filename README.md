@@ -1,4 +1,4 @@
-# *Terraria ToolBox*
+# *TEFModLoader*
 
 * 一款专用于 Terraria 手机端的强大工具
 * [Русский 👈](https://github.com/2079541547/Terraria-ToolBox/blob/main/README-ru.md)
@@ -12,7 +12,7 @@
 * [ByNameModding](https://github.com/ByNameModding/BNM-Android)
 * [ShadowHook](https://github.com/bytedance/android-inline-hook)
 
-# Terraria ToolBox 功能
+# TEFModLoader 功能
 
 * 在 Android 设备上安装 Terraria 的 MOD 和资源包。
 * 支持多种类型的模组和资源包，增强游戏体验。
