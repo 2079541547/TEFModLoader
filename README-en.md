@@ -1,4 +1,4 @@
-# Terraria ToolBox
+# TEFModLoader
 
 * A powerful tool dedicated to the mobile version of Terraria.
 * [Contribute to the project](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=4_FgF6B2vAHURKYQeM-iU3hgXgLa5yao&authKey=uVaNXW3raKeD3M6lx9RryVaH0xC6hRsxfklNoYYB1FMIeOLlEChlrfD%2FbW9TsRkC&noverify=0&group_code=960014110)
@@ -10,7 +10,7 @@
 * [ByNameModding](https://github.com/ByNameModding/BNM-Android)
 * [ShadowHook](https://github.com/bytedance/android-inline-hook)
 
-# What Can Terraria ToolBox Do?
+# What Can TEFModLoader Do?
 
 * Install MODs and resource packs on Terraria for Android devices.
 * Support a variety of mod and resource pack types to enhance the gaming experience.
