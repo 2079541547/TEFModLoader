@@ -64,9 +64,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        File("${this.getExternalFilesDir(null)}/ToolBoxData/ModData").mkdirs()
-        File("${this.getExternalFilesDir(null)}/ToolBoxData/Resources").mkdirs()
-        File("${this.getExternalFilesDir(null)}/ToolBoxData/APK").mkdirs()
+        File("${this.getExternalFilesDir(null)}/ToolBoxData/").mkdirs()
 
         /*
         //无法使用啊QAQ
@@ -104,10 +102,6 @@ class MainActivity : AppCompatActivity() {
         // 获取 NavHostFragment 内的 NavController，用于控制界面间的导航
         navHostFragment.navController
         //navHostFragment.navController.navigate(R.id.navigation_terminal)
-
-        val file = File("${this.cacheDir}/lspatch/origin/")
-        val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
-        copyFileIfNotExists("${this.cacheDir}/lspatch/origin/${files?.get(0)?.name}", "${this.getExternalFilesDir(null)}/ToolBoxData/APK/base.apk")
 
         if(!(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.agreement) as Boolean)){
             showAgreement_Dialog(this)

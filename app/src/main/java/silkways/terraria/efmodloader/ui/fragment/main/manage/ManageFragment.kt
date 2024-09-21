@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,8 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.appbar.MaterialToolbar
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.MainFragmentManageBinding
-import silkways.terraria.efmodloader.logic.mod.ModJsonManager.extractAndMergeJsonFiles
+import silkways.terraria.efmodloader.logic.mod.ModJsonManager
+import silkways.terraria.efmodloader.ui.fragment.main.toolbox.logic.FileItem
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -71,17 +73,48 @@ class ManageFragment: Fragment() {
         return binding.root
     }
 
-    private val selectFilesLauncher_mod = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+    private fun loadFiles(directory: File): List<FileItem> {
+        val items = mutableListOf<FileItem>()
+
+        val files = directory.listFiles { _, _ -> true } ?: return items
+        files.forEach { file ->
+            if (file.isDirectory) {
+                items.addAll(loadFiles(file))
+            } else {
+                items.add(FileItem(file.name, false, file.absolutePath))
+            }
+        }
+
+        return items
+    }
+
+
+
+
+    private val selectFilesLauncher = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
         if (uris.isNotEmpty()) {
             val efmodFilePaths = uris.mapNotNull { uri ->
                 getRealPathFromURI(uri)?.let { path ->
                     File(path).absolutePath
                 }
             }
-            val extractToPath = "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/ModData"
 
             if (efmodFilePaths.isNotEmpty()) {
-                extractAndMergeJsonFiles(efmodFilePaths, extractToPath)
+                efmodFilePaths.forEach { filePath ->
+
+                    val file = File(filePath)
+                    val file2 = file.name
+                    val file1 = file.parent
+
+                    val rootDirectory ="${requireActivity().getExternalFilesDir(null)?.absolutePath}/ToolBoxData/EFModData"
+
+                    val destinationPath = "$rootDirectory/"
+
+                    if (file1 != null) {
+                        ModJsonManager.moveFileAndUpdateConfig(requireActivity(), file1, destinationPath, file2)
+                    }
+
+                }
             } else {
                 println("No valid files selected.")
             }
@@ -89,14 +122,24 @@ class ManageFragment: Fragment() {
     }
 
 
+
     private fun getRealPathFromURI(contentUri: Uri): String? {
         return requireActivity().contentResolver.openInputStream(contentUri)?.use { inputStream ->
-            inputStream.readBytes().let { bytes ->
-                val tempFile = File.createTempFile("temp", ".efmod")
-                tempFile.writeBytes(bytes)
-                tempFile.absolutePath
-            }
+            val fileName = getFileNameFromURI(contentUri)
+            val tempDir = File.createTempFile("temp", "").parentFile // 获取临时目录
+            val tempFile = File(tempDir, fileName) // 使用原始文件名创建新文件
+            tempFile.writeBytes(inputStream.readBytes())
+            tempFile.absolutePath
         }
+    }
+
+    // 辅助函数用于从 Uri 获取文件名
+    private fun getFileNameFromURI(uri: Uri): String {
+        return requireActivity().contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            cursor.moveToFirst()
+            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            cursor.getString(nameIndex)
+        } ?: ""
     }
 
     private fun selectModFiles() {
@@ -106,7 +149,7 @@ class ManageFragment: Fragment() {
         intent.type = "*/*"
         // 允许多个文件选择
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        selectFilesLauncher_mod.launch(intent.toString())
+        selectFilesLauncher.launch(intent.toString())
     }
 
 

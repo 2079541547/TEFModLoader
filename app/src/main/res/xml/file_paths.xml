@@ -25,4 +25,6 @@
         name="players_directory"
         path="Players/" />
 
+    <cache-path name="cache" path="." />
+
 </paths>

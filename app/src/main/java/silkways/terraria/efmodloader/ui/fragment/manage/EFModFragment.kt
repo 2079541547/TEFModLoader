@@ -1,29 +1,20 @@
 package silkways.terraria.efmodloader.ui.fragment.manage
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.ManageFragmentEfmodBinding
-import silkways.terraria.efmodloader.ui.fragment.manage.mod.JsonParser
-import silkways.terraria.efmodloader.ui.fragment.manage.mod.ModAdapter
-import silkways.terraria.efmodloader.ui.fragment.manage.mod.ModDetail
 
 class EFModFragment: Fragment() {
 
     private var _binding: ManageFragmentEfmodBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: ModAdapter
-    private val modList = mutableListOf<ModDetail>()
 
 
     override fun onCreateView(
@@ -37,36 +28,15 @@ class EFModFragment: Fragment() {
         _binding = ManageFragmentEfmodBinding.inflate(inflater, container, false)
 
 
-        recyclerView = binding.modRecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
 
-        // 创建适配器实例
-        adapter = ModAdapter(modList, requireActivity())
-
-        // 将适配器与 RecyclerView 关联起来
+        val recyclerView: RecyclerView = binding.modRecyclerView
+        val mods = loadModsFromDirectory("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModData", requireActivity())
+        val adapter = ModsAdapter(mods, requireActivity())
         recyclerView.adapter = adapter
-
-        recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                requireActivity(),
-                DividerItemDecoration.VERTICAL
-            )
-        )
-
-        // 加载数据
-        loadModDataFromJson()
-
-
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         return binding.root
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun loadModDataFromJson() {
-        val parser = JsonParser(requireActivity())
-        val mods = parser.parseJson("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/ModData/mod_data.json")
-        modList.addAll(mods)
-        adapter.notifyDataSetChanged()
-    }
 
 
     override fun onDestroyView() {
