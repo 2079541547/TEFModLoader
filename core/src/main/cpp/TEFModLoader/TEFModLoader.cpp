@@ -42,9 +42,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
 
     regAPI();
 
-    //Loadcpp::LoadALLMod("/data/data/silkways.terraria.efmodloader/cache/runEFMod/cpp");
+    Loadcpp::LoadALLMod("/data/data/silkways.terraria.efmodloader/cache/runEFMod/cpp");
 
-    Loadcpp::LoadMod("libexample_mod.so");
+    //Loadcpp::LoadMod("libexample_mod.so");
 
     BNM::Loading::AddOnLoadedEvent(LoadHook);
 

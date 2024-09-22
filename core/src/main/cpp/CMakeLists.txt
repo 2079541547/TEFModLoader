@@ -5,8 +5,8 @@ project("TEFModLoader")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -flto")
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -std=c++20")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -flto")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -std=c++20")
 
 find_package(shadowhook REQUIRED CONFIG)
 
@@ -109,12 +109,12 @@ target_link_libraries(
 
 
 
-add_library(example_mod SHARED
-        example_mod/LuckyDamage/example_mod.cpp
-)
+#add_library(example_mod SHARED
+#        example_mod/LuckyDamage/example_mod.cpp
+#)
 
-target_link_libraries(
-        example_mod
-        PUBLIC
-        log
-)
+#target_link_libraries(
+#        example_mod
+#        PUBLIC
+#        log
+#)

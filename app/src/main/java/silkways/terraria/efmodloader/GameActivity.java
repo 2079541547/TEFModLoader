@@ -22,6 +22,7 @@ import com.unity3d.player.UnityPlayer;
 
 import silkways.terraria.efmodloader.core.LoadMod;
 import silkways.terraria.efmodloader.ui.debug.LoadDebug;
+import silkways.terraria.efmodloader.ui.gametool.LoadTool;
 
 /**
  * UnityPlayerActivity类是Unity播放器在Android上的活动容器。
@@ -97,6 +98,10 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
 
         LoadDebug loadDebug = new LoadDebug();
         loadDebug.LoadMain(rootView, this);
+
+
+        LoadTool LoadTool = new LoadTool();
+        LoadTool.LoadMain(rootView, this);
 
         LoadMod LoadMod = new LoadMod();
         LoadMod.LoadMian(this);

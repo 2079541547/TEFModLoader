@@ -48,15 +48,33 @@ void Loadcpp::LoadMod(const string &LibPath) {
 
 
 // 加载所有Mod
-void Loadcpp::LoadALLMod(const string& LibPath) {
+void Loadcpp::LoadALLMod(const std::string& LibPath) {
+    // 检查路径是否为空
+    if (LibPath.empty()) {
+        MainLOGS::LOG("Warning", "DynamicLibrary", "LoadALLMod", "提供的路径为空");
+        return;
+    }
+
+    // 检查路径是否存在
+    if (!filesystem::exists(LibPath)) {
+        MainLOGS::LOG("Warning", "DynamicLibrary", "LoadALLMod", "提供的路径不存在: " + LibPath);
+        return;
+    }
+
+    // 如果路径是一个文件而不是目录，也可以选择处理这种情况
+    if (!filesystem::is_directory(LibPath)) {
+        MainLOGS::LOG("Error", "DynamicLibrary", "LoadALLMod", "提供的路径不是一个目录: " + LibPath);
+        return;
+    }
+
     // 遍历目录下的所有文件
-    for (const auto& entry : std::filesystem::directory_iterator(LibPath)) {
+    for (const auto& entry : filesystem::directory_iterator(LibPath)) {
         if (entry.is_regular_file()) {
+            std::string filePath = entry.path().string();
 
-            string filePath = entry.path().string();
-
-            MainLOGS::LOG("Info", "DynamicLibrary", "LoadALLMod", "正在尝试加载Mod：" + filePath);
+            MainLOGS::LOG("Info", "DynamicLibrary", "LoadALLMod", "正在尝试加载Mod: " + filePath);
             LoadMod(filePath);
         }
     }
 }
+
