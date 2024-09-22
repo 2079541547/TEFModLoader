@@ -45,7 +45,7 @@
     <string name="logs_text_1">1.多种语言</string>
 
     <string name="Clear_cache_title">是否清除缓存？</string>
-    <string name="Clear_cache_message">此工具会缓存一个apk文件作为热更新对象，跟您的游戏包一样大小，这将占用大概3倍的内存</string>
+    <string name="Clear_cache_message">此工具会缓存各种文件，如：您安装的Mod，存档，人物等</string>
     <string name="Clear_cache">清除缓存</string>
     <string name="NOClear_cache">直接退出</string>
     
@@ -162,18 +162,10 @@
     <string name="author_text">作者:</string>
     <string name="build_text">版本:</string>
     <string name="modIntroduce_text">介绍:</string>
-    <string name="Opencode_text1">开源信息:</string>
-    <string name="Opencode_text2">开源</string>
-    <string name="Opencode_text3">开源链接:</string>
-    <string name="Opencode_text4">闭源</string>
-    <string name="mod_more_info">函数挂钩:</string>
-    <string name="position_text">位置:</string>
-    <string name="functions_text">函数:</string>
-    <string name="type_text">类型:</string>
-    <string name="arrays_text">返回的数组引索:</string>
+    <string name="ModRuntime">运行时: </string>
+    <string name="deleteMod">删除此Mod？</string>
+    <string name="removeEFMod">已移除，请退出页面刷新</string>
     <string name="determine">确定</string>
-    <string name="Please_enter_a_new_value">请输入新值</string>
-
     <string name="Jump_to_open_source_URL">跳转开源链接</string>
     <string name="APK_Status">APK状态</string>
     <string name="Update_APK">更新APK(长按重新修补)</string>

@@ -220,7 +220,7 @@ class MainActivity : AppCompatActivity() {
                 Int::class.javaPrimitiveType
             )
             method.invoke(activity.window, flag)
-        } catch (ignore: Exception) {
+        } catch (_: Exception) {
         }
     }
 

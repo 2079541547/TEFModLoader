@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.LayoutInflater
@@ -72,8 +73,8 @@ class HomeFragment: Fragment() {
         // 使用绑定来加载布局文件
         _binding = MainFragmentHomeBinding.inflate(inflater, container, false)
 
-
-
+        deleteDirectory(File("${requireActivity().cacheDir}/runEFMod"))
+        File("${requireActivity().cacheDir}").mkdirs()
         binding.greetings.text = getGreeting() //设置问候语
 
         //设置一言
@@ -114,11 +115,7 @@ class HomeFragment: Fragment() {
                         ){
                         showCleanDialog()
                     } else if(JsonConfigModifier.readJsonValue(requireActivity(), silkways.terraria.efmodloader.data.Settings.jsonPath, silkways.terraria.efmodloader.data.Settings.autoClean) as Boolean){
-                        val file = File("${requireActivity().cacheDir}/lspatch/origin/")
-                        val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
-                        val file1 = File("${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}")
-                        file1.exists()
-
+                        clearCache()
                         activity?.finishAffinity()
                     } else {
                         activity?.finishAffinity()
@@ -239,11 +236,7 @@ class HomeFragment: Fragment() {
         builder.setMessage(getString(R.string.Clear_cache_message))
 
         builder.setPositiveButton(getString(R.string.Clear_cache)) { dialog: DialogInterface, _: Int ->
-            val file = File("${requireActivity().cacheDir}/lspatch/origin/")
-            val files = file.listFiles { _, name -> name.endsWith(".apk", ignoreCase = true) }
-            val file1 = File("${requireActivity().cacheDir}/lspatch/origin/${files?.get(0)?.name}")
-            file1.exists()
-
+            clearCache()
             dialog.dismiss()
             activity?.finishAffinity()
         }
@@ -258,7 +251,31 @@ class HomeFragment: Fragment() {
 
     }
 
+    private fun clearCache() {
+        // 清除应用的内部缓存目录
+        val cacheDir = requireActivity().cacheDir
+        // 清除应用的外部缓存目录（如果存在）
+        val externalCacheDir = requireActivity().externalCacheDir
 
+        deleteDirectory(cacheDir)
+        if (externalCacheDir != null) {
+            deleteDirectory(externalCacheDir)
+        }
+    }
+
+
+    private fun deleteDirectory(directory: File) {
+        if (directory.exists()) {
+            directory.listFiles()?.forEach { file ->
+                if (file.isDirectory) {
+                    deleteDirectory(file)
+                } else {
+                    file.delete()
+                }
+            }
+            directory.delete()
+        }
+    }
 
 
     /**

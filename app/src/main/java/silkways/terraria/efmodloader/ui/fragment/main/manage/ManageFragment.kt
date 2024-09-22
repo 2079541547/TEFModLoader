@@ -125,6 +125,7 @@ class ManageFragment: Fragment() {
 
     private fun getRealPathFromURI(contentUri: Uri): String? {
         return requireActivity().contentResolver.openInputStream(contentUri)?.use { inputStream ->
+            File(requireActivity().cacheDir.toString()).mkdirs()
             val fileName = getFileNameFromURI(contentUri)
             val tempDir = File.createTempFile("temp", "").parentFile // 获取临时目录
             val tempFile = File(tempDir, fileName) // 使用原始文件名创建新文件

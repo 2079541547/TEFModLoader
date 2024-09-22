@@ -73,4 +73,10 @@ from EternalFuture゙
         android:name="silkways.terraria.efmodloader.ui.fragment.manage.EFModFragment"
         tools:layout="@layout/manage_fragment_efmod"/>
 
+    <fragment
+        android:label="Mod自定义页面"
+        android:id="@+id/nanavigation_EFModWeb"
+        android:name="silkways.terraria.efmodloader.ui.fragment.manage.EFModWebFragment"
+        tools:layout="@layout/manage_efmod_web"/>
+
 </navigation>
