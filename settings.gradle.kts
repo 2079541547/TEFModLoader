@@ -22,7 +22,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "TEFModLoader"
 include(":app")
-include(":apkzlib")
-
 include(":game-assets")
 include(":core")

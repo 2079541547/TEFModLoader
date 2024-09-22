@@ -90,6 +90,7 @@ static_assert(false, "ByNameModding requires C++20 and above!");
 
 // Shadowhook
 #include "shadowhook.h"
+
 template<typename PTR_T, typename NEW_T, typename T_OLD>
 inline void *HOOK(PTR_T ptr, NEW_T newMethod, T_OLD &oldBytes) {
     if ((void *) ptr != nullptr) return shadowhook_hook_func_addr((void *)ptr, (void *) newMethod, (void **) &oldBytes);
@@ -131,8 +132,8 @@ inline void UNHOOK(PTR_T ptr) {
 }
 */
 
-// Dummy
 /*
+// Dummy
 #include <cassert>
 
 template<typename PTR_T, typename NEW_T, typename T_OLD>
@@ -223,4 +224,4 @@ namespace BNM {
 #endif
 }
 
-#define BNM_VER "2.0.4"
+#define BNM_VER "2.1.1"

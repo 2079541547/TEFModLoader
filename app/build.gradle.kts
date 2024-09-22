@@ -17,6 +17,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk {
+            //noinspection ChromeOsAbiSupport
             abiFilters += listOf("arm64-v8a")
         }
     }
@@ -62,7 +63,6 @@ dependencies{
     implementation(project(":game-assets"))
     implementation(libs.commonmark)
     implementation(libs.shadowhook)
-    implementation(project(":apkzlib"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

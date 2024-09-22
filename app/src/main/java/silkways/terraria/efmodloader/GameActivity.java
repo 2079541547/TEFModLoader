@@ -20,6 +20,7 @@ import com.unity3d.player.IUnityPlayerLifecycleEvents;
 import com.unity3d.player.MultiWindowSupport;
 import com.unity3d.player.UnityPlayer;
 
+import silkways.terraria.efmodloader.core.LoadMod;
 import silkways.terraria.efmodloader.ui.debug.LoadDebug;
 
 /**
@@ -97,7 +98,8 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
         LoadDebug loadDebug = new LoadDebug();
         loadDebug.LoadMain(rootView, this);
 
-
+        LoadMod LoadMod = new LoadMod();
+        LoadMod.LoadMian(this);
 
     }
 

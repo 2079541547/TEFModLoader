@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.22.1)
 
 
-project("Major")
+project("TEFModLoader")
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(shadowhook REQUIRED CONFIG)
 
@@ -24,19 +26,24 @@ add_library(
         BNM/src/Class.cpp
         BNM/src/ClassesManagement.cpp
         BNM/src/Coroutine.cpp
+        BNM/src/Defaults.cpp
         BNM/src/Delegates.cpp
         BNM/src/EventBase.cpp
+        BNM/src/Exceptions.cpp
         BNM/src/FieldBase.cpp
         BNM/src/Hooks.cpp
         BNM/src/Image.cpp
         BNM/src/Internals.cpp
+        BNM/src/Internals.hpp
         BNM/src/Loading.cpp
         BNM/src/MethodBase.cpp
         BNM/src/MonoStructures.cpp
         BNM/src/PropertyBase.cpp
+        BNM/src/RegisterHook.cpp
         BNM/src/UnityStructures.cpp
         BNM/src/Utils.cpp
 )
+
 
 target_include_directories(
         BNM
@@ -57,38 +64,52 @@ target_link_libraries(
 set_property(TARGET BNM PROPERTY BNM_INCLUDE_DIRECTORIES ${PUBLIC_INCLUDE_DIRS})
 
 
-add_library(LuckyDamageEternalFuture
+
+
+set(PUBLIC_INCLUDE_DIRS1
+        EFModLoader/include
+)
+
+set(INCLUDE_DIRS1
+        EFModLoader/include
+        EFModLoader/src
+)
+
+add_library(
+        EFModLoader
         SHARED
-        example/LuckyDamage/main.cpp
+        EFModLoader/src/Hook/RegisterHook.cpp
+        EFModLoader/src/LoadMain.cpp
+        EFModLoader/src/API/register.cpp
+        EFModLoader/src/LOG/MainLOGS.cpp
+        EFModLoader/src/Loader/Loadcpp.cpp
 )
 
 
-
-
-
-add_library(Major
-        SHARED
-        Major/Major.cpp
+target_include_directories(
+        EFModLoader
+        PUBLIC
+        ${INCLUDE_DIRS1}
 )
 
-
-add_library(Redirect
-        SHARED
-        redirect.cpp
-)
+set_property(TARGET EFModLoader PROPERTY EFModLoader_INCLUDE_DIRECTORIES ${PUBLIC_INCLUDE_DIRS1})
 
 
-target_link_libraries(Major
+target_link_libraries(
+        EFModLoader
         PUBLIC
         BNM
         log
-        android
 )
 
 
-target_link_libraries(Redirect
+
+add_library(example_mod SHARED
+        example_mod/example_mod.cpp
+)
+
+target_link_libraries(
+        example_mod
         PUBLIC
-        shadowhook::shadowhook
         log
-        android
 )
