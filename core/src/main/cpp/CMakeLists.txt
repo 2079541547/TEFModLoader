@@ -5,6 +5,9 @@ project("TEFModLoader")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -flto")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -std=c++20")
+
 find_package(shadowhook REQUIRED CONFIG)
 
 set(PUBLIC_INCLUDE_DIRS
@@ -78,8 +81,10 @@ set(INCLUDE_DIRS1
 add_library(
         EFModLoader
         SHARED
+        TEFModLoader/TEFModLoader.cpp
+
+
         EFModLoader/src/Hook/RegisterHook.cpp
-        EFModLoader/src/LoadMain.cpp
         EFModLoader/src/API/register.cpp
         EFModLoader/src/LOG/MainLOGS.cpp
         EFModLoader/src/Loader/Loadcpp.cpp
@@ -105,7 +110,7 @@ target_link_libraries(
 
 
 add_library(example_mod SHARED
-        example_mod/example_mod.cpp
+        example_mod/LuckyDamage/example_mod.cpp
 )
 
 target_link_libraries(

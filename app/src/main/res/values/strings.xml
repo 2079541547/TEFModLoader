@@ -42,7 +42,7 @@
     <!-- 更新日志 -->
     <string name="logs">更新日志|x･`)(一定会按时更新的)</string>
     <string name="logs_title_1">1.0.0</string>
-    <string name="logs_text_1">1.多种语言</string>
+    <string name="logs_text_1">1.可使用EFMod作为游戏扩展 \n2.可导入存档/配置 \n3.EFMod基本支持 \n4.调试工具 \n5.额外的游戏菜单</string>
 
     <string name="Clear_cache_title">是否清除缓存？</string>
     <string name="Clear_cache_message">此工具会缓存各种文件，如：您安装的Mod，存档，人物等</string>

@@ -15,6 +15,7 @@ android {
             cmake {
                 cppFlags += "-std=c++20"
                 abiFilters += listOf("arm64-v8a")
+
             }
         }
         ndk {

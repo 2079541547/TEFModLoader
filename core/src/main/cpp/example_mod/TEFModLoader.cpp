@@ -7,23 +7,23 @@
 #include <API/register.hpp>
 #include <Loader/Loadcpp.hpp>
 #include <Hook/RegisterHook.hpp>
-#include <BNM/Loading.hpp>
-#include <BNM/UserSettings/GlobalSettings.hpp>
+#include "BNM/Loading.hpp"
+#include "BNM/UserSettings/GlobalSettings.hpp"
 #include <EFMod/EFMod.hpp>
 #include <API/redirect.hpp>
-#include <BNM/UnityStructures.hpp>
+#include "BNM/UnityStructures.hpp"
 #include <jni.h>
-#include <BNM/Loading.hpp>
-#include <BNM/UserSettings/GlobalSettings.hpp>
-#include <BNM/Class.hpp>
-#include <BNM/Method.hpp>
+#include "BNM/Loading.hpp"
+#include "BNM/UserSettings/GlobalSettings.hpp"
+#include "BNM/Class.hpp"
+#include "BNM/Method.hpp"
 #include <unistd.h>
 #include <zconf.h>
 #include <cstdio>
-#include <BNM/Utils.hpp>
-#include <BNM/Property.hpp>
-#include <BNM/Operators.hpp>
-#include <BNM/BasicMonoStructures.hpp>
+#include "BNM/Utils.hpp"
+#include "BNM/Property.hpp"
+#include "BNM/Operators.hpp"
+#include "BNM/BasicMonoStructures.hpp"
 #include <random>
 #include <ctime>
 
@@ -45,12 +45,8 @@ int hello() {
 
 
 void LoadHook(){
-
     BNM::MethodBase hook_point_1 = BNM::Class("Terraria", "Main", BNM::Image("Assembly-CSharp.dll")).GetMethod("DamageVar", 2);
-
-    HOOK(hook_point_1, hello, old_hello);
-    //RegisterHook::RegisterHOOK("hook_point_1", hook_point_1, (void *) hello,  (void **) old_hello);
-
+    RegisterHook::RegisterHOOK("hook_point_1", hook_point_1, (void *) hello,  (void **) old_hello);
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
@@ -70,15 +66,11 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
     RegisterApi::RegisterAPI("GetStorage", Redirect::getPtr(GetStorage));
 
     Loadcpp::LoadMod("libexample_mod.so");
+    RegisterApi::Register();
 
+    sleep(1); //保证Hook被初始化
 
-
-    auto hooks = EFModLoaderAPI::GetEFModLoader().FindHooks("hook_point_1");
-    for (auto hook : hooks)
-    {
-        RegisterHook::Register();
-        Redirect::callFunction<int>(reinterpret_cast<void *>(hook));
-    }
+    BNM::Loading::AddOnLoadedEvent(RegisterHook::Register);
 
     return JNI_VERSION_1_6;
 }

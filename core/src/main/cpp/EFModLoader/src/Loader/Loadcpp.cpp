@@ -5,7 +5,7 @@
 #include "LOG/MainLOGS.hpp"
 #include <API/register.hpp>
 
-void Loadcpp::LoadMod(const std::string &LibPath) {
+void Loadcpp::LoadMod(const string &LibPath) {
     void* handle = dlopen(LibPath.c_str(), RTLD_LAZY);
     if (!handle) {
         MainLOGS::LOG("Error", "DynamicLibrary", "LoadMod", "无法加载Mod：" + LibPath);
@@ -32,12 +32,9 @@ void Loadcpp::LoadMod(const std::string &LibPath) {
 
     // 自动注册扩展函数
     mod->RegisterAPIs();
-
-    RegisterApi::Register();
-
-
     mod->RegisterHooks();
 
+    RegisterApi::Register(); //注册API，（加载之前的API不能使用BNM库！）
 
     if (!mod->Initialize()) {
         MainLOGS::LOG("Error", "DynamicLibrary", "LoadMod", "Mod初始化失败！");
@@ -46,4 +43,20 @@ void Loadcpp::LoadMod(const std::string &LibPath) {
     }
 
     MainLOGS::LOG("Info", "DynamicLibrary", "LoadMod", "已加载Mod：" + LibPath);
+}
+
+
+
+// 加载所有Mod
+void Loadcpp::LoadALLMod(const string& LibPath) {
+    // 遍历目录下的所有文件
+    for (const auto& entry : std::filesystem::directory_iterator(LibPath)) {
+        if (entry.is_regular_file()) {
+
+            string filePath = entry.path().string();
+
+            MainLOGS::LOG("Info", "DynamicLibrary", "LoadALLMod", "正在尝试加载Mod：" + filePath);
+            LoadMod(filePath);
+        }
+    }
 }
