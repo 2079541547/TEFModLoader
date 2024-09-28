@@ -17,7 +17,7 @@ namespace EFModLoader::RegisterHook::Unity {
         // 查找已存在的API记录
         for (auto& hooks : registerIHooks) {
             if (hooks.hookName == hookName) {
-                EFModLoader::Log::LOG("Warning", "RegisterHook", "unity", "RegisterIHOOK", "API已存在：" + hookName + " 将不进行注册操作");
+                EFModLoader::Log::LOG("Warning", "RegisterHook", "unity", "RegisterIHOOK", "Hook已存在：" + hookName + " 将不进行注册操作");
                 return;
             }
         }
@@ -30,7 +30,7 @@ namespace EFModLoader::RegisterHook::Unity {
         // 查找已存在的API记录
         for (auto& hooks : registerHooks) {
             if (hooks.hookName == hookName) {
-                EFModLoader::Log::LOG("Warning", "RegisterHook", "unity", "RegisterHOOK", "API已存在：" + hookName + " 将不进行注册操作");
+                EFModLoader::Log::LOG("Warning", "RegisterHook", "unity", "RegisterHOOK", "Hook已存在：" + hookName + " 将不进行注册操作");
                 return;
             }
         }
