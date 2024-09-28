@@ -20,7 +20,6 @@
 
 ## Principle
 
-* Resource loading uses iohook (LsPatch).
 * Mods use BNM hooks.
 
 ## Multi-language Support
