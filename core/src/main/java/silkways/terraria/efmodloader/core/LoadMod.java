@@ -16,7 +16,7 @@ public class LoadMod {
 
     public void LoadMian(Context context){
         loadHook();
-        System.loadLibrary("EFModLoader");
+        System.loadLibrary("TEFModLoader");
     }
 
     public void loadHook(){

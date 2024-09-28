@@ -15,12 +15,7 @@ public:
         return "LuckyDamage";
     }
 
-
     bool Initialize() override {return true;}
-
-    void Shutdown() override {
-        __android_log_print(ANDROID_LOG_INFO, "LuckyDamage", "Shutting down mod: %s", GetIdentifier());
-    }
 
     void RegisterHooks() override {
         __android_log_print(ANDROID_LOG_INFO, "LuckyDamage", "Registering hooks for mod: %s", GetIdentifier());

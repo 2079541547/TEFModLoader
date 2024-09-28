@@ -1,9 +1,8 @@
 //
-// Created by eternalfuture on 2024/9/22.
+// Created by eternalfuture on 2024/9/28.
 //
 
-#ifndef EFMODLOADER_EFMOD_HPP
-#define EFMODLOADER_EFMOD_HPP
+#pragma once
 
 #include <iostream>
 #include <memory>
@@ -24,17 +23,12 @@ public:
     // 模组初始化时调用
     virtual bool Initialize() = 0;
 
-    // 模组卸载时调用
-    virtual void Shutdown() = 0;
-
     // 注册模组要hook的位置和hook后的函数指针
     virtual void RegisterHooks() = 0;
 
-    //注册API(变量)
+    //注册API
     virtual void RegisterAPIs() = 0;
 
     // 接收加载器提供的API集合
     virtual void LoadEFMod(EFModLoaderAPI* api) = 0;
 };
-
-#endif //EFMODLOADER_EFMOD_HPP

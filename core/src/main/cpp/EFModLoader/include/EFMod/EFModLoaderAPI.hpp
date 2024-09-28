@@ -1,9 +1,8 @@
 //
-// Created by eternalfuture on 2024/9/22.
+// Created by eternalfuture on 2024/9/28.
 //
 
-#ifndef EFMODLOADER_EFMODLOADERAPI_HPP
-#define EFMODLOADER_EFMODLOADERAPI_HPP
+#pragma once
 
 #include <map>
 #include <string>
@@ -39,6 +38,7 @@ private:
     // 私有构造函数
     EFModLoaderAPI() {}
 };
+
 
 // 实现单例的获取方法
 inline EFModLoaderAPI& EFModLoaderAPI::GetEFModLoader() {
@@ -77,5 +77,3 @@ inline std::vector<uintptr_t> EFModLoaderAPI::FindAPIS(const std::string& APIPoi
     }
     return it->second;
 }
-
-#endif //EFMODLOADER_EFMODLOADERAPI_HPP
