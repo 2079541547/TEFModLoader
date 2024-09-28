@@ -22,13 +22,13 @@ set(INCLUDE_DIRS
     external/include
     external
     external/utf8
-    src/BNM_data
+    src/private
 )
 
 add_library(
         BNM
         STATIC
-        BNM/src/Class.cpp
+        src/Class.cpp
         src/ClassesManagement.cpp
         src/Coroutine.cpp
         src/Defaults.cpp
