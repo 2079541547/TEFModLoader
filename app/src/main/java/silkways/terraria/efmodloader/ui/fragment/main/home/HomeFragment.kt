@@ -21,6 +21,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import eternal.future.effsystem.fileSystem
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.HomeDialogLogsBinding
 import silkways.terraria.efmodloader.databinding.MainFragmentHomeBinding
@@ -126,7 +127,6 @@ class HomeFragment: Fragment() {
                 }
             }
         })
-
 
         return binding.root
     }

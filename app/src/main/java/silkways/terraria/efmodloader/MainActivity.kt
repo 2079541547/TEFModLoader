@@ -12,6 +12,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import eternal.future.effsystem.fileSystem
 import silkways.terraria.efmodloader.data.GameSettings
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.ActivityMainBinding
@@ -50,9 +51,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //创建配置
-        JsonConfigModifier.createJsonConfig(this, Settings.jsonPath, Settings.Data)
-        JsonConfigModifier.createJsonConfig(this, GameSettings.jsonPath, GameSettings.Data)
+        System.loadLibrary("EFFileSystem")
+
         checkAndWriteFile(this)
 
         //设置语言&主题
@@ -64,7 +64,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        File("${this.getExternalFilesDir(null)}/ToolBoxData/").mkdirs()
 
         /*
         //无法使用啊QAQ
@@ -107,6 +106,8 @@ class MainActivity : AppCompatActivity() {
             showAgreement_Dialog(this)
         }
 
+
+        clearCache()
 
     }
 
@@ -224,5 +225,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun clearCache() {
+        // 清除应用的内部缓存目录
+        val cacheDir = this.cacheDir
+        // 清除应用的外部缓存目录（如果存在）
+        val externalCacheDir = this.externalCacheDir
 
+        deleteDirectory(cacheDir)
+        if (externalCacheDir != null) {
+            deleteDirectory(externalCacheDir)
+        }
+    }
+
+
+    private fun deleteDirectory(directory: File) {
+        if (directory.exists()) {
+            directory.listFiles()?.forEach { file ->
+                if (file.isDirectory) {
+                    deleteDirectory(file)
+                } else {
+                    file.delete()
+                }
+            }
+            directory.delete()
+        }
+    }
 }

@@ -13,6 +13,8 @@ object Settings {
     val CleanDialog = "CleanDialog" //是否弹出清除缓存弹窗
     val CoveringFiles = "CoveringFiles"
     val OnlineVideo = "OnlineVideo"
+    val ExternalKernel = "ExternalKernel"
+    val KernelPath = "KernelPath"
 
     //json数据
     val Data = mapOf(
@@ -22,6 +24,8 @@ object Settings {
         autoClean to false,
         CleanDialog to true,
         CoveringFiles to false,
-        OnlineVideo to "https://www.bilibili.com/"
+        OnlineVideo to "https://www.bilibili.com/",
+        ExternalKernel to false,
+        KernelPath to "",
     )
 }

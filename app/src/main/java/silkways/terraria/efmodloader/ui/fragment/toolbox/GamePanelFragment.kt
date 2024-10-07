@@ -1,6 +1,7 @@
 package silkways.terraria.efmodloader.ui.fragment.toolbox
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
+import eternal.future.effsystem.fileSystem
 import org.json.JSONObject
 import silkways.terraria.efmodloader.GameActivity
 import silkways.terraria.efmodloader.R
@@ -117,7 +119,8 @@ class GamePanelFragment : Fragment() {
             while (iterator.hasNext()) {
                 val key = iterator.next()
                 if (jsonObject.getBoolean(key)) {
-                    ModManager.enableEFMod(requireActivity(), key)
+                    fileSystem.EFMC.extractExecutable(key, Build.CPU_ABI, "${requireActivity().cacheDir.absolutePath}/runEFMod/")
+                    //ModManager.enableEFMod(requireActivity(), key)
                     Log.d("GamePanelFragment", "Key: $key") // 如果值为true，打印键
                 }
             }

@@ -1,5 +1,6 @@
 package silkways.terraria.efmodloader.core;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -14,9 +15,14 @@ import java.util.Objects;
 
 public class LoadMod {
 
-    public void LoadMian(Context context){
+    @SuppressLint("UnsafeDynamicallyLoadedCode")
+    public void LoadMian(Context context, Boolean isC , String path){
         loadHook();
-        System.loadLibrary("TEFModLoader");
+        if (isC) {
+            System.load(path);
+        } else {
+            System.loadLibrary("TEFModLoader");
+        }
     }
 
     public void loadHook(){
@@ -24,5 +30,7 @@ public class LoadMod {
                 .setMode(ShadowHook.Mode.UNIQUE)
                 .build());
     }
+
+
 
 }

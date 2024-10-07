@@ -2,8 +2,7 @@
 
 #include "UserSettings/GlobalSettings.hpp"
 
-#ifdef BNM_CLASSES_MANAGEMENT
-#ifdef BNM_COROUTINE
+#if defined(BNM_CLASSES_MANAGEMENT) && defined(BNM_COROUTINE)
 
 #include <functional>
 
@@ -23,7 +22,7 @@ namespace std {
 #include "Il2CppHeaders.hpp"
 
 namespace BNM::Coroutine {
-    // Similar To #UnityEngine.YieldInstruction, but for BNM
+    // Similar to UnityEngine.YieldInstruction, but for BNM
     struct YieldInstruction {
         inline YieldInstruction(BNM::IL2CPP::Il2CppObject *object) : _object(object) {};
         BNM::IL2CPP::Il2CppObject *_object{};
@@ -84,5 +83,4 @@ namespace BNM::Coroutine {
     };
 }
 
-#endif
 #endif

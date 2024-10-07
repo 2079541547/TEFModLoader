@@ -13,7 +13,7 @@ android {
         consumerProguardFiles("consumer-rules.pro")
         externalNativeBuild {
             cmake {
-                cppFlags += "-std=c++20"
+                cppFlags += "-std=c++23"
                 abiFilters += listOf("arm64-v8a")
 
             }
@@ -45,7 +45,7 @@ android {
     buildFeatures {
         prefab = true
     }
-    ndkVersion = "27.1.12297006"
+    ndkVersion = "28.0.12433566 rc1"
 }
 
 dependencies {

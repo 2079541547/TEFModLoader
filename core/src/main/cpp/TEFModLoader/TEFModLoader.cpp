@@ -63,7 +63,7 @@ void LoadHook(){
 
 
     EFModLoader::RegisterHook::Unity::RegisterHOOK("Assembly-CSharp.dll.Terraria.Main.DamageVar", DamageVar, (void *) new_DamageVar,  (void **) old_DamageVar);
-    BNM::InvokeHook(ItemID, test, org_test);
+    //BNM::InvokeHook(ItemID, test, org_test);
     //EFModLoader::RegisterHook::Unity::RegisterIHOOK("", );
 }
 
@@ -78,17 +78,18 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
 
 
     BNM::Loading::TryLoadByJNI(env);
+
+
+    //Loadcpp::LoadALLMod("/data/data/silkways.terraria.efmodloader/cache/runEFMod/");
+
+    EFModLoader::Loader::LoadELFMods::LoadALLMod("/data/data/silkways.terraria.efmodloader/cache/runEFMod/");
+    //EFModLoader::Loader::LoadELFMods::LoadMod("libexample_mod.so");
+
     BNM::Loading::AddOnLoadedEvent(LoadHook);
-    BNM::Loading::AddOnLoadedEvent(EFModLoader::RegisterHook::Unity::Register);
-
-
-    //Loadcpp::LoadALLMod("/data/data/silkways.terraria.efmodloader/cache/runEFMod/cpp");
-
-    EFModLoader::Loader::LoadELFMods::LoadMod("libexample_mod.so");
-
-
 
     sleep(1);
+
+    BNM::Loading::AddOnLoadedEvent(EFModLoader::RegisterHook::Unity::Register);
 
     return JNI_VERSION_1_6;
 }

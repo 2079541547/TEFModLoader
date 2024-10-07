@@ -10,8 +10,12 @@ import android.view.Window
 import android.view.WindowManager
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
+import silkways.terraria.efmodloader.data.GameSettings
+import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.WelcomeMainBinding
 import silkways.terraria.efmodloader.logic.ApplicationSettings
+import silkways.terraria.efmodloader.logic.JsonConfigModifier
+import java.io.File
 
 
 class Welcome : AppCompatActivity() {
@@ -20,6 +24,14 @@ class Welcome : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        File("${this.getExternalFilesDir(null)}/ToolBoxData/").mkdirs()
+
+        //创建配置
+        JsonConfigModifier.createJsonConfig(this, Settings.jsonPath, Settings.Data)
+        JsonConfigModifier.createJsonConfig(this, GameSettings.jsonPath, GameSettings.Data)
+        JsonConfigModifier.updateJsonKeys(this, Settings.jsonPath, Settings.Data)
+        JsonConfigModifier.updateJsonKeys(this, GameSettings.jsonPath, GameSettings.Data)
 
         ApplicationSettings.setupTheme(this)
 

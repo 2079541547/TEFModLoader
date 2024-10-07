@@ -21,6 +21,7 @@ import com.unity3d.player.MultiWindowSupport;
 import com.unity3d.player.UnityPlayer;
 
 import silkways.terraria.efmodloader.core.LoadMod;
+import silkways.terraria.efmodloader.logic.JsonConfigModifier;
 import silkways.terraria.efmodloader.ui.debug.LoadDebug;
 import silkways.terraria.efmodloader.ui.gametool.LoadTool;
 
@@ -75,7 +76,6 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
         getIntent().putExtra("unity", updateUnityCommandLineArguments(getIntent().getStringExtra("unity")));
         UnityPlayer unityPlayer = new UnityPlayer(this, this);
         this.mUnityPlayer = unityPlayer;
-        setContentView(unityPlayer);
         this.mUnityPlayer.requestFocus();
         // 如果设备支持触摸屏，设置指针图标
         if (getApplicationContext().getPackageManager().hasSystemFeature("android.hardware.touchscreen")) {
@@ -90,11 +90,10 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
 
 
         // 初始化UnityPlayer
-        mUnityPlayer = new UnityPlayer(this, this);
         FrameLayout.LayoutParams unityParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT);
-        rootView.addView(mUnityPlayer, unityParams);
+        rootView.addView(unityPlayer, unityParams);
 
         LoadDebug loadDebug = new LoadDebug();
         loadDebug.LoadMain(rootView, this);
@@ -104,8 +103,8 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
         LoadTool.LoadMain(rootView, this);
 
         LoadMod LoadMod = new LoadMod();
-        LoadMod.LoadMian(this);
-
+        //LoadMod.LoadMian(this, (boolean) JsonConfigModifier.readJsonValue(this, "ToolBoxData/game_settings.json", "ExternalKernel"), (String) JsonConfigModifier.readJsonValue(this, "ToolBoxData/game_settings.json", "KernelPath"));
+        LoadMod.LoadMian(this, false, "");
     }
 
 

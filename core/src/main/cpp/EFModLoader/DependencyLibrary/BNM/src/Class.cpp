@@ -8,7 +8,6 @@
 
 using namespace BNM;
 
-
 Class::Class(const IL2CPP::Il2CppObject *obj) {
     if (!obj) return;
     _data = obj->klass;
@@ -26,7 +25,7 @@ Class::Class(const MonoType *type) {
 
 Class::Class(const CompileTimeClass &type) { _data = type; }
 
-IL2CPP::Il2CppClass *TryGetClassWithoutImage(const std::string_view &_namespace, const std::string_view &_name) {
+static IL2CPP::Il2CppClass *TryGetClassWithoutImage(const std::string_view &_namespace, const std::string_view &_name) {
     auto &assemblies = *Internal::Assembly$$GetAllAssemblies();
 
     for (auto assembly : assemblies) {
@@ -40,11 +39,6 @@ IL2CPP::Il2CppClass *TryGetClassWithoutImage(const std::string_view &_namespace,
 Class::Class(const std::string_view &_namespace, const std::string_view &_name) {
     if (_data = TryGetClassWithoutImage(_namespace, _name); _data) return;
     BNM_LOG_WARN(DBG_BNM_MSG_Class_Constructor_NotFound, _namespace.data(), _name.data());
-}
-
-IL2CPP::Il2CppClass *TryGetClassWithImage(const std::string_view &_namespace, const std::string_view &_name, IL2CPP::Il2CppImage *image) {
-    if (auto _data = Internal::TryGetClassInImage(image, _namespace, _name); _data) return _data;
-    return nullptr;
 }
 
 Class::Class(const std::string_view &_namespace, const std::string_view &_name, const BNM::Image &image) {
@@ -124,6 +118,7 @@ std::vector<PropertyBase> Class::GetProperties(bool includeParent) const {
 
     return std::move(ret);
 }
+
 std::vector<EventBase> Class::GetEvents(bool includeParent) const {
     BNM_LOG_ERR_IF(!_data, DBG_BNM_MSG_Class_Dead_Error);
     if (!_data) return {};
@@ -301,7 +296,6 @@ Class Class::GetReference() const {
     return Internal::GetReference(*this);
 }
 
-
 Class Class::GetGeneric(const std::initializer_list<CompileTimeClass> &templateTypes) const {
     BNM_LOG_ERR_IF(!_data, DBG_BNM_MSG_Class_Dead_Error);
     if (!_data) return {};
@@ -370,15 +364,15 @@ Class Class::GetListClass() {
 namespace CompileTimeClassProcessors {
     typedef void (*ProcessorType)(CompileTimeClass &target, CompileTimeClass::_BaseInfo *info);
 
-    void Warn(CompileTimeClass&, CompileTimeClass::_BaseInfo*) {
+    static void Warn(CompileTimeClass&, CompileTimeClass::_BaseInfo*) {
         BNM_LOG_WARN(DBG_BNM_MSG_CompileTimeClass_ToClass_default_Warn);
     }
     
     // _ClassInfo
-    void ProcessClassInfo(CompileTimeClass &target, CompileTimeClass::_BaseInfo *info) {
+    static void ProcessClassInfo(CompileTimeClass &target, CompileTimeClass::_BaseInfo *info) {
         auto classInfo = (CompileTimeClass::_ClassInfo *) info;
 
-        auto _namespace = classInfo->_namespace ? classInfo->_namespace : OBFUSCATE_BNM("");
+        auto _namespace = classInfo->_namespace ? classInfo->_namespace : std::string_view{};
 
         if (!classInfo->_imageName || !strlen(classInfo->_imageName)) {
             target._loadedClass = TryGetClassWithoutImage(_namespace, classInfo->_name);
@@ -395,11 +389,11 @@ namespace CompileTimeClassProcessors {
             break;
         }
 
-        target._loadedClass = TryGetClassWithImage(_namespace, classInfo->_name, image);
+        target._loadedClass = Internal::TryGetClassInImage(image, _namespace, classInfo->_name);
     }
 
     // _InnerInfo
-    void ProcessInnerInfo(CompileTimeClass &target, CompileTimeClass::_BaseInfo *info) {
+    static void ProcessInnerInfo(CompileTimeClass &target, CompileTimeClass::_BaseInfo *info) {
         if (!target._loadedClass) {
             BNM_LOG_WARN(DBG_BNM_MSG_CompileTimeClass_ToClass_Inner_Warn);
             return;
@@ -412,7 +406,7 @@ namespace CompileTimeClassProcessors {
     }
 
     // _ModifierInfo
-    void ProcessModifierInfo(CompileTimeClass &target, CompileTimeClass::_BaseInfo *info) {
+    static void ProcessModifierInfo(CompileTimeClass &target, CompileTimeClass::_BaseInfo *info) {
         if (!target._loadedClass) {
             BNM_LOG_WARN(DBG_BNM_MSG_CompileTimeClass_ToClass_Modifier_Warn);
             return;
@@ -435,7 +429,7 @@ namespace CompileTimeClassProcessors {
     }
 
     // _GenericInfo
-    void ProcessGenericInfo(CompileTimeClass &target, CompileTimeClass::_BaseInfo *info) {
+    static void ProcessGenericInfo(CompileTimeClass &target, CompileTimeClass::_BaseInfo *info) {
         if (!target._loadedClass) {
             BNM_LOG_WARN(DBG_BNM_MSG_CompileTimeClass_ToClass_Generic_Warn);
             return;
@@ -458,7 +452,6 @@ namespace CompileTimeClassProcessors {
             ProcessGenericInfo,
     };
 }
-
 
 Class CompileTimeClass::ToClass() {
     if (_isReferenced) {

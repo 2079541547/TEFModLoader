@@ -36,6 +36,7 @@ public class LoadDebug {
 
             System.loadLibrary("Tool");
 
+            /*
             // 初始化悬浮按钮
             View floatingButton = LayoutInflater.from(context).inflate(R.layout.draggable_view, rootView, false);
             ImageView imageView = floatingButton.findViewById(R.id.floating_button);
@@ -88,7 +89,9 @@ public class LoadDebug {
                     addNewLayoutToRootView(rootView, context);
                 }
             });
+             */
         }
+
     }
 
     @SuppressLint("ResourceAsColor")

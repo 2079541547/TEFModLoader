@@ -5,13 +5,12 @@
 #include "BNM/Utils.hpp"
 #include <Internals.hpp>
 
-
 namespace BNM::Structures::Unity {
     void *RaycastHit::GetCollider() const {
         if (!m_Collider || (BNM_PTR) m_Collider < 0) return {};
 #if UNITY_VER > 174
         static void *(*FromId)(int);
-        if (!FromId) InitFunc(FromId, GetExternMethod(OBFUSCATE_BNM("UnityEngine.Object::FindObjectFromInstanceID")));
+        if (!FromId) InitFunc(FromId, GetExternMethod(BNM_OBFUSCATE("UnityEngine.Object::FindObjectFromInstanceID")));
 #    if UNITY_VER >= 232
         return (void *) BNM::UnmarshalUnityObject((BNM_INT_PTR) FromId(m_Collider));
 #    else
@@ -108,8 +107,6 @@ namespace BNM::Structures::Unity {
         return success;
     }
 }
-
-
 
 namespace BNM::UnityEngine {
     BNM::Class UnityEventBase::GetArgumentType(PersistentCall *call) {

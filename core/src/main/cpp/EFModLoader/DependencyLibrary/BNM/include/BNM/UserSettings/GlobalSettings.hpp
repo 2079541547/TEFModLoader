@@ -18,9 +18,9 @@ static_assert(false, "ByNameModding requires C++20 and above!");
 //#define UNITY_VER 203 // 2020.3.20 - 2020.3.xx
 //#define UNITY_VER 211 // 2021.1.x (Need set UNITY_PATCH_VER to 24 if x (2021.1.x) >= 24)
 //#define UNITY_VER 212 // 2021.2.x
-//#define UNITY_VER 213 // 2021.3.x
+#define UNITY_VER 213 // 2021.3.x
 //#define UNITY_VER 221 // 2022.1.x
-#define UNITY_VER 222 // 2022.2.x - 2022.3.x
+//#define UNITY_VER 222 // 2022.2.x - 2022.3.x
 //#define UNITY_VER 231 // 2023.1.x
 //#define UNITY_VER 232 // 2023.2.x+
 
@@ -86,10 +86,12 @@ static_assert(false, "ByNameModding requires C++20 and above!");
 
 //! Добавьте ваш шифровщик строк
 //! Add your string encryptor
-#define OBFUSCATE_BNM(str) str // const char *
+#define BNM_OBFUSCATE(str) str // const char *
+//! Data obfuscated using this macro, can be freed, after BNM loaded. Only for advanced users! If you don't know what and how, just use your basic macro here.
+//! Данные, защифрованне этим define, могут быть удалены после загрузки BNM. Только для опытных пользователей! Если вы не знаете, что и как, просто используйте свой базовый define.
+#define BNM_OBFUSCATE_TMP(str) str // const char *
 
 // Shadowhook
-
 #include "shadowhook.h"
 
 template<typename PTR_T, typename NEW_T, typename T_OLD>
@@ -225,4 +227,4 @@ namespace BNM {
 #endif
 }
 
-#define BNM_VER "2.1.3"
+#define BNM_VER "2.2.1"

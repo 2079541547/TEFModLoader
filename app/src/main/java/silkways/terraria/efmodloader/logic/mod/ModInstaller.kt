@@ -2,15 +2,12 @@ package silkways.terraria.efmodloader.logic.mod
 
 import android.content.Context
 import android.content.DialogInterface
-import android.os.Environment
 import android.util.Log
+import eternal.future.effsystem.fileSystem
 import org.json.JSONObject
 import java.io.*
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
-import java.util.zip.ZipInputStream
 
-object ModJsonManager {
+object ModInstaller {
 
     // 移动文件并更新配置
     fun moveFileAndUpdateConfig(context: Context, fromPath: String, toDirectory: String, zipFileName: String) {
@@ -30,13 +27,13 @@ object ModJsonManager {
                 if (shouldReplace) {
                     copyFileOverwritingExisting(sourceFile.absolutePath, targetFile.absolutePath)
                     updateJsonConfig(context, targetDir, targetFile.toString())
-                    extractBasedOnRuntime(context, targetDir, zipFileName)
+                    extractBasedOnRuntime(context, zipFileName)
                 }
             }
         } else {
             copyFileOverwritingExisting(sourceFile.absolutePath, targetFile.absolutePath)
             updateJsonConfig(context, targetDir, targetFile.toString())
-            extractBasedOnRuntime(context, targetDir, zipFileName)
+            extractBasedOnRuntime(context, zipFileName)
         }
     }
 
@@ -83,34 +80,12 @@ object ModJsonManager {
             return
         }
 
-        val zipInputStream = ZipInputStream(BufferedInputStream(FileInputStream(zipFile)))
-        var entry: ZipEntry?
+        val Info = fileSystem.EFMC.getModInfo(zipFile.absolutePath)
+        val Id = Info["identifier"].toString()
 
-        while (zipInputStream.nextEntry.also { entry = it } != null) {
-            if (entry?.name?.startsWith("Private/") == true) {
-                val entryFileName = entry.name
-                val outputFilePath = File(targetDir, entryFileName.replaceFirst("Private/", ""))
+        val a = File(targetDir, Id)
 
-                if (entry.isDirectory) {
-                    outputFilePath.mkdirs()
-                } else {
-                    val parentDir = outputFilePath.parentFile
-                    if (!parentDir.exists()) {
-                        parentDir.mkdirs()
-                    }
-
-                    if (outputFilePath.exists()) {
-                        Log.d("FileExists", "File already exists: ${outputFilePath.absolutePath}")
-                    } else {
-                        val outputStream = FileOutputStream(outputFilePath)
-                        zipInputStream.copyTo(outputStream)
-                        outputStream.close()
-                        Log.d("FileExtracted", "File extracted: ${outputFilePath.absolutePath}")
-                    }
-                }
-            }
-        }
-        zipInputStream.close()
+        fileSystem.EFMC.extractPrivate(zipFile.absolutePath, a.absolutePath)
     }
 
     // 显示确认对话框
@@ -130,42 +105,11 @@ object ModJsonManager {
         alert.show()
     }
 
-    // 读取 info.json 文件
-    fun readInfoJsonFromZip(zipFilePath: String): JSONObject? {
-        val zipFile = ZipFile(File(zipFilePath))
-        val entries = zipFile.entries()
-
-        while (entries.hasMoreElements()) {
-            val entry = entries.nextElement()
-            if (entry.name == "info.json") {
-                val inputStream = zipFile.getInputStream(entry)
-                val reader = InputStreamReader(inputStream, "UTF-8")
-                val content = reader.readText()
-                reader.close()
-                zipFile.close()
-                return JSONObject(content)
-            }
-        }
-
-        Log.e("InfoJsonNotFound", "info.json 文件在 ZIP 文件中未找到: $zipFilePath")
-        zipFile.close()
-        return null
-    }
-
     // 根据 Runtime 类型解压到不同路径
-    fun extractBasedOnRuntime(context: Context, targetDir: File, zipFileName: String) {
-        val infoJson = readInfoJsonFromZip("$targetDir/$zipFileName") ?: return
-        val runtime = infoJson.optString("Runtime", "default_runtime") // 提供默认值
-        val identifier = infoJson.optString("Identifier", "default_identifier") // 提供默认值
-
-        val runtimeDir = File(context.getExternalFilesDir(null), "EFMod-Private/$runtime/")
+    fun extractBasedOnRuntime(context: Context, zipFileName: String) {
+        val runtimeDir = File(context.getExternalFilesDir(null), "EFMod-Private/")
         if (!runtimeDir.exists()) {
             runtimeDir.mkdirs()
-        }
-
-        val modDir = File(runtimeDir, identifier)
-        if (!modDir.exists()) {
-            modDir.mkdirs()
         }
 
         val zipFilePath = File(context.getExternalFilesDir(null), "ToolBoxData/EFModData/$zipFileName")
@@ -174,7 +118,7 @@ object ModJsonManager {
             return
         }
 
-        unzipPrivateFiles(modDir, zipFilePath)
+        unzipPrivateFiles(runtimeDir, zipFilePath)
     }
 
     private fun copyFileOverwritingExisting(sourcePath: String?, destinationPath: String?) {

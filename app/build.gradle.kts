@@ -47,7 +47,7 @@ android {
         pickFirst("**/libshadowhook.so")
     }
 
-    ndkVersion = "27.1.12297006"
+    ndkVersion = "28.0.12433566 rc1"
 
     aaptOptions {
         noCompress.add("assets/bin/Data/data.unity3d")
@@ -74,8 +74,9 @@ dependencies{
     implementation(libs.androidx.ui.android)
     implementation(libs.androidx.core.ktx.v1130)
     implementation(libs.androidx.activity)
-    implementation(files("libs/classes.jar"))
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
     implementation(libs.androidx.lifecycle.service)
+    implementation(libs.activity)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -167,12 +167,10 @@
     <string name="removeEFMod">已移除，请退出页面刷新</string>
     <string name="determine">确定</string>
     <string name="Jump_to_open_source_URL">跳转开源链接</string>
-    <string name="APK_Status">APK状态</string>
-    <string name="Update_APK">更新APK(长按重新修补)</string>
+    <string name="Development_Settings">实验性选项</string>
+    <string name="Kernel_management">内核管理(危险)</string>
+    <string name="Install_kernel">安装内核</string>
 
-    <string name="Copy_successful">复制成功</string>
-    <string name="UpdateAPK">APK更新成功</string>
-    <string name="APK_repair">APK修补成功</string>
 
     <string name="onBackPressedDispatcher_exit">再按一次退出</string>
 

@@ -2,6 +2,7 @@
 
 #include "UserSettings/GlobalSettings.hpp"
 #include "Il2CppHeaders.hpp"
+#include <type_traits>
 
 namespace BNM {
     namespace Structures::Unity {

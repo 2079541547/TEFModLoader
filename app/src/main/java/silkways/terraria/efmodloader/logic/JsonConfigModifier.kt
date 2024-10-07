@@ -7,6 +7,7 @@ import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
+import java.io.IOException
 import java.io.InputStreamReader
 
 
@@ -238,6 +239,56 @@ object JsonConfigModifier {
         writer.close()
 
         println("键 '$key' 已从 JSON 配置文件 $filePath 删除")
+    }
+
+    fun updateJsonKeys(context: Context, fileName: String, keys: Map<String, Any>) {
+
+        val externalStorageDirectory = context.getExternalFilesDir(null)
+        val filePath = File(externalStorageDirectory, fileName)
+
+        if (!filePath.exists()) {
+            println("文件不存在于 $filePath")
+            return
+        }
+
+        var jsonObject: JSONObject
+        try {
+            jsonObject = JSONObject(FileReader(filePath).readText())
+        } catch (e: Exception) {
+            println("解析 JSON 失败: ${e.message}")
+            return
+        }
+
+        // 补全缺失的键
+        for ((key, defaultValue) in keys) {
+            if (!jsonObject.has(key)) {
+                when (defaultValue) {
+                    is String -> jsonObject.put(key, defaultValue)
+                    is Int -> jsonObject.put(key, defaultValue)
+                    is Boolean -> jsonObject.put(key, defaultValue)
+                    is List<*> -> jsonObject.put(key, JSONArray(defaultValue))
+                    else -> throw IllegalArgumentException("不支持的类型为键 '$key'")
+                }
+            }
+        }
+
+        // 删除多余的键
+        jsonObject.keys().forEach {
+            if (!keys.containsKey(it)) {
+                jsonObject.remove(it)
+            }
+        }
+
+        val jsonString = jsonObject.toString(4)
+
+        try {
+            val writer = FileWriter(filePath)
+            writer.write(jsonString)
+            writer.close()
+            println("JSON 配置文件已更新: $filePath")
+        } catch (e: IOException) {
+            println("无法写入文件: ${e.message}")
+        }
     }
 
 }

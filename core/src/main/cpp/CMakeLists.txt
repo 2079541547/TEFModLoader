@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.22.1)
 
 
 project("TEFModLoader")
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -flto")
@@ -20,7 +20,7 @@ set(BNM_INCLUDE_DIRS
         EFModLoader/DependencyLibrary/BNM/external/include
         EFModLoader/DependencyLibrary/BNM/external
         EFModLoader/DependencyLibrary/BNM/external/utf8
-        EFModLoader/DependencyLibrary/BNM/src/BNM_data
+        EFModLoader/DependencyLibrary/BNM/src/private
 )
 
 add_library(

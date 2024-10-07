@@ -72,7 +72,7 @@
                 android:id="@+id/textView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/APK_Status"
+                android:text="@string/Development_Settings"
                 android:textSize="16sp"
                 tools:ignore="MissingConstraints" />
 
@@ -85,16 +85,28 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView5"
                 tools:ignore="MissingConstraints" />
 
+
             <Button
-                android:id="@+id/Update_APK"
+                android:id="@+id/Install_kernel"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="@string/Update_APK"
-                app:icon="@drawable/twotone_arrow_circle_up_24"
+                android:text="@string/Install_kernel"
+                app:icon="@drawable/twotone_install_mobile_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+            <Button
+                android:id="@+id/Kernel_management"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/Kernel_management"
+                app:icon="@drawable/twotone_token_24"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Install_kernel" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 

@@ -24,28 +24,28 @@ struct CustomClassInfo {
 };
 
 // The code for changing the data of an existing class
-void ModifyClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, Class target);
+static void ModifyClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, Class target);
 // Code for creating new classes
-void CreateClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, const CustomClassInfo &classInfo);
+static void CreateClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, const CustomClassInfo &classInfo);
 
 // Find the desired class or information about it
-CustomClassInfo GetClassInfo(const BNM::CompileTimeClass &compileTimeClass);
+static CustomClassInfo GetClassInfo(const BNM::CompileTimeClass &compileTimeClass);
 
 // The code for creating a new image and assembling it
-IL2CPP::Il2CppImage *MakeImage(std::string_view imageName);
+static IL2CPP::Il2CppImage *MakeImage(std::string_view imageName);
 // The code for processing a new method for its subsequent creation/modification
-IL2CPP::MethodInfo *ProcessCustomMethod(MANAGEMENT_STRUCTURES::CustomMethod *method, Class target, bool *hooked = nullptr);
+static IL2CPP::MethodInfo *ProcessCustomMethod(MANAGEMENT_STRUCTURES::CustomMethod *method, Class target, bool *hooked = nullptr);
 // The code for setting data in fields
-void SetupField(IL2CPP::FieldInfo *newField, MANAGEMENT_STRUCTURES::CustomField *field);
+static void SetupField(IL2CPP::FieldInfo *newField, MANAGEMENT_STRUCTURES::CustomField *field);
 
 
-void ProcessInterface(IL2CPP::Il2CppClass *parent, IL2CPP::Il2CppClass *interface, std::vector<IL2CPP::Il2CppClass *> &interfaces);
+static void ProcessInterface(IL2CPP::Il2CppClass *parent, IL2CPP::Il2CppClass *interface, std::vector<IL2CPP::Il2CppClass *> &interfaces);
 // The code for changing the parent of the class and the owner of the nested class
-void SetupClassOwnerAndParent(IL2CPP::Il2CppClass *target, IL2CPP::Il2CppClass *owner, IL2CPP::Il2CppClass *parent);
+static void SetupClassOwnerAndParent(IL2CPP::Il2CppClass *target, IL2CPP::Il2CppClass *owner, IL2CPP::Il2CppClass *parent);
 // Code for checking whether a class and its parents have an interface
-bool HasInterface(IL2CPP::Il2CppClass *parent, IL2CPP::Il2CppClass *interface);
+static bool HasInterface(IL2CPP::Il2CppClass *parent, IL2CPP::Il2CppClass *interface);
 // Class type setup code
-void SetupTypes(IL2CPP::Il2CppClass *target);;
+static void SetupTypes(IL2CPP::Il2CppClass *target);
 
 void Internal::ClassesManagement::ProcessCustomClasses() {
     if (classesManagementVector == nullptr) return;
@@ -70,7 +70,7 @@ void Internal::ClassesManagement::ProcessCustomClasses() {
     classesManagementVector = nullptr;
 }
 
-void ModifyClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, Class target) {
+static void ModifyClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, Class target) {
     BNM_LOG_DEBUG(DBG_BNM_MSG_ClassesManagement_ModifyClasses_Target, target.str().data());
 
     auto klass = target._data;
@@ -105,8 +105,9 @@ void ModifyClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, Class tar
 #undef kls
 
             if (!isHooked) methodsToAdd.push_back(method->myInfo);
-            BNM_LOG_DEBUG_IF(isHooked, DBG_BNM_MSG_ClassesManagement_ModifyClasses_Hooked_Method, (method->_isStatic == 1) ? DBG_BNM_MSG_ClassesManagement_ModifyClasses_Method_Static : "", method->_name.data(), method->_parameterTypes.size());
-            BNM_LOG_DEBUG_IF(!isHooked, DBG_BNM_MSG_ClassesManagement_ModifyClasses_Added_Method, (method->_isStatic == 1) ? DBG_BNM_MSG_ClassesManagement_ModifyClasses_Method_Static : "", method->_name.data(), method->_parameterTypes.size());
+            BNM_LOG_DEBUG_IF(isHooked, DBG_BNM_MSG_ClassesManagement_ModifyClasses_Hooked_Method, (method->_isStatic == 1) ? DBG_BNM_MSG_ClassesManagement_Method_Static : "", method->_name.data(), method->_parameterTypes.size());
+            BNM_LOG_DEBUG_IF(!isHooked, DBG_BNM_MSG_ClassesManagement_ModifyClasses_Added_Method, (method->_isStatic == 1) ? DBG_BNM_MSG_ClassesManagement_Method_Static : "", method->_name.data(), method->_parameterTypes.size());
+            BNM_LOG_DEBUG_IF(method->_origin && method->_origin != method->myInfo, DBG_BNM_MSG_ClassesManagement_ModifyClasses_Overridden_Method, BNM::MethodBase(method->_origin).str().c_str());
         }
 
         if (!methodsToAdd.empty()) {
@@ -150,10 +151,14 @@ void ModifyClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, Class tar
 
         klass->actualSize = currentAddress;
     }
+
+    customClass->myClass = klass;
+    customClass->type = Class(klass);
 }
 
-char forEmptyString = '\0';
-void CreateClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, const CustomClassInfo &classInfo) {
+static char forEmptyString = '\0';
+static const char *baseImageName = BNM_OBFUSCATE_TMP("Assembly-CSharp.dll");
+static void CreateClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, const CustomClassInfo &classInfo) {
     Image image{};
     if (classInfo._imageName) {
         auto &assemblies = *Internal::Assembly$$GetAllAssemblies();
@@ -163,9 +168,11 @@ void CreateClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, const Cus
             image = currentImage;
             break;
         }
-    } else image = Image(OBFUSCATE_BNM("Assembly-CSharp.dll"));
+    } else image = Image(baseImageName);
     if (!image) image = MakeImage(classInfo._imageName);
 
+    BNM_LOG_DEBUG(DBG_BNM_MSG_ClassesManagement_CreateClass_Target, classInfo._namespace, classInfo._name, image._data->name);
+    
     IL2CPP::Il2CppClass *parent = customClass->_baseType;
     if (!parent) parent = Internal::vmData.Object;
 
@@ -205,13 +212,16 @@ void CreateClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, const Cus
 
         method->myInfo = ProcessCustomMethod(method, {});
 
-        // Replacing methods in the virtual methods table
-        for (uint16_t v = 0; v < newVtableSize; ++v) {
+
+        BNM_LOG_DEBUG(DBG_BNM_MSG_ClassesManagement_CreateClass_Added_Method, (method->_isStatic == 1) ? DBG_BNM_MSG_ClassesManagement_Method_Static : "", method->_name.data(), method->_parameterTypes.size());
+        
+        // Replacing non-static methods in the virtual methods table
+        if (!method->_isStatic) for (uint16_t v = 0; v < newVtableSize; ++v) {
             auto &vTable = newVTable[v];
             auto count = vTable.method->parameters_count;
 
             if (!strcmp(vTable.method->name, method->myInfo->name) && count == method->myInfo->parameters_count && method->_parameterTypes.size() == count) {
-                for (uint8_t p = 0; p < count; ++p) {
+                if (!method->_skipTypeMatch) for (uint8_t p = 0; p < count; ++p) {
 #if UNITY_VER < 212
                     auto type = (vTable.method->parameters + p)->parameter_type;
 #else
@@ -225,6 +235,9 @@ void CreateClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, const Cus
                 method->_originalAddress = (void *) (vTable.method ? vTable.method->methodPointer : nullptr);
                 vTable.method = method->myInfo;
                 vTable.methodPtr = method->myInfo->methodPointer;
+
+                BNM_LOG_DEBUG(DBG_BNM_MSG_ClassesManagement_CreateClass_Overridden_Method, BNM::MethodBase(method->_origin).str().c_str());
+
                 break;
 
             }
@@ -417,8 +430,6 @@ void CreateClass(BNM::MANAGEMENT_STRUCTURES::CustomClass *customClass, const Cus
 
     // Get the C# type
     customClass->type = Class(klass);
-
-    BNM_LOG_INFO(DBG_BNM_MSG_ClassesManagement_CreateClass_Added, klass, klass->namespaze, klass->name, parent->namespaze, parent->name, klass->image->name);
 }
 
 
@@ -428,7 +439,7 @@ namespace CompileTimeClassProcessors {
     extern ProcessorType processors[(uint8_t) CompileTimeClass::_BaseType::MaxCount];
 }
 
-CustomClassInfo GetClassInfo(const BNM::CompileTimeClass &compileTimeClass) {
+static CustomClassInfo GetClassInfo(const BNM::CompileTimeClass &compileTimeClass) {
     CompileTimeClass tmp{};
 
     auto &stack = compileTimeClass._stack;
@@ -462,11 +473,11 @@ CustomClassInfo GetClassInfo(const BNM::CompileTimeClass &compileTimeClass) {
 }
 
 
-
-IL2CPP::Il2CppImage *MakeImage(std::string_view imageName) {
+static const char *dotDllString = BNM_OBFUSCATE_TMP(".dll");
+static IL2CPP::Il2CppImage *MakeImage(std::string_view imageName) {
     auto newImg = BNM_I2C_NEW(Il2CppImage);
 
-    if (imageName.ends_with(OBFUSCATE_BNM(".dll"))) imageName.remove_suffix(4);
+    if (imageName.ends_with(dotDllString)) imageName.remove_suffix(4);
 
     auto nameLen = imageName.size();
 #if UNITY_VER >= 171
@@ -559,7 +570,7 @@ IL2CPP::Il2CppImage *MakeImage(std::string_view imageName) {
     return newImg;
 }
 
-IL2CPP::VirtualInvokeData *TryFindVirtualMethod(Class target, IL2CPP::MethodInfo *targetMethod) {
+static IL2CPP::VirtualInvokeData *TryFindVirtualMethod(Class target, IL2CPP::MethodInfo *targetMethod) {
     for (uint16_t i = 0; i < target._data->vtable_count; ++i) {
         auto &it = target._data->vtable[i];
         if (it.method != targetMethod) continue;
@@ -568,8 +579,8 @@ IL2CPP::VirtualInvokeData *TryFindVirtualMethod(Class target, IL2CPP::MethodInfo
     return nullptr;
 }
 
-IL2CPP::MethodInfo *CreateMethod(MANAGEMENT_STRUCTURES::CustomMethod *method);
-IL2CPP::MethodInfo *ProcessCustomMethod(MANAGEMENT_STRUCTURES::CustomMethod *method, Class target, bool *hooked) {
+static IL2CPP::MethodInfo *CreateMethod(MANAGEMENT_STRUCTURES::CustomMethod *method);
+static IL2CPP::MethodInfo *ProcessCustomMethod(MANAGEMENT_STRUCTURES::CustomMethod *method, Class target, bool *hooked) {
     if (!target) return CreateMethod(method);
 
     auto parameters = (uint8_t) method->_parameterTypes.size();
@@ -644,7 +655,7 @@ IL2CPP::MethodInfo *ProcessCustomMethod(MANAGEMENT_STRUCTURES::CustomMethod *met
     return originalMethod;
 }
 
-IL2CPP::MethodInfo *CreateMethod(MANAGEMENT_STRUCTURES::CustomMethod *method) {
+static IL2CPP::MethodInfo *CreateMethod(MANAGEMENT_STRUCTURES::CustomMethod *method) {
     auto *myInfo = BNM_I2C_NEW(MethodInfo);
     myInfo->methodPointer = (decltype(myInfo->methodPointer)) method->_address;
     myInfo->invoker_method = (decltype(myInfo->invoker_method)) method->_invoker;
@@ -715,7 +726,7 @@ IL2CPP::MethodInfo *CreateMethod(MANAGEMENT_STRUCTURES::CustomMethod *method) {
     return myInfo;
 }
 
-void SetupField(IL2CPP::FieldInfo *newField, MANAGEMENT_STRUCTURES::CustomField *field) {
+static void SetupField(IL2CPP::FieldInfo *newField, MANAGEMENT_STRUCTURES::CustomField *field) {
     auto name = field->_name;
     auto len = name.size();
     newField->name = (char *) BNM_malloc(len + 1);
@@ -733,12 +744,12 @@ void SetupField(IL2CPP::FieldInfo *newField, MANAGEMENT_STRUCTURES::CustomField 
 }
 
 
-void SetupClassOwnerAndParent(IL2CPP::Il2CppClass *target, IL2CPP::Il2CppClass *owner, IL2CPP::Il2CppClass *parent) {
+static void SetupClassOwnerAndParent(IL2CPP::Il2CppClass *target, IL2CPP::Il2CppClass *owner, IL2CPP::Il2CppClass *parent) {
     if (!parent) goto SETUP_OWNER;
 
     // Set the parent
 
-    if ((target->flags & 0x09000000) == 0x09000000) free(target->typeHierarchy);
+    if ((target->flags & 0x09000000) == 0x09000000) BNM_free(target->typeHierarchy);
     target->flags |= 0x09000000;
 
     target->typeHierarchyDepth = parent->typeHierarchyDepth + 1;
@@ -764,7 +775,7 @@ void SetupClassOwnerAndParent(IL2CPP::Il2CppClass *target, IL2CPP::Il2CppClass *
     owner->nestedTypes = newInnerList;
 
     // Mark the class to use less memory
-    if ((owner->flags & 0x90000000) == 0x90000000) free(oldInnerList);
+    if ((owner->flags & 0x90000000) == 0x90000000) BNM_free(oldInnerList);
     owner->flags |= 0x90000000;
 
     // Remove a class from the old owner's list
@@ -780,12 +791,12 @@ void SetupClassOwnerAndParent(IL2CPP::Il2CppClass *target, IL2CPP::Il2CppClass *
         --oldOwner->nested_type_count;
 
         // Mark the class to use less memory
-        if ((oldOwner->flags & 0x90000000) == 0x90000000) free(oldInnerList);
+        if ((oldOwner->flags & 0x90000000) == 0x90000000) BNM_free(oldInnerList);
         oldOwner->flags |= 0x90000000;
     }
 }
 
-void ProcessInterface(IL2CPP::Il2CppClass *parent, IL2CPP::Il2CppClass *interface, std::vector<IL2CPP::Il2CppClass *> &interfaces) {
+static void ProcessInterface(IL2CPP::Il2CppClass *parent, IL2CPP::Il2CppClass *interface, std::vector<IL2CPP::Il2CppClass *> &interfaces) {
     Internal::Class$$Init(interface);
     if (!HasInterface(parent, interface)) interfaces.push_back(interface);
     if (!interface->interfaces_count || interface->interfaces_count == (uint16_t) -1) return;
@@ -793,14 +804,14 @@ void ProcessInterface(IL2CPP::Il2CppClass *parent, IL2CPP::Il2CppClass *interfac
     for (uint16_t i = 0; i < interface->interfaces_count; ++i) ProcessInterface(parent, interface->implementedInterfaces[i], interfaces);
 }
 
-bool HasInterface(IL2CPP::Il2CppClass *parent, IL2CPP::Il2CppClass *interface) {
+static bool HasInterface(IL2CPP::Il2CppClass *parent, IL2CPP::Il2CppClass *interface) {
     if (!parent || !interface) return false;
     for (uint16_t i = 0; i < parent->interfaces_count; ++i) if (parent->implementedInterfaces[i] == interface) return true;
     if (parent->parent) return HasInterface(parent->parent, interface);
     return false;
 }
 
-void SetupTypes(IL2CPP::Il2CppClass *target) {
+static void SetupTypes(IL2CPP::Il2CppClass *target) {
     IL2CPP::Il2CppType classType;
     memset(&classType, 0, sizeof(IL2CPP::Il2CppType));
     classType.type = IL2CPP::Il2CppTypeEnum::IL2CPP_TYPE_CLASS;
