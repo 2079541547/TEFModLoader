@@ -4,13 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
@@ -32,7 +30,6 @@ class ManageFragment: Fragment() {
     private var _binding: MainFragmentManageBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var selectFilesLauncher: ActivityResultLauncher<Intent>
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
@@ -66,17 +63,6 @@ class ManageFragment: Fragment() {
             navHostFragment.navController.navigate(R.id.nanavigation_EFModManager, null, navOptions)
         }
 
-        selectFilesLauncher = registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) { result ->
-            if (result != null && result.data != null) {
-                val uris = result.data?.clipData?.uriList()
-                    ?: listOf(result.data?.data!!)
-                uris.forEach { uri ->
-                    handleFileUri(uri)
-                }
-            }
-        }
 
         binding.installEfmod.setOnClickListener {
             selectModFiles()
@@ -113,50 +99,67 @@ class ManageFragment: Fragment() {
 
 
 
-    private fun selectModFiles() {
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        intent.type = "*/*" // 设置 MIME 类型为所有文件类型
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true) // 允许多个文件选择
-        selectFilesLauncher.launch(intent)
-    }
 
-    private fun handleFileUri(uri: Uri) {
-        // 处理每个文件 URI
-        val filePath = getRealPathFromURI(uri)
-        filePath?.let { path ->
-            // 进行文件处理操作
-            val file = File(path)
-            val fileName = file.name
-            val fileParent = file.parent
-
-            val rootDirectory = "${requireContext().getExternalFilesDirs(null)}/ToolBoxData/EFModData"
-            val destinationPath = "$rootDirectory/"
-
-            if (fileParent != null) {
-                // 假设 ModInstaller 是一个自定义类，用于移动文件并更新配置
-                ModInstaller.moveFileAndUpdateConfig(requireContext(), fileParent, destinationPath, fileName)
-            } else {
-                Log.e("ManageFragment", "File parent is null")
+    private val selectFilesLauncher = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+        if (uris.isNotEmpty()) {
+            val efmodFilePaths = uris.mapNotNull { uri ->
+                getRealPathFromURI(uri)?.let { path ->
+                    File(path).absolutePath
+                }
             }
-        } ?: run {
-            Log.e("ManageFragment", "Failed to get file path from URI")
+
+            if (efmodFilePaths.isNotEmpty()) {
+                efmodFilePaths.forEach { filePath ->
+
+                    val file = File(filePath)
+                    val file2 = file.name
+                    val file1 = file.parent
+
+                    val rootDirectory ="${requireActivity().getExternalFilesDir(null)?.absolutePath}/ToolBoxData/EFModData"
+
+                    val destinationPath = "$rootDirectory/"
+
+                    if (file1 != null) {
+                        ModInstaller.moveFileAndUpdateConfig(requireActivity(), file1, destinationPath, file2)
+                    }
+
+                }
+            } else {
+                println("No valid files selected.")
+            }
         }
     }
 
+
+
     private fun getRealPathFromURI(contentUri: Uri): String? {
-        return try {
-            val projection = arrayOf(MediaStore.Files.FileColumns.DATA)
-            requireActivity().contentResolver.query(contentUri, projection, null, null, null)?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Files.FileColumns.DATA)
-                    cursor.getString(columnIndex)
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }.toString()
+        return requireActivity().contentResolver.openInputStream(contentUri)?.use { inputStream ->
+            File(requireActivity().cacheDir.toString()).mkdirs()
+            val fileName = getFileNameFromURI(contentUri)
+            val tempDir = File.createTempFile("temp", "").parentFile // 获取临时目录
+            val tempFile = File(tempDir, fileName) // 使用原始文件名创建新文件
+            tempFile.writeBytes(inputStream.readBytes())
+            tempFile.absolutePath
+        }
+    }
+
+    // 辅助函数用于从 Uri 获取文件名
+    private fun getFileNameFromURI(uri: Uri): String {
+        return requireActivity().contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+            cursor.moveToFirst()
+            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            cursor.getString(nameIndex)
+        } ?: ""
+    }
+
+    private fun selectModFiles() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        // 设置 MIME 类型为所有文件类型
+        intent.type = "*/*"
+        // 允许多个文件选择
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        selectFilesLauncher.launch(intent.toString())
     }
 
 
@@ -230,4 +233,3 @@ class ManageFragment: Fragment() {
         _binding = null
     }
 }
-
