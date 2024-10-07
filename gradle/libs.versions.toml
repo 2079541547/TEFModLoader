@@ -40,7 +40,6 @@ uiAndroid = "1.6.8"
 zip4j = "2.11.5"
 firebaseCrashlyticsBuildtools = "3.0.2"
 lifecycleService = "2.8.4"
-activityVersion = "1.8.0"
 
 [libraries]
 androidx-collection = { module = "androidx.collection:collection", version.ref = "collection" }
@@ -83,7 +82,6 @@ zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-lifecycle-service = { group = "androidx.lifecycle", name = "lifecycle-service", version.ref = "lifecycleService" }
-activity = { group = "androidx.activity", name = "activity", version.ref = "activityVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
