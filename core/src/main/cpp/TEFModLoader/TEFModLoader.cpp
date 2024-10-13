@@ -14,7 +14,12 @@
 #include <hook/unity/RegisterHook.hpp>
 #include <BNM/Field.hpp>
 #include <vector>
+#include <getData.hpp>
+#include <api/RegisterApi.hpp>
 
+using namespace std;
+
+string PackageName;
 
 int (*old_DamageVar)(BNM::UnityEngine::Object *);
 int new_DamageVar() {
@@ -65,25 +70,32 @@ void LoadHook(){
     EFModLoader::RegisterHook::Unity::RegisterHOOK("Assembly-CSharp.dll.Terraria.Main.DamageVar", DamageVar, (void *) new_DamageVar,  (void **) old_DamageVar);
     //BNM::InvokeHook(ItemID, test, org_test);
     //EFModLoader::RegisterHook::Unity::RegisterIHOOK("", );
+
 }
 
 
+void LoadMod() {
+    //EFModLoader::Loader::LoadELFMods::LoadMod("libexample_mod.so");
+    EFModLoader::Loader::LoadELFMods::LoadALLMod(std::string("/data/data/") + PackageName + std::string("/cache/runEFMod/"));
+}
 
 
+string *PackageName1 = &PackageName;
 
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
     JNIEnv *env;
     vm->GetEnv((void **) &env, JNI_VERSION_1_6);
 
+    PackageName = EFModLoader::getPackageNameAsString(env);
 
     BNM::Loading::TryLoadByJNI(env);
 
 
     //Loadcpp::LoadALLMod("/data/data/silkways.terraria.efmodloader/cache/runEFMod/");
 
-    EFModLoader::Loader::LoadELFMods::LoadALLMod("/data/data/silkways.terraria.efmodloader/cache/runEFMod/");
-    //EFModLoader::Loader::LoadELFMods::LoadMod("libexample_mod.so");
+
+    BNM::Loading::AddOnLoadedEvent(LoadMod); //加载Mod（可使用BNM库的内容）
 
     BNM::Loading::AddOnLoadedEvent(LoadHook);
 
@@ -94,4 +106,3 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
     return JNI_VERSION_1_6;
 }
 
-//

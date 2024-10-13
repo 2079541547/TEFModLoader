@@ -38,12 +38,16 @@ void EFModLoader::Loader::LoadELFMods::LoadMod(const std::string &LibPath) {
     // 自动注册扩展函数
     mod->RegisterAPIs();
     EFModLoader::Log::LOG("Debug", "Loader", "LoadELFMods", "LoadMod", "已获取Mod注册的API");
-    mod->RegisterHooks();
-    EFModLoader::Log::LOG("Debug", "Loader", "LoadELFMods", "LoadMod", "已获取Mod注册的Hook");
 
 
     EFModLoader::Log::LOG("Debug", "Loader", "LoadELFMods", "LoadMod", "开始注册API...");
-    RegisterApi::Register(); //注册API，（加载之前的API不能使用BNM库！）
+    RegisterApi::Register(); //注册API
+
+
+
+    mod->RegisterHooks();
+    EFModLoader::Log::LOG("Debug", "Loader", "LoadELFMods", "LoadMod", "已获取Mod注册的Hook");
+
 
     if (!mod->Initialize()) {
         const char* err = dlerror();
