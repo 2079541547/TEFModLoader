@@ -30,7 +30,7 @@ class EFModFragment: Fragment() {
 
 
         val recyclerView: RecyclerView = binding.modRecyclerView
-        val mods = loadModsFromDirectory("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModData", requireActivity())
+        val mods = loadModsFromDirectory("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModData")
         val adapter = ModsAdapter(mods, requireActivity())
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())

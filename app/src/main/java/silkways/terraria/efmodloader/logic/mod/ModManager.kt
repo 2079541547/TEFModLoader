@@ -10,19 +10,6 @@ import java.io.IOException
 
 object ModManager {
 
-    fun enableEFMod(context: Context, filePath: String) {
-        val file = File(filePath)
-        if (!file.exists()) {
-            Log.e("EFModLoader", "文件不存在: $filePath")
-            return
-        }
-        try {
-            fileSystem.EFMC.extractExecutable(file.absolutePath, Build.CPU_ABI, context.cacheDir.absolutePath + "/runEFMod")
-        } catch (e: IOException) {
-            Log.e("EFModLoader", "解压过程中发生错误", e)
-        }
-    }
-
     fun removeEFMod(context: Context, filePath: String, identifier: String) {
         JsonConfigModifier.removeKeyFromJson(context, "ToolBoxData/EFModData/info.json", filePath)
         File(filePath).delete()

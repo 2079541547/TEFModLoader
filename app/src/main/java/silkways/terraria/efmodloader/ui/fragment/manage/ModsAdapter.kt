@@ -22,16 +22,13 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
-import org.json.JSONObject
+import eternal.future.effsystem.fileSystem
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.ManageEfmodresDialogBinding
 import silkways.terraria.efmodloader.databinding.ManageEfmodsettingDialogBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import silkways.terraria.efmodloader.logic.mod.ModManager
 import java.io.File
-import java.io.InputStream
-import java.util.zip.ZipFile
-import java.util.Map
 import eternal.future.effsystem.fileSystem.EFMC
 
 data class ModInfo(
@@ -47,7 +44,7 @@ data class ModInfo(
     var icon: Bitmap? = null
 )
 
-fun loadModsFromDirectory(directoryPath: String, context: Context): List<ModInfo> {
+fun loadModsFromDirectory(directoryPath: String): List<ModInfo> {
     val directory = File(directoryPath)
     val mods = mutableListOf<ModInfo>()
 
@@ -152,7 +149,8 @@ class ModsAdapter(private val mods: List<ModInfo>, private val context: Context)
         val modCacheDir = File(cacheDir, "EFMOD_WEB")
         modCacheDir.mkdirs()
 
-        extractPageFolder(mod.filePath, modCacheDir)
+
+        fileSystem.EFMC.extractPage(mod.filePath, modCacheDir.absolutePath)
 
         // 使用FileProvider获取文件URI
         val mainHtmlFile = File(modCacheDir, "main.html")
@@ -238,7 +236,7 @@ class ModsAdapter(private val mods: List<ModInfo>, private val context: Context)
         }
 
         dialogBinding?.yes?.setOnClickListener {
-            //ModManager.removeEFMod(context, mod.filePath, mod.identifier)
+            ModManager.removeEFMod(context, mod.filePath, mod.identifier)
             Toast.makeText(context, context.getString(R.string.removeEFMod), Toast.LENGTH_LONG).show()
             dialog.dismiss()
         }
@@ -249,28 +247,6 @@ class ModsAdapter(private val mods: List<ModInfo>, private val context: Context)
 
 
         dialog.show()
-    }
-
-
-    private fun extractPageFolder(zipFilePath: String, destinationDir: File) {
-        ZipFile(zipFilePath).use { zip ->
-            zip.entries().asSequence().filter { it.name.startsWith("Page/") }.forEach { entry ->
-                println("Entry: ${entry.name}")
-                val destFile = File(destinationDir, entry.name.removePrefix("Page/"))
-                if (entry.isDirectory) {
-                    destFile.mkdirs()
-                } else {
-                    destFile.parentFile?.mkdirs()
-                    zip.getInputStream(entry).use { input ->
-                        destFile.outputStream().use { output ->
-                            input.copyTo(output)
-                        }
-                    }
-                    // 调试输出
-                    println("Extracted: ${destFile.absolutePath}")
-                }
-            }
-        }
     }
 
 }

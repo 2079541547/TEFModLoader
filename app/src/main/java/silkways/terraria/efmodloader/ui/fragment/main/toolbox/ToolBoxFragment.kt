@@ -266,13 +266,7 @@ class ToolBoxFragment: Fragment() {
 
 
     private fun selectModFiles() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.addCategory(Intent.CATEGORY_OPENABLE)
-        // 设置 MIME 类型为所有文件类型
-        intent.type = "*/*"
-        // 允许多个文件选择
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-        selectFilesLauncher.launch(intent.toString())
+        selectFilesLauncher.launch("*/*")
     }
 
 

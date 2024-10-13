@@ -16,7 +16,6 @@ import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.GameSettings
 import silkways.terraria.efmodloader.databinding.ToolboxFragmentGamepanelBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
-import silkways.terraria.efmodloader.logic.mod.ModManager
 import java.io.File
 
 /**
