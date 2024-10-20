@@ -2,7 +2,7 @@
 // Created by eternalfuture on 2024/9/28.
 //
 
-#include <log.hpp>
+#include <EFModLoader/log.hpp>
 
 
 std::string

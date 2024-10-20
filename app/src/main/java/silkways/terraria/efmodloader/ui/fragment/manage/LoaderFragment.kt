@@ -9,11 +9,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import silkways.terraria.efmodloader.R
-import silkways.terraria.efmodloader.databinding.ManageFragmentEfmodBinding
+import silkways.terraria.efmodloader.databinding.ManageFragmentLoaderBinding
 
-class EFModFragment: Fragment() {
+class LoaderFragment: Fragment() {
 
-    private var _binding: ManageFragmentEfmodBinding? = null
+    private var _binding: ManageFragmentLoaderBinding? = null
     private val binding get() = _binding!!
 
 
@@ -23,15 +23,15 @@ class EFModFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.efmod_manager)
+        requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.Kernel_management)
 
-        _binding = ManageFragmentEfmodBinding.inflate(inflater, container, false)
+        _binding = ManageFragmentLoaderBinding.inflate(inflater, container, false)
 
 
 
         val recyclerView: RecyclerView = binding.modRecyclerView
-        val mods = loadModsFromDirectory("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModData", requireActivity())
-        val adapter = ModsAdapter(mods, requireActivity())
+        val mods = loadLoaderFromDirectory("${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModLoaderData", requireActivity())
+        val adapter = LoaderAdapter(mods, requireActivity())
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         return binding.root

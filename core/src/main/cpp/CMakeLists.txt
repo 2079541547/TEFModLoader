@@ -10,11 +10,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -std=c++20")
 
 find_package(shadowhook REQUIRED CONFIG)
 
-set(BNM_PUBLIC_INCLUDE_DIRS
-        EFModLoader/DependencyLibrary/BNM/include
-        EFModLoader/DependencyLibrary/BNM/external/include
-)
-
 set(BNM_INCLUDE_DIRS
         EFModLoader/DependencyLibrary/BNM/include
         EFModLoader/DependencyLibrary/BNM/external/include
@@ -68,7 +63,7 @@ add_library(
         EFModLoader
         STATIC
         EFModLoader/src/log.cpp
-        EFModLoader/src/api/RegisterApi.cpp
+        EFModLoader/src/api/Register.cpp
         EFModLoader/src/hook/unity/RegisterHook.cpp
         EFModLoader/src/loader/LoadELFMods.cpp
 )
@@ -86,9 +81,25 @@ target_link_libraries(
         BNM
 )
 
+
+
+set(TEFMODLOADER_INCLUDE_DIRS
+        TEFModLoader/include
+)
+
 add_library(${CMAKE_PROJECT_NAME}
         SHARED
-        TEFModLoader/TEFModLoader.cpp
+        TEFModLoader/src/TEFModLoader/UnityEngine/TextAsset.cpp
+        TEFModLoader/src/TEFModLoader/Terraria/ID/ItemID.cpp
+        TEFModLoader/src/TEFModLoader/Terraria/Main.cpp
+        TEFModLoader/src/TEFModLoader/Register.cpp
+        TEFModLoader/src/TEFModLoader.cpp
+)
+
+target_include_directories(
+        ${CMAKE_PROJECT_NAME}
+        PUBLIC
+        ${TEFMODLOADER_INCLUDE_DIRS}
 )
 
 target_link_libraries(
@@ -105,4 +116,28 @@ target_link_libraries(
         example_mod
         PUBLIC
         log
+)
+
+
+add_library(example_mod1 SHARED
+        example_mod/ForgottenTreasure/main.cpp
+)
+
+target_link_libraries(
+        example_mod1
+        PUBLIC
+        log
+        BNM
+)
+
+add_library(MyMod SHARED
+    example_mod/MyMod/main.cpp
+)
+
+
+target_link_libraries(
+        MyMod
+        PUBLIC
+        log
+        BNM
 )

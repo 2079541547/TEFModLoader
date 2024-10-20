@@ -1,4 +1,4 @@
-package silkways.terraria.efmodloader.logic.mod
+package silkways.terraria.efmodloader.logic.modlaoder
 
 import android.content.Context
 import android.os.Build
@@ -7,11 +7,10 @@ import eternal.future.effsystem.fileSystem
 import org.json.JSONObject
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import java.io.File
-import java.io.IOException
 
-object ModManager {
+object LoaderManager {
 
-    fun runEFMod(filePath: String, context: Context) {
+    fun runEFModLoader(filePath: String, context: Context) {
         val file = File(filePath)
         if (file.exists()) {
             val bufferedReader = file.bufferedReader()
@@ -25,11 +24,9 @@ object ModManager {
             while (iterator.hasNext()) {
                 val key = iterator.next()
                 if (jsonObject.getBoolean(key)) {
-                    if (fileSystem.EFMC.getModInfo(key)["SpecialLoading"] as Boolean) {
-                        fileSystem.EFMC.extractExecutable(key, Build.CPU_ABI, "${context.cacheDir.absolutePath}/SpecialLoading/")
-                    } else {
-                        fileSystem.EFMC.extractExecutable(key, Build.CPU_ABI, "${context.cacheDir.absolutePath}/runEFMod/")
-                    }
+
+                    fileSystem.EFML.extractLoader(key, Build.CPU_ABI, "${context.cacheDir.absolutePath}/EFModLoader")
+
                     Log.d("GamePanelFragment", "Key: $key") // 如果值为true，打印键
                 }
             }
@@ -38,11 +35,9 @@ object ModManager {
         }
     }
 
-    fun removeEFMod(context: Context, filePath: String, identifier: String) {
-        JsonConfigModifier.removeKeyFromJson(context, "ToolBoxData/EFModData/info.json", filePath)
+    fun removeEFModLoader(context: Context, filePath: String) {
+        JsonConfigModifier.removeKeyFromJson(context, "ToolBoxData/EFModLoaderData/info.json", filePath)
         File(filePath).delete()
-
-        deleteDirectory(File("${context.getExternalFilesDir(null)}/EFMod-Private/$identifier"))
     }
 
     private fun deleteDirectory(directory: File) {
@@ -57,4 +52,5 @@ object ModManager {
             directory.delete()
         }
     }
+
 }

@@ -2,9 +2,10 @@
 // Created by eternalfuture on 2024/9/28.
 //
 
-#include <api/Redirect.hpp>
-#include <api/RegisterApi.hpp>
-#include <EFMod/EFMod.hpp>
+#include <EFModLoader/api/Redirect.hpp>
+#include <EFModLoader/api/RegisterApi.hpp>
+#include <EFModLoader/EFMod/EFMod.hpp>
+
 
 namespace EFModLoader::RegisterApi {
     vector<API> registerAPI;

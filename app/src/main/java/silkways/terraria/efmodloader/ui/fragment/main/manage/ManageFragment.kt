@@ -19,6 +19,7 @@ import com.google.android.material.snackbar.Snackbar
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.MainFragmentManageBinding
 import silkways.terraria.efmodloader.logic.mod.ModInstaller
+import silkways.terraria.efmodloader.logic.modlaoder.modLoaderInstaller
 import silkways.terraria.efmodloader.ui.fragment.main.toolbox.logic.FileItem
 import java.io.File
 import java.io.FileInputStream
@@ -66,7 +67,7 @@ class ManageFragment: Fragment() {
 
 
         binding.installEfmod.setOnClickListener {
-            selectModFiles()
+            selectFilesLauncher.launch("*/*")
         }
 
         binding.installRes.setOnClickListener {
@@ -78,6 +79,13 @@ class ManageFragment: Fragment() {
         }
 
 
+        binding.InstallKernel.setOnClickListener {
+            selectFilesLauncher_k.launch("*/*")
+        }
+
+        binding.KernelManagement.setOnClickListener {
+            navHostFragment.navController.navigate(R.id.nanavigation_EFModLoaderManager, null, navOptions)
+        }
 
 
         return binding.root
@@ -131,7 +139,35 @@ class ManageFragment: Fragment() {
         }
     }
 
+    private val selectFilesLauncher_k = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+        if (uris.isNotEmpty()) {
+            val efmodFilePaths = uris.mapNotNull { uri ->
+                getRealPathFromURI(uri)?.let { path ->
+                    File(path).absolutePath
+                }
+            }
 
+            if (efmodFilePaths.isNotEmpty()) {
+                efmodFilePaths.forEach { filePath ->
+
+                    val file = File(filePath)
+                    val file2 = file.name
+                    val file1 = file.parent
+
+                    val rootDirectory ="${requireActivity().getExternalFilesDir(null)?.absolutePath}/ToolBoxData/EFModLoaderData"
+
+                    val destinationPath = "$rootDirectory/"
+
+                    if (file1 != null) {
+                        modLoaderInstaller.moveFileAndUpdateConfig(requireActivity(), file1, destinationPath, file2)
+                    }
+
+                }
+            } else {
+                println("No valid files selected.")
+            }
+        }
+    }
 
     private fun getRealPathFromURI(contentUri: Uri): String? {
         return requireActivity().contentResolver.openInputStream(contentUri)?.use { inputStream ->
@@ -153,9 +189,6 @@ class ManageFragment: Fragment() {
         } ?: ""
     }
 
-    private fun selectModFiles() {
-        selectFilesLauncher.launch("*/*")
-    }
 
 
     private fun copyFileOverwritingExisting(sourcePath: String?, destinationPath: String?) {

@@ -2,7 +2,7 @@
 
 #include <string>
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 
 namespace BNM::Structures::Unity {
     struct Vector4;

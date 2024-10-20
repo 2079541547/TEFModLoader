@@ -16,6 +16,8 @@ import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.GameSettings
 import silkways.terraria.efmodloader.databinding.ToolboxFragmentGamepanelBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
+import silkways.terraria.efmodloader.logic.mod.ModManager
+import silkways.terraria.efmodloader.logic.modlaoder.LoaderManager
 import java.io.File
 
 /**
@@ -50,8 +52,13 @@ class GamePanelFragment : Fragment() {
         // 设置开始游戏按钮的点击监听器
         binding.StartGame.setOnClickListener {
 
-            initialization()
+            LoaderManager.runEFModLoader(
+                "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModLoaderData/info.json",
+                requireActivity())
 
+            ModManager.runEFMod(
+                "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModData/info.json",
+                requireActivity())
             // 创建意图来启动游戏活动
             val intent = Intent(requireContext(), GameActivity::class.java)
             // 启动游戏活动
@@ -101,32 +108,6 @@ class GamePanelFragment : Fragment() {
     }
 
 
-
-    private fun initialization() {
-        val filePath = "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModData/info.json"
-        val file = File(filePath)
-
-        if (file.exists()) {
-            val bufferedReader = file.bufferedReader()
-            val jsonString = bufferedReader.use { it.readText() }
-
-            // 解析JSON
-            val jsonObject = JSONObject(jsonString)
-
-            // 遍历JSON对象
-            val iterator = jsonObject.keys()
-            while (iterator.hasNext()) {
-                val key = iterator.next()
-                if (jsonObject.getBoolean(key)) {
-                    fileSystem.EFMC.extractExecutable(key, Build.CPU_ABI, "${requireActivity().cacheDir.absolutePath}/runEFMod/")
-                    //ModManager.enableEFMod(requireActivity(), key)
-                    Log.d("GamePanelFragment", "Key: $key") // 如果值为true，打印键
-                }
-            }
-        } else {
-            Log.e("GamePanelFragment", "File not found at path: $filePath")
-        }
-    }
 
     /**
      * 当视图被销毁时调用。

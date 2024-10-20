@@ -1,7 +1,7 @@
 //
 // Created by eternalfuture on 2024/9/17.
 //
-#include "../../EFModLoader/include/EFMod/EFMod.hpp" //这是必须导入的，有依赖的函数调用
+#include "../../EFModLoader/include/EFModLoader/EFMod/EFMod.hpp" //这是必须导入的，有依赖的函数调用
 #include <iostream>
 #include <vector>
 #include <android/log.h>

@@ -168,7 +168,7 @@
     <string name="determine">确定</string>
     <string name="Jump_to_open_source_URL">跳转开源链接</string>
     <string name="Development_Settings">实验性选项</string>
-    <string name="Kernel_management">内核管理(危险)</string>
+    <string name="Kernel_management">内核管理</string>
     <string name="Install_kernel">安装内核</string>
 
 

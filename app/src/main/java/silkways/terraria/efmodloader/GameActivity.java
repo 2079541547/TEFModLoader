@@ -104,7 +104,7 @@ public class GameActivity extends Activity implements IUnityPlayerLifecycleEvent
 
         LoadMod LoadMod = new LoadMod();
         //LoadMod.LoadMian(this, (boolean) JsonConfigModifier.readJsonValue(this, "ToolBoxData/game_settings.json", "ExternalKernel"), (String) JsonConfigModifier.readJsonValue(this, "ToolBoxData/game_settings.json", "KernelPath"));
-        LoadMod.LoadMian(this, false, "");
+        LoadMod.LoadMian(this);
     }
 
 

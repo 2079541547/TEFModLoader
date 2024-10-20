@@ -44,7 +44,7 @@ data class ModInfo(
     var icon: Bitmap? = null
 )
 
-fun loadModsFromDirectory(directoryPath: String): List<ModInfo> {
+fun loadModsFromDirectory(directoryPath: String, context: Context): List<ModInfo> {
     val directory = File(directoryPath)
     val mods = mutableListOf<ModInfo>()
 
@@ -67,7 +67,9 @@ fun loadModsFromDirectory(directoryPath: String): List<ModInfo> {
                     customizePage = Infomap["customizePage"] as Boolean
                 )
 
-                info.icon = BitmapFactory.decodeByteArray(ModIcon, 0, ModIcon.size)
+                info.icon = BitmapFactory.decodeResource(context.resources, R.drawable.twotone_help_24)
+                if (ModIcon.size != 0) info.icon = BitmapFactory.decodeByteArray(ModIcon, 0, ModIcon.size)
+
                 mods.add(info)
             }
         }

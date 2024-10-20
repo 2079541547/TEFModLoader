@@ -2,9 +2,9 @@
 // Created by eternalfuture on 2024/9/28.
 //
 
-#include <loader/LoadELFMods.hpp>
-#include <api/RegisterApi.hpp>
-#include <log.hpp>
+#include <EFModLoader/loader/LoadELFMods.hpp>
+#include <EFModLoader/api/RegisterApi.hpp>
+#include <EFModLoader/log.hpp>
 
 void EFModLoader::Loader::LoadELFMods::LoadMod(const std::string &LibPath) {
     void* handle = dlopen(LibPath.c_str(), RTLD_LAZY);
