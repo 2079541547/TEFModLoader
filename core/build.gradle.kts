@@ -42,9 +42,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_22
         targetCompatibility = JavaVersion.VERSION_22
     }
-    buildFeatures {
-        prefab = true
-    }
     ndkVersion = "28.0.12433566 rc1"
 }
 

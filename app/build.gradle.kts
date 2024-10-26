@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.dsl.SigningConfig
+import org.gradle.api.NamedDomainObjectContainer
 
 plugins {
     alias(libs.plugins.android.application)
@@ -5,8 +7,17 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("../TEFModLoader.jks")
+            keyAlias = "TEFModLoader"
+            storePassword = "TEFModLoader"
+            keyPassword = "EternalFuture"
+        }
+    }
     namespace = "silkways.terraria.efmodloader"
     compileSdk = 35
+
 
     defaultConfig {
         applicationId = "silkways.terraria.efmodloader"
@@ -24,12 +35,13 @@ android {
 
     buildTypes {
         release {
-            isShrinkResources = true
-            isMinifyEnabled = true
+            isShrinkResources = false
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -42,9 +54,6 @@ android {
     buildFeatures {
         viewBinding = true
         prefab = true
-    }
-    packagingOptions {
-        pickFirst("**/libshadowhook.so")
     }
 
     ndkVersion = "28.0.12433566 rc1"
@@ -62,7 +71,6 @@ dependencies{
     implementation(project(":core"))
     implementation(project(":game-assets"))
     implementation(libs.commonmark)
-    implementation(libs.shadowhook)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
