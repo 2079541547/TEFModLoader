@@ -45,7 +45,7 @@ lifecycleService = "2.8.4"
 androidx-collection = { module = "androidx.collection:collection", version.ref = "collection" }
 androidx-core-ktx-v1130 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
 androidzip = { module = "com.github.buggysofts-com:AndroidZip", version.ref = "githubStreamzip" }
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.12.0-alpha01" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version = "1.13.0" }
 apkzlib = { module = "com.android.tools.build:apkzlib", version.ref = "apkzlib" }
 build-gradle = { module = "com.android.tools.build:gradle", version.ref = "gradleVersion" }
 chaquopy = { module = "com.chaquo.chaquopy:chaquopy", version.ref = "chaquopy" }

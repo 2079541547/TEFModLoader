@@ -14,7 +14,6 @@
 #include <EFModLoader/api/Redirect.hpp>
 
 void LoadMod() {
-    EFModLoader::Loader::LoadELFMods::LoadMod("libexample_mod1.so");
     EFModLoader::Loader::LoadELFMods::LoadALLMod(*TEFModLoader::Register::API::get_cacheDir + "runEFMod/");
 }
 

@@ -112,36 +112,3 @@ target_link_libraries(
         EFModLoader
 )
 
-add_library(example_mod SHARED
-        example_mod/LuckyDamage/example_mod.cpp
-)
-
-target_link_libraries(
-        example_mod
-        PUBLIC
-        log
-)
-
-
-add_library(example_mod1 SHARED
-        example_mod/ForgottenTreasure/main.cpp
-)
-
-target_link_libraries(
-        example_mod1
-        PUBLIC
-        log
-        BNM
-)
-
-add_library(MyMod SHARED
-    example_mod/MyMod/main.cpp
-)
-
-
-target_link_libraries(
-        MyMod
-        PUBLIC
-        log
-        BNM
-)
