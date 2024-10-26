@@ -8,7 +8,6 @@
 ## Projects in use
 
 * [ByNameModding](https://github.com/ByNameModding/BNM-Android)
-* [ShadowHook](https://github.com/bytedance/android-inline-hook)
 
 # What Can TEFModLoader Do?
 
@@ -26,17 +25,17 @@
 
 
 | Language         | Supported |
-| ---------------- | --------- |
+| ---------------- | -------- |
 | 简体中文         | ✅️      |
-| 繁体中文         | ❌        |
-| English          | ❌        |
-| 日本語           | ❌        |
-| 한국어           | ❌        |
-| Italiano         | ❌        |
-| Lengua española | ❌        |
-| Français        | ❌        |
-| Русский   | ❌        |
-| Deutsch          | ❌        |
+| 繁体中文         | ❌       |
+| English          | ✅️        |
+| 日本語           | ❌       |
+| 한국어           | ❌       |
+| Italiano         | ❌       |
+| Lengua española | ❌       |
+| Français        | ❌       |
+| Русский   | ❌       |
+| Deutsch          | ❌       |
 
 ## Acknowledgements
 

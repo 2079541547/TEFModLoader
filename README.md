@@ -10,7 +10,6 @@
 # 使用的项目
 
 * [ByNameModding](https://github.com/ByNameModding/BNM-Android)
-* [ShadowHook](https://github.com/bytedance/android-inline-hook)
 
 # TEFModLoader 功能
 
@@ -27,17 +26,17 @@
 # **多语言支持**
 
 | 语言             | 是否支持 |
-| ---------------- | -------- |
+| ---------------- | ------- |
 | 简体中文         | ✅️     |
-| 繁体中文         | ❌       |
-| English          | ❌       |
-| 日本語           | ❌       |
-| 한국어           | ❌       |
-| Italiano         | ❌       |
-| Lengua española | ❌       |
-| Français        | ❌       |
-| Русский   | ❌       |
-| Deutsch          | ❌       |
+| 繁体中文         | ❌      |
+| English          | ✅️       |
+| 日本語           | ❌      |
+| 한국어           | ❌      |
+| Italiano         | ❌      |
+| Lengua española | ❌      |
+| Français        | ❌      |
+| Русский   | ❌      |
+| Deutsch          | ❌      |
 
 # 谢所有参与项目的人
 
