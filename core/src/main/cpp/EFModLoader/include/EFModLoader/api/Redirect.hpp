@@ -35,4 +35,7 @@ namespace EFModLoader::Redirect {
         EFModLoader::Log::LOG("Debug", "Redirect", "redirectPointer", "重定向成功，原始地址：" + std::to_string(originalPtrAddress) + " 重定向为：" + std::to_string(newPtrAddress));
     }
 
+
+
+
 }

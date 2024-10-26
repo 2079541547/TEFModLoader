@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.util.Log
 import org.json.JSONObject
+import silkways.terraria.efmodloader.R
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -81,17 +82,17 @@ object modLoaderInstaller {
     // 显示确认对话框
     private fun showConfirmationDialog(context: Context, message: String, onConfirm: (Boolean) -> Unit) {
         val dialogBuilder = androidx.appcompat.app.AlertDialog.Builder(context)
-        dialogBuilder.setMessage("文件 $message 已存在，是否要替换？")
+        dialogBuilder.setMessage("${context.getString(R.string.file)} $message ${context.getString(R.string.file_text)}")
             .setCancelable(false)
-            .setPositiveButton("确定") { _: DialogInterface, _: Int ->
+            .setPositiveButton(R.string.determine) { _: DialogInterface, _: Int ->
                 onConfirm(true)
             }
-            .setNegativeButton("取消") { dialog: DialogInterface, _: Int ->
+            .setNegativeButton(R.string.cancel) { dialog: DialogInterface, _: Int ->
                 dialog.cancel()
                 onConfirm(false)
             }
         val alert = dialogBuilder.create()
-        alert.setTitle("确认替换？")
+        alert.setTitle("${context.getString(R.string.file)}${context.getString(R.string.file_text)}")
         alert.show()
     }
 

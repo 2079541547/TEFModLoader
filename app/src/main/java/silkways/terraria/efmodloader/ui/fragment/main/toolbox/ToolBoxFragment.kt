@@ -2,7 +2,6 @@ package silkways.terraria.efmodloader.ui.fragment.main.toolbox
 
 import android.app.Dialog
 import android.content.DialogInterface
-import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -27,13 +26,22 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 class ToolBoxFragment: Fragment() {
 
     private var _binding: MainFragmentToolboxBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var createFileLauncher: androidx.activity.result.ActivityResultLauncher<String>
+    private lateinit var createFileLauncher_1: androidx.activity.result.ActivityResultLauncher<String>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setupActivityResultLauncher(listOf("${requireActivity().getExternalFilesDir(null)?.parent}/Worlds", "${requireActivity().getExternalFilesDir(null)?.parent}/Players", "${requireActivity().getExternalFilesDir(null)?.parent}/OldSaves"))
+        setupActivityResultLauncher_1()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -79,6 +87,13 @@ class ToolBoxFragment: Fragment() {
             selectModFiles()
         }
 
+        binding.dumpSave.setOnClickListener {
+            createFileLauncher.launch("存档.zip")
+        }
+
+        binding.dumpAll.setOnClickListener {
+            createFileLauncher_1.launch("TEFModLoader数据")
+        }
 
         //初始化文件管理
         val recyclerView = binding.fileList
@@ -228,6 +243,9 @@ class ToolBoxFragment: Fragment() {
     }
 
 
+
+
+
     private fun copyFileOverwritingExisting(sourcePath: String?, destinationPath: String?) {
         val sourceFile = sourcePath?.let { File(it) }
         val destFile = destinationPath?.let { File(it) }
@@ -267,6 +285,84 @@ class ToolBoxFragment: Fragment() {
 
     private fun selectModFiles() {
         selectFilesLauncher.launch("*/*")
+    }
+
+
+    private fun setupActivityResultLauncher(dirPaths: List<String>) {
+        createFileLauncher = registerForActivityResult(
+            ActivityResultContracts.CreateDocument("application/zip")
+        ) { uri ->
+            uri?.let {
+                saveZipToFile(it, dirPaths)
+            }
+        }
+    }
+
+    private fun setupActivityResultLauncher_1() {
+        createFileLauncher_1 = registerForActivityResult(
+            ActivityResultContracts.CreateDocument("application/zip")
+        ) { uri ->
+            uri?.let {
+                saveZipToFile(it, listOf(), true)
+            }
+        }
+    }
+
+    private fun saveZipToFile(uri: Uri, dirPaths: List<String> = listOf<String>(), isAll: Boolean = false) {
+        try {
+            val fileOutputStream = requireActivity().contentResolver.openOutputStream(uri)
+            fileOutputStream?.use { outputStream ->
+                val zipOut = ZipOutputStream(outputStream)
+
+                if (isAll) {
+                    val dir = File("${requireActivity().getExternalFilesDir(null)?.parent}")
+                    val dir2 = File("${requireActivity().dataDir}")
+
+                    compressDir(dir, "sdcard/", zipOut)
+                    compressDir(dir2, "data/", zipOut)
+                }
+                else {
+                    for (dirPath in dirPaths) {
+                        val dir = File(dirPath)
+                        if (dir.exists()) {
+                            compressDir(dir, dir.name + "/", zipOut)
+                        }
+
+                    }
+                }
+                zipOut.close()
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error saving ZIP file", e)
+        }
+    }
+
+    private fun compressDir(dir: File, parentPath: String, zipOut: ZipOutputStream) {
+        val files = dir.listFiles()
+        if (files != null) {
+            for (file in files) {
+                try {
+                    if (file.isDirectory) {
+                        compressDir(file, parentPath + file.name + "/", zipOut)
+                    } else {
+                        val entryName = parentPath + file.name
+                        zipOut.putNextEntry(ZipEntry(entryName))
+                        val buffer = ByteArray(1024)
+                        var length: Int
+                        val fis = FileInputStream(file)
+                        while (fis.read(buffer).also { length = it } > 0) {
+                            zipOut.write(buffer, 0, length)
+                        }
+                        zipOut.closeEntry()
+                        fis.close()
+                    }
+                } catch (e: Exception) {
+                    // Log the exception and continue to the next file
+                    println("Failed to compress file: ${file.absolutePath}. Reason: ${e.message}")
+                    continue
+                }
+            }
+        }
     }
 
 

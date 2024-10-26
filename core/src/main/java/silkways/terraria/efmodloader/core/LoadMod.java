@@ -4,15 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
-import com.bytedance.shadowhook.ShadowHook;
-
 import java.io.File;
 
 public class LoadMod {
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     public void LoadMian(Context context){
-        loadHook();
 
         String path = context.getCacheDir().getPath() + "/EFModLoader/libLoader.so";
         if (new File(path).exists()) {
@@ -41,12 +38,6 @@ public class LoadMod {
                 }
             }
         }
-    }
-
-    private void loadHook(){
-        ShadowHook.init(new ShadowHook.ConfigBuilder()
-                .setMode(ShadowHook.Mode.UNIQUE)
-                .build());
     }
 
 }

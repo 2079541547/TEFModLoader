@@ -19,6 +19,7 @@ void LoadMod() {
 }
 
 
+
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
     JNIEnv *env;
     vm->GetEnv((void **) &env, JNI_VERSION_1_6);
@@ -45,4 +46,5 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
 
     return JNI_VERSION_1_6;
 }
+
 

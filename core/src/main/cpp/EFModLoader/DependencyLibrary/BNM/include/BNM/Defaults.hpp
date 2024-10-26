@@ -1,8 +1,8 @@
 #pragma once
 
+#include <type_traits>
 #include "UserSettings/GlobalSettings.hpp"
 #include "Il2CppHeaders.hpp"
-#include <type_traits>
 
 namespace BNM {
     namespace Structures::Unity {
@@ -39,11 +39,11 @@ namespace BNM::Defaults {
 
     struct DefaultTypeRef {
         Internal::ClassType *reference{};
-        constexpr inline bool Valid() const { return reference && *reference; }
+        [[nodiscard]] constexpr inline bool Valid() const { return reference && *reference; }
         constexpr inline operator Internal::ClassType() const { return reference ? *reference : nullptr; }
         operator CompileTimeClass() const;
         operator BNM::Class() const;
-        BNM::Class ToClass() const;
+        [[nodiscard]] BNM::Class ToClass() const;
     };
 
     template<typename T>

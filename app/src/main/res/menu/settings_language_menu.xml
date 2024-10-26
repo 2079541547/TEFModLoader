@@ -7,9 +7,11 @@
         android:id="@+id/menu_language_2"
         android:title="@string/settings_language_2" />
     <item
+        android:visible="false"
         android:id="@+id/menu_language_3"
         android:title="@string/settings_language_3" />
     <item
+        android:visible="false"
         android:id="@+id/menu_language_4"
         android:title="@string/settings_language_4" />
     <item

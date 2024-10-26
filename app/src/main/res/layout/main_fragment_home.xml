@@ -134,20 +134,21 @@
                 android:textSize="15sp"
                 android:text="@string/logs" />
 
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/materialTextView2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/logs_title_1"
+                android:text="@string/logs_title_120"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/materialTextView" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="0dp"
-                android:layout_height="150dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@string/logs_text_1"
+                android:text="@string/logs_text_120"
                 android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

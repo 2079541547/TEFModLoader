@@ -178,8 +178,26 @@ namespace Terraria::ID::ItemID::Sets {
         EFModLoader::RegisterApi::RegisterAPI("Terraria.ID.ItemID.Sets.BossBag", (uintptr_t)BossBag);
         EFModLoader::RegisterApi::RegisterAPI("Terraria.ID.ItemID.Sets.OpenableBag", (uintptr_t)OpenableBag);
 
-        //初始化所有API
-        EFModLoader::RegisterApi::Register();
+
+        for (const auto& api : EFModLoader::RegisterApi::registerAPI) {
+            if (EFModLoaderAPI::GetEFModLoader().FindAPIS(api.apiName).empty()) {
+                EFModLoader::Log::LOG("Warning", "RegisterApi", "Register", "没有Mod注册的api：" + api.apiName);
+                void* ptr = reinterpret_cast<void*>(api.new_ptr);
+                try {
+                    delete[] reinterpret_cast<Field<bool>*>(ptr);
+                    EFModLoader::Log::LOG("Info", "RegisterApi", "Register", "尝试卸载未使用的API成功：" + api.apiName);
+                } catch (...) {
+                    EFModLoader::Log::LOG("Warning", "RegisterApi", "Register", "尝试卸载未使用的API失败：" + api.apiName);
+                }
+            } else {
+                for (auto a: EFModLoaderAPI::GetEFModLoader().FindAPIS(api.apiName)) {
+                    EFModLoader::Redirect::redirectPointer<void*>(a, api.new_ptr);
+                }
+                EFModLoader::Log::LOG("Info", "RegisterApi", "Register", "已注册api：" + api.apiName);
+            }
+        }
+        // 清空注册列表，防止重复注册
+        EFModLoader::RegisterApi::registerAPI.clear();
     }
 
     void getHookPtr() {
@@ -188,10 +206,6 @@ namespace Terraria::ID::ItemID::Sets {
     }
 
 
-    void RegisterHook() {
-        using namespace EFModLoader::RegisterHook::Unity;
-        RegisterIHOOK("Assembly-CSharp.dll.Terraria.ID.ItemID.Sets..cctor", cctor, new_cctor, old_cctor);
-    }
 
 
     void (*old_cctor)(UnityEngine::Object *);
@@ -280,10 +294,15 @@ namespace Terraria::ID::ItemID::Sets {
 
         RegisterApi();
 
+
         auto hooks = EFModLoaderAPI::GetEFModLoader().FindHooks("Assembly-CSharp.dll.Terraria.ID.ItemID.Sets..cctor");
         for (auto hook : hooks) {
             EFModLoader::Redirect::callFunction<void>(reinterpret_cast<void *>(hook));
         }
     }
 
+    void RegisterHook() {
+        using namespace EFModLoader::RegisterHook::Unity;
+        RegisterIHOOK("Assembly-CSharp.dll.Terraria.ID.ItemID.Sets..cctor", cctor, new_cctor, old_cctor);
+    }
 }

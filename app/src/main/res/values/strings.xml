@@ -41,8 +41,12 @@
 
     <!-- 更新日志 -->
     <string name="logs">更新日志|x･`)(一定会按时更新的)</string>
-    <string name="logs_title_1">1.0.0</string>
-    <string name="logs_text_1">1.可使用EFMod作为游戏扩展 \n2.可导入存档/配置 \n3.EFMod基本支持 \n4.调试工具 \n5.额外的游戏菜单</string>
+    <string name="logs_title_100" translatable="false">1.0.0</string>
+    <string name="logs_text_100">1.可使用EFMod作为游戏扩展 \n2.可导入存档/配置 \n3.EFMod基本支持 \n4.调试工具 \n5.额外的游戏菜单</string>
+
+    <string name="logs_title_120" translatable="false">1.2.0</string>
+    <string name="logs_text_120">1.开发自定义内核 \n2.可导出数据 \n3.更强大的内存管理 \n4.英语翻译 \n5.更换Mod文件格式以及新文件系统 \n6.不再携带汉化版本，而是纯原版 \n7.修复文件无法选择bug \n8.更新一言 \n9.优化Mod安装、读取、启用速度 \n10.优化游戏启动速度 \n11.优化内核 \n12.更多API支持 \n13.更换DodyHook，移除shadowhook \n14.移除不稳定的调试工具 \n15.支持独立Mod</string>
+
 
     <string name="Clear_cache_title">是否清除缓存？</string>
     <string name="Clear_cache_message">此工具会缓存各种文件，如：您安装的Mod，存档，人物等</string>
@@ -177,4 +181,10 @@
     <string name="Running_logs">运行日志</string>
     <string name="Online_Video">在线视频</string>
     <string name="Game_status">运行信息</string>
+    <string name="dump_save">导出存档</string>
+    <string name="dump_all">导出所有数据</string>
+
+    <string name="file">文件</string>
+    <string name="file_text">已存在，是否要替换？</string>
+    <string name="cancel">取消</string>
 </resources>

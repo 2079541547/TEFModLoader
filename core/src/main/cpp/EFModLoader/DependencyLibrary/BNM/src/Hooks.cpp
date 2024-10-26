@@ -3,25 +3,20 @@
 
 using namespace BNM;
 
-void Internal::BNM_il2cpp_init(const char *domain_name) {
-    states.isInsideInit = true;
+int Internal::BNM_il2cpp_init(const char *domain_name) {
+    if (states.lateInitAllowed) UNHOOK(BNM_il2cpp_class_from_system_type_origin);
 
-    old_BNM_il2cpp_init(domain_name);
+    auto ret = old_BNM_il2cpp_init(domain_name);
 
     UNHOOK(BNM_il2cpp_init_origin);
 
     Load();
 
-    states.isInsideInit = false;
+    return ret;
 }
 
 IL2CPP::Il2CppClass *Internal::BNM_il2cpp_class_from_system_type(IL2CPP::Il2CppReflectionType *type) {
     auto klass = old_BNM_il2cpp_class_from_system_type(type);
-
-    if (states.isInsideInit) {
-        UNHOOK(BNM_il2cpp_class_from_system_type_origin);
-        return klass;
-    }
 
     if (!Internal::il2cppMethods.il2cpp_domain_get) {
         Internal::il2cppMethods.il2cpp_domain_get = (decltype(Internal::il2cppMethods.il2cpp_domain_get)) GetIl2CppMethod(BNM_OBFUSCATE_TMP(BNM_IL2CPP_API_il2cpp_domain_get));
@@ -34,9 +29,11 @@ IL2CPP::Il2CppClass *Internal::BNM_il2cpp_class_from_system_type(IL2CPP::Il2CppR
     // Will be true after il2cpp_init
     if (!thread || !thread->internal_thread || (void *) domain->default_context != (void *) thread->internal_thread->current_appcontext) return klass;
 
+    UNHOOK(BNM_il2cpp_init_origin);
+    UNHOOK(BNM_il2cpp_class_from_system_type_origin);
+
     Load();
 
-    UNHOOK(BNM_il2cpp_class_from_system_type_origin);
     return klass;
 }
 
@@ -47,7 +44,7 @@ void Internal::Image$$GetTypes(const IL2CPP::Il2CppImage *image, bool, std::vect
 
 #ifdef BNM_CLASSES_MANAGEMENT
     // Get BNM classes
-    ClassesManagement::BNMClassesMap.ForEachByImage(image, [&target](IL2CPP::Il2CppClass *BNM_class) -> bool {
+    ClassesManagement::bnmClassesMap.ForEachByImage(image, [&target](IL2CPP::Il2CppClass *BNM_class) -> bool {
         target->push_back(BNM_class);
         return false;
     });
@@ -87,7 +84,7 @@ IL2CPP::Il2CppClass *Internal::ClassesManagement::Class$$FromName(IL2CPP::Il2Cpp
         ret = old_Class$$FromName(image, namespaze, name);
 
     // If through BNM, we are looking for a class
-    if (!ret) BNMClassesMap.ForEachByImage(image, [namespaze, name, &ret](IL2CPP::Il2CppClass *BNM_class) -> bool {
+    if (!ret) bnmClassesMap.ForEachByImage(image, [namespaze, name, &ret](IL2CPP::Il2CppClass *BNM_class) -> bool {
             if (!strcmp(namespaze, BNM_class->namespaze) && !strcmp(name, BNM_class->name)) {
                 ret = BNM_class;
                 // Found, stop for
@@ -107,7 +104,7 @@ IL2CPP::Il2CppImage *Internal::ClassesManagement::new_GetImageFromIndex(IL2CPP::
         IL2CPP::Il2CppImage *ret = nullptr;
 
         // Go through all the images and check if the number matches
-        BNMClassesMap.ForEach([index, &ret](IL2CPP::Il2CppImage *img, const std::vector<IL2CPP::Il2CppClass *> &classes) -> bool {
+        bnmClassesMap.ForEach([index, &ret](IL2CPP::Il2CppImage *img, const std::vector<IL2CPP::Il2CppClass *> &classes) -> bool {
             if (img->assemblyIndex == index) {
                 ret = img;
                 return true;

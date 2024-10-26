@@ -49,7 +49,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.shadowhook)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     testImplementation(libs.junit)

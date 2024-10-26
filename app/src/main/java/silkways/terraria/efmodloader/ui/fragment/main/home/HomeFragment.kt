@@ -1,10 +1,11 @@
 package silkways.terraria.efmodloader.ui.fragment.main.home
 
+import android.annotation.SuppressLint
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.LayoutInflater
@@ -18,18 +19,20 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.textview.MaterialTextView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import eternal.future.effsystem.fileSystem
+import com.google.android.material.textview.MaterialTextView
+import org.json.JSONArray
+import org.json.JSONObject
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.HomeDialogLogsBinding
 import silkways.terraria.efmodloader.databinding.MainFragmentHomeBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
+import java.io.BufferedReader
 import java.io.File
+import java.io.InputStreamReader
 import java.util.Calendar
 import kotlin.random.Random
-
 
 /**
  * 主页片段类，负责显示主页内容并处理交互。
@@ -51,6 +54,7 @@ class HomeFragment: Fragment() {
      * @param savedInstanceState 如果当前片段之前已存在，保存的实例状态。
      * @return 返回这个片段的主视图。
      */
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -78,14 +82,21 @@ class HomeFragment: Fragment() {
         File("${requireActivity().cacheDir}").mkdirs()
         binding.greetings.text = getGreeting() //设置问候语
 
-        //设置一言
-        val YiYanArray = JsonConfigModifier.getAssetsArray(requireActivity(), "ToolBoxData/yiyan.json", "data")
-        val YiYan = YiYanArray!!.get(Random.nextInt(0, YiYanArray.length())).toString()
-        binding.aBriefRemark.text = YiYan
+        // 设置一言
+        val YiYanArray = getQuotesArray(requireActivity(), "ToolBoxData/yiyan.json", "quotes")
+        val YiYan = getRandomQuote(YiYanArray)
 
-        //切换一言
-        binding.SwitchRandomly.setOnClickListener { binding.aBriefRemark.text = YiYanArray.get(Random.nextInt(0, YiYanArray.length())).toString() }
+        if (YiYan != null) {
+            binding.aBriefRemark.text = "${YiYan.optString("text")} - ${YiYan.optString("source")}"
+        }
 
+        // 切换一言
+        binding.SwitchRandomly.setOnClickListener {
+            val newYiYan = getRandomQuote(YiYanArray)
+            if (newYiYan != null) {
+                binding.aBriefRemark.text = "${newYiYan.optString("text")} - ${newYiYan.optString("source")}"
+            }
+        }
 
         //跳转关于页面
         binding.about.setOnClickListener { navHostFragment.navController.navigate(R.id.navigation_about, null, navOptions) }
@@ -129,6 +140,33 @@ class HomeFragment: Fragment() {
         })
 
         return binding.root
+    }
+
+    private fun getQuotesArray(context: Context, filePath: String, key: String): JSONArray? {
+        // 用于读取 assets 文件夹中的 JSON 文件
+        val jsonString = context.assets.open(filePath).use { inputStream ->
+            BufferedReader(InputStreamReader(inputStream)).use { reader ->
+                reader.readText()
+            }
+        }
+
+        // 解析 JSON 字符串
+        val jsonObject = try {
+            JSONObject(jsonString)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return null
+        }
+
+        // 获取指定键对应的数组
+        return jsonObject.optJSONArray(key)
+    }
+
+    private fun getRandomQuote(yiYanArray: JSONArray?): JSONObject? {
+        if (yiYanArray == null || yiYanArray.length() == 0) return null
+        val random = Random
+        val index = random.nextInt(yiYanArray.length())
+        return yiYanArray.optJSONObject(index)
     }
 
 
@@ -201,8 +239,9 @@ class HomeFragment: Fragment() {
 
                 // 获取数据列表长度
                 val logsItems = listOf(
-                    Pair(getString(R.string.logs_title_1), getString(R.string.logs_text_1)),
-                    )
+                    Pair(getString(R.string.logs_title_120), getString(R.string.logs_text_120)),
+                    Pair(getString(R.string.logs_title_100), getString(R.string.logs_text_100))
+                )
                 override fun getItemCount(): Int {
                     return logsItems.size
                 }

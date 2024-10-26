@@ -29,6 +29,10 @@
 
 # 文档贡献 <a id="documentation-contribution"></a>
 
+## 雨鹜
+- 英语翻译
+---
+
 ---
 
 # 社区贡献 <a id="community-contribution"></a>

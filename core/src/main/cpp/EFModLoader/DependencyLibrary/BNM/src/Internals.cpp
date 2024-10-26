@@ -10,10 +10,10 @@ namespace BNM::Internal {
     void *currentFinderData = &il2cppLibraryHandle;
 
     // A list with variables from the il2cpp VM
-    _VMData vmData{};
+    VMData vmData{};
 
     // il2cpp methods to avoid searching for them every BNM query
-    _IL2CppMethods il2cppMethods{};
+    Il2CppMethods il2cppMethods{};
 
     std::list<void(*)()> onIl2CppLoaded{};
 
@@ -29,7 +29,7 @@ namespace BNM::Internal {
     void (*Class$$Init)(IL2CPP::Il2CppClass *klass){};
 
     void *BNM_il2cpp_init_origin{};
-    void (*old_BNM_il2cpp_init)(const char *){};
+    int (*old_BNM_il2cpp_init)(const char *){};
 
     void *BNM_il2cpp_class_from_system_type_origin{};
     IL2CPP::Il2CppClass *(*old_BNM_il2cpp_class_from_system_type)(IL2CPP::Il2CppReflectionType*){};
@@ -55,7 +55,7 @@ namespace BNM::Internal {
 #if UNITY_VER <= 174
         IL2CPP::Il2CppImage *(*old_GetImageFromIndex)(IL2CPP::ImageIndex index){};
 #endif
-        struct _BNMClassesMap BNMClassesMap{};
+        BNMClassesMap bnmClassesMap{};
     }
 #endif
 }
@@ -105,7 +105,7 @@ IL2CPP::Il2CppClass *Internal::TryGetClassInImage(const IL2CPP::Il2CppImage *ima
 #ifdef BNM_CLASSES_MANAGEMENT
     NEW_CLASSES:
     IL2CPP::Il2CppClass *result = nullptr;
-    ClassesManagement::BNMClassesMap.ForEachByImage(image, [&_namespace, &_name, &result](IL2CPP::Il2CppClass *BNM_class) -> bool {
+    ClassesManagement::bnmClassesMap.ForEachByImage(image, [&_namespace, &_name, &result](IL2CPP::Il2CppClass *BNM_class) -> bool {
         if (_namespace != BNM_class->namespaze || _name != BNM_class->name) return false;
 
         result = BNM_class;

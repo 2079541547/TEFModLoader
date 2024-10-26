@@ -92,6 +92,7 @@ static_assert(false, "ByNameModding requires C++20 and above!");
 #define BNM_OBFUSCATE_TMP(str) str // const char *
 
 // Shadowhook
+/*
 #include "shadowhook.h"
 
 template<typename PTR_T, typename NEW_T, typename T_OLD>
@@ -110,11 +111,12 @@ template<typename PTR_T>
 inline void UNHOOK(PTR_T ptr) {
     if ((void *) ptr != nullptr) shadowhook_unhook((void *)ptr);
 }
+ */
 
 
 
 // Dobby
-/*
+
 #include <dobby.h>
 
 template<typename PTR_T, typename NEW_T, typename T_OLD>
@@ -133,32 +135,8 @@ template<typename PTR_T>
 inline void UNHOOK(PTR_T ptr) {
     if ((void *) ptr != nullptr) DobbyDestroy((void *)ptr);
 }
-*/
 
-/*
-// Dummy
-#include <cassert>
 
-template<typename PTR_T, typename NEW_T, typename T_OLD>
-inline void *HOOK(PTR_T ptr, NEW_T newMethod, T_OLD &oldBytes) {
-    assert("Нет ПО для подмены! (No hooking software!)");
-    if ((void *) ptr != nullptr) ((void)0);
-    return nullptr;
-}
-
-template<typename PTR_T, typename NEW_T, typename T_OLD>
-inline void *HOOK(PTR_T ptr, NEW_T newMethod, T_OLD &&oldBytes) {
-    assert("Нет ПО для подмены! (No hooking software!)");
-    if ((void *) ptr != nullptr) ((void)0);
-    return nullptr;
-}
-
-template<typename PTR_T>
-inline void UNHOOK(PTR_T ptr) {
-    assert("Нет ПО для подмены! (No hooking software!)");
-    if ((void *) ptr != nullptr) ((void)0);
-}
-*/
 
 #include <dlfcn.h>
 
@@ -227,4 +205,4 @@ namespace BNM {
 #endif
 }
 
-#define BNM_VER "2.2.1"
+#define BNM_VER "2.2.3"

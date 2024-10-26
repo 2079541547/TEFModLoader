@@ -3,12 +3,12 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project("TEFModLoader")
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -flto")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -std=c++20")
 
-find_package(shadowhook REQUIRED CONFIG)
+
+set(DOBBY_LIB ${CMAKE_CURRENT_SOURCE_DIR}/EFModLoader/DependencyLibrary/Dobby/${CMAKE_ANDROID_ARCH_ABI}/libdobby.a)
 
 set(BNM_INCLUDE_DIRS
         EFModLoader/DependencyLibrary/BNM/include
@@ -16,6 +16,7 @@ set(BNM_INCLUDE_DIRS
         EFModLoader/DependencyLibrary/BNM/external
         EFModLoader/DependencyLibrary/BNM/external/utf8
         EFModLoader/DependencyLibrary/BNM/src/private
+        EFModLoader/DependencyLibrary/Dobby
 )
 
 add_library(
@@ -49,7 +50,7 @@ target_include_directories(
 target_link_libraries(
         BNM
         PUBLIC
-        shadowhook::shadowhook
+        ${DOBBY_LIB}
         log
 )
 
@@ -91,6 +92,9 @@ add_library(${CMAKE_PROJECT_NAME}
         SHARED
         TEFModLoader/src/TEFModLoader/UnityEngine/TextAsset.cpp
         TEFModLoader/src/TEFModLoader/Terraria/ID/ItemID.cpp
+        TEFModLoader/src/TEFModLoader/Terraria/ID/BuffID.cpp
+        TEFModLoader/src/TEFModLoader/Terraria/ID/ProjectileID.cpp
+        TEFModLoader/src/TEFModLoader/Terraria/ID/PrefixID.cpp
         TEFModLoader/src/TEFModLoader/Terraria/Main.cpp
         TEFModLoader/src/TEFModLoader/Register.cpp
         TEFModLoader/src/TEFModLoader.cpp

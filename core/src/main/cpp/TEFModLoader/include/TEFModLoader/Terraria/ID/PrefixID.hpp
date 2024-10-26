@@ -1,23 +1,24 @@
 //
-// Created by eternalfuture on 2024/10/20.
+// Created by eternalfuture on 2024/10/26.
 //
+
 
 #pragma once
 
 #include <BNM/UserSettings/GlobalSettings.hpp>
 #include <BNM/UnityStructures.hpp>
-#include <iostream>
-#include <string>
+#include <BNM/Field.hpp>
+#include <BNM/FieldBase.hpp>
 
-namespace UnityEngine::TextAsset {
 
-    using namespace std;
+namespace Terraria::ID::PrefixID::Sets {
+
     using namespace BNM;
     using namespace BNM::Structures;
+    using namespace std;
 
 
     void getHookPtr();
     void RegisterHook();
-
 
 }

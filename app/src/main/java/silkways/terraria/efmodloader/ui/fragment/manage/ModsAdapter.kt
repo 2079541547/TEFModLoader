@@ -152,7 +152,7 @@ class ModsAdapter(private val mods: List<ModInfo>, private val context: Context)
         modCacheDir.mkdirs()
 
 
-        fileSystem.EFMC.extractPage(mod.filePath, modCacheDir.absolutePath)
+        EFMC.extractPage(mod.filePath, modCacheDir.absolutePath)
 
         // 使用FileProvider获取文件URI
         val mainHtmlFile = File(modCacheDir, "main.html")

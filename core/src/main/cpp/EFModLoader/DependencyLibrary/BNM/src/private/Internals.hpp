@@ -26,7 +26,6 @@ namespace BNM::Internal {
     struct States {
         uint8_t state : 1{};
         uint8_t lateInitAllowed : 1{};
-        uint8_t isInsideInit : 1{};
     } extern states;
     extern void *il2cppLibraryHandle;
     extern Loading::MethodFinder currentFinderMethod;
@@ -34,7 +33,7 @@ namespace BNM::Internal {
 
 #pragma pack(push, 1)
     // A list with variables from the il2cpp VM
-    struct _VMData {
+    extern struct VMData {
         BNM::Class Object{}, UnityEngine$$Object{}, System$$List{};
         BNM::Method<IL2CPP::Il2CppReflectionType *> Type$$GetType{};
         BNM::Method<void *> Interlocked$$CompareExchange{};
@@ -43,10 +42,10 @@ namespace BNM::Internal {
         BNM::Method<BNM::MonoType *> RuntimeType$$make_byref_type{};
         BNM::Method<BNM::IL2CPP::Il2CppReflectionMethod *> RuntimeMethodInfo$$MakeGenericMethod_impl{};
         BNM::Structures::Mono::String **String$$Empty{};
-    } extern vmData;
+    } vmData;
 
     // il2cpp methods to avoid searching for them every BNM call
-    struct _IL2CppMethods {
+    extern struct Il2CppMethods {
         BNM::IL2CPP::Il2CppImage *(*il2cpp_get_corlib)(){};
         BNM::IL2CPP::Il2CppClass *(*il2cpp_class_from_name)(const BNM::IL2CPP::Il2CppImage *, const char *, const char *){};
         BNM::IL2CPP::Il2CppImage *(*il2cpp_assembly_get_image)(const BNM::IL2CPP::Il2CppAssembly *){};
@@ -67,7 +66,7 @@ namespace BNM::Internal {
         IL2CPP::Il2CppThread *(*il2cpp_thread_current)(IL2CPP::Il2CppDomain *){};
         IL2CPP::Il2CppThread *(*il2cpp_thread_attach)(IL2CPP::Il2CppDomain *){};
         void (*il2cpp_thread_detach)(IL2CPP::Il2CppThread *){};
-    } extern il2cppMethods;
+    } il2cppMethods;
 
 #pragma pack(pop)
 
@@ -91,8 +90,8 @@ namespace BNM::Internal {
     void *GetIl2CppMethod(const char *methodName);
 
     extern void *BNM_il2cpp_init_origin;
-    extern void (*old_BNM_il2cpp_init)(const char *);
-    void BNM_il2cpp_init(const char *domain_name);
+    extern int (*old_BNM_il2cpp_init)(const char *);
+    int BNM_il2cpp_init(const char *domain_name);
 
     extern void *BNM_il2cpp_class_from_system_type_origin;
     extern IL2CPP::Il2CppClass *(*old_BNM_il2cpp_class_from_system_type)(IL2CPP::Il2CppReflectionType*);
@@ -160,7 +159,7 @@ namespace BNM::Internal {
         void ProcessCustomClasses();
 
         // Structure for quick search classes by their images
-        extern struct _BNMClassesMap {
+        extern struct BNMClassesMap {
             inline void AddClass(const IL2CPP::Il2CppImage *image, IL2CPP::Il2CppClass *cls) {
                 return AddClass((BNM_PTR)image, cls);
             }
@@ -199,7 +198,7 @@ namespace BNM::Internal {
             }
         private:
             std::map<BNM_PTR, std::vector<IL2CPP::Il2CppClass *>> _map{};
-        } BNMClassesMap;
+        } bnmClassesMap;
     }
 
 #endif

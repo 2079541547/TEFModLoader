@@ -1,39 +1,49 @@
 # Table of Contents
 
-- [Important Contributions](#important-contributions)
-- [Code Contributions](#code-contributions)
-- [Design Contributions](#design-contributions)
-- [Documentation Contributions](#documentation-contributions)
-- [Community Contributions](#community-contributions)
+- [Significant Contributions](#important-contribution)
+- [Code Contributions](#code-contribution)
+- [Design Contributions](#design-contribution)
+- [Documentation Contributions](#documentation-contribution)
+- [Community Contributions](#community-contribution)
 - [Other Contributions](#other-contributions)
 
----
-
-# Important Contributions <a id="important-contributions"></a>
+# Significant Contributions <a id="important-contribution"></a>
 
 ## MoreRx
 - Provided a clean, unencrypted version of Terraria-1.4.4.9.5-aarch64
+
 ---
 
-# Design Contributions <a id="design-contributions"></a>
+# Code Contributions <a id="code-contribution"></a>
+
+---
+
+# Design Contributions <a id="design-contribution"></a>
 
 ## 雨鹜
-- Logo Design
+- Logo design
+
+---
 
 ## QwQ3094
-- Partial UI Improvements
----
-
-# Code Contributions <a id="code-contributions"></a>
+- Partial UI improvements
 
 ---
 
-# Documentation Contributions <a id="documentation-contributions"></a>
+# Documentation Contributions <a id="documentation-contribution"></a>
+
+## 雨鹜
+- English translation
 
 ---
 
-# Community Contributions <a id="community-contributions"></a>
+---
+
+# Community Contributions <a id="community-contribution"></a>
 
 ---
 
 # Other Contributions <a id="other-contributions"></a>
+
+## aaa1115910
+- Guidance on how to open files in TR Save Editor format

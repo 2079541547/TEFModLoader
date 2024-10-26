@@ -9,6 +9,9 @@
 #include <TEFModLoader/Terraria/ID/ItemID.hpp>
 #include <EFModLoader/log.hpp>
 #include <TEFModLoader/UnityEngine/TextAsset.hpp>
+#include <TEFModLoader/Terraria/ID/BuffID.hpp>
+#include <TEFModLoader/Terraria/ID/ProjectileID.hpp>
+#include <TEFModLoader/Terraria/ID/PrefixID.hpp>
 
 
 namespace TEFModLoader::Register {
@@ -35,6 +38,10 @@ namespace TEFModLoader::Register {
         EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::Main::getHookPtr);
         EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::ID::ItemID::Sets::getHookPtr);
         EFModLoader::RegisterHook::Unity::RegisterLoad(UnityEngine::TextAsset::getHookPtr);
+        EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::ID::BuffID::Sets::getHookPtr);
+        EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::ID::ProjectileID::Sets::getHookPtr);
+        EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::ID::PrefixID::Sets::getHookPtr);
+
     }
 
     void RegisterHook() {
@@ -43,6 +50,9 @@ namespace TEFModLoader::Register {
         EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::Main::RegisterHook);
         EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::ID::ItemID::Sets::RegisterHook);
         EFModLoader::RegisterHook::Unity::RegisterLoad(UnityEngine::TextAsset::RegisterHook);
+        EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::ID::BuffID::Sets::RegisterHook);
+        EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::ID::ProjectileID::Sets::RegisterHook);
+        EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::ID::PrefixID::Sets::RegisterHook);
     }
 
 

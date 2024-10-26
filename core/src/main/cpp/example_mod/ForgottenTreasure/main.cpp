@@ -14,10 +14,9 @@
 
 BNM::MethodBase* a;
 
-BNM::Structures::Mono::String (*old_get_bytes)(BNM::UnityEngine::Object *);
-BNM::Structures::Mono::String new_get_bytes(BNM::UnityEngine::Object *instance) {
-    BNM_LOG_DEBUG("已劫持Unity获取字节函数");
-    return old_get_bytes(instance);
+void (*old_get_bytes)(BNM::UnityEngine::Object *);
+void new_get_bytes(BNM::UnityEngine::Object *instance) {
+    BNM_LOG_DEBUG("测试Hook");
 }
 
 
@@ -34,13 +33,10 @@ public:
     }
 
     void RegisterHooks() override {
-        modAPI->RegisterExtension("UnityEngine.CoreModule.dll.UnityEngine.get_text", reinterpret_cast<uintptr_t>(new_get_bytes));
+        modAPI->RegisterExtension("Assembly-CSharp.dll.Terraria.ID.PrefixID.Sets..cctor", reinterpret_cast<uintptr_t>(new_get_bytes));
     }
 
-    void RegisterAPIs() override {
-        modAPI->RegisterAPI("UnityEngine.CoreModule.dll.UnityEngine.ToString", reinterpret_cast<uintptr_t>(&a));
-        modAPI->RegisterAPI("UnityEngine.CoreModule.dll.UnityEngine.get_text.old", reinterpret_cast<uintptr_t>(&old_get_bytes));
-    }
+    void RegisterAPIs() override {}
 
     void LoadEFMod(EFModLoaderAPI* Mod) override { modAPI = Mod; }
 

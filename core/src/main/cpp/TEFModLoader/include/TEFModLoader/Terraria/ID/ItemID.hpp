@@ -15,14 +15,9 @@ namespace Terraria::ID::ItemID::Sets {
     using namespace BNM::Structures;
     using namespace std;
 
-    extern Class Sets;
-    extern MethodBase cctor;
 
-    void RegisterApi();
     void getHookPtr();
     void RegisterHook();
 
-    extern void (*old_cctor)(UnityEngine::Object *);
-    void new_cctor(UnityEngine::Object *instance);
 
 }
