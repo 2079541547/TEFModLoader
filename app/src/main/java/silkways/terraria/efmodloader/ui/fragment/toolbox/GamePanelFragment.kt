@@ -1,16 +1,16 @@
 package silkways.terraria.efmodloader.ui.fragment.toolbox
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
-import eternal.future.effsystem.fileSystem
-import org.json.JSONObject
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import silkways.terraria.efmodloader.GameActivity
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.GameSettings
@@ -18,7 +18,6 @@ import silkways.terraria.efmodloader.databinding.ToolboxFragmentGamepanelBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import silkways.terraria.efmodloader.logic.mod.ModManager
 import silkways.terraria.efmodloader.logic.modlaoder.LoaderManager
-import java.io.File
 
 /**
  * GamePanelFragment 类表示一个用于启动游戏和调整游戏设置的界面片段。
@@ -29,6 +28,10 @@ class GamePanelFragment : Fragment() {
     private var _binding: ToolboxFragmentGamepanelBinding? = null
     // 提供非空的绑定访问方式，用于在视图存在期间访问绑定对象
     private val binding get() = _binding!!
+
+
+    @SuppressLint("RestrictedApi")
+    private var loadingDialog: AlertDialog? = null
 
     /**
      * 创建视图。
@@ -51,20 +54,27 @@ class GamePanelFragment : Fragment() {
 
         // 设置开始游戏按钮的点击监听器
         binding.StartGame.setOnClickListener {
+            showLoadingDialog()
 
-            LoaderManager.runEFModLoader(
-                "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModLoaderData/info.json",
-                requireActivity())
+            // 模拟加载过程
+            Thread {
+                LoaderManager.runEFModLoader(
+                    "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModLoaderData/info.json",
+                    requireActivity())
 
-            ModManager.runEFMod(
-                "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModData/info.json",
-                requireActivity())
-            // 创建意图来启动游戏活动
-            val intent = Intent(requireContext(), GameActivity::class.java)
-            // 启动游戏活动
-            startActivity(intent)
+                ModManager.runEFMod(
+                    "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModData/info.json",
+                    requireActivity())
 
-            requireActivity().finish()
+                dismissLoadingDialog()
+
+                    // 创建意图来启动游戏活动
+                    val intent = Intent(requireContext(), GameActivity::class.java)
+                    // 启动游戏活动
+                    startActivity(intent)
+                    requireActivity().finish()
+
+            }.start()
         }
 
         // 初始化悬浮窗口复选框的状态
@@ -108,6 +118,32 @@ class GamePanelFragment : Fragment() {
     }
 
 
+    private fun showLoadingDialog() {
+        if (loadingDialog == null) {
+            val circularProgressIndicator = CircularProgressIndicator(requireActivity()).apply {
+                setIndeterminate(true)
+                setPadding(15, 15, 15, 15)
+            }
+
+            loadingDialog = MaterialAlertDialogBuilder(requireActivity())
+                .setTitle(requireActivity().getString(R.string.loadingMod))
+                .setView(circularProgressIndicator)
+                .setCancelable(true)
+                .create()
+
+            // 确保加载框不会因为点击外部区域而消失
+            loadingDialog?.setCanceledOnTouchOutside(false)
+        }
+        loadingDialog?.show()
+    }
+
+    private fun dismissLoadingDialog() {
+        loadingDialog?.let {
+            if (it.isShowing) {
+                it.dismiss()
+            }
+        }
+    }
 
     /**
      * 当视图被销毁时调用。

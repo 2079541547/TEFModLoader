@@ -239,8 +239,9 @@ class HomeFragment: Fragment() {
 
                 // 获取数据列表长度
                 val logsItems = listOf(
+                    Pair(getString(R.string.logs_title_121), getString(R.string.logs_text_121)),
                     Pair(getString(R.string.logs_title_120), getString(R.string.logs_text_120)),
-                    Pair(getString(R.string.logs_title_100), getString(R.string.logs_text_100))
+                    Pair(getString(R.string.logs_title_100), getString(R.string.logs_text_100)),
                 )
                 override fun getItemCount(): Int {
                     return logsItems.size

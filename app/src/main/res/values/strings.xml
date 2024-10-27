@@ -47,6 +47,8 @@
     <string name="logs_title_120" translatable="false">1.2.0</string>
     <string name="logs_text_120">1.开放自定义内核 \n2.可导出数据 \n3.更强大的内存管理 \n4.英语翻译 \n5.更换Mod文件格式以及新文件系统 \n6.不再携带汉化版本，而是纯原版 \n7.修复文件无法选择bug \n8.更新一言 \n9.优化Mod安装、读取、启用速度 \n10.优化游戏启动速度 \n11.优化内核 \n12.更多API支持 \n13.更换DodyHook，移除shadowhook \n14.移除不稳定的调试工具 \n15.支持独立Mod</string>
 
+    <string name="logs_title_121" translatable="false">1.2.1</string>
+    <string name="logs_text_121">1.更新文件系统 \n2.添加解压进度 \n3.优化Mod以及Loader读取速度 \n4.防呆/手残安装错误文件</string>
 
     <string name="Clear_cache_title">是否清除缓存？</string>
     <string name="Clear_cache_message">此工具会缓存各种文件，如：您安装的Mod，存档，人物等</string>
@@ -187,4 +189,6 @@
     <string name="file">文件</string>
     <string name="file_text">已存在，是否要替换？</string>
     <string name="cancel">取消</string>
+
+    <string name="loadingMod">正在解压 EFMod &amp; EFModLoader…</string>
 </resources>

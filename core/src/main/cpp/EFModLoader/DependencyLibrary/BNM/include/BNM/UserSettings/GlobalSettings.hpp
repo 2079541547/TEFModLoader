@@ -24,7 +24,7 @@ static_assert(false, "ByNameModding requires C++20 and above!");
 //#define UNITY_VER 231 // 2023.1.x
 //#define UNITY_VER 232 // 2023.2.x+
 
-#define UNITY_PATCH_VER 32 // Для особых случаев (For special cases)
+#define UNITY_PATCH_VER 16 // Для особых случаев (For special cases)
 
 //! Включить устаревший код (если есть)
 //! Allow to use deprecated methods (if any)

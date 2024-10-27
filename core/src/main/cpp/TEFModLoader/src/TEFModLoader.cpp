@@ -13,9 +13,11 @@
 #include <EFModLoader/loader/LoadELFMods.hpp>
 #include <EFModLoader/api/Redirect.hpp>
 
+
 void LoadMod() {
     EFModLoader::Loader::LoadELFMods::LoadALLMod(*TEFModLoader::Register::API::get_cacheDir + "runEFMod/");
 }
+
 
 
 
@@ -42,6 +44,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
     }
 
     BNM::Loading::AddOnLoadedEvent(EFModLoader::RegisterHook::Unity::Register);
+
 
     return JNI_VERSION_1_6;
 }

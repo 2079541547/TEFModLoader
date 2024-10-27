@@ -30,6 +30,7 @@
     <string name="logs">Update Log |x･`)(Will definitely update on time)</string>
     <string name="logs_text_100">1. EFMod can be used as a game extension \n2. Can import save files/configuration \n3. Basic EFMod support \n4. Debugging tools \n5. Additional game menu</string>
     <string name="logs_text_120">1. Open custom kernel \n2. Data export capability \n3. Enhanced memory management \n4. English translation \n5. Change in Mod file format and new file system \n6. No longer carrying the Chinese version, but the pure original version \n7. Fix the bug that files cannot be selected \n8. Update of sayings \n9. Optimization of Mod installation, reading, and enabling speed \n10. Optimization of game startup speed \n11. Optimization of the kernel \n12. More API support \n13. Replacement of DodyHook, removal of shadowhook \n14. Removal of unstable debugging tools \n15. Support for standalone Mods</string>
+    <string name="logs_text_121">1. Update the file system\n 2. Add extraction progress \n3. Optimize the reading speed of Mods and Loaders \n4. Prevent installation errors due to carelessness or mistakes</string>
 
     <string name="Clear_cache_title">Do you want to clear the cache?</string>
     <string name="Clear_cache_message">This tool will cache various files, such as: Mods you have installed, saves, characters, etc.</string>
@@ -161,4 +162,6 @@
     <string name="file">File</string>
     <string name="file_text">Exists, do you want to replace it?</string>
     <string name="cancel">Cancel</string>
+
+    <string name="loadingMod">Extracting EFMod &amp; EFModLoader…</string>
 </resources>

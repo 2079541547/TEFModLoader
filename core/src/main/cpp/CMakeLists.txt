@@ -3,7 +3,6 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project("TEFModLoader")
 set(CMAKE_CXX_STANDARD 23)
-
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -flto")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -std=c++20")
 
@@ -82,8 +81,6 @@ target_link_libraries(
         BNM
 )
 
-
-
 set(TEFMODLOADER_INCLUDE_DIRS
         TEFModLoader/include
 )
@@ -108,7 +105,7 @@ target_include_directories(
 
 target_link_libraries(
         ${CMAKE_PROJECT_NAME}
+        ${Keystone_LIB}
         PUBLIC
         EFModLoader
 )
-
