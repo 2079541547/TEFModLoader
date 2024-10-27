@@ -34,6 +34,7 @@ public class LoadMod {
             File[] files = directory.listFiles((_, name) -> name.endsWith(".so"));
             if (files != null) {
                 for (File file : files) {
+                    System.out.println("加载的独立Mod: " + file.getAbsolutePath());
                     System.load(file.getAbsolutePath());
                 }
             }
