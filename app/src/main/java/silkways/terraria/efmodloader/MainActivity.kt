@@ -12,8 +12,6 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import eternal.future.effsystem.fileSystem
-import silkways.terraria.efmodloader.data.GameSettings
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.ActivityMainBinding
 import silkways.terraria.efmodloader.databinding.HomeDialogAgreementBinding
