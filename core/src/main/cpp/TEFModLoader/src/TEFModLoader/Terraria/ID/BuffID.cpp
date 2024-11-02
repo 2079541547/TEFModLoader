@@ -59,8 +59,8 @@ namespace Terraria::ID::BuffID::Sets {
     }
 
 
-    void (*old_cctor)(UnityEngine::Object *);
-    void new_cctor(UnityEngine::Object *instance) {
+    void* (*old_cctor)(UnityEngine::Object *);
+    void* new_cctor(UnityEngine::Object *instance) {
         old_cctor(instance);
 
         IsWellFed = new Field<Mono::Array<bool>>(Sets.GetField("IsWellFed"));
@@ -78,6 +78,8 @@ namespace Terraria::ID::BuffID::Sets {
         for (auto hook : hooks) {
             EFModLoader::Redirect::callFunction<void>(reinterpret_cast<void *>(hook));
         }
+
+        return nullptr;
     }
 
 

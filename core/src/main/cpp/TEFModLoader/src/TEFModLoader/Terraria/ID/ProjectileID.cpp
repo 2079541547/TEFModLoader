@@ -124,8 +124,8 @@ namespace Terraria::ID::ProjectileID::Sets {
     }
 
 
-    void (*old_cctor)(UnityEngine::Object *);
-    void new_cctor(UnityEngine::Object *instance) {
+    void* (*old_cctor)(UnityEngine::Object *);
+    void* new_cctor(UnityEngine::Object *instance) {
         old_cctor(instance);
 
         DontApplyParryDamageBuff = new Field<Mono::Array<bool>>(Sets.GetField("DontApplyParryDamageBuff"));
@@ -173,6 +173,7 @@ namespace Terraria::ID::ProjectileID::Sets {
         for (auto hook : hooks) {
             EFModLoader::Redirect::callFunction<void>(reinterpret_cast<void *>(hook));
         }
+        return nullptr;
     }
 
 

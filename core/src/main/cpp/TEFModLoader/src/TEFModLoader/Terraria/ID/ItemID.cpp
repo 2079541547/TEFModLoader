@@ -208,8 +208,8 @@ namespace Terraria::ID::ItemID::Sets {
 
 
 
-    void (*old_cctor)(UnityEngine::Object *);
-    void new_cctor(UnityEngine::Object *instance) {
+    void* (*old_cctor)(UnityEngine::Object *);
+    void* new_cctor(UnityEngine::Object *instance) {
         old_cctor(instance);
 
         ItemsThatAreProcessedAfterNormalContentSample = new Field<Mono::List<int>>(Sets.GetField("ItemsThatAreProcessedAfterNormalContentSample"));
@@ -299,6 +299,7 @@ namespace Terraria::ID::ItemID::Sets {
         for (auto hook : hooks) {
             EFModLoader::Redirect::callFunction<void>(reinterpret_cast<void *>(hook));
         }
+        return nullptr;
     }
 
     void RegisterHook() {

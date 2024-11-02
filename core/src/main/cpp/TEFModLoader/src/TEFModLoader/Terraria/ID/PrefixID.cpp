@@ -47,8 +47,8 @@ namespace Terraria::ID::PrefixID::Sets {
     }
 
 
-    void (*old_cctor)(UnityEngine::Object *);
-    void new_cctor(UnityEngine::Object *instance) {
+    void* (*old_cctor)(UnityEngine::Object *);
+    void* new_cctor(UnityEngine::Object *instance) {
         old_cctor(instance);
 
         ReducedNaturalChance = new Field<Mono::Array<bool>>(Sets.GetField("ReducedNaturalChance"));
@@ -59,6 +59,7 @@ namespace Terraria::ID::PrefixID::Sets {
         for (auto hook : hooks) {
             EFModLoader::Redirect::callFunction<void>(reinterpret_cast<void *>(hook));
         }
+        return nullptr;
     }
 
 

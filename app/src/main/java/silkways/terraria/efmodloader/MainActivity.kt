@@ -1,8 +1,10 @@
 package silkways.terraria.efmodloader
 
 import android.app.Activity
+import android.Manifest
 import android.content.Context
 import android.content.DialogInterface
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,6 +12,8 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import silkways.terraria.efmodloader.data.Settings
@@ -37,6 +41,9 @@ class MainActivity : AppCompatActivity() {
      * 这个绑定对象提供了对 UI 组件的直接访问。
      */
     private lateinit var binding: ActivityMainBinding
+
+
+    private val REQUEST_CODE = 1001 // 请求码
 
     /**
      * 当活动创建时调用，负责设置布局和初始化必要的组件。
@@ -106,8 +113,20 @@ class MainActivity : AppCompatActivity() {
 
 
         clearCache()
-
+        checkPermission()
     }
+
+
+    private fun checkPermission() {
+        val readPermission = Manifest.permission.READ_EXTERNAL_STORAGE
+        val writePermission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+
+        if (ContextCompat.checkSelfPermission(this, readPermission) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, writePermission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(readPermission, writePermission), REQUEST_CODE)
+        }
+    }
+
 
 
     /*

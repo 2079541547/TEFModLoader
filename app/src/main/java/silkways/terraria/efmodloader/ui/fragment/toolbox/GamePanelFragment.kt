@@ -144,7 +144,6 @@ class GamePanelFragment : Fragment() {
             }
         }
     }
-
     /**
      * 当视图被销毁时调用。
      */
