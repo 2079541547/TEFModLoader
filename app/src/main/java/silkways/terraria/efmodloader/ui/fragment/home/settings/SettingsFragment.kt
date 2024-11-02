@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -23,6 +24,7 @@ import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textview.MaterialTextView
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.Settings
+import silkways.terraria.efmodloader.databinding.SettingsPacknameDialogBinding
 import silkways.terraria.efmodloader.databinding.HomeFragmentSettingsBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 
@@ -222,9 +224,29 @@ class SettingsFragment: Fragment() {
                 },
 
                 SettingButton(getString(R.string.TargetPackageName), JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String, R.drawable.twotone_workspaces_24) {
+                    // 初始化Dialog的绑定对象
+                    var dialogBinding: SettingsPacknameDialogBinding? = SettingsPacknameDialogBinding.inflate(LayoutInflater.from(requireActivity()))
+
+                    // 创建对话框构建器
+                    val builder = MaterialAlertDialogBuilder(requireActivity())
+                        .setCancelable(true)
+                        .setView(dialogBinding?.root)
+
+                    val dialog = builder.create().apply {
+                        // 设置对话框窗口属性
+                        window?.let { dialogWindow ->
+                            setCanceledOnTouchOutside(true) // 设置触摸对话框外部可取消
+                        }
 
 
 
+                        // 设置对话框关闭监听器
+                        setOnDismissListener {
+                            dialogBinding = null
+                        }
+                    }
+
+                    dialog.show()
                 },
 
                 //语言设置

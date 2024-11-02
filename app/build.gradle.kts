@@ -11,8 +11,8 @@ android {
         getByName("debug") {
             storeFile = file("../TEFModLoader.jks")
             keyAlias = "TEFModLoader"
-            storePassword = "TEFModLoader"
-            keyPassword = "EternalFuture"
+            storePassword = "EternalFuture"
+            keyPassword = "TEFModLoader"
         }
     }
     namespace = "silkways.terraria.efmodloader"
