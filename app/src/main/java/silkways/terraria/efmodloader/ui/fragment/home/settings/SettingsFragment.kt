@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
@@ -178,12 +179,10 @@ class SettingsFragment: Fragment() {
                         when (menuItem.itemId) {
                             R.id.menu_runtime_0 -> {
                                 JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.Runtime, 0)
-                                showRestartDialog()
                                 true
                             }
                             R.id.menu_runtime_1 -> {
                                 JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.Runtime, 1)
-                                showRestartDialog()
                                 true
                             }
                             else -> false
@@ -192,6 +191,36 @@ class SettingsFragment: Fragment() {
                     popupMenu.show()
                 },
 
+
+                SettingButton(getString(R.string.TargetPackageName), JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String, R.drawable.twotone_workspaces_24) {
+                    // 初始化Dialog的绑定对象
+                    var dialogBinding: SettingsPacknameDialogBinding? = SettingsPacknameDialogBinding.inflate(LayoutInflater.from(requireActivity()))
+
+                    // 创建对话框构建器
+                    val builder = MaterialAlertDialogBuilder(requireActivity())
+                        .setCancelable(true)
+                        .setView(dialogBinding?.root)
+
+                    val dialog = builder.create().apply {
+                        // 设置对话框窗口属性
+                        window?.let { dialogWindow ->
+                            setCanceledOnTouchOutside(true) // 设置触摸对话框外部可取消
+                        }
+
+
+                        dialogBinding?.button?.setOnClickListener {
+                            JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.GamePackageName, dialogBinding?.TextInputEditText?.text.toString())
+                            dismiss()
+                        }
+
+                        // 设置对话框关闭监听器
+                        setOnDismissListener {
+                            dialogBinding = null
+                        }
+                    }
+
+                    dialog.show()
+                },
 
 
                 //主题设置
@@ -221,32 +250,6 @@ class SettingsFragment: Fragment() {
                         }
                     }
                     popupMenu.show()
-                },
-
-                SettingButton(getString(R.string.TargetPackageName), JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String, R.drawable.twotone_workspaces_24) {
-                    // 初始化Dialog的绑定对象
-                    var dialogBinding: SettingsPacknameDialogBinding? = SettingsPacknameDialogBinding.inflate(LayoutInflater.from(requireActivity()))
-
-                    // 创建对话框构建器
-                    val builder = MaterialAlertDialogBuilder(requireActivity())
-                        .setCancelable(true)
-                        .setView(dialogBinding?.root)
-
-                    val dialog = builder.create().apply {
-                        // 设置对话框窗口属性
-                        window?.let { dialogWindow ->
-                            setCanceledOnTouchOutside(true) // 设置触摸对话框外部可取消
-                        }
-
-
-
-                        // 设置对话框关闭监听器
-                        setOnDismissListener {
-                            dialogBinding = null
-                        }
-                    }
-
-                    dialog.show()
                 },
 
                 //语言设置

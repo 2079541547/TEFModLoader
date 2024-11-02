@@ -24,6 +24,7 @@
         tools:layout_editor_absoluteX="20dp">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/TextInputEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/Please_enter_the_package_name" />
