@@ -21,6 +21,7 @@ import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.HomeDialogLogsBinding
 import silkways.terraria.efmodloader.databinding.MainFragmentHomeBinding
 import silkways.terraria.efmodloader.ui.activity.SettingsActivity
+import silkways.terraria.efmodloader.ui.activity.WebActivity
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
@@ -89,6 +90,11 @@ class HomeFragment: Fragment() {
             requireActivity().startActivity(browserIntent)
         }
 
+        binding.help.setOnClickListener {
+            val intent = Intent(requireActivity(), WebActivity::class.java)
+            intent.putExtra("webUrl", "Home/Helps")
+            startActivity(intent)
+        }
 
         //显示更新日志弹窗
         binding.UpdateLog.setOnClickListener { showLogsDialog() }

@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity() {
 
         // 注册 onBackPressedDispatcher
         onBackPressedDispatcher.addCallback(this) { handleBackPress() }
+        checkPermission()
     }
 
     private fun handleBackPress() {
