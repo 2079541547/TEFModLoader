@@ -1,9 +1,14 @@
 package silkways.terraria.efmodloader.ui.fragment.toolbox
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.pm.PackageManager
+import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -198,9 +203,10 @@ class GamePanelFragment : Fragment() {
         }
     }
 
+    @SuppressLint("SetWorldReadable")
     private fun renameFilesWithOggExtension(directory: File) {
         if (!directory.exists() || !directory.isDirectory) {
-            println("指定的路径不是一个有效的目录: ${directory.absolutePath}")
+            Log.e("MyFragment", "指定的路径不是一个有效的目录: ${directory.absolutePath}")
             return
         }
 
@@ -212,14 +218,61 @@ class GamePanelFragment : Fragment() {
                 // 重命名文件，添加 .ogg 扩展名
                 val newFileName = "${file.name}.ogg"
                 val newFilePath = File(file.parent, newFileName)
+                Log.i("MyFragment", "尝试重命名文件: ${file.name} to $newFileName")
                 if (file.renameTo(newFilePath)) {
-                    println("文件重命名成功: ${file.name} -> $newFileName")
+                    // 设置文件为对所有人可读
+                    newFilePath.setReadable(true, false)
+                    Log.i("MyFragment", "文件重命名成功并设置为可读: ${file.name} -> $newFileName")
+
+                    // 对于 Android 10 及以上版本，使用 MediaStore API
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        addFileToMediaStore(newFilePath)
+                    } else {
+                        scanFile(newFilePath)
+                    }
                 } else {
-                    println("文件重命名失败: ${file.name}")
+                    Log.e("MyFragment", "文件重命名失败: ${file.name}")
                 }
             }
         }
     }
+
+    private fun addFileToMediaStore(file: File) {
+        val values = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
+            put(MediaStore.MediaColumns.MIME_TYPE, "audio/ogg")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_MUSIC)
+            put(MediaStore.MediaColumns.IS_PENDING, 1)
+        }
+
+        val uri: Uri? = requireContext().contentResolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values)
+        if (uri == null) {
+            Log.e("MyFragment", "无法插入文件到 MediaStore: ${file.path}")
+            return
+        }
+
+        requireContext().contentResolver.openFileDescriptor(uri, "w", null)?.use { parcelFileDescriptor ->
+            FileOutputStream(parcelFileDescriptor.fileDescriptor).use { fos ->
+                FileInputStream(file).copyTo(fos)
+            }
+        }
+
+        values.put(MediaStore.MediaColumns.IS_PENDING, 0)
+        requireContext().contentResolver.update(uri, values, null, null)
+        Log.i("MyFragment", "文件已添加到 MediaStore: ${file.path}, URI: $uri")
+    }
+
+    private fun scanFile(file: File) {
+        MediaScannerConnection.scanFile(
+            requireContext(),
+            arrayOf(file.path),
+            null
+        ) { path, uri ->
+            Log.i("MyFragment", "文件已扫描: $path, URI: $uri")
+        }
+    }
+
+
 
 
     fun copyFilesFromTo(sourceDir: File, destDir: File) {
