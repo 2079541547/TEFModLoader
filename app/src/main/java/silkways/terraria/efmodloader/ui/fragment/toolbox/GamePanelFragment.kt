@@ -1,8 +1,10 @@
 package silkways.terraria.efmodloader.ui.fragment.toolbox
 
 import android.annotation.SuppressLint
-import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +13,20 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import silkways.terraria.efmodloader.GameActivity
+import eternal.future.effsystem.fileSystem
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.GameSettings
+import silkways.terraria.efmodloader.data.Settings
+import silkways.terraria.efmodloader.data.TEFModLoader
 import silkways.terraria.efmodloader.databinding.ToolboxFragmentGamepanelBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import silkways.terraria.efmodloader.logic.mod.ModManager
 import silkways.terraria.efmodloader.logic.modlaoder.LoaderManager
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.nio.channels.FileChannel
 
 /**
  * GamePanelFragment 类表示一个用于启动游戏和调整游戏设置的界面片段。
@@ -41,6 +50,7 @@ class GamePanelFragment : Fragment() {
      * @param savedInstanceState 保存的实例状态。
      * @return 返回创建的视图。
      */
+    @SuppressLint("SdCardPath")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,6 +68,27 @@ class GamePanelFragment : Fragment() {
 
             // 模拟加载过程
             Thread {
+
+                try {
+                    when (JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.Runtime)) {
+                        0 -> {
+                            deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX/"))
+                            deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod/"))
+
+                            copyFilesFromToOgg(File(requireActivity().getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/Private/"))
+                        }
+
+                        1 -> {
+                            val a = JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String
+                            deleteDirectory(File("data/data/$a/cache/EFModX/"))
+                            deleteDirectory(File("data/data/$a/cache/EFMod/"))
+                            copyFilesFromTo(File(requireActivity().getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Android/data/${JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String}/files/EFMod-Private/"))
+                        }
+                    }
+                } catch (e: IOException) {
+                    Log.e("TEFModLoader", "错误：" , e)
+                }
+
                 LoaderManager.runEFModLoader(
                     "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModLoaderData/info.json",
                     requireActivity())
@@ -66,13 +97,19 @@ class GamePanelFragment : Fragment() {
                     "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModData/info.json",
                     requireActivity())
 
+
+                try {
+                    if (JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.Runtime) == 0) {
+                        renameFilesWithOggExtension(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX"))
+                        renameFilesWithOggExtension(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod"))
+                    }
+                } catch (e: IOException) {
+                    Log.e("TEFModLoader", "错误：" , e)
+                }
+
                 dismissLoadingDialog()
 
-                    // 创建意图来启动游戏活动
-                    val intent = Intent(requireContext(), GameActivity::class.java)
-                    // 启动游戏活动
-                    startActivity(intent)
-                    requireActivity().finish()
+                launchApp(JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String)
 
             }.start()
         }
@@ -144,6 +181,164 @@ class GamePanelFragment : Fragment() {
             }
         }
     }
+
+
+    private fun launchApp(packageName: String) {
+        try {
+            // 获取目标应用的启动Intent
+            val intent = requireActivity().packageManager.getLaunchIntentForPackage(packageName)
+            if (intent != null) {
+                // 如果找到目标应用的启动Intent，启动该应用
+                startActivity(intent)
+            } else {
+                Log.e("TEFModLoader", "目标应用未安装：")
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            Log.e("TEFModLoader", "错误：" , e)
+        }
+    }
+
+    private fun renameFilesWithOggExtension(directory: File) {
+        if (!directory.exists() || !directory.isDirectory) {
+            println("指定的路径不是一个有效的目录: ${directory.absolutePath}")
+            return
+        }
+
+        directory.listFiles()?.forEach { file ->
+            if (file.isDirectory) {
+                // 递归处理子目录
+                renameFilesWithOggExtension(file)
+            } else {
+                // 重命名文件，添加 .ogg 扩展名
+                val newFileName = "${file.name}.ogg"
+                val newFilePath = File(file.parent, newFileName)
+                if (file.renameTo(newFilePath)) {
+                    println("文件重命名成功: ${file.name} -> $newFileName")
+                } else {
+                    println("文件重命名失败: ${file.name}")
+                }
+            }
+        }
+    }
+
+
+    fun copyFilesFromTo(sourceDir: File, destDir: File) {
+        if (!sourceDir.exists()) {
+            println("源目录不存在: ${sourceDir.absolutePath}")
+            return
+        }
+
+        if (!destDir.exists()) {
+            destDir.mkdirs()
+            println("创建目标目录: ${destDir.absolutePath}")
+        }
+
+        sourceDir.listFiles()?.forEach { entry ->
+            val sourcePath = entry
+            val destPath = File(destDir, sourcePath.name)
+
+            if (entry.isDirectory) {
+                // 递归复制子目录
+                copyFilesFromTo(entry, destPath)
+            } else {
+                // 复制文件并设置时间戳
+                copyFileWithTimestamp(sourcePath, destPath)
+            }
+        }
+    }
+
+
+    fun copyFilesFromToOgg(sourceDir: File, destDir: File) {
+        if (!sourceDir.exists()) {
+            println("源目录不存在: ${sourceDir.absolutePath}")
+            return
+        }
+
+        if (!destDir.exists()) {
+            destDir.mkdirs()
+            println("创建目标目录: ${destDir.absolutePath}")
+        }
+
+        sourceDir.listFiles()?.forEach { entry ->
+            val sourcePath = entry
+            val destPath: File
+
+            if (entry.isDirectory) {
+                // 递归复制子目录
+                destPath = File(destDir, entry.name)
+                copyFilesFromToOgg(entry, destPath)
+            } else {
+                // 在文件名后面添加 .ogg 后缀
+                destPath = File(destDir, "${entry.name}.ogg")
+                // 复制文件并设置时间戳
+                copyFileWithTimestamp(sourcePath, destPath)
+            }
+        }
+    }
+
+
+
+    @Throws(IOException::class)
+    fun copyFileWithTimestamp(sourcePath: File, destPath: File) {
+        if (destPath.exists()) {
+            // 比较时间戳和文件大小
+            val sourceLastWriteTime = sourcePath.lastModified()
+            val destLastWriteTime = destPath.lastModified()
+            val sourceFileSize = sourcePath.length()
+            val destFileSize = destPath.length()
+
+            if (sourceLastWriteTime != destLastWriteTime || sourceFileSize != destFileSize) {
+                // 文件不同，执行复制
+                try {
+                    copyFile(sourcePath, destPath)
+                    setLastModifiedTime(destPath, sourceLastWriteTime)
+                    println("复制文件: ${sourcePath.absolutePath} 到 ${destPath.absolutePath}")
+                } catch (e: IOException) {
+                    println("复制文件失败: ${sourcePath.absolutePath} 错误: ${e.message}")
+                }
+            } else {
+                println("文件相同，跳过复制: ${sourcePath.absolutePath}")
+            }
+        } else {
+            try {
+                copyFile(sourcePath, destPath)
+                setLastModifiedTime(destPath, sourcePath.lastModified())
+                println("复制文件: ${sourcePath.absolutePath} 到 ${destPath.absolutePath}")
+            } catch (e: IOException) {
+                println("复制文件失败: ${sourcePath.absolutePath} 错误: ${e.message}")
+            }
+        }
+    }
+
+    @Throws(IOException::class)
+    fun copyFile(source: File, target: File) {
+        FileInputStream(source).use { input ->
+            FileOutputStream(target).use { output ->
+                val channelIn: FileChannel = input.channel
+                val channelOut: FileChannel = output.channel
+                channelIn.transferTo(0, channelIn.size(), channelOut)
+            }
+        }
+    }
+
+    fun setLastModifiedTime(file: File, lastModifiedTime: Long) {
+        file.setLastModified(lastModifiedTime)
+    }
+
+
+    private fun deleteDirectory(directory: File) {
+        if (directory.exists()) {
+            directory.listFiles()?.forEach { file ->
+                if (file.isDirectory) {
+                    deleteDirectory(file)
+                } else {
+                    file.delete()
+                }
+            }
+            directory.delete()
+        }
+    }
+
     /**
      * 当视图被销毁时调用。
      */

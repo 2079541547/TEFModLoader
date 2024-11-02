@@ -1,15 +1,19 @@
 package silkways.terraria.efmodloader.logic.modlaoder
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.Log
 import eternal.future.effsystem.fileSystem
 import org.json.JSONObject
+import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import java.io.File
+import silkways.terraria.efmodloader.data.TEFModLoader
 
 object LoaderManager {
 
+    @SuppressLint("SdCardPath")
     fun runEFModLoader(filePath: String, context: Context) {
         val file = File(filePath)
         if (file.exists()) {
@@ -25,7 +29,15 @@ object LoaderManager {
                 val key = iterator.next()
                 if (jsonObject.getBoolean(key)) {
 
-                    fileSystem.EFML.extractLoader(key, Build.CPU_ABI, "${context.cacheDir.absolutePath}/EFModLoader")
+                    when(JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.Runtime)) {
+                        0 -> {
+                            fileSystem.EFML.extractLoader(key, Build.CPU_ABI, "/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/kernel")
+                        }
+
+                        1 -> {
+                            fileSystem.EFML.extractLoader(key, Build.CPU_ABI, "data/data/${JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.GamePackageName) as String}/cache/EFModLoader")
+                        }
+                    }
 
                     Log.d("GamePanelFragment", "Key: $key") // 如果值为true，打印键
                 }
@@ -34,6 +46,7 @@ object LoaderManager {
             Log.e("GamePanelFragment", "File not found at path: $filePath")
         }
     }
+
 
     fun removeEFModLoader(context: Context, filePath: String) {
         JsonConfigModifier.removeKeyFromJson(context, "ToolBoxData/EFModLoaderData/info.json", filePath)
@@ -52,5 +65,6 @@ object LoaderManager {
             directory.delete()
         }
     }
+
 
 }

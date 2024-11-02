@@ -1,16 +1,20 @@
 package silkways.terraria.efmodloader.logic.mod
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import android.util.Log
 import eternal.future.effsystem.fileSystem
 import org.json.JSONObject
+import silkways.terraria.efmodloader.data.Settings
+import silkways.terraria.efmodloader.data.TEFModLoader
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import java.io.File
 import java.io.IOException
 
 object ModManager {
 
+    @SuppressLint("SdCardPath")
     fun runEFMod(filePath: String, context: Context) {
         val file = File(filePath)
         if (file.exists()) {
@@ -25,11 +29,29 @@ object ModManager {
             while (iterator.hasNext()) {
                 val key = iterator.next()
                 if (jsonObject.getBoolean(key)) {
-                    if (fileSystem.EFMC.getModInfo(key)["SpecialLoading"] as Boolean) {
-                        fileSystem.EFMC.extractExecutable(key, Build.CPU_ABI, "${context.cacheDir.absolutePath}/SpecialLoading/")
-                    } else {
-                        fileSystem.EFMC.extractExecutable(key, Build.CPU_ABI, "${context.cacheDir.absolutePath}/runEFMod/")
+
+                    when(JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.Runtime)) {
+
+                        0 -> {
+                            if (fileSystem.EFMC.getModInfo(key)["SpecialLoading"] as Boolean) {
+                                fileSystem.EFMC.extractExecutable(key, Build.CPU_ABI, "/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX/")
+                            } else {
+                                fileSystem.EFMC.extractExecutable(key, Build.CPU_ABI, "/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod/")
+                            }
+                        }
+
+                        1 -> {
+                            val a = JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.GamePackageName) as String
+
+                            if (fileSystem.EFMC.getModInfo(key)["SpecialLoading"] as Boolean) {
+                                fileSystem.EFMC.extractExecutable(key, Build.CPU_ABI, "data/data/$a/cache/EFModX/")
+                            } else {
+                                fileSystem.EFMC.extractExecutable(key, Build.CPU_ABI, "data/data/$a/cache/EFMod/")
+                            }
+                        }
                     }
+
+
                     Log.d("GamePanelFragment", "Key: $key") // 如果值为true，打印键
                 }
             }
