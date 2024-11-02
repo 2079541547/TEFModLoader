@@ -28,6 +28,7 @@ import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.HomeDialogLogsBinding
 import silkways.terraria.efmodloader.databinding.MainFragmentHomeBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
+import silkways.terraria.efmodloader.ui.fragment.toolbox.GamePanelFragment
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader

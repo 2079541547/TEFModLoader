@@ -1,7 +1,9 @@
 package silkways.terraria.efmodloader.ui.fragment.toolbox
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.ContentValues
+import android.content.Context
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
@@ -13,18 +15,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import eternal.future.effsystem.fileSystem
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.GameSettings
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.data.TEFModLoader
 import silkways.terraria.efmodloader.databinding.ToolboxFragmentGamepanelBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
+import silkways.terraria.efmodloader.logic.Tool
 import silkways.terraria.efmodloader.logic.mod.ModManager
 import silkways.terraria.efmodloader.logic.modlaoder.LoaderManager
 import java.io.File
@@ -47,6 +50,13 @@ class GamePanelFragment : Fragment() {
     @SuppressLint("RestrictedApi")
     private var loadingDialog: AlertDialog? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        initialization() //此页面已弃用，直接调用初始化
+    }
+
+
     /**
      * 创建视图。
      *
@@ -61,6 +71,7 @@ class GamePanelFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         // 设置顶部应用栏的标题
         requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.GamePanel)
 
@@ -69,54 +80,7 @@ class GamePanelFragment : Fragment() {
 
         // 设置开始游戏按钮的点击监听器
         binding.StartGame.setOnClickListener {
-            showLoadingDialog()
-
-            // 模拟加载过程
-            Thread {
-
-                try {
-                    when (JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.Runtime)) {
-                        0 -> {
-                            deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX/"))
-                            deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod/"))
-
-                            copyFilesFromToOgg(File(requireActivity().getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/Private/"))
-                        }
-
-                        1 -> {
-                            val a = JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String
-                            deleteDirectory(File("data/data/$a/cache/EFModX/"))
-                            deleteDirectory(File("data/data/$a/cache/EFMod/"))
-                            copyFilesFromTo(File(requireActivity().getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Android/data/${JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String}/files/EFMod-Private/"))
-                        }
-                    }
-                } catch (e: IOException) {
-                    Log.e("TEFModLoader", "错误：" , e)
-                }
-
-                LoaderManager.runEFModLoader(
-                    "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModLoaderData/info.json",
-                    requireActivity())
-
-                ModManager.runEFMod(
-                    "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModData/info.json",
-                    requireActivity())
-
-
-                try {
-                    if (JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.Runtime) == 0) {
-                        renameFilesWithOggExtension(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX"))
-                        renameFilesWithOggExtension(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod"))
-                    }
-                } catch (e: IOException) {
-                    Log.e("TEFModLoader", "错误：" , e)
-                }
-
-                dismissLoadingDialog()
-
-                launchApp(JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String)
-
-            }.start()
+            initialization()
         }
 
         // 初始化悬浮窗口复选框的状态
@@ -160,6 +124,54 @@ class GamePanelFragment : Fragment() {
     }
 
 
+    @SuppressLint("SdCardPath")
+    fun initialization() {
+        showLoadingDialog()
+        // 模拟加载过程
+        Thread {
+
+            try {
+                when (JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.Runtime)) {
+                    0 -> {
+                        deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX/"))
+                        deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod/"))
+
+                        copyFilesFromToOgg(File(requireActivity().getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/Private/"))
+                    }
+
+                    1 -> {
+                        val a = JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String
+                        deleteDirectory(File("data/data/$a/cache/EFModX/"))
+                        deleteDirectory(File("data/data/$a/cache/EFMod/"))
+                        copyFilesFromTo(File(requireActivity().getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Android/data/${JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String}/files/EFMod-Private/"))
+                    }
+                }
+            } catch (e: IOException) {
+                Log.e("TEFModLoader", "错误：" , e)
+            }
+
+            LoaderManager.runEFModLoader(
+                "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModLoaderData/info.json",
+                requireActivity())
+
+            ModManager.runEFMod(
+                "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModData/info.json",
+                requireActivity())
+
+
+            try {
+                if (JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.Runtime) == 0) {
+                    renameFilesWithOggExtension(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX"))
+                    renameFilesWithOggExtension(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod"))
+                }
+            } catch (e: IOException) {
+                Log.e("TEFModLoader", "错误：" , e)
+            }
+            dismissLoadingDialog()
+        }.start()
+    }
+
+
     private fun showLoadingDialog() {
         if (loadingDialog == null) {
             val circularProgressIndicator = CircularProgressIndicator(requireActivity()).apply {
@@ -185,28 +197,13 @@ class GamePanelFragment : Fragment() {
                 it.dismiss()
             }
         }
-    }
-
-
-    private fun launchApp(packageName: String) {
-        try {
-            // 获取目标应用的启动Intent
-            val intent = requireActivity().packageManager.getLaunchIntentForPackage(packageName)
-            if (intent != null) {
-                // 如果找到目标应用的启动Intent，启动该应用
-                startActivity(intent)
-            } else {
-                Log.e("TEFModLoader", "目标应用未安装：")
-            }
-        } catch (e: PackageManager.NameNotFoundException) {
-            Log.e("TEFModLoader", "错误：" , e)
-        }
+        Tool.RunApp(JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String, requireActivity())
     }
 
     @SuppressLint("SetWorldReadable")
     private fun renameFilesWithOggExtension(directory: File) {
         if (!directory.exists() || !directory.isDirectory) {
-            Log.e("MyFragment", "指定的路径不是一个有效的目录: ${directory.absolutePath}")
+            Log.e("GamePanelFragment", "指定的路径不是一个有效的目录: ${directory.absolutePath}")
             return
         }
 
@@ -218,11 +215,11 @@ class GamePanelFragment : Fragment() {
                 // 重命名文件，添加 .ogg 扩展名
                 val newFileName = "${file.name}.ogg"
                 val newFilePath = File(file.parent, newFileName)
-                Log.i("MyFragment", "尝试重命名文件: ${file.name} to $newFileName")
+                Log.i("GamePanelFragment", "尝试重命名文件: ${file.name} to $newFileName")
                 if (file.renameTo(newFilePath)) {
                     // 设置文件为对所有人可读
                     newFilePath.setReadable(true, false)
-                    Log.i("MyFragment", "文件重命名成功并设置为可读: ${file.name} -> $newFileName")
+                    Log.i("GamePanelFragment", "文件重命名成功并设置为可读: ${file.name} -> $newFileName")
 
                     // 对于 Android 10 及以上版本，使用 MediaStore API
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -231,7 +228,7 @@ class GamePanelFragment : Fragment() {
                         scanFile(newFilePath)
                     }
                 } else {
-                    Log.e("MyFragment", "文件重命名失败: ${file.name}")
+                    Log.e("GamePanelFragment", "文件重命名失败: ${file.name}")
                 }
             }
         }
@@ -247,7 +244,7 @@ class GamePanelFragment : Fragment() {
 
         val uri: Uri? = requireContext().contentResolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values)
         if (uri == null) {
-            Log.e("MyFragment", "无法插入文件到 MediaStore: ${file.path}")
+            Log.e("GamePanelFragment", "无法插入文件到 MediaStore: ${file.path}")
             return
         }
 
@@ -259,7 +256,7 @@ class GamePanelFragment : Fragment() {
 
         values.put(MediaStore.MediaColumns.IS_PENDING, 0)
         requireContext().contentResolver.update(uri, values, null, null)
-        Log.i("MyFragment", "文件已添加到 MediaStore: ${file.path}, URI: $uri")
+        Log.i("GamePanelFragment", "文件已添加到 MediaStore: ${file.path}, URI: $uri")
     }
 
     private fun scanFile(file: File) {
@@ -268,7 +265,7 @@ class GamePanelFragment : Fragment() {
             arrayOf(file.path),
             null
         ) { path, uri ->
-            Log.i("MyFragment", "文件已扫描: $path, URI: $uri")
+            Log.i("GamePanelFragment", "文件已扫描: $path, URI: $uri")
         }
     }
 

@@ -13,6 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.MainFragmentBinding
+import silkways.terraria.efmodloader.ui.fragment.toolbox.GamePanelFragment
 
 
 /**
