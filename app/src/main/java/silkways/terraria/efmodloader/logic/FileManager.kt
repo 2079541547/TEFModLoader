@@ -54,11 +54,14 @@ object FileManager {
                     ""
                 }
             } ?: run {
-                EFLog.e("查询 URI 失败: $uri")
+                EFLog.e("查询 URI 失败: $uri", "读取布尔值失败: $key, ${e.message}")
                 ""
             }
         } catch (e: Exception) {
-            EFLog.e("从 URI 获取文件名时发生异常: ${e.message}")
+            EFLog.e(
+                "从 URI 获取文件名时发生异常: ${e.message}",
+                "读取布尔值失败: $key, ${e.message}"
+            )
             e.printStackTrace()
             ""
         }
@@ -74,17 +77,20 @@ object FileManager {
      */
     fun copyFile(sourcePath: String?, destinationPath: String?, overwrite: Boolean) {
         val sourceFile = sourcePath?.let { File(it) } ?: run {
-            EFLog.e("源文件路径为空")
+            EFLog.e("源文件路径为空", "读取布尔值失败: $key, ${e.message}")
             return
         }
         val destFile = destinationPath?.let { File(it) } ?: run {
-            EFLog.e("目标文件路径为空")
+            EFLog.e("目标文件路径为空", "读取布尔值失败: $key, ${e.message}")
             return
         }
 
         // 检查源文件是否存在
         if (!sourceFile.exists()) {
-            EFLog.e("源文件不存在: ${sourceFile.absolutePath}")
+            EFLog.e(
+                "源文件不存在: ${sourceFile.absolutePath}",
+                "读取布尔值失败: $key, ${e.message}"
+            )
             return
         }
 
@@ -95,7 +101,10 @@ object FileManager {
                 if (destFile.delete()) {
                     EFLog.d("目标文件删除成功: ${destFile.absolutePath}")
                 } else {
-                    EFLog.e("目标文件删除失败: ${destFile.absolutePath}")
+                    EFLog.e(
+                        "目标文件删除失败: ${destFile.absolutePath}",
+                        "读取布尔值失败: $key, ${e.message}"
+                    )
                     return
                 }
             } else {
@@ -119,7 +128,7 @@ object FileManager {
                 }
             }
         } catch (e: IOException) {
-            EFLog.e("文件复制过程中发生异常: ${e.message}")
+            EFLog.e("文件复制过程中发生异常: ${e.message}", "读取布尔值失败: $key, ${e.message}")
             e.printStackTrace()
         }
     }
@@ -147,21 +156,33 @@ object FileManager {
                             if (file.delete()) {
                                 EFLog.i("成功删除文件: ${file.absolutePath}")
                             } else {
-                                EFLog.e("无法删除文件: ${file.absolutePath}")
+                                EFLog.e(
+                                    "无法删除文件: ${file.absolutePath}",
+                                    "读取布尔值失败: $key, ${e.message}"
+                                )
                             }
                         }
                     } catch (e: Exception) {
-                        EFLog.e("删除过程中发生异常: ${file.absolutePath}, 异常信息: ${e.message}")
+                        EFLog.e(
+                            "删除过程中发生异常: ${file.absolutePath}, 异常信息: ${e.message}",
+                            "读取布尔值失败: $key, ${e.message}"
+                        )
                     }
                 }
                 // 尝试删除空目录本身
                 if (directory.delete()) {
                     EFLog.i("成功删除目录: ${directory.absolutePath}")
                 } else {
-                    EFLog.e("无法删除目录: ${directory.absolutePath}")
+                    EFLog.e(
+                        "无法删除目录: ${directory.absolutePath}",
+                        "读取布尔值失败: $key, ${e.message}"
+                    )
                 }
             } catch (e: IOException) {
-                EFLog.e("访问目录时发生IO异常: ${directory.absolutePath}, 异常信息: ${e.message}")
+                EFLog.e(
+                    "访问目录时发生IO异常: ${directory.absolutePath}, 异常信息: ${e.message}",
+                    "读取布尔值失败: $key, ${e.message}"
+                )
             } finally {
                 EFLog.i("完成删除操作: ${directory.absolutePath}")
             }
