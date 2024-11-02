@@ -49,7 +49,7 @@ object LoaderManager {
 
 
     fun removeEFModLoader(context: Context, filePath: String) {
-        JsonConfigModifier.removeKeyFromJson(context, "ToolBoxData/EFModLoaderData/info.json", filePath)
+        JsonConfigModifier.removeKeyFromJson(context, "TEFModLoader/EFModLoaderData/info.json", filePath)
         File(filePath).delete()
     }
 

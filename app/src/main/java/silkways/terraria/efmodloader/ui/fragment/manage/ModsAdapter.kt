@@ -22,7 +22,6 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
-import eternal.future.effsystem.fileSystem
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.ManageEfmodresDialogBinding
 import silkways.terraria.efmodloader.databinding.ManageEfmodsettingDialogBinding
@@ -92,7 +91,7 @@ class ModsAdapter(private val mods: List<ModInfo>, private val context: Context)
         val mod = mods[position]
         holder.title.text = "${mod.modName} - ${mod.author}"
         holder.subtitle.text = mod.version
-        holder.switch.isChecked = JsonConfigModifier.readJsonValue(context, "ToolBoxData/EFModData/info.json", mod.filePath) as Boolean
+        holder.switch.isChecked = JsonConfigModifier.readJsonValue(context, "TEFModLoader/EFModData/info.json", mod.filePath) as Boolean
         holder.icon.setImageBitmap(mod.icon)
         holder.itemView.setOnClickListener {
             if (mod.customizePage) {
@@ -108,7 +107,7 @@ class ModsAdapter(private val mods: List<ModInfo>, private val context: Context)
         }
 
         holder.switch.setOnCheckedChangeListener { _, isChecked ->
-            JsonConfigModifier.modifyJsonConfig(context, "ToolBoxData/EFModData/info.json", mod.filePath, isChecked)
+            JsonConfigModifier.modifyJsonConfig(context, "TEFModLoader/EFModData/info.json", mod.filePath, isChecked)
         }
     }
 

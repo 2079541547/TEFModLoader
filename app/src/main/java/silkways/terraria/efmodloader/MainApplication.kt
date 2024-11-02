@@ -30,13 +30,17 @@ class MainApplication : Application() {
         super.onCreate()
         instance = this
         DynamicColors.applyToActivitiesIfAvailable(this)
-        File("${this.getExternalFilesDir(null)}/ToolBoxData/").mkdirs()
+        File("${this.getExternalFilesDir(null)}/TEFModLoader/").mkdirs()
+
         //创建配置
         JsonConfigModifier.createJsonConfig(this, Settings.jsonPath, Settings.Data)
         JsonConfigModifier.createJsonConfig(this, GameSettings.jsonPath, GameSettings.Data)
+
+        //检查并修补配置
         JsonConfigModifier.updateJsonKeys(this, Settings.jsonPath, Settings.Data)
         JsonConfigModifier.updateJsonKeys(this, GameSettings.jsonPath, GameSettings.Data)
 
+        //加载文件系统
         System.loadLibrary("EFFileSystem")
 
         FileUtils.checkAndWriteFile()

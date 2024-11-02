@@ -113,7 +113,7 @@ object ModInstaller {
             runtimeDir.mkdirs()
         }
 
-        val zipFilePath = File(context.getExternalFilesDir(null), "ToolBoxData/EFModData/$zipFileName")
+        val zipFilePath = File(context.getExternalFilesDir(null), "TEFModLoader/EFModData/$zipFileName")
         if (!zipFilePath.exists()) {
             Log.e("ZipFileNotFound", "Zip file not found: ${zipFilePath.absolutePath}")
             return

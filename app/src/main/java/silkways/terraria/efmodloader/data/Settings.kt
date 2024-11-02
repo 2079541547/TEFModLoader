@@ -3,7 +3,7 @@ package silkways.terraria.efmodloader.data
 object Settings {
 
 
-    val jsonPath = "ToolBoxData/settings.json"
+    val jsonPath = "TEFModLoader/settings.json"
 
     //键
     val themeKey = "theme" //主题

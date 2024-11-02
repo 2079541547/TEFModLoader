@@ -33,7 +33,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             //noinspection ChromeOsAbiSupport
-            abiFilters += listOf("arm64-v8a")
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
         }
     }
 
@@ -62,18 +62,12 @@ android {
 
     ndkVersion = "28.0.12433566 rc1"
 
-    aaptOptions {
-        noCompress.add("assets/bin/Data/data.unity3d")
-        noCompress.add("assets/bin/Data/resources.resource")
-        noCompress.add("assets/bin/Data/unity default resources")
-    }
     buildToolsVersion = "35.0.0"
 }
 
 
 dependencies{
     implementation(project(":core"))
-    implementation(project(":game-assets"))
     implementation(libs.commonmark)
     implementation(libs.material)
     implementation(libs.androidx.navigation.fragment.ktx)

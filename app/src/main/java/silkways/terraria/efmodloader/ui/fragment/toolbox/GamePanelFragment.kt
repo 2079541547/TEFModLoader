@@ -151,11 +151,11 @@ class GamePanelFragment : Fragment() {
             }
 
             LoaderManager.runEFModLoader(
-                "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModLoaderData/info.json",
+                "${requireActivity().getExternalFilesDir(null)}/TEFModLoader/EFModLoaderData/info.json",
                 requireActivity())
 
             ModManager.runEFMod(
-                "${requireActivity().getExternalFilesDir(null)}/ToolBoxData/EFModData/info.json",
+                "${requireActivity().getExternalFilesDir(null)}/TEFModLoader/EFModData/info.json",
                 requireActivity())
 
 

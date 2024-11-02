@@ -1,7 +1,7 @@
 package silkways.terraria.efmodloader.data
 
 object GameSettings {
-    val jsonPath = "ToolBoxData/game_settings.json"
+    val jsonPath = "TEFModLoader/game_settings.json"
 
     //键
     val suspended_window = "suspended_window"

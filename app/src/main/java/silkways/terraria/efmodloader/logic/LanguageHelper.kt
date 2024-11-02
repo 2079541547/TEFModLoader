@@ -42,13 +42,13 @@ object LanguageHelper {
     }
 
     fun getMDLanguage(LanguageCode: Any?, context: Context, PathName: String): String{
-        val Path = "ToolBoxData/$PathName/${getLanguage(LanguageCode, context)}.md"
+        val Path = "TEFModLoader/$PathName/${getLanguage(LanguageCode, context)}.md"
         return Path
     }
 
     fun getFileLanguage(LanguageCode: Any?, context: Context, PathName: String, file_extension: String): String{
 
-        val Path = "ToolBoxData/$PathName/${getLanguage(LanguageCode, context)}$file_extension"
+        val Path = "TEFModLoader/$PathName/${getLanguage(LanguageCode, context)}$file_extension"
 
         return Path
     }

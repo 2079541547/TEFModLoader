@@ -89,7 +89,7 @@ class LoaderAdapter(private val mods: List<LoaderInfo>, private val context: Con
         val Loader = mods[position]
         holder.title.text = "${Loader.LoaderName} - ${Loader.author}"
         holder.subtitle.text = Loader.version
-        holder.switch.isChecked = JsonConfigModifier.readJsonValue(context, "ToolBoxData/EFModLoaderData/info.json", Loader.filePath) as Boolean
+        holder.switch.isChecked = JsonConfigModifier.readJsonValue(context, "TEFModLoader/EFModLoaderData/info.json", Loader.filePath) as Boolean
         holder.icon.setImageBitmap(Loader.icon)
         holder.itemView.setOnClickListener {
             showInfo(Loader)
@@ -103,7 +103,7 @@ class LoaderAdapter(private val mods: List<LoaderInfo>, private val context: Con
         holder.switch.setOnCheckedChangeListener { _, isChecked ->
 
             isLoader(
-                "${context.getExternalFilesDir(null)}/ToolBoxData/EFModLoaderData/info.json",
+                "${context.getExternalFilesDir(null)}/TEFModLoader/EFModLoaderData/info.json",
                 Loader.filePath,
                 isChecked
             )

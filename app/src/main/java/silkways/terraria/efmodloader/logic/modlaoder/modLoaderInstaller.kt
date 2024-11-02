@@ -98,7 +98,7 @@ object modLoaderInstaller {
 
     // 根据 Runtime 类型解压到不同路径
     fun extractBasedOnRuntime(context: Context, zipFileName: String) {
-        val zipFilePath = File(context.getExternalFilesDir(null), "ToolBoxData/EFModLoaderData/$zipFileName")
+        val zipFilePath = File(context.getExternalFilesDir(null), "TEFModLoader/EFModLoaderData/$zipFileName")
         if (!zipFilePath.exists()) {
             Log.e("ZipFileNotFound", "Zip file not found: ${zipFilePath.absolutePath}")
             return

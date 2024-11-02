@@ -33,19 +33,6 @@ import java.util.List;
  *******************************************************************************/
 public class Tool {
 
-    /**
-     * @exception :启动apk
-     * @param ：String  包名
-     * **/
-    public static void startAPP(String appPackageName, Context mContext){
-        try{
-            Intent intent = mContext.getPackageManager().getLaunchIntentForPackage(appPackageName);
-            mContext.startActivity(intent);
-        }catch(Exception _){
-
-        }
-    }
-
     public static void RunApp(String packageName, Context mContext) {
         PackageInfo pi;
         try {

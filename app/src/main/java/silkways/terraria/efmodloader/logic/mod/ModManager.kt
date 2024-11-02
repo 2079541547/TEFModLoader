@@ -10,7 +10,6 @@ import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.data.TEFModLoader
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import java.io.File
-import java.io.IOException
 
 object ModManager {
 
@@ -61,7 +60,7 @@ object ModManager {
     }
 
     fun removeEFMod(context: Context, filePath: String, identifier: String) {
-        JsonConfigModifier.removeKeyFromJson(context, "ToolBoxData/EFModData/info.json", filePath)
+        JsonConfigModifier.removeKeyFromJson(context, "TEFModLoader/EFModData/info.json", filePath)
         File(filePath).delete()
 
         deleteDirectory(File("${context.getExternalFilesDir(null)}/EFMod-Private/$identifier"))

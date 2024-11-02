@@ -13,7 +13,7 @@ class FileUtils {
 
         fun checkAndWriteFile() {
             val content = "[]"
-            val file = File("${context.getExternalFilesDir(null)}/ToolBoxData/ModData/mod_data.json")
+            val file = File("${context.getExternalFilesDir(null)}/TEFModLoader/ModData/mod_data.json")
 
             if (!file.exists()) {
                 try {

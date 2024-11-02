@@ -1,33 +1,25 @@
 package silkways.terraria.efmodloader.ui.fragment.main.home
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import org.json.JSONArray
 import org.json.JSONObject
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.HomeDialogLogsBinding
 import silkways.terraria.efmodloader.databinding.MainFragmentHomeBinding
-import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import silkways.terraria.efmodloader.ui.activity.SettingsActivity
 import java.io.BufferedReader
 import java.io.File
@@ -71,7 +63,7 @@ class HomeFragment: Fragment() {
         binding.greetings.text = getGreeting() //设置问候语
 
         // 设置一言
-        val YiYanArray = getQuotesArray(requireActivity(), "ToolBoxData/yiyan.json", "quotes")
+        val YiYanArray = getQuotesArray(requireActivity(), "TEFModLoader/quotes.json", "quotes")
         val YiYan = getRandomQuote(YiYanArray)
 
         if (YiYan != null) {

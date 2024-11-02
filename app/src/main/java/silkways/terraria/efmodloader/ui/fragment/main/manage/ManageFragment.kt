@@ -98,7 +98,7 @@ class ManageFragment: Fragment() {
                     val file2 = file.name
                     val file1 = file.parent
 
-                    val rootDirectory ="${requireActivity().getExternalFilesDir(null)?.absolutePath}/ToolBoxData/EFModData"
+                    val rootDirectory ="${requireActivity().getExternalFilesDir(null)?.absolutePath}/TEFModLoader/EFModData"
 
                     val destinationPath = "$rootDirectory/"
 
@@ -128,7 +128,7 @@ class ManageFragment: Fragment() {
                     val file2 = file.name
                     val file1 = file.parent
 
-                    val rootDirectory ="${requireActivity().getExternalFilesDir(null)?.absolutePath}/ToolBoxData/EFModLoaderData"
+                    val rootDirectory ="${requireActivity().getExternalFilesDir(null)?.absolutePath}/TEFModLoader/EFModLoaderData"
 
                     val destinationPath = "$rootDirectory/"
 

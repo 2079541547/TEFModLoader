@@ -57,37 +57,6 @@
             android:name=".ui.activity.SettingsActivity"
             android:exported="true" />
 
-        <activity
-            android:isGame="true"
-            android:theme="@style/UnityThemeSelector"
-            android:name=".ui.activity.GameActivity"
-            android:exported="true"
-            android:launchMode="singleTask"
-            android:screenOrientation="sensorLandscape"
-            android:configChanges="fontScale|layoutDirection|density|smallestScreenSize|screenSize|uiMode|screenLayout|orientation|navigation|keyboardHidden|keyboard|touchscreen|locale|mnc|mcc"
-            android:hardwareAccelerated="false"
-            android:resizeableActivity="false"
-            tools:ignore="DiscouragedApi,NonResizeableActivity">
-            <meta-data
-                android:name="unityplayer.UnityActivity"
-                android:value="true"/>
-            <meta-data
-                android:name="android.notch_support"
-                android:value="true"/>
-        </activity>
-
-        <meta-data
-            android:name="unity.splash-mode"
-            android:value="1"/>
-        <meta-data
-            android:name="unity.splash-enable"
-            android:value="true"/>
-        <meta-data
-            android:name="unity.launch-fullscreen"
-            android:value="true"/>
-        <meta-data
-            android:name="unity.allow-resizable-window"
-            android:value="false"/>
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape"/>
