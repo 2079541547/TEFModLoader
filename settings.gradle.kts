@@ -22,5 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "TEFModLoader"
 include(":app")
-include(":game-assets")
 include(":core")
