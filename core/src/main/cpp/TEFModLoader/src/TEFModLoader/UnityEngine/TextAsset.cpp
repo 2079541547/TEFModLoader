@@ -28,10 +28,10 @@ namespace UnityEngine::TextAsset {
 
 
 
-    Mono::String (*old_get_text)(BNM::UnityEngine::Object *);
-    Mono::String new_get_text(BNM::UnityEngine::Object *instance) {
+    Mono::String* (*old_get_text)(BNM::UnityEngine::Object *);
+    Mono::String* new_get_text(BNM::UnityEngine::Object *instance) {
 
-        BNM_LOG_DEBUG("已劫持获取字符串函数: %s", ToString[instance].Call()->str().c_str());
+        BNM_LOG_DEBUG("已劫持获取字符串函数: %s", old_get_text(instance)->str().c_str());
 
         return old_get_text(instance);
     }
@@ -39,6 +39,7 @@ namespace UnityEngine::TextAsset {
 
     void RegisterHook() {
         using namespace EFModLoader::RegisterHook::Unity;
+        //HOOK(get_text, new_get_text, old_get_text);
         RegisterHOOK("UnityEngine.CoreModule.dll.UnityEngine.get_text", get_text, (void *)new_get_text, (void**) old_get_text);
     }
 }

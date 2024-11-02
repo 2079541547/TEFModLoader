@@ -9,10 +9,10 @@ plugins {
 android {
     signingConfigs {
         getByName("debug") {
-            storeFile = file("../TEFModLoader.jks")
+            storeFile = file("TEFModLoader")
             keyAlias = "TEFModLoader"
-            storePassword = "TEFModLoader"
-            keyPassword = "EternalFuture"
+            storePassword = "EternalFuture"
+            keyPassword = "TEFModLoader"
         }
     }
     namespace = "silkways.terraria.efmodloader"
