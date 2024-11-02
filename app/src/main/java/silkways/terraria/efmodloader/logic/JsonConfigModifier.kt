@@ -10,10 +10,16 @@ import java.io.FileWriter
 import java.io.IOException
 import java.io.InputStreamReader
 
-
 object JsonConfigModifier {
 
-
+    /**
+     * 从应用程序的 assets 文件夹中读取指定 JSON 文件，并提取指定键对应的 JSON 数组。
+     *
+     * @param context 应用程序上下文，用于访问 assets 资源。
+     * @param filePath assets 文件夹中的 JSON 文件路径。
+     * @param key 需要提取的 JSON 数组的键名。
+     * @return 提取的 JSON 数组，如果读取或解析失败则返回 null。
+     */
     fun getAssetsArray(context: Context, filePath: String, key: String): JSONArray? {
         // 用于读取 assets 文件夹中的 JSON 文件
         val jsonString = context.assets.open(filePath).use { inputStream ->
@@ -26,7 +32,7 @@ object JsonConfigModifier {
         val jsonObject = try {
             JSONObject(jsonString)
         } catch (e: Exception) {
-            e.printStackTrace()
+            EFLog.e("解析 JSON 时发生错误: ${e.message}")
             return null
         }
 
@@ -34,9 +40,14 @@ object JsonConfigModifier {
         return jsonObject.optJSONArray(key)
     }
 
-
+    /**
+     * 创建一个新的 JSON 配置文件。
+     *
+     * @param context 应用程序上下文。
+     * @param fileName 要创建的 JSON 文件名。
+     * @param data 初始数据，键值对形式。
+     */
     fun createJsonConfig(context: Context, fileName: String, data: Map<String, Any>) {
-
         val externalStorageDirectory = context.getExternalFilesDir(null)
         val filePath = File(externalStorageDirectory, fileName)
 
@@ -44,7 +55,7 @@ object JsonConfigModifier {
             try {
                 filePath.createNewFile()
             } catch (e: Exception) {
-                println("无法创建文件: ${e.message}")
+                EFLog.e("无法创建文件: ${e.message}")
                 return
             }
 
@@ -66,24 +77,29 @@ object JsonConfigModifier {
                 val writer = FileWriter(filePath)
                 writer.write(jsonString)
                 writer.close()
-                println("创建成功: $filePath")
+                EFLog.i("创建成功: $filePath")
             } catch (e: Exception) {
-                println("无法写入文件: ${e.message}")
+                EFLog.e("无法写入文件: ${e.message}")
             }
         } else {
-            println("文件已存在: $filePath")
+            EFLog.i("文件已存在: $filePath")
         }
     }
 
-    //修改json配置
+    /**
+     * 修改现有的 JSON 配置文件中的某个键值。
+     *
+     * @param context 应用程序上下文。
+     * @param fileName JSON 文件名。
+     * @param key 要修改的键。
+     * @param newValue 新的值。
+     */
     fun modifyJsonConfig(context: Context, fileName: String, key: String, newValue: Any) {
-
         val externalStorageDirectory = context.getExternalFilesDir(null)
-
         val filePath = File(externalStorageDirectory, fileName)
 
         if (!filePath.exists()) {
-            println("文件不存在: $filePath")
+            EFLog.e("文件不存在: $filePath")
             return
         }
 
@@ -104,19 +120,24 @@ object JsonConfigModifier {
         writer.write(jsonString)
         writer.close()
 
-        println("JSON配置文件更新于: $filePath")
+        EFLog.i("JSON配置文件更新于: $filePath")
     }
 
-    //读取值
+    /**
+     * 从 JSON 配置文件中读取指定键的值。
+     *
+     * @param context 应用程序上下文。
+     * @param fileName JSON 文件名。
+     * @param key 要读取的键。
+     * @return 读取到的值，如果文件不存在或读取失败则返回 null。
+     */
     @JvmStatic
     fun readJsonValue(context: Context, fileName: String, key: String): Any? {
-
         val externalStorageDirectory = context.getExternalFilesDir(null)
-
         val filePath = File(externalStorageDirectory, fileName)
 
         if (!filePath.exists()) {
-            println("文件不存在: $filePath")
+            EFLog.e("文件不存在: $filePath")
             return null
         }
 
@@ -131,6 +152,11 @@ object JsonConfigModifier {
         }
     }
 
+    /**
+     * 将 JSONArray 转换为 List。
+     *
+     * @return 转换后的列表。
+     */
     private fun JSONArray.toList(): List<Any> {
         val list = mutableListOf<Any>()
         for (i in 0 until length()) {
@@ -139,24 +165,29 @@ object JsonConfigModifier {
         return list
     }
 
-
+    /**
+     * 修改 JSON 配置文件中数组的某个元素。
+     *
+     * @param context 应用程序上下文。
+     * @param fileName JSON 文件名。
+     * @param key 包含数组的键。
+     * @param index 要修改的数组索引。
+     * @param newValue 新的值。
+     */
     fun modifyJsonValueInArray(context: Context, fileName: String, key: String, index: Int, newValue: Any) {
-
         val externalStorageDirectory = context.getExternalFilesDir(null)
-
         val filePath = File(externalStorageDirectory, fileName)
 
         if (!filePath.exists()) {
-            println("文件不存在: $filePath")
+            EFLog.e("文件不存在: $filePath")
             return
         }
 
         val jsonObject = JSONObject(FileReader(filePath).readText())
-
         val jsonArray = jsonObject.getJSONArray(key)
 
         if (index < 0 || index >= jsonArray.length()) {
-            println("数组“$key”的索引 $index 超出界限。")
+            EFLog.e("数组“$key”的索引 $index 超出界限。")
             return
         }
 
@@ -175,25 +206,30 @@ object JsonConfigModifier {
         writer.write(jsonString)
         writer.close()
 
-        println("JSON配置文件更新: $filePath")
+        EFLog.i("JSON配置文件更新: $filePath")
     }
 
-
+    /**
+     * 向 JSON 配置文件中添加新的键值对。
+     *
+     * @param context 应用程序上下文。
+     * @param fileName JSON 文件名。
+     * @param newKey 要添加的新键。
+     * @param value 新键的值。
+     */
     fun addNewKeyToJson(context: Context, fileName: String, newKey: String, value: Any) {
-
         val externalStorageDirectory = context.getExternalFilesDir(null)
-
         val filePath = File(externalStorageDirectory, fileName)
 
         if (!filePath.exists()) {
-            println("文件不存在于 $filePath")
+            EFLog.e("文件不存在于 $filePath")
             return
         }
 
         val jsonObject = JSONObject(FileReader(filePath).readText())
 
         if (jsonObject.has(newKey)) {
-            println("键 '$newKey' 已经存在于 JSON 配置文件中，跳过添加。")
+            EFLog.i("键 '$newKey' 已经存在于 JSON 配置文件中，跳过添加。")
             return
         }
 
@@ -211,24 +247,29 @@ object JsonConfigModifier {
         writer.write(jsonString)
         writer.close()
 
-        println("新键 '$newKey' 已添加至 JSON 配置文件 $filePath")
+        EFLog.i("新键 '$newKey' 已添加至 JSON 配置文件 $filePath")
     }
 
+    /**
+     * 从 JSON 配置文件中删除指定的键。
+     *
+     * @param context 应用程序上下文。
+     * @param fileName JSON 文件名。
+     * @param key 要删除的键。
+     */
     fun removeKeyFromJson(context: Context, fileName: String, key: String) {
-
         val externalStorageDirectory = context.getExternalFilesDir(null)
-
         val filePath = File(externalStorageDirectory, fileName)
 
         if (!filePath.exists()) {
-            println("文件不存在于 $filePath")
+            EFLog.e("文件不存在于 $filePath")
             return
         }
 
         val jsonObject = JSONObject(FileReader(filePath).readText())
 
         if (!jsonObject.has(key)) {
-            println("键 '$key' 不存在于 JSON 配置文件中，跳过删除。")
+            EFLog.i("键 '$key' 不存在于 JSON 配置文件中，跳过删除。")
             return
         }
 
@@ -240,16 +281,22 @@ object JsonConfigModifier {
         writer.write(jsonString)
         writer.close()
 
-        println("键 '$key' 已从 JSON 配置文件 $filePath 删除")
+        EFLog.i("键 '$key' 已从 JSON 配置文件 $filePath 删除")
     }
 
+    /**
+     * 更新 JSON 配置文件中的多个键值对。
+     *
+     * @param context 应用程序上下文。
+     * @param fileName JSON 文件名。
+     * @param keys 键值对映射。
+     */
     fun updateJsonKeys(context: Context, fileName: String, keys: Map<String, Any>) {
-
         val externalStorageDirectory = context.getExternalFilesDir(null)
         val filePath = File(externalStorageDirectory, fileName)
 
         if (!filePath.exists()) {
-            println("文件不存在于 $filePath")
+            EFLog.e("文件不存在于 $filePath")
             return
         }
 
@@ -257,7 +304,7 @@ object JsonConfigModifier {
         try {
             jsonObject = JSONObject(FileReader(filePath).readText())
         } catch (e: Exception) {
-            println("解析 JSON 失败: ${e.message}")
+            EFLog.e("解析 JSON 失败: ${e.message}")
             return
         }
 
@@ -287,10 +334,9 @@ object JsonConfigModifier {
             val writer = FileWriter(filePath)
             writer.write(jsonString)
             writer.close()
-            println("JSON 配置文件已更新: $filePath")
+            EFLog.i("JSON 配置文件已更新: $filePath")
         } catch (e: IOException) {
-            println("无法写入文件: ${e.message}")
+            EFLog.e("无法写入文件: ${e.message}")
         }
     }
-
 }

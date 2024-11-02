@@ -1,30 +1,45 @@
 package silkways.terraria.efmodloader.logic
 
+import android.content.Context
 import org.commonmark.Extension
 import org.commonmark.parser.Parser
 import org.commonmark.renderer.html.HtmlRenderer
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import android.content.Context
+import java.nio.charset.Charset
 
 object Markdown {
+
     /**
-     * 从 assets 文件夹加载 Markdown 文件
+     * 从 assets 文件夹加载 Markdown 文件。
+     *
+     * @param context 应用程序上下文。
+     * @param fileName Markdown 文件名。
+     * @return 加载的 Markdown 内容字符串。
      */
     fun loadMarkdownFromAssets(context: Context, fileName: String): String {
         val sb = StringBuilder()
-        context.assets.open(fileName).use { inputStream ->
-            BufferedReader(InputStreamReader(inputStream, Charsets.UTF_8)).use { reader ->
-                reader.lineSequence().forEach { line ->
-                    sb.append(line).append("\n")
+        try {
+            context.assets.open(fileName).use { inputStream ->
+                BufferedReader(InputStreamReader(inputStream, Charset.forName("UTF-8"))).use { reader ->
+                    reader.lineSequence().forEach { line ->
+                        sb.append(line).append("\n")
+                    }
                 }
             }
+            EFLog.i("Markdown 文件加载完成: $fileName")
+        } catch (e: Exception) {
+            EFLog.e("加载 Markdown 文件时发生错误: $fileName - ${e.message}")
         }
         return sb.toString()
     }
 
     /**
-     * 将 Markdown 字符串转换为 HTML
+     * 将 Markdown 字符串转换为 HTML。
+     *
+     * @param markdown Markdown 内容字符串。
+     * @param colorScheme 颜色方案，1 表示浅色模式，2 表示深色模式，其他值表示自动。
+     * @return 转换后的 HTML 字符串。
      */
     fun markdownToHtml(markdown: String, colorScheme: Any?): String {
         val extensions: List<Extension> = emptyList() // 不需要任何扩展
@@ -69,7 +84,12 @@ object Markdown {
         val htmlBody = renderer.render(document)
 
         // 合并头部、正文和尾部
-        return header + htmlBody + footer
-    }
+        val finalHtml = header + htmlBody + footer
 
+        EFLog.i("Markdown 转换为 HTML 完成")
+        EFLog.d("Markdown 内容: $markdown")
+        EFLog.d("HTML 内容: $finalHtml")
+
+        return finalHtml
+    }
 }
