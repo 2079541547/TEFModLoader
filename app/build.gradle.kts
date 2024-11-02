@@ -18,6 +18,10 @@ android {
     namespace = "silkways.terraria.efmodloader"
     compileSdk = 35
 
+//    lint {
+//        baseline = file("lint-baseline.xml")
+//    }
+
 
     defaultConfig {
         applicationId = "silkways.terraria.efmodloader"
@@ -35,21 +39,21 @@ android {
 
     buildTypes {
         release {
-            isShrinkResources = false
-            isMinifyEnabled = false
+            isShrinkResources = true
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+//            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_22
-        targetCompatibility = JavaVersion.VERSION_22
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "22"
+        jvmTarget = "17"
     }
     buildFeatures {
         viewBinding = true
@@ -71,19 +75,11 @@ dependencies{
     implementation(project(":core"))
     implementation(project(":game-assets"))
     implementation(libs.commonmark)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.ui.android)
-    implementation(libs.androidx.core.ktx.v1130)
-    implementation(libs.androidx.activity)
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
-    implementation(libs.androidx.lifecycle.service)
+    implementation(libs.androidx.preference.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

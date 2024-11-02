@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
-import silkways.terraria.efmodloader.GameActivity
+import silkways.terraria.efmodloader.ui.activity.GameActivity
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.GameSettings
 import silkways.terraria.efmodloader.databinding.ToolboxFragmentGamepanelBinding

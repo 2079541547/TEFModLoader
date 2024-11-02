@@ -15,26 +15,7 @@ from EternalFuture゙
         android:label="@string/home"
         android:id="@+id/navigation_home"
         android:name="silkways.terraria.efmodloader.ui.fragment.main.home.HomeFragment"
-        tools:layout="@layout/main_fragment_home" >
-        <action
-            android:id="@+id/action_navigation_home_to_navigation_toolbox"
-            app:destination="@id/navigation_toolbox"
-            app:popUpTo="@+id/navigation_home"
-            app:popUpToInclusive="false"/>
-
-        <action
-            android:id="@+id/action_navigation_home_to_navigation_manage"
-            app:destination="@id/navigation_manage"
-            app:popUpTo="@+id/navigation_home"
-            app:popUpToInclusive="false"/>
-
-        <action
-            android:id="@+id/action_navigation_home_self"
-            app:destination="@id/navigation_home"
-            app:popUpTo="@+id/navigation_home"
-            app:popUpToInclusive="false"/>
-
-    </fragment>
+        tools:layout="@layout/main_fragment_home" />
 
     <fragment
         android:label="@string/toolbox"

@@ -28,6 +28,7 @@ import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.HomeDialogLogsBinding
 import silkways.terraria.efmodloader.databinding.MainFragmentHomeBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
+import silkways.terraria.efmodloader.ui.activity.SettingsActivity
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
@@ -42,8 +43,6 @@ class HomeFragment: Fragment() {
     // 绑定视图的变量，使用可空类型并在onDestroyView时置为null
     private var _binding: MainFragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private var backPressedTime: Long = 0
-    private val timeInterval: Long = 2000 // 设置两次按键之间的时间间隔（毫秒）
 
 
     /**
@@ -62,17 +61,6 @@ class HomeFragment: Fragment() {
     ): View {
 
         requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.home)
-
-        // 初始化导航选项和导航控制器
-        val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-        val navOptions = NavOptions.Builder()
-            // 设置导航动画
-            .setEnterAnim(R.anim.fragment_anim_enter)
-            .setExitAnim(R.anim.fragment_anim_exit)
-            .setPopEnterAnim(R.anim.fragment_anim_enter)
-            .setPopExitAnim(R.anim.fragment_anim_exit)
-            .build()
-
 
 
         // 使用绑定来加载布局文件
@@ -98,11 +86,10 @@ class HomeFragment: Fragment() {
             }
         }
 
-        //跳转关于页面
-        binding.about.setOnClickListener { navHostFragment.navController.navigate(R.id.navigation_about, null, navOptions) }
-
-        //跳转设置页面
-        binding.setting.setOnClickListener { navHostFragment.navController.navigate(R.id.navigation_settings, null, navOptions) }
+        binding.setting.setOnClickListener {
+            val intent = Intent(requireActivity(), SettingsActivity::class.java)
+            requireActivity().startActivity(intent)
+        }
 
         //打开反馈页面
         binding.feedback.setOnClickListener {
@@ -110,34 +97,9 @@ class HomeFragment: Fragment() {
             requireActivity().startActivity(browserIntent)
         }
 
-        //跳转帮助页面
-        binding.help.setOnClickListener { navHostFragment.navController.navigate(R.id.navigation_helps, null, navOptions) }
 
         //显示更新日志弹窗
         binding.UpdateLog.setOnClickListener { showLogsDialog() }
-
-
-        // 注册 onBackPressedDispatcher
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (SystemClock.elapsedRealtime() - backPressedTime < timeInterval) {
-
-                    if(JsonConfigModifier.readJsonValue(requireActivity(), silkways.terraria.efmodloader.data.Settings.jsonPath, silkways.terraria.efmodloader.data.Settings.CleanDialog) as Boolean &&
-                        !(JsonConfigModifier.readJsonValue(requireActivity(), silkways.terraria.efmodloader.data.Settings.jsonPath, silkways.terraria.efmodloader.data.Settings.autoClean) as Boolean)
-                        ){
-                        showCleanDialog()
-                    } else if(JsonConfigModifier.readJsonValue(requireActivity(), silkways.terraria.efmodloader.data.Settings.jsonPath, silkways.terraria.efmodloader.data.Settings.autoClean) as Boolean){
-                        clearCache()
-                        activity?.finishAffinity()
-                    } else {
-                        activity?.finishAffinity()
-                    }
-                } else {
-                    backPressedTime = SystemClock.elapsedRealtime()
-                    Snackbar.make(binding.root, getString(R.string.onBackPressedDispatcher_exit), Snackbar.LENGTH_SHORT).show()
-                }
-            }
-        })
 
         return binding.root
     }
@@ -267,28 +229,7 @@ class HomeFragment: Fragment() {
     }
 
 
-    private fun showCleanDialog(){
-        val builder = MaterialAlertDialogBuilder(requireActivity())
 
-
-        builder.setTitle(getString(R.string.Clear_cache_title))
-        builder.setMessage(getString(R.string.Clear_cache_message))
-
-        builder.setPositiveButton(getString(R.string.Clear_cache)) { dialog: DialogInterface, _: Int ->
-            clearCache()
-            dialog.dismiss()
-            activity?.finishAffinity()
-        }
-
-        builder.setNegativeButton(getString(R.string.NOClear_cache)) { dialog: DialogInterface, _: Int ->
-            dialog.dismiss()
-            activity?.finishAffinity()
-        }
-
-        val dialog: Dialog = builder.create()
-        dialog.show()
-
-    }
 
     private fun clearCache() {
         // 清除应用的内部缓存目录

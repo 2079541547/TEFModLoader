@@ -11,7 +11,6 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/twotone_help_24"
-        android:tint="@color/md_theme_primary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />

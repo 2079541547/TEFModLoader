@@ -51,33 +51,7 @@ class ToolBoxFragment: Fragment() {
 
         requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.toolbox)
 
-        /*
-        * @navHostFragment 获取导航控管理器
-        * @navOptions 导航动画
-        * navHostFragment.navController.navigate(R.id.页面id, null, navOptions)
-        * 跳转方法
-         */
-
-        val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-        val navOptions = NavOptions.Builder()
-            .setEnterAnim(R.anim.fragment_anim_enter)
-            .setExitAnim(R.anim.fragment_anim_exit)
-            .setPopEnterAnim(R.anim.fragment_anim_enter)
-            .setPopExitAnim(R.anim.fragment_anim_exit)
-            .build()
-
         _binding = MainFragmentToolboxBinding.inflate(inflater, container, false)
-
-
-
-        binding.gamePanel.setOnClickListener {
-            navHostFragment.navController.navigate(R.id.nanavigation_GamePanel, null, navOptions)
-        }
-
-        binding.terminal.setOnClickListener {
-            navHostFragment.navController.navigate(R.id.navigation_terminal, null, navOptions)
-        }
-
 
         binding.ImportArchive.setOnClickListener {
             selectModFiles()

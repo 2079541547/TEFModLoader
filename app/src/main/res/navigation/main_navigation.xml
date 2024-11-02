@@ -12,18 +12,6 @@ from EternalFuture゙
     app:startDestination="@+id/navigation_main">
 
     <fragment
-        android:label="@string/home"
-        android:id="@+id/navigation_main"
-        android:name="silkways.terraria.efmodloader.ui.fragment.MainFragment"
-        tools:layout="@layout/fragment_main" />
-
-    <fragment
-        android:label="@string/settings"
-        android:id="@+id/navigation_settings"
-        android:name="silkways.terraria.efmodloader.ui.fragment.home.settings.SettingsFragment"
-        tools:layout="@layout/home_fragment_settings" />
-
-    <fragment
         android:label="@string/about"
         android:id="@+id/navigation_about"
         android:name="silkways.terraria.efmodloader.ui.fragment.home.about.AboutFragment"

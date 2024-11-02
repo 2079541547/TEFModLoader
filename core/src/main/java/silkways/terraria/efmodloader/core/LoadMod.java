@@ -22,7 +22,7 @@ public class LoadMod {
 
         try {
             LoadLoadEFModX(context.getCacheDir().getPath() + "/SpecialLoading/");
-        } catch (Exception _) {}
+        } catch (Exception ignored) {}
 
     }
 
@@ -31,7 +31,7 @@ public class LoadMod {
     private void LoadLoadEFModX(String Path) {
         File directory = new File(Path);
         if (directory.isDirectory()) {
-            File[] files = directory.listFiles((_, name) -> name.endsWith(".so"));
+            File[] files = directory.listFiles((ignored, name) -> name.endsWith(".so"));
             if (files != null) {
                 for (File file : files) {
                     System.out.println("加载的独立Mod: " + file.getAbsolutePath());

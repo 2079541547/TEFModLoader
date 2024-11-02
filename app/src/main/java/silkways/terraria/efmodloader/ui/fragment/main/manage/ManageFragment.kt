@@ -42,28 +42,8 @@ class ManageFragment: Fragment() {
 
         requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.manage)
 
-        /*
-        * @navHostFragment 获取导航控管理器
-        * @navOptions 导航动画
-        * navHostFragment.navController.navigate(R.id.页面id, null, navOptions)
-        * 跳转方法
-         */
-
-        val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-        val navOptions = NavOptions.Builder()
-            .setEnterAnim(R.anim.fragment_anim_enter)
-            .setExitAnim(R.anim.fragment_anim_exit)
-            .setPopEnterAnim(R.anim.fragment_anim_enter)
-            .setPopExitAnim(R.anim.fragment_anim_exit)
-            .build()
 
         _binding = MainFragmentManageBinding.inflate(inflater, container, false)
-
-
-
-        binding.efmodManager.setOnClickListener {
-            navHostFragment.navController.navigate(R.id.nanavigation_EFModManager, null, navOptions)
-        }
 
 
         binding.installEfmod.setOnClickListener {
@@ -78,15 +58,9 @@ class ManageFragment: Fragment() {
             Snackbar.make(it, "真的再写了QWQ", Snackbar.LENGTH_SHORT).show()
         }
 
-
         binding.InstallKernel.setOnClickListener {
             selectFilesLauncher_k.launch("*/*")
         }
-
-        binding.KernelManagement.setOnClickListener {
-            navHostFragment.navController.navigate(R.id.nanavigation_EFModLoaderManager, null, navOptions)
-        }
-
 
         return binding.root
     }

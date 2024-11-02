@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="标题"
+        app:layout_constraintTop_toTopOf="parent"
         android:textSize="18sp" />
 
     <ScrollView

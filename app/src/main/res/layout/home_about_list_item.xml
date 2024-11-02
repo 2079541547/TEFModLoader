@@ -9,7 +9,6 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/about_page_shapeableImageView"
-        android:tint="@color/md_theme_primary"
         android:layout_width="45dp"
         android:layout_height="45dp"
         tools:ignore="MissingConstraints" />

@@ -11,8 +11,6 @@ import android.view.ViewGroup
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
-import silkways.terraria.efmodloader.R
-import silkways.terraria.efmodloader.logic.ApplicationSettings.isDarkThemeEnabled
 import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter
@@ -44,13 +42,9 @@ class RunningLogs : Fragment() {
         // 创建TextView并设置其属性
         textView = TextView(context)
         textView.text = "" // 初始为空
-        textView.setTextColor(resources.getColor(R.color.md_theme_onSurface_highContrast))
+        textView.setTextColor(resources.getColor(com.google.android.material.R.color.material_dynamic_neutral20))
         textView.movementMethod = ScrollingMovementMethod() // 允许滚动
 
-
-        if (isDarkThemeEnabled(context)) {
-            textView.setTextColor(resources.getColor(R.color.md_theme_onPrimary))
-        }
 
         // 为TextView添加长按监听器
         textView.setOnLongClickListener {
