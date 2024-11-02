@@ -1,10 +1,7 @@
 package silkways.terraria.efmodloader.ui.fragment.toolbox
 
 import android.annotation.SuppressLint
-import android.content.ActivityNotFoundException
 import android.content.ContentValues
-import android.content.Context
-import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
@@ -15,7 +12,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
@@ -27,7 +23,6 @@ import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.data.TEFModLoader
 import silkways.terraria.efmodloader.databinding.ToolboxFragmentGamepanelBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
-import silkways.terraria.efmodloader.logic.Tool
 import silkways.terraria.efmodloader.logic.mod.ModManager
 import silkways.terraria.efmodloader.logic.modlaoder.LoaderManager
 import java.io.File
