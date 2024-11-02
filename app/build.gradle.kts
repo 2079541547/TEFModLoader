@@ -9,7 +9,7 @@ plugins {
 android {
     signingConfigs {
         getByName("debug") {
-            storeFile = file("../TEFModLoader.jks")
+            storeFile = file("TEFModLoader")
             keyAlias = "TEFModLoader"
             storePassword = "EternalFuture"
             keyPassword = "TEFModLoader"
