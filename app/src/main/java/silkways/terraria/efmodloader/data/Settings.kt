@@ -13,8 +13,8 @@ object Settings {
     val CleanDialog = "CleanDialog" //是否弹出清除缓存弹窗
     val CoveringFiles = "CoveringFiles"
     val OnlineVideo = "OnlineVideo"
-    val ExternalKernel = "ExternalKernel"
-    val KernelPath = "KernelPath"
+    val Runtime = "Runtime" //工作模式
+    val GamePackageName = "GamePackageName" //游戏包名
 
     //json数据
     val Data = mapOf(
@@ -25,7 +25,7 @@ object Settings {
         CleanDialog to true,
         CoveringFiles to false,
         OnlineVideo to "https://www.bilibili.com/",
-        ExternalKernel to false,
-        KernelPath to "",
+        Runtime to 0,
+        GamePackageName to "com.and.games505.TerrariaPaid"
     )
 }

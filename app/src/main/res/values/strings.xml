@@ -191,4 +191,10 @@
     <string name="cancel">取消</string>
 
     <string name="loadingMod">正在解压 EFMod &amp; EFModLoader…</string>
+    <string name="runtime_1">外部加载</string>
+    <string name="runtime_2">共享加载</string>
+    <string name="runtime">工作模式</string>
+    <string name="TargetPackageName">目标包名</string>
+    <string name="Please_enter_the_package_name">请输入包名</string>
+    <string name="Set_target_package_name">设置目标包名</string>
 </resources>

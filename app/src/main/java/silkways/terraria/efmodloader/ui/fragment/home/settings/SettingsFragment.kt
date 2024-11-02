@@ -128,6 +128,14 @@ class SettingsFragment: Fragment() {
                 return "错误"
             }
 
+            private fun getRuntime_Text(): String {
+                when(JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.Runtime)){
+                    0 -> return getString(R.string.runtime_1)
+                    1 -> return getString(R.string.runtime_2)
+                }
+                return "错误"
+            }
+
             fun restartApp(context: Context) {
                 val intent = context.packageManager.getLaunchIntentForPackage(context.packageName)
                 intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // 清除到这个Activity之上的所有Activity
@@ -160,6 +168,30 @@ class SettingsFragment: Fragment() {
                 SettingTitle(getString(R.string.settings_1)),
 
 
+                SettingButton(getString(R.string.runtime), getRuntime_Text(), R.drawable.twotone_memory_24) {
+                    val popupMenu = PopupMenu(requireActivity(), it)
+                    popupMenu.menuInflater.inflate(R.menu.settings_runtime, popupMenu.menu)
+
+                    popupMenu.setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.menu_runtime_0 -> {
+                                JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.Runtime, 0)
+                                showRestartDialog()
+                                true
+                            }
+                            R.id.menu_runtime_1 -> {
+                                JsonConfigModifier.modifyJsonConfig(requireActivity(), Settings.jsonPath, Settings.Runtime, 1)
+                                showRestartDialog()
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                    popupMenu.show()
+                },
+
+
+
                 //主题设置
                 SettingButton(getString(R.string.settings_theme), getTheme_text(), R.drawable.twotone_color_lens_24) {
 
@@ -187,6 +219,12 @@ class SettingsFragment: Fragment() {
                         }
                     }
                     popupMenu.show()
+                },
+
+                SettingButton(getString(R.string.TargetPackageName), JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String, R.drawable.twotone_workspaces_24) {
+
+
+
                 },
 
                 //语言设置
