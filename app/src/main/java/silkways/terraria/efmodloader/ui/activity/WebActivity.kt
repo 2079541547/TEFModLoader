@@ -7,7 +7,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
 import silkways.terraria.efmodloader.data.Settings
-import silkways.terraria.efmodloader.databinding.ActivitySettingBinding
 import silkways.terraria.efmodloader.databinding.ActivityWebBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import silkways.terraria.efmodloader.logic.LanguageHelper

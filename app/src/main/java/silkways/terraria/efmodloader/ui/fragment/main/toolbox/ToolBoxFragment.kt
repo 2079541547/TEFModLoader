@@ -2,6 +2,7 @@ package silkways.terraria.efmodloader.ui.fragment.main.toolbox
 
 import android.app.Dialog
 import android.content.DialogInterface
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -20,6 +21,8 @@ import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.MainFragmentToolboxBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
+import silkways.terraria.efmodloader.ui.activity.TerminalActivity
+import silkways.terraria.efmodloader.ui.activity.WebActivity
 import silkways.terraria.efmodloader.ui.fragment.main.toolbox.logic.FileItem
 import silkways.terraria.efmodloader.ui.fragment.main.toolbox.logic.FileListAdapter
 import java.io.File
@@ -67,6 +70,11 @@ class ToolBoxFragment: Fragment() {
 
         binding.dumpAll.setOnClickListener {
             createFileLauncher_1.launch("TEFModLoader数据")
+        }
+
+        binding.terminal.setOnClickListener {
+            val intent = Intent(requireActivity(), TerminalActivity::class.java)
+            startActivity(intent)
         }
 
         //初始化文件管理

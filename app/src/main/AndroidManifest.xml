@@ -65,6 +65,10 @@
             android:name=".ui.activity.ManageActivity"
             android:exported="true"/>
 
+        <activity
+            android:name=".ui.activity.TerminalActivity"
+            android:exported="true"/>
+
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape"/>
