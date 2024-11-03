@@ -1,35 +1,8 @@
 package silkways.terraria.efmodloader.ui.activity
 
-import android.app.Activity
-import android.app.Dialog
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.PopupMenu
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.NavHostFragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.imageview.ShapeableImageView
-import com.google.android.material.materialswitch.MaterialSwitch
-import com.google.android.material.textview.MaterialTextView
-import silkways.terraria.efmodloader.R
-import silkways.terraria.efmodloader.data.Settings
-import silkways.terraria.efmodloader.databinding.ActivityMainBinding
 import silkways.terraria.efmodloader.databinding.ActivitySettingBinding
-import silkways.terraria.efmodloader.databinding.HomeFragmentSettingsBinding
-import silkways.terraria.efmodloader.logic.JsonConfigModifier
-import silkways.terraria.efmodloader.utils.SPUtils
 
 class SettingsActivity: AppCompatActivity() {
 
