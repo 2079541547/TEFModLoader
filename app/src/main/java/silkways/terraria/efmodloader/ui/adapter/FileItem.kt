@@ -1,4 +1,4 @@
-package silkways.terraria.efmodloader.ui.fragment.main.toolbox.logic
+package silkways.terraria.efmodloader.ui.adapter
 
 data class FileItem(
     val name: String,

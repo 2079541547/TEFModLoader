@@ -1,4 +1,4 @@
-package silkways.terraria.efmodloader.ui.fragment.main.toolbox.logic
+package silkways.terraria.efmodloader.ui.adapter
 
 import android.content.ActivityNotFoundException
 import android.content.Context

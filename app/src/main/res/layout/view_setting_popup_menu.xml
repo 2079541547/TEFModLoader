@@ -41,6 +41,7 @@
         app:layout_constraintEnd_toStartOf="@id/menu_button" />
 
     <com.google.android.material.button.MaterialButton
+        android:textAllCaps="false"
         android:id="@+id/menu_button"
         android:layout_width="wrap_content"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"

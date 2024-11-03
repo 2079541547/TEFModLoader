@@ -67,7 +67,7 @@ android {
 
 
 dependencies{
-    implementation(project(":core"))
+    //implementation(project(":core"))
     implementation(libs.commonmark)
     implementation(libs.material)
     implementation(libs.androidx.navigation.fragment.ktx)

@@ -1,5 +1,6 @@
 package silkways.terraria.efmodloader.ui.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -20,6 +21,7 @@ class StatusBarHeightView(context: Context?, attrs: AttributeSet?, defStyleAttr:
         init()
     }
 
+    @SuppressLint("InternalInsetResource")
     private fun init() {
         // 获取状态栏高度
         val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")

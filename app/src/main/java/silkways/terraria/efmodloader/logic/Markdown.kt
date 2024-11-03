@@ -56,13 +56,13 @@ object Markdown {
             <style>
                 body {
                     font-size: 28px;
-                    color: ${if (colorScheme == 1) "#000" else if (colorScheme == 2) "#fff" else "auto"};
-                    background-color: ${if (colorScheme == 1) "#fff" else if (colorScheme == 2) "#0F1416" else "auto"};
+                    color: ${if (colorScheme == 1) "#000" else if (colorScheme == 2) "#fff" else "var(--text-color)"};
+                    background-color: ${if (colorScheme == 1) "#fff" else if (colorScheme == 2) "#0F1416" else "var(--bg-color)"};
                 }
                 hr {
                     border: none;
                     height: 1px;
-                    background-color: ${if (colorScheme == 1) "#4C626B" else if (colorScheme == 2) "#B3CAD5" else "auto"};
+                    background-color: ${if (colorScheme == 1) "#4C626B" else if (colorScheme == 2) "#B3CAD5" else "var(--hr-color)"};
                 }
                 
                 /* 导航链接样式 */
@@ -70,7 +70,26 @@ object Markdown {
                     display: inline-block;
                     margin-right: 1em;
                     text-decoration: none;
-                    color: ${if (colorScheme == 1) "#226488" else if (colorScheme == 2) "#92CDF6" else "auto"} !important;
+                    color: ${if (colorScheme == 1) "#226488" else if (colorScheme == 2) "#92CDF6" else "var(--nav-link-color)"};
+                }
+
+                /* 媒体查询 */
+                @media (prefers-color-scheme: dark) {
+                    :root {
+                        --text-color: #fff;
+                        --bg-color: #0F1416;
+                        --hr-color: #B3CAD5;
+                        --nav-link-color: #92CDF6;
+                    }
+                }
+
+                @media (prefers-color-scheme: light) {
+                    :root {
+                        --text-color: #000;
+                        --bg-color: #fff;
+                        --hr-color: #4C626B;
+                        --nav-link-color: #226488;
+                    }
                 }
             </style>
         </head>

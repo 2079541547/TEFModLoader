@@ -5,15 +5,12 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.OpenableColumns
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -21,14 +18,13 @@ import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.MainFragmentToolboxBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
+import silkways.terraria.efmodloader.logic.efmod.Init
 import silkways.terraria.efmodloader.ui.activity.TerminalActivity
-import silkways.terraria.efmodloader.ui.activity.WebActivity
-import silkways.terraria.efmodloader.ui.fragment.main.toolbox.logic.FileItem
-import silkways.terraria.efmodloader.ui.fragment.main.toolbox.logic.FileListAdapter
+import silkways.terraria.efmodloader.ui.adapter.FileItem
+import silkways.terraria.efmodloader.ui.adapter.FileListAdapter
+import silkways.terraria.efmodloader.utils.FileUtils
 import java.io.File
 import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
@@ -72,6 +68,10 @@ class ToolBoxFragment: Fragment() {
             createFileLauncher_1.launch("TEFModLoader数据")
         }
 
+        binding.gamePanel.setOnClickListener {
+            Init(requireActivity()).initialization()
+        }
+
         binding.terminal.setOnClickListener {
             val intent = Intent(requireActivity(), TerminalActivity::class.java)
             startActivity(intent)
@@ -91,7 +91,6 @@ class ToolBoxFragment: Fragment() {
 
     private fun loadFiles(directory: File): List<FileItem> {
         val items = mutableListOf<FileItem>()
-
         val files = directory.listFiles { _, _ -> true } ?: return items
         files.forEach { file ->
             if (file.isDirectory) {
@@ -100,7 +99,6 @@ class ToolBoxFragment: Fragment() {
                 items.add(FileItem(file.name, false, file.absolutePath))
             }
         }
-
         return items
     }
 
@@ -110,7 +108,7 @@ class ToolBoxFragment: Fragment() {
     private val selectFilesLauncher = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
         if (uris.isNotEmpty()) {
             val efmodFilePaths = uris.mapNotNull { uri ->
-                getRealPathFromURI(uri)?.let { path ->
+                FileUtils.getRealPathFromURI(uri, requireActivity())?.let { path ->
                     File(path).absolutePath
                 }
             }
@@ -148,26 +146,6 @@ class ToolBoxFragment: Fragment() {
     }
 
 
-
-    private fun getRealPathFromURI(contentUri: Uri): String? {
-        return requireActivity().contentResolver.openInputStream(contentUri)?.use { inputStream ->
-            val fileName = getFileNameFromURI(contentUri)
-            val tempDir = File.createTempFile("temp", "").parentFile // 获取临时目录
-            val tempFile = File(tempDir, fileName) // 使用原始文件名创建新文件
-            tempFile.writeBytes(inputStream.readBytes())
-            tempFile.absolutePath
-        }
-    }
-
-    // 辅助函数用于从 Uri 获取文件名
-    private fun getFileNameFromURI(uri: Uri): String {
-        return requireActivity().contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-            cursor.moveToFirst()
-            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-            cursor.getString(nameIndex)
-        } ?: ""
-    }
-
     private fun handleFile(file: File, destinationPath: String, fileType: String) {
         val fileName = file.name
         val destinationFile = File(destinationPath, fileName)
@@ -186,13 +164,13 @@ class ToolBoxFragment: Fragment() {
             println("File already exists: ${file.name}. Skipping copy.")
 
             if(JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.CoveringFiles) as Boolean){
-                copyFileOverwritingExisting(file.absolutePath, destinationFile.absolutePath)
+                FileUtils.copyFile(file.absolutePath, destinationFile.absolutePath, true)
             } else {
                 CoveringFiles_dialog(file, destinationPath)
             }
         } else {
             // 文件不存在，复制文件
-            copyFileOverwritingExisting(file.absolutePath, destinationFile.absolutePath)
+            FileUtils.copyFile(file.absolutePath, destinationFile.absolutePath, true)
             println("Copied $fileType file: ${file.name} to $destinationPath")
         }
     }
@@ -211,7 +189,7 @@ class ToolBoxFragment: Fragment() {
         builder.setMessage(getString(R.string.CoveringFiles_dialog_message))
 
         builder.setPositiveButton(getString(R.string.determine)) { dialog: DialogInterface, _: Int ->
-            copyFileOverwritingExisting(file.absolutePath, destinationFile.absolutePath)
+            FileUtils.copyFile(file.absolutePath, destinationFile.absolutePath, true)
             dialog.dismiss()
         }
 
@@ -223,47 +201,6 @@ class ToolBoxFragment: Fragment() {
         dialog.show()
 
     }
-
-
-
-
-
-    private fun copyFileOverwritingExisting(sourcePath: String?, destinationPath: String?) {
-        val sourceFile = sourcePath?.let { File(it) }
-        val destFile = destinationPath?.let { File(it) }
-
-        // 删除文件
-        if (destFile != null) {
-            if (destFile.exists()) {
-                if (destFile.delete()) {
-                    Log.d("FileDeleted", "文件删除成功: ${destFile.absolutePath}")
-                } else {
-                    Log.e("FileDeleteError", "文件删除失败: ${destFile.absolutePath}")
-                }
-            } else {
-                Log.i("FileNotFound", "文件不存在: ${destFile.absolutePath}")
-            }
-        }
-
-        try {
-            if (destFile != null) {
-                FileInputStream(sourceFile).use { fis ->
-                    FileOutputStream(destFile).use { fos ->
-                        fis.channel.use { inputChannel ->
-                            fos.channel.use { outputChannel ->
-                                // 直接使用FileChannel进行高效复制
-                                inputChannel.transferTo(0, inputChannel.size(), outputChannel)
-                                Log.i("FileNotFound", "复制成功: ${destFile.absolutePath}")
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
-
 
     private fun selectModFiles() {
         selectFilesLauncher.launch("*/*")

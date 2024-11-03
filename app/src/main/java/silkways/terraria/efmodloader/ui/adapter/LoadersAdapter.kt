@@ -80,7 +80,7 @@ class LoaderAdapter(private val mods: List<LoaderInfo>, private val context: Con
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.manage_efmodres_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.view_setting_switch, parent, false)
         return ModViewHolder(view)
     }
 

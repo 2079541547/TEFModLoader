@@ -5,10 +5,12 @@ import android.Manifest
 import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.LayoutInflater
 import androidx.activity.addCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -63,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         // 在底部导航栏上设置导航控制器
         binding.navView.setupWithNavController(navHostFragment.navController)
 
-        if (!(JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.agreement) as Boolean)) {
+        if (!SPUtils.readBoolean(Settings.agreement, false)) {
             showAgreementDialog(this)
         }
 
@@ -123,6 +125,13 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, writePermission) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(readPermission, writePermission), 1001)
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val QueryAllPackges = Manifest.permission.QUERY_ALL_PACKAGES
+            if (ContextCompat.checkSelfPermission(this, QueryAllPackges) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(QueryAllPackges, writePermission), 1001)
+            }
+        }
     }
 
     /*
@@ -141,7 +150,7 @@ class MainActivity : AppCompatActivity() {
 
 
         builder.setPositiveButton(getString(R.string.Agreement_ok)) { dialog: DialogInterface, _: Int ->
-            JsonConfigModifier.modifyJsonConfig(this, Settings.jsonPath, Settings.agreement, true)
+            SPUtils.putBoolean(Settings.agreement, true)
             dialog.dismiss()
         }
 

@@ -1,6 +1,8 @@
 package silkways.terraria.efmodloader.ui.adapter.settings
 
+import android.R.attr
 import android.content.Context
+import android.graphics.PorterDuff
 import android.view.LayoutInflater
 import android.view.MenuInflater
 import android.view.View
@@ -8,6 +10,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textview.MaterialTextView
@@ -78,7 +81,7 @@ class SettingAdapter(
             }
             is PopupMenuViewHolder -> {
                 val settingPopupMenu = settings[position] as SettingItem.PopupMenu
-                holder.bind(settingPopupMenu.title, settingPopupMenu.subtitle, settingPopupMenu.iconResId, settingPopupMenu.menuResId, settingPopupMenu.buttonText, settingPopupMenu.onMenuItemClick)
+                holder.bind(settingPopupMenu.title, settingPopupMenu.subtitle, settingPopupMenu.iconResId, settingPopupMenu.buttonText, settingPopupMenu.menuResId, settingPopupMenu.onMenuItemClick)
             }
             is DividerViewHolder -> {}
         }
@@ -121,8 +124,8 @@ class SettingAdapter(
          *
          * @param title 标题字符串资源 ID。
          */
-        fun bind(title: Int) {
-            titleTextView.text = context.getString(title)
+        fun bind(title: String) {
+            titleTextView.text = title
         }
     }
 
@@ -148,14 +151,17 @@ class SettingAdapter(
          * @param iconResId 图标资源 ID。
          * @param onClick 点击事件处理函数。
          */
-        fun bind(title: Int, subtitle: Int, iconResId: Int, onClick: (View) -> Unit) {
+        fun bind(title: String, subtitle: String, iconResId: Int, onClick: (View) -> Unit) {
             button.visibility = View.GONE
-            titleTextView.text = context.getString(title)
-            subTitleTextView.text = context.getString(subtitle)
+            titleTextView.text = title
+            subTitleTextView.text = subtitle
             iconImageView.setImageResource(iconResId)
             itemView.setOnClickListener { it ->
                 onClick(it)
             }
+
+            val color = MaterialColors.getColor(itemView.context, attr.colorPrimary, 0xFF000000.toInt())
+            iconImageView.setColorFilter(color, PorterDuff.Mode.SRC_IN)
         }
     }
 
@@ -177,14 +183,17 @@ class SettingAdapter(
          * @param isChecked 开关的初始状态。
          * @param onCheckedChange 开关状态改变事件处理函数。
          */
-        fun bind(title: Int, subtitle: Int, iconResId: Int, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-            titleTextView.text = context.getString(title)
-            subTitleTextView.text = context.getString(subtitle)
+        fun bind(title: String, subtitle: String, iconResId: Int, isChecked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+            titleTextView.text = title
+            subTitleTextView.text = subtitle
             iconImageView.setImageResource(iconResId)
             switchWidget.isChecked = isChecked
             switchWidget.setOnCheckedChangeListener { _, isChecked ->
                 onCheckedChange(isChecked)
             }
+
+            val color = MaterialColors.getColor(itemView.context, attr.colorPrimary, 0xFF000000.toInt())
+            iconImageView.setColorFilter(color, PorterDuff.Mode.SRC_IN)
         }
     }
 
@@ -208,20 +217,23 @@ class SettingAdapter(
          * @param onMenuItemClick 菜单项点击事件处理函数。
          */
         fun bind(
-            title: Int,
-            subtitle: Int,
+            title: String,
+            subtitle: String,
             iconResId: Int,
-            buttonText: Int,
+            buttonText: String,
             menuResId: Int,
             onMenuItemClick: (Int) -> Unit
         ) {
-            titleTextView.text = context.getString(title)
-            subTitleTextView.text = context.getString(subtitle)
+            titleTextView.text = title
+            subTitleTextView.text = subtitle
             iconImageView.setImageResource(iconResId)
-            menuButton.text = context.getString(buttonText)
+            menuButton.text = buttonText
             menuButton.setOnClickListener {
                 showPopupMenu(it, menuResId, onMenuItemClick)
             }
+
+            val color = MaterialColors.getColor(itemView.context, attr.colorPrimary, 0xFF000000.toInt())
+            iconImageView.setColorFilter(color, PorterDuff.Mode.SRC_IN)
         }
 
         /**
