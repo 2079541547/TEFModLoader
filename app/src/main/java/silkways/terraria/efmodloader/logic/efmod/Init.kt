@@ -59,7 +59,7 @@ class Init(private val context: Context) {
         Thread {
 
             try {
-                when (JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.Runtime)) {
+                when (SPUtils.readInt(Settings.jsonPath, 0)) {
                     0 -> {
                         FileUtils.deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX/"))
                         FileUtils.deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod/"))
@@ -87,7 +87,7 @@ class Init(private val context: Context) {
                 context)
 
             try {
-                if (JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.Runtime) == 0) {
+                if (SPUtils.readInt(Settings.jsonPath, 0) == 0) {
                     renameFilesWithOggExtension(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX"))
                     renameFilesWithOggExtension(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod"))
                 }
@@ -96,6 +96,7 @@ class Init(private val context: Context) {
             }
             dismissLoadingDialog()
 
+            
             val launchIntent = context.packageManager.getLaunchIntentForPackage(
                 SPUtils.readString(
                 Settings.GamePackageName, "com.and.games505.TerrariaPaid").toString())

@@ -11,6 +11,7 @@ import silkways.terraria.efmodloader.logic.EFLog
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import silkways.terraria.efmodloader.logic.efmod.Utils.showConfirmationDialog
 import silkways.terraria.efmodloader.utils.FileUtils
+import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
 import java.io.FileReader
 import java.io.IOException
@@ -116,9 +117,9 @@ object ModManager {
                 while (iterator.hasNext()) {
                     val key = iterator.next()
                     if (jsonObject.getBoolean(key)) {
+                        if (!File(key).exists()) return
                         EFLog.d("处理Mod文件: $key")
-
-                        when (JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.Runtime)) {
+                        when (SPUtils.readInt(Settings.jsonPath, 0)) {
                             0 -> {
                                 if (fileSystem.EFMC.getModInfo(key)["SpecialLoading"] as Boolean) {
                                     fileSystem.EFMC.extractExecutable(
@@ -162,7 +163,7 @@ object ModManager {
                             }
 
                             else -> {
-                                EFLog.w("未知的Runtime配置值: ${JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.Runtime)}")
+                                EFLog.w("未知的Runtime配置值: ${SPUtils.readInt(Settings.jsonPath, 0)}")
                             }
                         }
                     }

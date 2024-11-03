@@ -5,6 +5,12 @@ import android.os.Build;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /*******************************************************************************
@@ -33,7 +39,9 @@ import java.util.Objects;
 public class Loader {
 
     private static final String TAG = "EFModLoader";
-    private static String PackName;
+    private static final Map<String, String> archToLib = new HashMap<String, String>(4);
+
+    private static String PackName = "包名";
     private static String LoaderPath;
     private static String EFModX_Path;
 
@@ -43,11 +51,25 @@ public class Loader {
         log("EFModLoader启动中...");
 
         try {
+            archToLib.put("arm", "armeabi-v7a");
+            archToLib.put("arm64", "arm64-v8a");
+            //archToLib.put("x86", "x86");
+            //archToLib.put("x86_64", "x86_64");
+
             ClassLoader cl = Objects.requireNonNull(Loader.class.getClassLoader());
+            Class<?> VMRuntime = Class.forName("dalvik.system.VMRuntime");
+            Method getRuntime = VMRuntime.getDeclaredMethod("getRuntime");
+            getRuntime.setAccessible(true);
+            Method vmInstructionSet = VMRuntime.getDeclaredMethod("vmInstructionSet");
+            vmInstructionSet.setAccessible(true);
+            String arch = (String) vmInstructionSet.invoke(getRuntime.invoke(null));
+            String libName = archToLib.get(arch);
+
+            Log.i(TAG, "来自嵌入式的Bootstrap加载器");
 
             try {
                 log("尝试加载assets中的data库");
-                System.load(cl.getResource("assets/EFModLoader/" + Build.CPU_ABI + "/libdata.so").getPath().substring(5));
+                loadSoFromInputStream(cl.getResourceAsStream("assets/EFModLoader/" + libName + "/libdata.so"), "data");
             } catch (Exception e) {
                 log("尝试加载data库");
                 System.loadLibrary("data");
@@ -65,10 +87,11 @@ public class Loader {
             } else {
                 try {
                     log("尝试加载assets中的内核");
-                    //System.loadLibrary("efmodloader");
-                    System.load(cl.getResource("assets/EFModLoader/" + Build.CPU_ABI + "/libloader.so").getPath().substring(5));
+                    loadSoFromInputStream(cl.getResourceAsStream("assets/EFModLoader/" + libName + "/libloader.so"), "data");
                 } catch (Exception e) {
                     log("加载assets中的内核失败: ", e);
+                    log("尝试加载默认内核...");
+                    System.loadLibrary("loader");
                 }
             }
 
@@ -111,6 +134,28 @@ public class Loader {
 
     public static native String getPackName();
     public static native String agreement();
+
+    @SuppressLint("UnsafeDynamicallyLoadedCode")
+    public static void loadSoFromInputStream(InputStream inputStream, String soFileName) throws IOException {
+        // 创建临时文件
+        File tempSoFile = File.createTempFile(soFileName, ".so");
+        tempSoFile.deleteOnExit(); // 确保临时文件在程序退出时删除
+
+        // 将输入流写入临时文件
+        try (FileOutputStream fos = new FileOutputStream(tempSoFile)) {
+            byte[] buffer = new byte[8096];
+            int read;
+            while ((read = inputStream.read(buffer)) != -1) {
+                fos.write(buffer, 0, read);
+            }
+        } finally {
+            inputStream.close(); // 关闭输入流
+        }
+
+        // 加载 .so 文件
+        System.load(tempSoFile.getAbsolutePath());
+    }
+
 
     private static void log(String message) {
         StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();

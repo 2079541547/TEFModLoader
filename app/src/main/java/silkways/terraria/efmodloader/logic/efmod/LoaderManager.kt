@@ -16,6 +16,7 @@ import java.io.IOException
 import org.json.JSONException
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.data.TEFModLoader
+import silkways.terraria.efmodloader.utils.SPUtils
 
 /*******************************************************************************
  * 文件名称: LoaderManager
@@ -116,9 +117,9 @@ object LoaderManager {
                 while (iterator.hasNext()) {
                     val key = iterator.next()
                     if (jsonObject.getBoolean(key)) {
+                        if (!File(key).exists()) return
                         EFLog.d("处理Loader文件: $key")
-
-                        when (JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.Runtime)) {
+                        when (SPUtils.readInt(Settings.jsonPath, 0)) {
                             0 -> {
                                 fileSystem.EFML.extractLoader(
                                     key,
@@ -144,7 +145,7 @@ object LoaderManager {
                             }
 
                             else -> {
-                                EFLog.w("未知的Runtime配置值: ${JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.Runtime)}")
+                                EFLog.w("未知的Runtime配置值: ${SPUtils.readInt(Settings.jsonPath, 0)}")
                             }
                         }
                     }
