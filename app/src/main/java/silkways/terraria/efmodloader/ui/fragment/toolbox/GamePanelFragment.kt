@@ -192,7 +192,7 @@ class GamePanelFragment : Fragment() {
                 it.dismiss()
             }
         }
-        Tool.RunApp(JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String, requireActivity())
+        //Tool.RunApp(JsonConfigModifier.readJsonValue(requireActivity(), Settings.jsonPath, Settings.GamePackageName) as String, requireActivity())
     }
 
     @SuppressLint("SetWorldReadable")

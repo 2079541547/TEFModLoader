@@ -17,39 +17,16 @@
         tools:ignore="MissingConstraints" />
 
     <Button
-        android:id="@+id/install_res"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        android:text="@string/install_res"
-        app:icon="@drawable/twotone_install_mobile_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_percent="0.45"
-        tools:ignore="MissingConstraints" />
-
-    <Button
         android:id="@+id/efmod_manager"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:text="@string/efmod_manager"
         app:icon="@drawable/twotone_token_24"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/install_efmod"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintWidth_percent="0.45"
         tools:ignore="MissingConstraints" />
 
-    <Button
-        android:id="@+id/res_manager"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        android:text="@string/res_manager"
-        app:icon="@drawable/twotone_token_24"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/install_res"
-        app:layout_constraintWidth_percent="0.45"
-        tools:ignore="MissingConstraints" />
 
 
     <com.google.android.material.card.MaterialCardView
@@ -60,7 +37,7 @@
         app:cardElevation="6dp"
         app:strokeColor="#00000000"
         app:strokeWidth="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/res_manager"
+        app:layout_constraintTop_toBottomOf="@+id/efmod_manager"
         app:cardUseCompatPadding="true"
         app:contentPadding="10dp" >
 

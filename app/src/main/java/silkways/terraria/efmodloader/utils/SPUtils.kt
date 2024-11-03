@@ -3,7 +3,6 @@ package silkways.terraria.efmodloader.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import silkways.terraria.efmodloader.MainApplication
 import silkways.terraria.efmodloader.logic.EFLog
 
