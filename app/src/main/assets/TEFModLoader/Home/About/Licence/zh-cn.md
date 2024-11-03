@@ -8,7 +8,7 @@
 
 ___
 
-# Terraria-ToolBox <a id="Terraria-ToolBox"></a>
+# TEFModLoader <a id="Terraria-ToolBox"></a>
                     GNU AFFERO GENERAL PUBLIC LICENSE
                        Version 3, 19 November 2007
 

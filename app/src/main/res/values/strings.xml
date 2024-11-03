@@ -9,7 +9,7 @@
 
 
 
-    <string name="game">游戏面板</string>
+    <string name="game">配置并启动游戏</string>
     <string name="game_text">快捷地启动游戏工具箱</string>
     <string name="settings_text">更多个性化设置</string>
     <string name="logs_text">了解近期更新内容</string>
