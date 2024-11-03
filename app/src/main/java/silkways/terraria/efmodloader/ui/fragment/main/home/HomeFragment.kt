@@ -20,6 +20,7 @@ import org.json.JSONObject
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.HomeDialogLogsBinding
 import silkways.terraria.efmodloader.databinding.MainFragmentHomeBinding
+import silkways.terraria.efmodloader.ui.activity.AboutActivity
 import silkways.terraria.efmodloader.ui.activity.SettingsActivity
 import silkways.terraria.efmodloader.ui.activity.WebActivity
 import java.io.BufferedReader
@@ -81,6 +82,11 @@ class HomeFragment: Fragment() {
 
         binding.setting.setOnClickListener {
             val intent = Intent(requireActivity(), SettingsActivity::class.java)
+            requireActivity().startActivity(intent)
+        }
+
+        binding.about.setOnClickListener {
+            val intent = Intent(requireActivity(), AboutActivity::class.java)
             requireActivity().startActivity(intent)
         }
 

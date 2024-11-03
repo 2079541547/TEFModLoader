@@ -1,7 +1,9 @@
-package silkways.terraria.efmodloader.ui.fragment.home.about
+package silkways.terraria.efmodloader.ui.activity
 
+import android.R.attr
 import android.animation.ObjectAnimator
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -10,56 +12,55 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.NavHostFragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.color.MaterialColors
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import silkways.terraria.efmodloader.R
+import silkways.terraria.efmodloader.databinding.ActivityAboutBinding
 import silkways.terraria.efmodloader.databinding.HomeAboutDeveloperDialogBinding
-import silkways.terraria.efmodloader.databinding.HomeFragmentAboutBinding
 
+/*******************************************************************************
+ * 文件名称: AboutActivity
+ * 项目名称: TEFModLoader
+ * 创建时间: 2024/11/3 上午10:37
+ * 作者: EternalFuture゙
+ * Github: https://github.com/2079541547
+ * 版权声明: Copyright © 2024 EternalFuture゙. All rights reserved.
+ * 许可证: This program is free software: you can redistribute it and/or modify
+ *         it under the terms of the GNU Affero General Public License as published
+ *         by the Free Software Foundation, either version 3 of the License, or
+ *         (at your option) any later version.
+ *
+ *         This program is distributed in the hope that it will be useful,
+ *         but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *         MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *         GNU Affero General Public License for more details.
+ *
+ *         You should have received a copy of the GNU Affero General Public License
+ *         along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * 描述信息: 本文件为TEFModLoader项目中的一部分。
+ * 注意事项: 请严格遵守GNU AGPL v3.0协议使用本代码，任何未经授权的商业用途均属侵权行为。
+ *******************************************************************************/
 
-/**
- * 关于页面的片段类，用于展示关于应用的信息。
- */
-class AboutFragment: Fragment() {
+class AboutActivity: AppCompatActivity() {
 
-    private var _binding: HomeFragmentAboutBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: ActivityAboutBinding
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.about)
-
-
-        // 初始化导航选项和导航控制器
-        val navHostFragment = requireActivity().supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-        val navOptions = NavOptions.Builder()
-            // 设置导航动画
-            .setEnterAnim(R.anim.fragment_anim_enter)
-            .setExitAnim(R.anim.fragment_anim_exit)
-            .setPopEnterAnim(R.anim.fragment_anim_enter)
-            .setPopExitAnim(R.anim.fragment_anim_exit)
-            .build()
-
-
-        // 使用DataBindingUtil或ViewBinding inflate布局文件
-        _binding = HomeFragmentAboutBinding.inflate(inflater, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityAboutBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         //设置彩蛋
         binding.materialCardView.setOnClickListener { rotateImage(binding.shapeableImageView) }
         binding.materialCardView.setOnLongClickListener {
             binding.shapeableImageView.setImageResource(R.drawable.logo)
-            true}
+            true
+        }
 
 
         binding.list.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -76,6 +77,11 @@ class AboutFragment: Fragment() {
                     holder.titleTextView.text = title
                     holder.infoTextView.text = info
                     holder.imageView.setImageResource(imageResourceId)
+
+                    // 获取系统主题颜色
+                    val color = MaterialColors.getColor(holder.itemView.context, attr.colorPrimary, 0xFF000000.toInt())
+                    // 将图片颜色更改为系统主题颜色
+                    holder.imageView.setColorFilter(color, PorterDuff.Mode.SRC_IN)
                 }
             }
 
@@ -86,7 +92,7 @@ class AboutFragment: Fragment() {
                 Triple(getString(R.string.Open_source_repository), getString(R.string.Open_source_repository_text), R.drawable.twotone_gite_24),
                 Triple(getString(R.string.Special_Thanks), getString(R.string.Special_Thanks_text), R.drawable.twotone_handshake_24),
                 Triple(getString(R.string.Future_plans), getString(R.string.Future_plans_text), R.drawable.twotone_rocket_launch_24),
-                )
+            )
 
             override fun getItemCount(): Int {
                 return logsItems.size
@@ -108,23 +114,32 @@ class AboutFragment: Fragment() {
 
                             //开源许可证
                             1 -> {
-                                navHostFragment.navController.navigate(R.id.nanavigation_licence, null, navOptions)
+                                val intent = Intent(this@AboutActivity, WebActivity::class.java)
+                                intent.putExtra("Title", getString(R.string.Open_source_license))
+                                intent.putExtra("webUrl", "Home/About/Licence")
+                                startActivity(intent)
                             }
 
                             //开源仓库
                             2 ->{
                                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/2079541547/Terraria-ToolBox"))
-                                requireActivity().startActivity(browserIntent)
+                                startActivity(browserIntent)
                             }
 
                             //特别鸣谢
                             3 -> {
-                                navHostFragment.navController.navigate(R.id.nanavigation_SpecialThanks, null, navOptions)
+                                val intent = Intent(this@AboutActivity, WebActivity::class.java)
+                                intent.putExtra("Title", getString(R.string.Special_Thanks))
+                                intent.putExtra("webUrl", "Home/About/SpecialThanks")
+                                startActivity(intent)
                             }
 
                             //未来计划
                             4 -> {
-                                navHostFragment.navController.navigate(R.id.nanavigation_FuturePlans, null, navOptions)
+                                val intent = Intent(this@AboutActivity, WebActivity::class.java)
+                                intent.putExtra("Title", getString(R.string.Future_plans))
+                                intent.putExtra("webUrl", "Home/About/FuturePlans")
+                                startActivity(intent)
                             }
                         }
                     }
@@ -134,9 +149,9 @@ class AboutFragment: Fragment() {
 
             private fun showMaterialDialog() {
 
-                var dialogBinding: HomeAboutDeveloperDialogBinding? = HomeAboutDeveloperDialogBinding.inflate(LayoutInflater.from(requireActivity()))
+                var dialogBinding: HomeAboutDeveloperDialogBinding? = HomeAboutDeveloperDialogBinding.inflate(LayoutInflater.from(this@AboutActivity))
 
-                val builder = MaterialAlertDialogBuilder(requireActivity())
+                val builder = MaterialAlertDialogBuilder(this@AboutActivity)
                     .setCancelable(false)
                     .setView(dialogBinding?.root)
                     .setPositiveButton(getString(R.string.close), null)
@@ -152,7 +167,7 @@ class AboutFragment: Fragment() {
                         Click_count++
                         if (Click_count >= 40) {
                             Click_count = 0
-                            Toast.makeText(requireActivity(), getString(R.string.developer_Easteregg_5_2), Toast.LENGTH_SHORT).show()
+                            Snackbar.make(it, getString(R.string.developer_Easteregg_5_2), Snackbar.LENGTH_SHORT).show()
                             dialogBinding?.shapeableImageView2?.animate()
                                 ?.alpha(0f)
                                 ?.setDuration(500)
@@ -164,7 +179,7 @@ class AboutFragment: Fragment() {
                             dialogBinding?.text?.text = getString(R.string.developer_Easteregg_5_1)
                             Snackbar.make(it, getString(R.string.developer_Easteregg_5), Snackbar.LENGTH_SHORT).show()
                             Handler(Looper.getMainLooper()).postDelayed({
-                                requireActivity().finishAffinity() // 结束所有Activity
+                                finishAffinity() // 结束所有Activity
                                 android.os.Process.killProcess(android.os.Process.myPid()) // 结束进程
                             }, 3000)
                         }else if (Click_count >= 30){
@@ -194,24 +209,8 @@ class AboutFragment: Fragment() {
 
         }
 
-        binding.list.layoutManager = LinearLayoutManager(requireActivity())
-
-        return binding.root
+        binding.list.layoutManager = LinearLayoutManager(this)
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /**
      * 使应用图标旋转45度的小彩蛋功能。
@@ -253,15 +252,4 @@ class AboutFragment: Fragment() {
         currentRotation %= 360f
     }
 
-
-
-    /**
-     * 当视图被销毁时调用，释放资源以避免内存泄漏。
-     */
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // 清理绑定引用，帮助系统回收资源
-        _binding = null
-    }
 }
-
