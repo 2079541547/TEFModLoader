@@ -1,4 +1,4 @@
-package silkways.terraria.efmodloader.ui.fragment.manage
+package silkways.terraria.efmodloader.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -21,7 +21,7 @@ import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.ManageEfmodresDialogBinding
 import silkways.terraria.efmodloader.databinding.ManageEfmodsettingDialogBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
-import silkways.terraria.efmodloader.logic.modlaoder.LoaderManager
+import silkways.terraria.efmodloader.logic.efmod.LoaderManager
 import java.io.File
 import java.io.FileOutputStream
 
@@ -211,7 +211,7 @@ class LoaderAdapter(private val mods: List<LoaderInfo>, private val context: Con
         }
 
         dialogBinding?.yes?.setOnClickListener {
-            LoaderManager.removeEFModLoader(context, mod.filePath)
+            LoaderManager.remove(context, File(mod.filePath))
             Toast.makeText(context, context.getString(R.string.removeEFMod), Toast.LENGTH_LONG).show()
             dialog.dismiss()
         }

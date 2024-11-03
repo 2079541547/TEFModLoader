@@ -1,4 +1,4 @@
-package silkways.terraria.efmodloader.ui.fragment.manage
+package silkways.terraria.efmodloader.ui.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -26,9 +26,10 @@ import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.ManageEfmodresDialogBinding
 import silkways.terraria.efmodloader.databinding.ManageEfmodsettingDialogBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
-import silkways.terraria.efmodloader.logic.mod.ModManager
 import java.io.File
 import eternal.future.effsystem.fileSystem.EFMC
+import silkways.terraria.efmodloader.logic.efmod.ModManager
+import silkways.terraria.efmodloader.ui.activity.WebActivity
 
 data class ModInfo(
     val filePath: String,
@@ -157,16 +158,17 @@ class ModsAdapter(private val mods: List<ModInfo>, private val context: Context)
         val mainHtmlFile = File(modCacheDir, "main.html")
         val uri = FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", mainHtmlFile)
 
+        val intent = Intent(context, WebActivity::class.java)
 
-        val bundle = Bundle().apply {
-            putString("Title", mod.modName)
-            putString("Url", uri.toString())
-            putString("modCacheDir", modCacheDir.toString())
-            putString("private", "${context.getExternalFilesDir(null)}/EFMod-Private/${mod.identifier}/")
-        }
+        // 添加额外的数据，即你的信号
+        intent.putExtra("isMod", true)
+        intent.putExtra("webUrl", uri.toString())
+        intent.putExtra("private", "${context.getExternalFilesDir(null)}/EFMod-Private/${mod.identifier}/")
 
-        navController.navigate(R.id.nanavigation_EFModWeb, bundle, navOptions)
+        // 启动新的Activity
+        context.startActivity(intent)
 
+        //navController.navigate(R.id.nanavigation_EFModWeb, bundle, navOptions)
     }
 
 
@@ -237,7 +239,7 @@ class ModsAdapter(private val mods: List<ModInfo>, private val context: Context)
         }
 
         dialogBinding?.yes?.setOnClickListener {
-            ModManager.removeEFMod(context, mod.filePath, mod.identifier)
+            ModManager.remove(context, File(mod.filePath), mod.identifier)
             Toast.makeText(context, context.getString(R.string.removeEFMod), Toast.LENGTH_LONG).show()
             dialog.dismiss()
         }

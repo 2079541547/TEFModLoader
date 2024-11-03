@@ -46,32 +46,6 @@ class FileUtils {
             return stringBuilder.toString()
         }
 
-        fun copyFileIfNotExists(sourcePath: String, destinationPath: String) {
-            val sourceFile = File(sourcePath)
-            val destFile = File(destinationPath)
-            // 检查目标文件是否已经存在
-            if (destFile.exists()) {
-                println("文件已存在")
-                // 文件已存在，不做任何操作
-                return
-            }
-            try {
-                FileInputStream(sourceFile).use { fis ->
-                    FileOutputStream(destFile).use { fos ->
-                        fis.channel.use { inputChannel ->
-                            fos.channel.use { outputChannel ->
-
-                                // 直接使用FileChannel进行高效复制
-                                inputChannel.transferTo(0, inputChannel.size(), outputChannel)
-                            }
-                        }
-                    }
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-
         fun clearCache() {
             // 清除应用的内部缓存目录
             val cacheDir = context.cacheDir
@@ -81,6 +55,49 @@ class FileUtils {
             deleteDirectory(cacheDir)
             if (externalCacheDir != null) {
                 deleteDirectory(externalCacheDir)
+            }
+        }
+
+        /**
+         * 从 URI 获取文件的真实路径。
+         *
+         * @param contentUri 文件的 URI
+         * @return 文件的真实路径
+         */
+        fun getRealPathFromURI(contentUri: Uri, context: Context): String? {
+            return try {
+                context.contentResolver.openInputStream(contentUri)?.use { inputStream ->
+                    // 创建缓存目录
+                    val cacheDir = File(context.cacheDir, "temp")
+                    if (!cacheDir.exists() && !cacheDir.mkdirs()) {
+                        EFLog.e("创建缓存目录失败: ${cacheDir.absolutePath}")
+                        return null
+                    }
+
+                    // 获取文件名
+                    val fileName = getFileNameFromURI(contentUri, context)
+                    if (fileName.isEmpty()) {
+                        EFLog.e("无法获取文件名")
+                        return null
+                    }
+
+                    // 创建临时文件
+                    val tempFile = File(cacheDir, fileName)
+                    tempFile.writeBytes(inputStream.readBytes())
+                    EFLog.d("文件保存成功: ${tempFile.absolutePath}")
+                    tempFile.absolutePath
+                } ?: run {
+                    EFLog.e("无法打开输入流: $contentUri")
+                    null
+                }
+            } catch (e: IOException) {
+                EFLog.e("从 URI 获取文件真实路径时发生 IO 异常: ${e.message}")
+                e.printStackTrace()
+                null
+            } catch (e: Exception) {
+                EFLog.e("从 URI 获取文件真实路径时发生异常: ${e.message}")
+                e.printStackTrace()
+                null
             }
         }
 

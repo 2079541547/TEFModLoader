@@ -23,8 +23,8 @@ import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.data.TEFModLoader
 import silkways.terraria.efmodloader.databinding.ToolboxFragmentGamepanelBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
-import silkways.terraria.efmodloader.logic.mod.ModManager
-import silkways.terraria.efmodloader.logic.modlaoder.LoaderManager
+import silkways.terraria.efmodloader.logic.efmod.LoaderManager
+import silkways.terraria.efmodloader.logic.efmod.ModManager
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -145,11 +145,11 @@ class GamePanelFragment : Fragment() {
                 Log.e("TEFModLoader", "错误：" , e)
             }
 
-            LoaderManager.runEFModLoader(
+            LoaderManager.init(
                 "${requireActivity().getExternalFilesDir(null)}/TEFModLoader/EFModLoaderData/info.json",
                 requireActivity())
 
-            ModManager.runEFMod(
+            ModManager.init(
                 "${requireActivity().getExternalFilesDir(null)}/TEFModLoader/EFModData/info.json",
                 requireActivity())
 

@@ -46,6 +46,8 @@ class WebActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityWebBinding.inflate(layoutInflater)
 
+        binding.topAppBar.title = intent.getStringExtra("Title").toString()
+
         val isMod = intent.getBooleanExtra("isMod", false)
         val webUrl: String = intent.getStringExtra("webUrl").toString()
 

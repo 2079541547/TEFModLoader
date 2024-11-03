@@ -37,7 +37,8 @@
         android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:labelVisibilityMode="selected"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav_menu"/>
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

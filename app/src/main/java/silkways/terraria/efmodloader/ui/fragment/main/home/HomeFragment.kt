@@ -92,6 +92,7 @@ class HomeFragment: Fragment() {
 
         binding.help.setOnClickListener {
             val intent = Intent(requireActivity(), WebActivity::class.java)
+            intent.putExtra("Title", getString(R.string.help))
             intent.putExtra("webUrl", "Home/Helps")
             startActivity(intent)
         }
