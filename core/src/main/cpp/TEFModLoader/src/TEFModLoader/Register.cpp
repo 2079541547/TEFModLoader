@@ -25,7 +25,7 @@ namespace TEFModLoader::Register {
     }
 
     void RegisterAPI() {
-        EFModLoader::Log::LOG("Debug", "TEFModLoader", "Register", "RegisterAPI", "正在注册API...");
+        EFLOG(EFModLoader::LogLevel::DEBUG, "TEFModLoader", "Register", "RegisterAPI", "正在注册API...");
 
         EFModLoader::RegisterApi::RegisterAPI("get_PackageName", (long) API::get_PackageName);
         EFModLoader::RegisterApi::RegisterAPI("get_ExternalDir", (long) API::get_ExternalDir);
@@ -33,7 +33,7 @@ namespace TEFModLoader::Register {
     }
 
     void RegisterPtr() {
-        EFModLoader::Log::LOG("Debug", "TEFModLoader", "Register", "RegisterPtr", "正在查找需要被Hook的内存地址...");
+        EFLOG(EFModLoader::LogLevel::DEBUG, "TEFModLoader", "Register", "RegisterPtr", "正在查找需要被Hook的内存地址...");
 
         EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::Main::getHookPtr);
         EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::ID::ItemID::Sets::getHookPtr);
@@ -45,7 +45,7 @@ namespace TEFModLoader::Register {
     }
 
     void RegisterHook() {
-        EFModLoader::Log::LOG("Debug", "TEFModLoader", "Register", "RegisterHook", "正在注册Hook节点...");
+        EFLOG(EFModLoader::LogLevel::DEBUG, "TEFModLoader", "Register", "RegisterHook", "正在注册Hook节点...");
 
         EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::Main::RegisterHook);
         EFModLoader::RegisterHook::Unity::RegisterLoad(Terraria::ID::ItemID::Sets::RegisterHook);

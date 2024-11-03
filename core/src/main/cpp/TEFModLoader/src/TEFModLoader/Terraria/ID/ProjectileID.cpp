@@ -104,19 +104,19 @@ namespace Terraria::ID::ProjectileID::Sets {
 
         for (const auto& api : EFModLoader::RegisterApi::registerAPI) {
             if (EFModLoaderAPI::GetEFModLoader().FindAPIS(api.apiName).empty()) {
-                EFModLoader::Log::LOG("Warning", "RegisterApi", "Register", "没有Mod注册的api：" + api.apiName);
+                EFLOG(EFModLoader::LogLevel::WARN, "RegisterApi", "Register", "没有Mod注册的api：" + api.apiName);
                 void* ptr = reinterpret_cast<void*>(api.new_ptr);
                 try {
                     delete[] reinterpret_cast<Field<bool>*>(ptr);
-                    EFModLoader::Log::LOG("Info", "RegisterApi", "Register", "尝试卸载未使用的API成功：" + api.apiName);
+                    EFLOG(EFModLoader::LogLevel::INFO, "RegisterApi", "Register", "尝试卸载未使用的API成功：" + api.apiName);
                 } catch (...) {
-                    EFModLoader::Log::LOG("Warning", "RegisterApi", "Register", "尝试卸载未使用的API失败：" + api.apiName);
+                    EFLOG(EFModLoader::LogLevel::WARN, "RegisterApi", "Register", "尝试卸载未使用的API失败：" + api.apiName);
                 }
             } else {
                 for (auto a: EFModLoaderAPI::GetEFModLoader().FindAPIS(api.apiName)) {
                     EFModLoader::Redirect::redirectPointer<void*>(a, api.new_ptr);
                 }
-                EFModLoader::Log::LOG("Info", "RegisterApi", "Register", "已注册api：" + api.apiName);
+                EFLOG(EFModLoader::LogLevel::INFO, "RegisterApi", "Register", "已注册api：" + api.apiName);
             }
         }
         // 清空注册列表，防止重复注册

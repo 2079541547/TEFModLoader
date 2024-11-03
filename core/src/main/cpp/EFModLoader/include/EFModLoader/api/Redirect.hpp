@@ -1,6 +1,25 @@
-//
-// Created by eternalfuture on 2024/9/28.
-//
+/*******************************************************************************
+ * 文件名称: Register
+ * 项目名称: EFModLoader
+ * 创建时间: 2024/9/28
+ * 作者: EternalFuture゙
+ * Github: https://github.com/2079541547
+ * 版权声明: Copyright © 2024 EternalFuture゙. All rights reserved.
+ * 许可证: This program is free software: you can redistribute it and/or modify
+ *         it under the terms of the GNU Affero General Public License as published
+ *         by the Free Software Foundation, either version 3 of the License, or
+ *         (at your option) any later version.
+ *
+ *         This program is distributed in the hope that it will be useful,
+ *         but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *         MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *         GNU Affero General Public License for more details.
+ *
+ *         You should have received a copy of the GNU Affero General Public License
+ *         along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * 描述信息: 本文件为EFModLoader项目中的一部分。
+ * 注意事项: 请严格遵守GNU AGPL v3.0协议使用本代码，任何未经授权的商业用途均属侵权行为。
+ *******************************************************************************/
 
 #pragma once
 
@@ -12,7 +31,7 @@ namespace EFModLoader::Redirect {
     template<typename T>
     uintptr_t getPtr(T* ptr) {
         auto ptrAddr = reinterpret_cast<uintptr_t>(ptr);
-        EFModLoader::Log::LOG("Info", "Redirect", "getPtr", "获取到的指针地址：" + std::to_string(ptrAddr));
+        EFLOG(LogLevel::INFO, "Redirect", "getPtr", "获取到的指针地址：" + std::to_string(ptrAddr));
         return ptrAddr;
     }
 
@@ -27,12 +46,12 @@ namespace EFModLoader::Redirect {
 
     template<typename T>
     void redirectPointer(uintptr_t originalPtrAddress, uintptr_t newPtrAddress) {
-        EFModLoader::Log::LOG("Debug", "Redirect", "redirectPointer", "正在尝试将：" + std::to_string(originalPtrAddress) + " 重定向为：" + std::to_string(newPtrAddress));
+        EFLOG(LogLevel::INFO, "Redirect", "redirectPointer", "正在尝试将：" + std::to_string(originalPtrAddress) + " 重定向为：" + std::to_string(newPtrAddress));
 
         T** originalPtr = reinterpret_cast<T**>(originalPtrAddress);
         *originalPtr = reinterpret_cast<T*>(newPtrAddress);
 
-        EFModLoader::Log::LOG("Debug", "Redirect", "redirectPointer", "重定向成功，原始地址：" + std::to_string(originalPtrAddress) + " 重定向为：" + std::to_string(newPtrAddress));
+        EFLOG(LogLevel::INFO, "Redirect", "redirectPointer", "重定向成功，原始地址：" + std::to_string(originalPtrAddress) + " 重定向为：" + std::to_string(newPtrAddress));
     }
 
 

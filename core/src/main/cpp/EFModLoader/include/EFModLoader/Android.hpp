@@ -1,7 +1,7 @@
 /*******************************************************************************
- * 文件名称: getData
+ * 文件名称: Android
  * 项目名称: EFModLoader
- * 创建时间: 2024/9/28
+ * 创建时间: 2024/11/1
  * 作者: EternalFuture゙
  * Github: https://github.com/2079541547
  * 版权声明: Copyright © 2024 EternalFuture゙. All rights reserved.
@@ -25,14 +25,14 @@
 
 #include <iostream>
 #include <jni.h>
-#include "log.hpp"
 
-namespace EFModLoader {
+namespace EFModLoader::Android {
 
-    jobject getApplication(JNIEnv *env);
+    using namespace std;
 
-    jstring getPackageName(JNIEnv *env);
+    extern string* get_PackageName;
+    extern string* get_cacheDir;
 
-    std::string getPackageNameAsString(JNIEnv *env);
+    void Load(JNIEnv *env, const string& EFModLoader);
 
 }

@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.22.1)
 project("TEFModLoader")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -flto")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -flto -std=c++20")
+
 
 
 set(DOBBY_LIB ${CMAKE_CURRENT_SOURCE_DIR}/EFModLoader/DependencyLibrary/Dobby/${CMAKE_ANDROID_ARCH_ABI}/libdobby.a)
@@ -54,6 +54,7 @@ target_link_libraries(
 )
 
 
+
 set(EFMODLOADER_INCLUDE_DIRS
         EFModLoader/include
         EFModLoader/src
@@ -63,9 +64,11 @@ add_library(
         EFModLoader
         STATIC
         EFModLoader/src/log.cpp
-        EFModLoader/src/api/Register.cpp
+        EFModLoader/src/api/RegisterAPI.cpp
         EFModLoader/src/hook/unity/RegisterHook.cpp
         EFModLoader/src/loader/LoadELFMods.cpp
+        EFModLoader/src/Android.cpp
+        EFModLoader/src/getData.cpp
 )
 
 target_include_directories(
@@ -78,8 +81,10 @@ target_link_libraries(
         EFModLoader
         PUBLIC
         log
+        android
         BNM
 )
+
 
 set(TEFMODLOADER_INCLUDE_DIRS
         TEFModLoader/include
@@ -105,7 +110,6 @@ target_include_directories(
 
 target_link_libraries(
         ${CMAKE_PROJECT_NAME}
-        ${Keystone_LIB}
         PUBLIC
         EFModLoader
 )
