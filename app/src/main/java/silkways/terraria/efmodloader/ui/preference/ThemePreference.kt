@@ -16,7 +16,7 @@ import silkways.terraria.efmodloader.utils.SPUtils
 class ThemePreference(context: Context, attrs: AttributeSet) : Preference(context, attrs) {
 
     init {
-        layoutResource = R.layout.preference_popup_menu
+        layoutResource = R.layout.view_setting_switch
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
