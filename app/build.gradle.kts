@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.com.google.accompanist.navigation.animation) //tab栏
     implementation(libs.androidx.compose.material.icons.extended) //图标
     implementation(libs.compose.destinations.animations.core)
+    implementation(libs.androidx.core.splashscreen)
     ksp(libs.compose.destinations.ksp)
 
     androidTestImplementation(libs.androidx.espresso.core)
