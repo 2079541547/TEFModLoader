@@ -15,19 +15,19 @@ from EternalFuture゙
         android:label="@string/home"
         android:id="@+id/navigation_home"
         android:name="silkways.terraria.efmodloader.ui.fragment.main.home.HomeFragment"
-        tools:layout="@layout/main_fragment_home" />
+        tools:layout="@layout/fragment_main_home" />
 
     <fragment
         android:label="@string/toolbox"
         android:id="@+id/navigation_toolbox"
         android:name="silkways.terraria.efmodloader.ui.fragment.main.toolbox.ToolBoxFragment"
-        tools:layout="@layout/main_fragment_toolbox" />
+        tools:layout="@layout/fragment_main_toolbox" />
 
     <fragment
         android:label="@string/manage"
         android:id="@+id/navigation_manage"
         android:name="silkways.terraria.efmodloader.ui.fragment.main.manage.ManageFragment"
-        tools:layout="@layout/main_fragment_manage" />
+        tools:layout="@layout/fragment_main_manage" />
 
 
 </navigation>

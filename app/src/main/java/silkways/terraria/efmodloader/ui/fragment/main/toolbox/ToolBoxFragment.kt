@@ -16,7 +16,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.Settings
-import silkways.terraria.efmodloader.databinding.MainFragmentToolboxBinding
+import silkways.terraria.efmodloader.databinding.FragmentMainToolboxBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import silkways.terraria.efmodloader.logic.efmod.Init
 import silkways.terraria.efmodloader.ui.activity.TerminalActivity
@@ -30,7 +30,7 @@ import java.util.zip.ZipOutputStream
 
 class ToolBoxFragment: Fragment() {
 
-    private var _binding: MainFragmentToolboxBinding? = null
+    private var _binding: FragmentMainToolboxBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var createFileLauncher: androidx.activity.result.ActivityResultLauncher<String>
@@ -50,7 +50,7 @@ class ToolBoxFragment: Fragment() {
 
         requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).setTitle(R.string.toolbox)
 
-        _binding = MainFragmentToolboxBinding.inflate(inflater, container, false)
+        _binding = FragmentMainToolboxBinding.inflate(inflater, container, false)
 
         binding.ImportArchive.setOnClickListener {
             selectModFiles()

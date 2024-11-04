@@ -18,8 +18,8 @@ import com.google.android.material.textview.MaterialTextView
 import org.json.JSONArray
 import org.json.JSONObject
 import silkways.terraria.efmodloader.R
+import silkways.terraria.efmodloader.databinding.FragmentMainHomeBinding
 import silkways.terraria.efmodloader.databinding.HomeDialogLogsBinding
-import silkways.terraria.efmodloader.databinding.MainFragmentHomeBinding
 import silkways.terraria.efmodloader.ui.activity.AboutActivity
 import silkways.terraria.efmodloader.ui.activity.SettingsActivity
 import silkways.terraria.efmodloader.ui.activity.WebActivity
@@ -35,7 +35,7 @@ import kotlin.random.Random
 class HomeFragment: Fragment() {
 
     // 绑定视图的变量，使用可空类型并在onDestroyView时置为null
-    private var _binding: MainFragmentHomeBinding? = null
+    private var _binding: FragmentMainHomeBinding? = null
     private val binding get() = _binding!!
 
 
@@ -58,7 +58,7 @@ class HomeFragment: Fragment() {
 
 
         // 使用绑定来加载布局文件
-        _binding = MainFragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentMainHomeBinding.inflate(inflater, container, false)
 
         deleteDirectory(File("${requireActivity().cacheDir}/runEFMod"))
         File("${requireActivity().cacheDir}").mkdirs()

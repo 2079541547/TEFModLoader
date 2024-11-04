@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.*
 import silkways.terraria.efmodloader.R
-import silkways.terraria.efmodloader.databinding.MainFragmentManageBinding
+import silkways.terraria.efmodloader.databinding.FragmentMainManageBinding
 import silkways.terraria.efmodloader.logic.efmod.LoaderManager
 import silkways.terraria.efmodloader.logic.efmod.ModManager
 import silkways.terraria.efmodloader.utils.FileUtils
@@ -23,7 +23,7 @@ import java.io.File
 
 class ManageFragment : Fragment() {
 
-    private var _binding: MainFragmentManageBinding? = null
+    private var _binding: FragmentMainManageBinding? = null
     private val binding get() = _binding!!
 
     // 启动选择文件的活动结果
@@ -43,7 +43,7 @@ class ManageFragment : Fragment() {
     ): View {
         // 设置顶部应用栏标题
         requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar).title = getString(R.string.manage)
-        _binding = MainFragmentManageBinding.inflate(inflater, container, false)
+        _binding = FragmentMainManageBinding.inflate(inflater, container, false)
 
         // 绑定安装模组按钮点击事件
         binding.installEfmod.setOnClickListener {
