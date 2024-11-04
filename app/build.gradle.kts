@@ -54,6 +54,9 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended) //图标
     implementation(libs.compose.destinations.animations.core)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.io.coil.kt.coil.compose)
+    implementation(libs.me.zhanghai.android.appiconloader.coil)
+
     ksp(libs.compose.destinations.ksp)
 
     androidTestImplementation(libs.androidx.espresso.core)
