@@ -11,7 +11,6 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -20,7 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "TEFModLoader"
+rootProject.name = "TEFModLoader-Compose"
 include(":app")
-include(":core")
-include(":load")
+ 

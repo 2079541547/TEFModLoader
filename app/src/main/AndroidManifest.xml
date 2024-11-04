@@ -1,103 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:installLocation="preferExternal"
-    tools:ignore="MissingLeanbackLauncher">
-    <supports-screens
-        android:anyDensity="true"
-        android:smallScreens="true"
-        android:normalScreens="true"
-        android:largeScreens="true"
-        android:xlargeScreens="true"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
-        tools:ignore="QueryAllPackagesPermission" />
-
-    <uses-feature
-        android:glEsVersion="0x30000"
-        android:required="true"/>
-    <uses-feature
-        android:name="android.hardware.touchscreen"
-        android:required="false"/>
-    <uses-feature
-        android:name="android.hardware.type.pc"
-        android:required="false"/>
-    <uses-feature android:name="android.hardware.gamepad"/>
-    <uses-feature
-        android:name="android.hardware.touchscreen.multitouch"
-        android:required="false"/>
-    <uses-feature
-        android:name="android.hardware.touchscreen.multitouch.distinct"
-        android:required="false"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:name=".MainApplication"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        tools:targetApi="34"
-        tools:ignore="MissingClass">
-
+        android:theme="@style/Theme.TEFModLoaderCompose"
+        tools:targetApi="31">
         <activity
-            android:name=".ui.activity.MainActivity"
-            android:exported="true">
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.TEFModLoaderCompose">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".ui.activity.SettingsActivity"
-            android:exported="true" />
-
-        <activity
-            android:name=".ui.activity.WebActivity"
-            android:exported="true"/>
-
-        <activity
-            android:name=".ui.activity.ManageActivity"
-            android:exported="true"/>
-
-        <activity
-            android:name=".ui.activity.TerminalActivity"
-            android:exported="true"/>
-
-        <activity
-            android:name=".ui.activity.AboutActivity"
-            android:exported="true"/>
-
-        <meta-data
-            android:name="notch.config"
-            android:value="portrait|landscape"/>
-        <meta-data
-            android:name="com.android.dynamic.apk.fused.modules"
-            android:value="base"/>
-        <meta-data
-            android:name="android.notch_support"
-            android:value="true"/>
-        <meta-data
-            android:name="android.max_aspect"
-            android:value="ratio_float" />
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"/>
-        </provider>
-
     </application>
+
 </manifest>

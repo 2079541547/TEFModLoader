@@ -1,80 +1,59 @@
-import com.android.build.gradle.internal.dsl.SigningConfig
-import org.gradle.api.NamedDomainObjectContainer
-
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    signingConfigs {
-        getByName("debug") {
-            storeFile = file("TEFModLoader")
-            keyAlias = "TEFModLoader"
-            storePassword = "EternalFuture"
-            keyPassword = "TEFModLoader"
-        }
-    }
-    namespace = "silkways.terraria.efmodloader"
-    compileSdk = 35
-
-//    lint {
-//        baseline = file("lint-baseline.xml")
-//    }
-
+    namespace = "me.jiangnight.tefmodloader_compose"
+    compileSdk = 34
 
     defaultConfig {
-        applicationId = "silkways.terraria.efmodloader"
+        applicationId = "me.jiangnight.tefmodloader_compose"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 150
-        versionName = "1.5.0"
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        ndk {
-            //noinspection ChromeOsAbiSupport
-            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
-        }
     }
 
     buildTypes {
         release {
-            isShrinkResources = true
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-//            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "17"
+        jvmTarget = "11"
     }
     buildFeatures {
-        viewBinding = true
-        prefab = true
+        compose = true
     }
-
-    ndkVersion = "28.0.12433566 rc1"
-
-    buildToolsVersion = "35.0.0"
 }
 
+dependencies {
 
-dependencies{
-    //implementation(project(":core"))
-    implementation(libs.commonmark)
-    implementation(libs.material)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
-    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }
