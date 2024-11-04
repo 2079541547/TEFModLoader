@@ -3,4 +3,18 @@
     <string name="home">主页</string>
     <string name="toolbox">工具箱</string>
     <string name="manager">管理</string>
+
+
+    <string name="greetings_1">ヽ(。ゝω・)ノ☆;:*早上好*:;☆</string>
+    <string name="yiyan_text">👆(*≧▽≦)ﾉｼ))好听的一言</string>
+
+    <string name="about">关于</string>
+
+    <string name="settings">设置</string>
+    <string name="feedback">反馈</string>
+    <string name="help">帮助</string>
+    <string name="logs">更新日志|x･`)(一定会按时更新的)</string>
+    <string name="logs_title_150" translatable="false">1.5.0</string>
+    <string name="logs_text_150">1.重写软件架构 \n2.重写底层 \n3.脱离内置游戏 \n4.使用标准化EFModLoader \n5.支持两种工作模式：共享 and 外部 \n6.优化UI表现 \n7.更强大的错误处理 \n8.减小占用 \n9.软件性能优化 \n10.增加日志系统 \n11.移除游戏面板 \n12.增加代码复用 \n注：部分功能可能无法使用或没有预期效果，请谅解QAQ \n 11 \n 11</string>
+
 </resources>
