@@ -17,7 +17,6 @@ import kotlin.collections.mutableListOf
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.SettingsPacknameDialogBinding
-import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import silkways.terraria.efmodloader.logic.LanguageHelper
 import silkways.terraria.efmodloader.utils.SPUtils
 
@@ -47,7 +46,6 @@ class SettingsActivity : AppCompatActivity() {
         addSetting(SettingItem.PopupMenu(
             R.drawable.twotone_memory_24,
             getString(R.string.runtime),
-            getString(R.string.runtime_0),
             when (SPUtils.readInt(Settings.Runtime, 0)) {
                 0 -> getString(R.string.runtime_1)
                 1 -> getString(R.string.runtime_2)
@@ -95,13 +93,11 @@ class SettingsActivity : AppCompatActivity() {
             dialog.show()
         })
 
-        addSetting(SettingItem.Divider())
         addSetting(SettingItem.Title(getString(R.string.settings_1)))
 
         addSetting(SettingItem.PopupMenu(
             R.drawable.twotone_language_24,
             getString(R.string.settings_language),
-            getString(R.string.settings_language_0),
             when (SPUtils.readInt(Settings.languageKey, 0)) {
                 1 -> getString(R.string.settings_language_2)
                 2 -> getString(R.string.settings_language_3)
@@ -124,7 +120,6 @@ class SettingsActivity : AppCompatActivity() {
         addSetting(SettingItem.PopupMenu(
             R.drawable.twotone_color_lens_24,
             getString(R.string.settings_theme),
-            getString(R.string.settings_theme_0),
             when (SPUtils.readInt(Settings.themeKey, -1)) {
                 1 -> getString(R.string.settings_theme_2)
                 2 -> getString(R.string.settings_theme_3)

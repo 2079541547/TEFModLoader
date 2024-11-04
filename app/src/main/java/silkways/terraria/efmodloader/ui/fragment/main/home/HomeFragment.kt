@@ -9,17 +9,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textview.MaterialTextView
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import silkways.terraria.efmodloader.R
+import silkways.terraria.efmodloader.databinding.DialogHomeLogsBinding
 import silkways.terraria.efmodloader.databinding.FragmentMainHomeBinding
-import silkways.terraria.efmodloader.databinding.HomeDialogLogsBinding
 import silkways.terraria.efmodloader.ui.activity.AboutActivity
 import silkways.terraria.efmodloader.ui.activity.SettingsActivity
 import silkways.terraria.efmodloader.ui.activity.WebActivity
@@ -152,44 +155,38 @@ class HomeFragment: Fragment() {
     }
 
 
-
-
-
-    /**
-     * 是否正在显示日志对话框的标志位
-     */
-    private var isDialogShowing = false
-
     /**
      * 显示日志对话框的方法
      *
      * 检查对话框是否已显示，如果已显示则直接返回。
-     * 使用[LayoutInflater]从布局文件中创建[HomeDialogLogsBinding]对象。
+     * 使用[LayoutInflater]从布局文件中创建[DialogHomeLogsBinding]对象。
      * 创建一个[MaterialAlertDialogBuilder]，设置不可取消并添加绑定的视图。
      * 通过[MaterialAlertDialogBuilder.create()]创建对话框实例，并应用额外的配置，如背景透明度和触摸外部可取消。
      * 初始化[RecyclerView]，包括适配器和布局管理器。
-     * 设置对话框关闭监听器，更新[isDialogShowing]标志位并释放[HomeDialogLogsBinding]对象。
+     * 设置对话框关闭监听器，释放[DialogHomeLogsBinding]对象。
      * 最后，如果未显示对话框，则显示它。
      */
     private fun showLogsDialog() {
-        if (isDialogShowing) return
-
         // 初始化Dialog的绑定对象
-        var dialogBinding: HomeDialogLogsBinding? = HomeDialogLogsBinding.inflate(LayoutInflater.from(requireActivity()))
-
-        // 创建对话框构建器
-        val builder = MaterialAlertDialogBuilder(requireActivity())
-            .setCancelable(false)
-            .setView(dialogBinding?.root)
+        var dialogBinding: DialogHomeLogsBinding? = DialogHomeLogsBinding.inflate(LayoutInflater.from(requireActivity()))
 
         // 创建并配置对话框
-        val dialog = builder.create().apply {
-            // 设置对话框窗口属性
-            window?.let { dialogWindow ->
-                setCanceledOnTouchOutside(true) // 设置触摸对话框外部可取消
+        val dialog = MaterialAlertDialogBuilder(requireActivity())
+            .setTitle(R.string.dialog_update_logs_title)
+            .setCancelable(true)
+            .setPositiveButton(R.string.close, null)
+            .setView(dialogBinding?.root)
+            .setOnDismissListener {
+                dialogBinding = null
             }
+            .create()
 
-            // 初始化RecyclerView
+        //显示对话框
+        dialog.show()
+
+        //独立线程加载弹窗内容
+        viewLifecycleOwner.lifecycleScope.launch {
+            delay(1)
             dialogBinding?.logsRecyclerView?.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                 // 创建ViewHolder
                 override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -222,21 +219,11 @@ class HomeFragment: Fragment() {
                     DividerItemDecoration.VERTICAL
                 )
             )
-            // 设置对话框关闭监听器
-            setOnDismissListener {
-                isDialogShowing = false
-                dialogBinding = null
-            }
         }
-
-        // 如果对话框未显示，显示它
-        isDialogShowing = true
-        dialog.show()
     }
 
 
-
-
+/*
     private fun clearCache() {
         // 清除应用的内部缓存目录
         val cacheDir = requireActivity().cacheDir
@@ -248,6 +235,7 @@ class HomeFragment: Fragment() {
             deleteDirectory(externalCacheDir)
         }
     }
+*/
 
 
     private fun deleteDirectory(directory: File) {

@@ -7,16 +7,15 @@ import android.view.LayoutInflater
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textview.MaterialTextView
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.ui.adapter.settings.SettingItem.Button
-import silkways.terraria.efmodloader.ui.adapter.settings.SettingItem.Divider
 import silkways.terraria.efmodloader.ui.adapter.settings.SettingItem.Switch
 import silkways.terraria.efmodloader.ui.adapter.settings.SettingItem.Title
 
@@ -32,7 +31,6 @@ class SettingAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val VIEW_TYPE_TITLE = 0
-    private val VIEW_TYPE_DIVIDER = 1
     private val VIEW_TYPE_BUTTON = 2
     private val VIEW_TYPE_SWITCH = 3
     private val VIEW_TYPE_POPUPMENU = 4
@@ -51,7 +49,6 @@ class SettingAdapter(
         val inflater = LayoutInflater.from(parent.context)
         return when (viewType) {
             VIEW_TYPE_TITLE -> TitleViewHolder(inflater.inflate(R.layout.item_title, parent, false))
-            VIEW_TYPE_DIVIDER -> DividerViewHolder(inflater.inflate(R.layout.item_divider, parent, false))
             VIEW_TYPE_BUTTON -> ButtonViewHolder(inflater.inflate(R.layout.view_setting_button, parent, false))
             VIEW_TYPE_SWITCH -> SwitchViewHolder(inflater.inflate(R.layout.view_setting_switch, parent, false))
             VIEW_TYPE_POPUPMENU -> PopupMenuViewHolder(inflater.inflate(R.layout.view_setting_popup_menu, parent, false))
@@ -81,9 +78,8 @@ class SettingAdapter(
             }
             is PopupMenuViewHolder -> {
                 val settingPopupMenu = settings[position] as SettingItem.PopupMenu
-                holder.bind(settingPopupMenu.title, settingPopupMenu.subtitle, settingPopupMenu.iconResId, settingPopupMenu.buttonText, settingPopupMenu.menuResId, settingPopupMenu.onMenuItemClick)
+                holder.bind(settingPopupMenu.title, settingPopupMenu.subtitle, settingPopupMenu.iconResId, settingPopupMenu.menuResId, settingPopupMenu.onMenuItemClick)
             }
-            is DividerViewHolder -> {}
         }
     }
 
@@ -107,7 +103,6 @@ class SettingAdapter(
             is Title -> VIEW_TYPE_TITLE
             is Button -> VIEW_TYPE_BUTTON
             is Switch -> VIEW_TYPE_SWITCH
-            is Divider -> VIEW_TYPE_DIVIDER
             is SettingItem.PopupMenu -> VIEW_TYPE_POPUPMENU
             else -> throw IllegalArgumentException("Unknown item type")
         }
@@ -130,18 +125,12 @@ class SettingAdapter(
     }
 
     /**
-     * 分割线视图的 ViewHolder。
-     */
-    inner class DividerViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-
-    /**
      * 按钮视图的 ViewHolder。
      */
     inner class ButtonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val iconImageView: ShapeableImageView = itemView.findViewById(R.id.icon)
         private val titleTextView: MaterialTextView = itemView.findViewById(R.id.title)
         private val subTitleTextView: MaterialTextView = itemView.findViewById(R.id.subtitle)
-        private val button: MaterialButton = itemView.findViewById(R.id.button)
 
         /**
          * 绑定按钮数据。
@@ -152,7 +141,6 @@ class SettingAdapter(
          * @param onClick 点击事件处理函数。
          */
         fun bind(title: String, subtitle: String, iconResId: Int, onClick: (View) -> Unit) {
-            button.visibility = View.GONE
             titleTextView.text = title
             subTitleTextView.text = subtitle
             iconImageView.setImageResource(iconResId)
@@ -160,7 +148,7 @@ class SettingAdapter(
                 onClick(it)
             }
 
-            val color = MaterialColors.getColor(itemView.context, attr.colorPrimary, 0xFF000000.toInt())
+            val color = MaterialColors.getColor(itemView.context, attr.textColorSecondary, 0xFF000000.toInt())
             iconImageView.setColorFilter(color, PorterDuff.Mode.SRC_IN)
         }
     }
@@ -192,7 +180,7 @@ class SettingAdapter(
                 onCheckedChange(isChecked)
             }
 
-            val color = MaterialColors.getColor(itemView.context, attr.colorPrimary, 0xFF000000.toInt())
+            val color = MaterialColors.getColor(itemView.context, attr.textColorSecondary, 0xFF000000.toInt())
             iconImageView.setColorFilter(color, PorterDuff.Mode.SRC_IN)
         }
     }
@@ -204,7 +192,7 @@ class SettingAdapter(
         private val iconImageView: ShapeableImageView = itemView.findViewById(R.id.icon)
         private val titleTextView: MaterialTextView = itemView.findViewById(R.id.title)
         private val subTitleTextView: MaterialTextView = itemView.findViewById(R.id.subtitle)
-        private val menuButton: MaterialButton = itemView.findViewById(R.id.menu_button)
+        private val menuButton: LinearLayout = itemView.findViewById(R.id.menu_button)
 
         /**
          * 绑定弹出菜单数据。
@@ -212,7 +200,6 @@ class SettingAdapter(
          * @param title 标题字符串资源 ID。
          * @param subtitle 副标题字符串资源 ID。
          * @param iconResId 图标资源 ID。
-         * @param buttonText 按钮文本字符串资源 ID。
          * @param menuResId 菜单资源 ID。
          * @param onMenuItemClick 菜单项点击事件处理函数。
          */
@@ -220,19 +207,17 @@ class SettingAdapter(
             title: String,
             subtitle: String,
             iconResId: Int,
-            buttonText: String,
             menuResId: Int,
             onMenuItemClick: (Int) -> Unit
         ) {
             titleTextView.text = title
             subTitleTextView.text = subtitle
             iconImageView.setImageResource(iconResId)
-            menuButton.text = buttonText
             menuButton.setOnClickListener {
                 showPopupMenu(it, menuResId, onMenuItemClick)
             }
 
-            val color = MaterialColors.getColor(itemView.context, attr.colorPrimary, 0xFF000000.toInt())
+            val color = MaterialColors.getColor(itemView.context, attr.textColorSecondary, 0xFF000000.toInt())
             iconImageView.setColorFilter(color, PorterDuff.Mode.SRC_IN)
         }
 

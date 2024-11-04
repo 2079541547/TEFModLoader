@@ -24,7 +24,6 @@ sealed class SettingItem {
      * @param iconResId 图标资源，用于显示弹出菜单旁边的图标。
      * @param title 标题字符串资源，用于显示弹出菜单的标题。
      * @param subtitle 副标题字符串资源，用于显示弹出菜单的副标题。
-     * @param buttonText 对应按钮字符串资源，用于点击时弹出菜单。
      * @param menuResId 菜单资源 ID，用于定义弹出菜单中的菜单项。
      * @param onMenuItemClick 菜单项点击事件处理函数，当用户点击菜单项时会被调用，参数是被点击的菜单项的 ID。
      */
@@ -32,7 +31,6 @@ sealed class SettingItem {
         val iconResId: Int,
         val title: String,
         val subtitle: String,
-        val buttonText: String,
         val menuResId: Int,
         val onMenuItemClick: (Int) -> Unit
     ) : SettingItem()
@@ -53,13 +51,6 @@ sealed class SettingItem {
         val isChecked: Boolean,
         val onCheckedChange: (Boolean) -> Unit
     ) : SettingItem()
-
-    /**
-     * 表示一个分割线类型的设置项。
-     *
-     * @param isDivider 是否显示分割线，默认为 true。
-     */
-    data class Divider(val isDivider: Boolean = true) : SettingItem()
 
     /**
      * 表示一个标题类型的设置项。

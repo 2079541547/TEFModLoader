@@ -40,6 +40,7 @@
     <string name="feedback">反馈</string>
 
     <!-- 更新日志 -->
+    <string name="dialog_update_logs_title">更新日志</string>
     <string name="logs">更新日志|x･`)(一定会按时更新的)</string>
     <string name="logs_title_100" translatable="false">1.0.0</string>
     <string name="logs_text_100">1.可使用EFMod作为游戏扩展 \n2.可导入存档/配置 \n3.EFMod基本支持 \n4.调试工具 \n5.额外的游戏菜单</string>
@@ -95,13 +96,11 @@
     <string name="settings_1">常规</string>
 
     <string name="settings_theme">主题</string>
-    <string name="settings_theme_0">设置软件主题</string>
     <string name="settings_theme_1">跟随系统</string>
     <string name="settings_theme_2">亮色主题</string>
     <string name="settings_theme_3">暗色主题</string>
 
     <string name="settings_language">语言</string>
-    <string name="settings_language_0">设置软件语言</string>
     <string name="settings_language_1">跟随系统</string>
     <string name="settings_language_2" translatable="false">简体中文</string>
     <string name="settings_language_3" translatable="false">繁體中文</string>
@@ -203,6 +202,5 @@
     <string name="Please_enter_the_package_name">请输入包名</string>
     <string name="Set_target_package_name">设置目标包名</string>
     <string name="important">重要</string>
-    <string name="runtime_0">设置工作模式</string>
 
 </resources>
