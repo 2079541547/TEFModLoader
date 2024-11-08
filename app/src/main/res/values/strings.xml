@@ -203,4 +203,6 @@
     <string name="Set_target_package_name">设置目标包名</string>
     <string name="important">重要</string>
 
+    <string name="settings_architecture">Mod/Loader运行架构</string>
+
 </resources>

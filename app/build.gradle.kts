@@ -18,11 +18,6 @@ android {
     namespace = "silkways.terraria.efmodloader"
     compileSdk = 35
 
-//    lint {
-//        baseline = file("lint-baseline.xml")
-//    }
-
-
     defaultConfig {
         applicationId = "silkways.terraria.efmodloader"
         minSdk = 24
@@ -41,7 +36,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-//            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {

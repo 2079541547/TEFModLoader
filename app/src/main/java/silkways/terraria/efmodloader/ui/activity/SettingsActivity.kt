@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -13,7 +16,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import silkways.terraria.efmodloader.databinding.ActivitySettingBinding
 import silkways.terraria.efmodloader.ui.adapter.settings.SettingAdapter
 import silkways.terraria.efmodloader.ui.adapter.settings.SettingItem
-import kotlin.collections.mutableListOf
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.SettingsPacknameDialogBinding
@@ -25,6 +27,18 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingBinding
     private lateinit var settings: MutableList<SettingItem>
     private lateinit var adapter: SettingAdapter
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val runnable = object : Runnable {
+        @SuppressLint("NotifyDataSetChanged")
+        override fun run() {
+            // 刷新适配器
+            adapter.notifyDataSetChanged()
+            reloadSettings()
+            // 延迟1秒后再次执行此Runnable
+            handler.postDelayed(this, 500L)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +55,51 @@ class SettingsActivity : AppCompatActivity() {
         // 创建并设置适配器
         adapter = SettingAdapter(settings, this)
         recyclerView.adapter = adapter
+    }
 
+    private fun setLanguage(code: Int) {
+        SPUtils.putInt(Settings.languageKey, code)
+        LanguageHelper.setAppLanguage(this, LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
+
+        val builder = MaterialAlertDialogBuilder(this)
+
+        builder.setTitle(getString(R.string.RestartDialog_title))
+
+        builder.setPositiveButton(getString(R.string.RestartApp)) { dialog: DialogInterface, _: Int ->
+            dialog.dismiss()
+            val intent = packageManager.getLaunchIntentForPackage(packageName)
+            intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // 清除到这个Activity之上的所有Activity
+            intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // 以新的任务栈项的形式启动
+            startActivity(intent)
+        }
+
+        builder.setNegativeButton(getString(R.string.close)) { dialog: DialogInterface, _: Int ->
+            dialog.dismiss()
+        }
+
+        val dialog: Dialog = builder.create()
+        dialog.show()
+    }
+
+    /**
+     * 动态添加设置项
+     */
+    @SuppressLint("NotifyDataSetChanged")
+    fun addSetting(vararg settingItems: SettingItem) {
+        settings.addAll(settingItems)
+        adapter.notifyDataSetChanged()
+    }
+
+
+    /**
+     * 重新加载设置项
+     */
+    @SuppressLint("NotifyDataSetChanged")
+    fun reloadSettings() {
+        // 清空现有设置项
+        settings.clear()
+
+        // 重新添加设置项
         addSetting(SettingItem.Title(getString(R.string.important)))
         addSetting(SettingItem.PopupMenu(
             R.drawable.twotone_memory_24,
@@ -78,7 +136,6 @@ class SettingsActivity : AppCompatActivity() {
                     setCanceledOnTouchOutside(true) // 设置触摸对话框外部可取消
                 }
 
-
                 dialogBinding?.button?.setOnClickListener {
                     SPUtils.putString(Settings.GamePackageName, dialogBinding?.TextInputEditText?.text.toString())
                     dismiss()
@@ -94,13 +151,27 @@ class SettingsActivity : AppCompatActivity() {
         })
 
         addSetting(SettingItem.PopupMenu(
-            R.drawable.twotone_memory_24,
-            "运行架构(如果支持)",
-            "Mod/Loader的工作架构",
-            R.menu.settings_runtime
-        ) {
+            R.drawable.baseline_architecture_24,
+            getString(R.string.settings_architecture),
+            when(SPUtils.readString("architecture", Build.CPU_ABI)) {
+                "x86" -> "armeabi-v7a"
+                "x86_64" -> "arm64-v8a"
+                else -> SPUtils.readString("architecture", Build.CPU_ABI)
+            }.toString(),
+            R.menu.settings_architecture
+        ) { menuItemId ->
+            when (menuItemId) {
+                R.id.fllow_sysytem -> SPUtils.putString("architecture",
+                    when(Build.CPU_ABI) {
+                        "x86" -> "armeabi-v7a"
+                        "x86_64" -> "arm64-v8a"
+                        else -> Build.CPU_ABI
+                    }.toString())
 
-        } )
+                R.id.arm64 -> SPUtils.putString("architecture", "arm64-v8a")
+                R.id.arm32 -> SPUtils.putString("architecture", "armeabi-v7a")
+            }
+        })
 
         addSetting(SettingItem.Title(getString(R.string.settings_1)))
 
@@ -125,7 +196,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         })
 
-// 主题设置
+        // 主题设置
         addSetting(SettingItem.PopupMenu(
             R.drawable.twotone_color_lens_24,
             getString(R.string.settings_theme),
@@ -151,39 +222,20 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
         })
-    }
 
-
-    private fun setLanguage(code: Int) {
-        SPUtils.putInt(Settings.languageKey, code)
-        LanguageHelper.setAppLanguage(this, LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
-
-        val builder = MaterialAlertDialogBuilder(this)
-
-        builder.setTitle(getString(R.string.RestartDialog_title))
-
-        builder.setPositiveButton(getString(R.string.RestartApp)) { dialog: DialogInterface, _: Int ->
-            dialog.dismiss()
-            val intent = packageManager.getLaunchIntentForPackage(packageName)
-            intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // 清除到这个Activity之上的所有Activity
-            intent?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) // 以新的任务栈项的形式启动
-            startActivity(intent)
-        }
-
-        builder.setNegativeButton(getString(R.string.close)) { dialog: DialogInterface, _: Int ->
-            dialog.dismiss()
-        }
-
-        val dialog: Dialog = builder.create()
-        dialog.show()
-    }
-
-    /**
-     * 动态添加设置项
-     */
-    @SuppressLint("NotifyDataSetChanged")
-    fun addSetting(vararg settingItems: SettingItem) {
-        settings.addAll(settingItems)
+        // 刷新适配器
         adapter.notifyDataSetChanged()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 启动定时任务
+        handler.post(runnable)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // 取消定时任务
+        handler.removeCallbacks(runnable)
     }
 }
