@@ -23,26 +23,40 @@
 
 
 #include <EFModLoader/hook/unity/RegisterHook.hpp>
-#include <EFModLoader/EFMod/EFMod.hpp>
-#include <EFModLoader/log.hpp>
-#include <BNM/MethodBase.hpp>
 
 
 namespace EFModLoader::RegisterHook::Unity {
 
+    // 存储所有待注册的hooks
     vector<hooks> registerHooks;
+
+    // 存储所有待注册的加载事件回调函数
     vector<EventCallback> registerLoad;
 
+    /**
+     * @fn RegisterLoad
+     * @brief 注册一个加载事件回调函数。
+     *
+     * @param ptr 要注册的加载事件回调函数指针。
+     */
     void RegisterLoad(EventCallback ptr) {
-        registerLoad.push_back({ptr});
+        registerLoad.push_back(ptr);
         EFLOG(LogLevel::INFO, "RegisterHook", "unity", "RegisterLoad", "注册了新的加载");
     }
 
-
+    /**
+     * @fn RegisterHOOK
+     * @brief 注册一个hook。
+     *
+     * @param hookName hook的名称。
+     * @param Ptr 原始方法指针。
+     * @param new_ptr 新的方法指针。
+     * @param old_Ptr 旧的方法指针。
+     */
     void RegisterHOOK(string hookName, BNM::MethodBase Ptr, void* new_ptr, void** old_Ptr) {
         // 查找已存在的API记录
-        for (auto& hooks : registerHooks) {
-            if (hooks.hookName == hookName) {
+        for (auto& h : registerHooks) {
+            if (h.hookName == hookName) {
                 EFLOG(LogLevel::INFO, "RegisterHook", "unity", "RegisterHOOK", "Hook已存在：" + hookName + " 将不进行注册操作");
                 return;
             }
@@ -52,7 +66,12 @@ namespace EFModLoader::RegisterHook::Unity {
         EFLOG(LogLevel::INFO, "RegisterHook", "unity", "RegisterHOOK", "注册了新的hook：" + hookName);
     }
 
-
+    /**
+     * @fn Register
+     * @brief 执行所有已注册的hooks的实际注册过程。
+     *
+     * 遍历所有待注册的hooks，调用BNM::InvokeHook进行实际的hook操作。
+     */
     void Register() {
         if (registerHooks.empty()) {
             EFLOG(LogLevel::WARN, "RegisterHook", "unity", "Register", "什么都没有诶٩(๑`^´๑)۶");
@@ -61,12 +80,12 @@ namespace EFModLoader::RegisterHook::Unity {
 
         if (!registerHooks.empty()) {
             EFLOG(LogLevel::INFO, "RegisterHook", "unity", "Register", "正在处理普通Hook...");
-            for (const auto& hooks : registerHooks) {
-                if (EFModLoaderAPI::GetEFModLoader().FindHooks(hooks.hookName).empty()) {
-                    EFLOG(LogLevel::WARN, "RegisterHook", "unity", "Register", "没有Mod注册的Hook：" + hooks.hookName);
+            for (const auto& h : registerHooks) {
+                if (EFModLoaderAPI::GetEFModLoader().FindHooks(h.hookName).empty()) {
+                    EFLOG(LogLevel::WARN, "RegisterHook", "unity", "Register", "没有Mod注册的Hook：" + h.hookName);
                 } else {
-                    HOOK(hooks.ptr, hooks.new_ptr, hooks.old_ptr);
-                    EFLOG(LogLevel::INFO, "RegisterHook", "unity", "Register", "已注册Hook：" + hooks.hookName);
+                    BNM::InvokeHook(h.ptr, h.new_ptr, h.old_ptr);
+                    EFLOG(LogLevel::INFO, "RegisterHook", "unity", "Register", "已注册Hook：" + h.hookName);
                 }
             }
             // 清空注册列表，防止重复注册
@@ -77,16 +96,21 @@ namespace EFModLoader::RegisterHook::Unity {
         }
     }
 
+    /**
+     * @fn check_InvokeHook
+     * @brief 检查是否需要调用InvokeHook。
+     *
+     * @param hookName hook的名称。
+     * @return 返回true表示需要调用InvokeHook，false表示不需要。
+     */
     bool check_InvokeHook(string hookName) {
         if (EFModLoaderAPI::GetEFModLoader().FindHooks(hookName).empty()) {
             EFLOG(LogLevel::WARN, "RegisterHook", "unity", "Register", "没有Mod注册的虚拟Hook：" + hookName);
+            return false;
         } else {
             EFLOG(LogLevel::INFO, "RegisterHook", "unity", "Register", "已注册虚拟Hook：" + hookName);
             return true;
         }
-        return false;
     }
 
 }
-
-

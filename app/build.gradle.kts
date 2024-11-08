@@ -31,10 +31,6 @@ android {
         versionName = "1.5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        ndk {
-            //noinspection ChromeOsAbiSupport
-            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
-        }
     }
 
     buildTypes {
@@ -67,7 +63,6 @@ android {
 
 
 dependencies{
-    //implementation(project(":core"))
     implementation(libs.commonmark)
     implementation(libs.material)
     implementation(libs.androidx.navigation.fragment.ktx)

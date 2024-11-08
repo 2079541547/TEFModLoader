@@ -35,21 +35,66 @@
 #include <vector>
 #include <mutex>
 
+/**
+ * @class EFModLoaderAPI
+ * @brief 单例类，管理模组加载器的API和扩展点。
+ *
+ * 该类提供了注册和查找扩展点及API的方法，确保线程安全。
+ */
 class EFModLoaderAPI final {
 public:
-    // 注册模组的扩展函数
+    /**
+     * @fn RegisterExtension
+     * @brief 注册模组的扩展函数。
+     *
+     * 模组可以通过此函数注册需要扩展的函数及其新的实现。
+     *
+     * @param extensionPoint 扩展点的名称。
+     * @param hook 扩展函数的指针。
+     */
     void RegisterExtension(const std::string& extensionPoint, uintptr_t hook);
 
-    // 注册API（被Mod调用）
+    /**
+     * @fn RegisterAPI
+     * @brief 注册API（被Mod调用）。
+     *
+     * 模组可以通过此函数注册它提供的API，供其他模组或加载器使用。
+     *
+     * @param APIPoint API的名称。
+     * @param Api API函数的指针。
+     */
     void RegisterAPI(const std::string& APIPoint, uintptr_t Api);
 
-    // 查找扩展函数集合
+    /**
+     * @fn FindHooks
+     * @brief 查找扩展函数集合。
+     *
+     * 通过扩展点名称查找已注册的扩展函数集合。
+     *
+     * @param extensionPoint 扩展点的名称。
+     * @return 返回一个包含扩展函数指针的向量，如果没有找到则返回空向量。
+     */
     std::vector<uintptr_t> FindHooks(const std::string& extensionPoint);
 
-    // 查找API集合
+    /**
+     * @fn FindAPIS
+     * @brief 查找API集合。
+     *
+     * 通过API名称查找已注册的API集合。
+     *
+     * @param APIPoint API的名称。
+     * @return 返回一个包含API函数指针的向量，如果没有找到则返回空向量。
+     */
     std::vector<uintptr_t> FindAPIS(const std::string& APIPoint);
 
-    // 获取单例实例
+    /**
+     * @fn GetEFModLoader
+     * @brief 获取单例实例。
+     *
+     * 返回EFModLoaderAPI的单例实例。
+     *
+     * @return 返回EFModLoaderAPI的单例实例。
+     */
     static EFModLoaderAPI& GetEFModLoader();
 
 private:
@@ -65,7 +110,6 @@ private:
     EFModLoaderAPI() {}
 };
 
-
 // 实现单例的获取方法
 inline EFModLoaderAPI& EFModLoaderAPI::GetEFModLoader() {
     static EFModLoaderAPI instance;
@@ -79,7 +123,7 @@ inline void EFModLoaderAPI::RegisterExtension(const std::string& extensionPoint,
 }
 
 // 实现 RegisterAPI 方法
-inline void EFModLoaderAPI::RegisterAPI(const std::string &APIPoint, uintptr_t Api) {
+inline void EFModLoaderAPI::RegisterAPI(const std::string& APIPoint, uintptr_t Api) {
     std::lock_guard<std::mutex> lock(APISMutex);
     APIS[APIPoint].push_back(Api);
 }
@@ -94,7 +138,7 @@ inline std::vector<uintptr_t> EFModLoaderAPI::FindHooks(const std::string& exten
     return it->second;
 }
 
-
+// 实现 FindAPIS 方法
 inline std::vector<uintptr_t> EFModLoaderAPI::FindAPIS(const std::string& APIPoint) {
     std::lock_guard<std::mutex> lock(APISMutex);
     auto it = APIS.find(APIPoint);

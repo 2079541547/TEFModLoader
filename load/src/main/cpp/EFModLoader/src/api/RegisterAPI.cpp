@@ -21,45 +21,71 @@
  * 注意事项: 请严格遵守GNU AGPL v3.0协议使用本代码，任何未经授权的商业用途均属侵权行为。
  *******************************************************************************/
 
-
-#include <EFModLoader/api/Redirect.hpp>
 #include <EFModLoader/api/RegisterApi.hpp>
-#include <EFModLoader/EFMod/EFMod.hpp>
-
 
 namespace EFModLoader::RegisterApi {
-    vector<API> registerAPI;
 
-    void RegisterAPI(const string& apiName, uintptr_t api_ptr) {
-        // 查找已存在的API记录
+    // 存储所有待注册的API信息
+    std::vector<API> registerAPI;
+
+    /**
+     * 注册一个API到系统中。
+     *
+     * @param apiName API的名称。
+     * @param api_ptr API函数指针。
+     */
+    void RegisterAPI(const std::string& apiName, uintptr_t api_ptr) {
+        // 检查是否已经存在相同名称的API
         for (auto& api : registerAPI) {
             if (api.apiName == apiName) {
+                // 如果API已存在，记录警告日志并返回
                 EFLOG(LogLevel::WARN, "RegisterApi", "RegisterAPI", "API已存在：" + apiName + " 将不进行注册操作");
                 return;
             }
         }
-        // 如果没有找到，创建新的API记录
+
+        // 添加新的API到注册列表中
         registerAPI.push_back({apiName, api_ptr});
-        EFLOG(LogLevel::INFO, "RegisterApi", "RegisterAPI", "注册了新的api：" + apiName);
+        // 记录成功注册API的日志
+        EFLOG(LogLevel::INFO, "RegisterApi", "RegisterAPI", "成功注册新API：" + apiName);
     }
 
+    /**
+     * 执行所有已注册API的实际注册过程。
+     */
     void Register() {
+        // 检查注册列表是否为空
         if (registerAPI.empty()) {
-            EFLOG(LogLevel::WARN, "RegisterApi", "Register", "什么都没有诶٩(๑`^´๑)۶");
+            // 如果注册列表为空，记录警告日志并返回
+            EFLOG(LogLevel::WARN, "RegisterApi", "Register", "注册列表为空，无API需要注册。");
             return;
         }
 
+        // 遍历所有待注册的API
         for (const auto& api : registerAPI) {
-            if (EFModLoaderAPI::GetEFModLoader().FindAPIS(api.apiName).empty()) {
-                EFLOG(LogLevel::WARN, "RegisterApi", "Register", "没有Mod注册的api：" + api.apiName);
-            } else {
-                for (auto a: EFModLoaderAPI::GetEFModLoader().FindAPIS(api.apiName)) {
+            // 尝试从EFModLoader中查找API
+            auto foundApis = EFModLoaderAPI::GetEFModLoader().FindAPIS(api.apiName);
+            if (foundApis.empty()) {
+                // 如果未找到匹配的API，记录错误日志并跳过该API
+                EFLOG(LogLevel::ERROR, "RegisterApi", "Register", "未找到与API名称匹配的Mod API：" + api.apiName);
+                continue;
+            }
+
+            // 对于每个找到的API地址，重定向到新的API实现
+            for (auto a : foundApis) {
+                try {
+                    // 重定向API指针
                     Redirect::redirectPointer<void*>(a, api.new_ptr);
+                    // 记录成功重定向API的日志
+                    EFLOG(LogLevel::INFO, "RegisterApi", "Register", "成功将API：" + api.apiName + " 重定向到新实现。");
+                } catch (const std::exception& e) {
+                    // 如果重定向过程中发生错误，记录错误日志
+                    EFLOG(LogLevel::ERROR, "RegisterApi", "Register", "重定向API：" + api.apiName + " 时发生错误：" + std::string(e.what()));
                 }
-                EFLOG(LogLevel::INFO, "RegisterApi", "Register", "已注册api：" + api.apiName);
             }
         }
-        // 清空注册列表，防止重复注册
+
+        // 清空注册列表以备下次注册
         registerAPI.clear();
     }
 

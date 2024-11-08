@@ -31,31 +31,62 @@
 
 #pragma once
 
-#include <iostream>
-#include <memory>
-#include <type_traits>
-#include <utility>
 #include <string>
-#include <functional>
 #include "EFModLoaderAPI.hpp"
 
-
+/**
+ * @class EFMod
+ * @brief 抽象基类，定义了模组的基本接口。
+ *
+ * 每个模组必须继承自这个类，并实现相应的虚函数。
+ */
 class EFMod {
 public:
     virtual ~EFMod() {}
 
-    // 获取模组的唯一标识符
+    /**
+     * @fn GetIdentifier
+     * @brief 获取模组的唯一标识符。
+     *
+     * 每个模组必须提供一个唯一的标识符，用于区分不同的模组。
+     *
+     * @return 返回模组的唯一标识符。
+     */
     virtual const char* GetIdentifier() const = 0;
 
-    // 模组初始化时调用
+    /**
+     * @fn Initialize
+     * @brief 模组初始化时调用。
+     *
+     * 在模组加载时，此函数会被调用，用于执行必要的初始化操作。
+     *
+     * @return 返回true表示初始化成功，false表示初始化失败。
+     */
     virtual bool Initialize() = 0;
 
-    // 注册模组要hook的位置和hook后的函数指针
+    /**
+     * @fn RegisterHooks
+     * @brief 注册模组要hook的位置和hook后的函数指针。
+     *
+     * 模组可以通过此函数注册需要hook的函数及其新的实现。
+     */
     virtual void RegisterHooks() = 0;
 
-    //注册API
+    /**
+     * @fn RegisterAPIs
+     * @brief 注册模组提供的API。
+     *
+     * 模组可以通过此函数注册它提供的API，供其他模组或加载器使用。
+     */
     virtual void RegisterAPIs() = 0;
 
-    // 接收加载器提供的API集合
+    /**
+     * @fn LoadEFMod
+     * @brief 接收加载器提供的API集合。
+     *
+     * 模组通过此函数接收加载器提供的API集合，以便在初始化时使用这些API。
+     *
+     * @param api 加载器提供的API集合。
+     */
     virtual void LoadEFMod(EFModLoaderAPI* api) = 0;
 };

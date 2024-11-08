@@ -25,18 +25,49 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
+#include <cstdint>
+#include "EFModLoader/EFMod/EFMod.hpp"
+#include "EFModLoader/api/Redirect.hpp"
+#include "EFModLoader/log.hpp"
 
 namespace EFModLoader::RegisterApi {
-    using namespace std;
 
+    /**
+     * @struct API
+     * @brief 表示一个待注册的API。
+     *
+     * 包含API的名称和新的函数指针。
+     */
     struct API {
-        string apiName;
-        uintptr_t new_ptr;
+        std::string apiName;  ///< API的名称
+        uintptr_t new_ptr;    ///< 新的API函数指针
     };
 
-    extern vector<API> registerAPI;
+    /**
+     * @var registerAPI
+     * @brief 存储所有待注册的API信息的全局变量。
+     */
+    extern std::vector<API> registerAPI;
 
-    void RegisterAPI(const string& apiName, uintptr_t api_ptr);
+    /**
+     * @fn RegisterAPI
+     * @brief 注册一个API到系统中。
+     *
+     * 该函数检查是否存在同名的API，如果不存在，则将其添加到注册列表中。
+     *
+     * @param apiName API的名称。
+     * @param api_ptr API函数指针。
+     */
+    void RegisterAPI(const std::string& apiName, uintptr_t api_ptr);
 
+    /**
+     * @fn Register
+     * @brief 执行所有已注册API的实际注册过程。
+     *
+     * 该函数遍历注册列表，尝试从EFModLoader中查找每个API，并将其重定向到新的实现。
+     * 如果注册列表为空，会记录警告日志。如果找不到API或重定向过程中发生错误，会记录错误日志。
+     */
     void Register();
+
 }

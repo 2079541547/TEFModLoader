@@ -93,6 +93,15 @@ class SettingsActivity : AppCompatActivity() {
             dialog.show()
         })
 
+        addSetting(SettingItem.PopupMenu(
+            R.drawable.twotone_memory_24,
+            "运行架构(如果支持)",
+            "Mod/Loader的工作架构",
+            R.menu.settings_runtime
+        ) {
+
+        } )
+
         addSetting(SettingItem.Title(getString(R.string.settings_1)))
 
         addSetting(SettingItem.PopupMenu(

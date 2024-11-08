@@ -23,10 +23,29 @@
 
 
 #include <EFModLoader/loader/LoadELFMods.hpp>
-#include <EFModLoader/api/RegisterApi.hpp>
-#include <EFModLoader/log.hpp>
+
+
+// 辅助函数，获取当前进程的内存使用情况
+static std::string GetMemoryUsage() {
+    struct mallinfo mi = mallinfo();
+    return "Total allocated: " + std::to_string(mi.uordblks) + " bytes, Total free: " + std::to_string(mi.fordblks) + " bytes";
+}
+
+// 辅助函数，获取当前时间
+static std::string GetCurrentTime() {
+    auto now = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%Y-%m-%d %X");
+    return ss.str();
+}
 
 void EFModLoader::Loader::LoadELFMods::LoadMod(const std::string &LibPath) {
+    // 记录加载前的内存使用情况
+    EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadMod", "加载前内存使用情况: " + GetMemoryUsage());
+
+    auto start = std::chrono::high_resolution_clock::now();
+
     void* handle = dlopen(LibPath.c_str(), RTLD_LAZY);
     if (!handle) {
         const char* err = dlerror();
@@ -59,16 +78,15 @@ void EFModLoader::Loader::LoadELFMods::LoadMod(const std::string &LibPath) {
     mod->RegisterAPIs();
     EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadMod", "已获取Mod注册的API");
 
-
+    // 注册API
     EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadMod", "开始注册API...");
-    RegisterApi::Register(); //注册API
+    RegisterApi::Register(); // 注册API
 
-
-
+    // 注册Hook
     mod->RegisterHooks();
     EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadMod", "已获取Mod注册的Hook");
 
-
+    // 初始化模组
     if (!mod->Initialize()) {
         const char* err = dlerror();
         EFLOG(LogLevel::ERROR, "Loader", "LoadELFMods", "LoadMod", "Mod初始化失败：" + std::string(err));
@@ -76,9 +94,51 @@ void EFModLoader::Loader::LoadELFMods::LoadMod(const std::string &LibPath) {
         return;
     }
 
-    EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadMod", "已加载Mod：" + LibPath);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+    // 记录加载后的内存使用情况
+    EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadMod", "加载后内存使用情况: " + GetMemoryUsage());
+    EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadMod", "已加载Mod：" + LibPath + ", 耗时: " + std::to_string(duration) + " ms");
 }
 
+void EFModLoader::Loader::LoadELFMods::LoadModX(JNIEnv *env, const std::string &LibPath) {
+    // 记录加载前的内存使用情况
+    EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadModX", "加载前内存使用情况: " + GetMemoryUsage());
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // 查找System类
+    jclass systemClass = env->FindClass("java/lang/System");
+    if (systemClass == nullptr) {
+        // 处理错误
+        return;
+    }
+
+    // 获取System.load方法ID
+    jmethodID loadMethod = env->GetStaticMethodID(systemClass, "load", "(Ljava/lang/String;)V");
+    if (loadMethod == nullptr) {
+        // 处理错误
+        return;
+    }
+
+    // 创建一个Java String对象，代表库文件路径
+    jstring libPathStr = env->NewStringUTF(LibPath.c_str());
+
+    // 调用System.load方法
+    env->CallStaticVoidMethod(systemClass, loadMethod, libPathStr);
+
+    // 释放本地引用
+    env->DeleteLocalRef(libPathStr);
+    env->DeleteLocalRef(systemClass);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+
+    // 记录加载后的内存使用情况
+    EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadModX", "加载后内存使用情况: " + GetMemoryUsage());
+    EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadModX", "已加载Mod：" + LibPath + ", 耗时: " + std::to_string(duration) + " ms");
+}
 
 void EFModLoader::Loader::LoadELFMods::LoadALLMod(const std::string &LibPath) {
     // 检查路径是否为空
@@ -123,9 +183,63 @@ void EFModLoader::Loader::LoadELFMods::LoadALLMod(const std::string &LibPath) {
             // 尝试加载Mod
             LoadMod(filePath);
 
+            // 记录每个Mod加载后的内存使用情况
+            EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLMod", "Mod加载后内存使用情况: " + GetMemoryUsage());
         }
     }
 
     // 记录遍历结束
     EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLMod", "目录遍历结束");
+}
+
+void EFModLoader::Loader::LoadELFMods::LoadALLModX(JNIEnv *env, const std::string &LibPath) {
+    // 检查路径是否为空
+    if (LibPath.empty()) {
+        EFLOG(LogLevel::WARN, "Loader", "LoadELFMods", "LoadALLModX", "提供的路径为空");
+        return;
+    }
+
+    // 检查路径是否存在
+    if (!filesystem::exists(LibPath)) {
+        EFLOG(LogLevel::WARN, "Loader", "LoadELFMods", "LoadALLModX", "提供的路径不存在: " + LibPath);
+        return;
+    }
+
+    // 如果路径是一个文件而不是目录，也可以选择处理这种情况
+    if (!filesystem::is_directory(LibPath)) {
+        EFLOG(LogLevel::ERROR, "Loader", "LoadELFMods", "LoadALLModX", "提供的路径不是一个目录: " + LibPath);
+        return;
+    }
+
+    // 记录开始遍历目录
+    EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLModX", "开始遍历目录: " + LibPath);
+
+    // 获取目录中的文件总数
+    std::uintmax_t totalFiles = std::distance(filesystem::directory_iterator(LibPath), filesystem::directory_iterator());
+    if (totalFiles == 0) {
+        EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLModX", "目录中没有文件");
+        return;
+    }
+
+    // 遍历目录下的所有文件
+    std::uintmax_t processedFiles = 0;
+    for (const auto& entry : filesystem::directory_iterator(LibPath)) {
+        if (entry.is_regular_file()) {
+            std::string filePath = entry.path().string();
+
+            // 更新进度
+            processedFiles++;
+            std::string progress = "正在加载Mod (" + std::to_string(processedFiles) + "/" + std::to_string(totalFiles) + "): " + filePath;
+            EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLModX", progress);
+
+            // 尝试加载Mod
+            LoadModX(env, filePath);
+
+            // 记录每个Mod加载后的内存使用情况
+            EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLModX", "Mod加载后内存使用情况: " + GetMemoryUsage());
+        }
+    }
+
+    // 记录遍历结束
+    EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLModX", "目录遍历结束");
 }

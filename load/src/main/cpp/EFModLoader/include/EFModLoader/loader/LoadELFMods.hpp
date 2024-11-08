@@ -24,10 +24,8 @@
 #pragma once
 
 #include <iostream>
-
-#include <iostream>
 #include <vector>
-#include "../EFMod/EFMod.hpp"
+#include <unordered_map>
 #include <string>
 #include <dlfcn.h>
 #include <dirent.h>
@@ -35,15 +33,55 @@
 #include <unistd.h>
 #include <filesystem>
 #include <cassert>
+#include <EFModLoader/EFMod/EFMod.hpp>
+#include <jni.h>
+#include <EFModLoader/api/RegisterApi.hpp>
+#include <EFModLoader/log.hpp>
+#include <chrono>
+#include <malloc.h>
+#include <sys/resource.h>
 
 namespace EFModLoader::Loader::LoadELFMods {
 
-    using namespace std; //使用std命名空间
+    using namespace std; // 使用std命名空间
 
-    static unordered_map<string, EFMod*> loadedMods; //存储加载的Mod
+    /**
+     * @var loadedMods
+     * @brief 存储加载的Mod。
+     *
+     * 键是Mod的唯一标识符，值是指向Mod对象的指针。
+     */
+    static unordered_map<string, EFMod*> loadedMods;
 
-    void LoadMod(const string& LibPath); //加载单个Mod
+    /**
+     * @fn LoadMod
+     * @brief 加载单个Mod。
+     *
+     * @param LibPath Mod库文件的路径。
+     */
+    void LoadMod(const string& LibPath);
 
-    void LoadALLMod(const string& LibPath); //加载一个目录下的所有Mod
+    /**
+     * @fn LoadModX
+     * @brief 加载单个独立Mod。
+     *
+     * @param LibPath 独立Mod库文件的路径。
+     */
+    void LoadModX(JNIEnv *env, const std::string &LibPath);
 
+    /**
+     * @fn LoadALLMod
+     * @brief 加载一个目录下的所有Mod。
+     *
+     * @param LibPath 目录路径。
+     */
+    void LoadALLMod(const string& LibPath);
+
+    /**
+     * @fn LoadALLModX
+     * @brief 加载一个目录下的所有独立Mod。
+     *
+     * @param LibPath 目录路径。
+     */
+    void LoadALLModX(JNIEnv *env, const string& LibPath);
 }
