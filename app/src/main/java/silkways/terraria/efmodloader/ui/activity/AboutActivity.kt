@@ -20,8 +20,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.snackbar.Snackbar
 import silkways.terraria.efmodloader.R
+import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.ActivityAboutBinding
 import silkways.terraria.efmodloader.databinding.HomeAboutDeveloperDialogBinding
+import silkways.terraria.efmodloader.logic.LanguageHelper
+import silkways.terraria.efmodloader.utils.SPUtils
 
 /*******************************************************************************
  * 文件名称: AboutActivity
@@ -52,6 +55,9 @@ class AboutActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        LanguageHelper.setAppLanguage(this, LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
+
         binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

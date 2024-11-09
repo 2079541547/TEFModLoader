@@ -124,14 +124,22 @@ object ModManager {
                                 if (fileSystem.EFMC.getModInfo(key)["SpecialLoading"] as Boolean) {
                                     fileSystem.EFMC.extractExecutable(
                                         key,
-                                        Build.CPU_ABI,
+                                        when(SPUtils.readString("architecture", Build.CPU_ABI)) {
+                                            "x86" -> "armeabi-v7a"
+                                            "x86_64" -> "arm64-v8a"
+                                            else -> SPUtils.readString("architecture", Build.CPU_ABI)
+                                        }.toString(),
                                         "/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX/"
                                     )
                                     EFLog.i("特殊加载Mod文件到: /sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX/, Key: $key")
                                 } else {
                                     fileSystem.EFMC.extractExecutable(
                                         key,
-                                        Build.CPU_ABI,
+                                        when(SPUtils.readString("architecture", Build.CPU_ABI)) {
+                                            "x86" -> "armeabi-v7a"
+                                            "x86_64" -> "arm64-v8a"
+                                            else -> SPUtils.readString("architecture", Build.CPU_ABI)
+                                        }.toString(),
                                         "/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod/"
                                     )
                                     EFLog.i("常规加载Mod文件到: /sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod/, Key: $key")
@@ -148,14 +156,22 @@ object ModManager {
                                 if (fileSystem.EFMC.getModInfo(key)["SpecialLoading"] as Boolean) {
                                     fileSystem.EFMC.extractExecutable(
                                         key,
-                                        Build.CPU_ABI,
+                                        when(SPUtils.readString("architecture", Build.CPU_ABI)) {
+                                            "x86" -> "armeabi-v7a"
+                                            "x86_64" -> "arm64-v8a"
+                                            else -> SPUtils.readString("architecture", Build.CPU_ABI)
+                                        }.toString(),
                                         "data/data/$gamePackageName/cache/EFModX/"
                                     )
                                     EFLog.i("特殊加载Mod文件到: data/data/$gamePackageName/cache/EFModX/, Key: $key")
                                 } else {
                                     fileSystem.EFMC.extractExecutable(
                                         key,
-                                        Build.CPU_ABI,
+                                        when(SPUtils.readString("architecture", Build.CPU_ABI)) {
+                                            "x86" -> "armeabi-v7a"
+                                            "x86_64" -> "arm64-v8a"
+                                            else -> SPUtils.readString("architecture", Build.CPU_ABI)
+                                        }.toString(),
                                         "data/data/$gamePackageName/cache/EFMod/"
                                     )
                                     EFLog.i("常规加载Mod文件到: data/data/$gamePackageName/cache/EFMod/, Key: $key")

@@ -192,6 +192,15 @@
 
     <string name="file">文件</string>
     <string name="file_text">已存在，是否要替换？</string>
+    <string name="FileManagementPath">文件管理目录</string>
+    <string name="setFileManagementPath">设置文件管理路径</string>
+    <string name="inputFileManagementPath">请输入文件管理的新路径</string>
+    <string name="FileImportPath">导入文件路径</string>
+    <string name="setFileImportPath">设置文件导入的目录</string>
+    <string name="inputFileImportPath">请输入导入数据时导入到的路径</string>
+    <string name="FileExportPath">导出数据包名</string>
+    <string name="setFileExportPath">设置导出数据时的指定应用</string>
+    <string name="inputFileExportPath">请输入新的包名</string>
     <string name="cancel">取消</string>
 
     <string name="loadingMod">正在解压 EFMod &amp; EFModLoader…</string>

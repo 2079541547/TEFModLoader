@@ -43,6 +43,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        LanguageHelper.setAppLanguage(this, LanguageHelper.getLanguage(SPUtils.readInt(silkways.terraria.efmodloader.data.Settings.languageKey, 0), this))
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

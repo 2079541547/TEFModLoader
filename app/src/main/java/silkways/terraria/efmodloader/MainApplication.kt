@@ -5,7 +5,6 @@ import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.color.DynamicColors
-import silkways.terraria.efmodloader.data.GameSettings
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import silkways.terraria.efmodloader.logic.LanguageHelper
@@ -38,8 +37,8 @@ class MainApplication : Application() {
 
         //设置语言&主题
         AppCompatDelegate.setDefaultNightMode(SPUtils.readInt(Settings.themeKey, -1))
-        LanguageHelper.setAppLanguage(this, SPUtils.readString(Settings.languageKey, "zh")!!)
 
+        LanguageHelper.setAppLanguage(this, LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
     }
 
 }

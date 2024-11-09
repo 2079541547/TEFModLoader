@@ -1,6 +1,3 @@
-import com.android.build.gradle.internal.dsl.SigningConfig
-import org.gradle.api.NamedDomainObjectContainer
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)

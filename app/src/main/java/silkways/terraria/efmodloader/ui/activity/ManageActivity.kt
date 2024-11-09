@@ -4,11 +4,14 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.ActivityManageBinding
+import silkways.terraria.efmodloader.logic.LanguageHelper
 import silkways.terraria.efmodloader.ui.adapter.LoaderAdapter
 import silkways.terraria.efmodloader.ui.adapter.ModsAdapter
 import silkways.terraria.efmodloader.ui.adapter.loadLoaderFromDirectory
 import silkways.terraria.efmodloader.ui.adapter.loadModsFromDirectory
+import silkways.terraria.efmodloader.utils.SPUtils
 
 /*******************************************************************************
  * 文件名称: ManageActivity
@@ -39,6 +42,9 @@ class ManageActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        LanguageHelper.setAppLanguage(this, LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
+
         binding = ActivityManageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

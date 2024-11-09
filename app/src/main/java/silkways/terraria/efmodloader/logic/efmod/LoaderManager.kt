@@ -123,7 +123,11 @@ object LoaderManager {
                             0 -> {
                                 fileSystem.EFML.extractLoader(
                                     key,
-                                    Build.CPU_ABI,
+                                    when(SPUtils.readString("architecture", Build.CPU_ABI)) {
+                                        "x86" -> "armeabi-v7a"
+                                        "x86_64" -> "arm64-v8a"
+                                        else -> SPUtils.readString("architecture", Build.CPU_ABI)
+                                    }.toString(),
                                     "/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/kernel"
                                 )
                                 EFLog.i("提取Loader到: /sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/kernel, Key: $key")
@@ -138,7 +142,11 @@ object LoaderManager {
 
                                 fileSystem.EFML.extractLoader(
                                     key,
-                                    Build.CPU_ABI,
+                                    when(SPUtils.readString("architecture", Build.CPU_ABI)) {
+                                        "x86" -> "armeabi-v7a"
+                                        "x86_64" -> "arm64-v8a"
+                                        else -> SPUtils.readString("architecture", Build.CPU_ABI)
+                                    }.toString(),
                                     "data/data/$gamePackageName/cache/EFModLoader"
                                 )
                                 EFLog.i("提取Loader到: data/data/$gamePackageName/cache/EFModLoader, Key: $key")

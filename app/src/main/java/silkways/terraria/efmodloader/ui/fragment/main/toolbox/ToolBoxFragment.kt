@@ -23,6 +23,7 @@ import silkways.terraria.efmodloader.ui.activity.TerminalActivity
 import silkways.terraria.efmodloader.ui.adapter.FileItem
 import silkways.terraria.efmodloader.ui.adapter.FileListAdapter
 import silkways.terraria.efmodloader.utils.FileUtils
+import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
 import java.io.FileInputStream
 import java.util.zip.ZipEntry
@@ -80,9 +81,9 @@ class ToolBoxFragment: Fragment() {
         //初始化文件管理
         val recyclerView = binding.fileList
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
-        val rootDirectory = requireActivity().getExternalFilesDir(null)?.absolutePath?.let { File(it).parent }
-        val files = rootDirectory?.let { File(it) }?.let { loadFiles(it) }
-        val fileListAdapter = files?.let { FileListAdapter(it, requireActivity()) }
+        val rootDirectory = SPUtils.readString(Settings.FileManagementPath, "${requireActivity().getExternalFilesDir(null)?.parent}").toString()
+        val files = loadFiles(File(rootDirectory))
+        val fileListAdapter = FileListAdapter(files, requireActivity())
         recyclerView.adapter = fileListAdapter
 
 
@@ -118,7 +119,7 @@ class ToolBoxFragment: Fragment() {
                     val file = File(filePath)
                     val extension = file.extension
 
-                    val rootDirectory = requireActivity().getExternalFilesDir(null)?.absolutePath?.let { File(it).parent }
+                    val rootDirectory = SPUtils.readString(Settings.FileImportPath, "${requireActivity().getExternalFilesDir(null)?.absolutePath?.let { File(it).parent }}")
 
                     val destinationPlyPath = "$rootDirectory/Players/"
                     val destinationWldPath = "$rootDirectory/Worlds/"
@@ -234,8 +235,8 @@ class ToolBoxFragment: Fragment() {
                 val zipOut = ZipOutputStream(outputStream)
 
                 if (isAll) {
-                    val dir = File("${requireActivity().getExternalFilesDir(null)?.parent}")
-                    val dir2 = File("${requireActivity().dataDir}")
+                    val dir = File("sdcard/Android/data/${SPUtils.readString(Settings.FileExportPath, requireActivity().packageName)}")
+                    val dir2 = File("data/data${SPUtils.readString(Settings.FileExportPath, requireActivity().packageName)}")
 
                     compressDir(dir, "sdcard/", zipOut)
                     compressDir(dir2, "data/", zipOut)

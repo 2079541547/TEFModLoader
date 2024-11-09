@@ -21,6 +21,7 @@ import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.SettingsPacknameDialogBinding
 import silkways.terraria.efmodloader.logic.LanguageHelper
 import silkways.terraria.efmodloader.utils.SPUtils
+import java.io.File
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -42,6 +43,9 @@ class SettingsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        LanguageHelper.setAppLanguage(this, LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
+
         binding = ActivitySettingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -221,6 +225,114 @@ class SettingsActivity : AppCompatActivity() {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 }
             }
+        })
+
+        addSetting(SettingItem.Title(getString(R.string.file)))
+        addSetting(SettingItem.Button(
+            R.drawable.twotone_folder_open_24,
+            getString(R.string.FileManagementPath),
+            SPUtils.readString(Settings.FileManagementPath, "${this.getExternalFilesDir(null)?.parent}").toString()
+        ) {
+            // 初始化Dialog的绑定对象
+            var dialogBinding: SettingsPacknameDialogBinding? = SettingsPacknameDialogBinding.inflate(LayoutInflater.from(this))
+
+            dialogBinding?.title?.text = getString(R.string.setFileManagementPath)
+            dialogBinding?.textInputLayout2?.hint = getString(R.string.inputFileManagementPath)
+
+            // 创建对话框构建器
+            val builder = MaterialAlertDialogBuilder(this)
+                .setCancelable(true)
+                .setView(dialogBinding?.root)
+
+            val dialog = builder.create().apply {
+                // 设置对话框窗口属性
+                window?.let { dialogWindow ->
+                    setCanceledOnTouchOutside(true) // 设置触摸对话框外部可取消
+                }
+
+                dialogBinding?.button?.setOnClickListener {
+                    SPUtils.putString(Settings.FileManagementPath, dialogBinding?.TextInputEditText?.text.toString())
+                    dismiss()
+                }
+
+                // 设置对话框关闭监听器
+                setOnDismissListener {
+                    dialogBinding = null
+                }
+            }
+
+            dialog.show()
+        })
+
+        addSetting(SettingItem.Button(
+            R.drawable.twotone_drive_file_move_24,
+            getString(R.string.FileImportPath),
+            SPUtils.readString(Settings.FileImportPath, "${this.getExternalFilesDir(null)?.absolutePath?.let { File(it).parent }}").toString()        ) {
+            // 初始化Dialog的绑定对象
+            var dialogBinding: SettingsPacknameDialogBinding? = SettingsPacknameDialogBinding.inflate(LayoutInflater.from(this))
+
+            dialogBinding?.title?.text = getString(R.string.setFileImportPath)
+            dialogBinding?.textInputLayout2?.hint = getString(R.string.inputFileImportPath)
+
+            // 创建对话框构建器
+            val builder = MaterialAlertDialogBuilder(this)
+                .setCancelable(true)
+                .setView(dialogBinding?.root)
+
+            val dialog = builder.create().apply {
+                // 设置对话框窗口属性
+                window?.let { dialogWindow ->
+                    setCanceledOnTouchOutside(true) // 设置触摸对话框外部可取消
+                }
+
+                dialogBinding?.button?.setOnClickListener {
+                    SPUtils.putString(Settings.FileImportPath, dialogBinding?.TextInputEditText?.text.toString())
+                    dismiss()
+                }
+
+                // 设置对话框关闭监听器
+                setOnDismissListener {
+                    dialogBinding = null
+                }
+            }
+
+            dialog.show()
+        })
+
+        addSetting(SettingItem.Button(
+            R.drawable.twotone_drive_file_move_rtl_24,
+            getString(R.string.FileExportPath),
+            SPUtils.readString(Settings.FileExportPath, this.packageName).toString()
+        ) {
+            // 初始化Dialog的绑定对象
+            var dialogBinding: SettingsPacknameDialogBinding? = SettingsPacknameDialogBinding.inflate(LayoutInflater.from(this))
+
+            dialogBinding?.title?.text = getString(R.string.setFileExportPath)
+            dialogBinding?.textInputLayout2?.hint = getString(R.string.inputFileExportPath)
+
+            // 创建对话框构建器
+            val builder = MaterialAlertDialogBuilder(this)
+                .setCancelable(true)
+                .setView(dialogBinding?.root)
+
+            val dialog = builder.create().apply {
+                // 设置对话框窗口属性
+                window?.let { dialogWindow ->
+                    setCanceledOnTouchOutside(true) // 设置触摸对话框外部可取消
+                }
+
+                dialogBinding?.button?.setOnClickListener {
+                    SPUtils.putString(Settings.FileExportPath, dialogBinding?.TextInputEditText?.text.toString())
+                    dismiss()
+                }
+
+                // 设置对话框关闭监听器
+                setOnDismissListener {
+                    dialogBinding = null
+                }
+            }
+
+            dialog.show()
         })
 
         // 刷新适配器

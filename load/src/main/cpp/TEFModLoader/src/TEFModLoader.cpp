@@ -10,7 +10,8 @@
 #include <EFModLoader/getData.hpp>
 #include <EFModLoader/loader/LoadELFMods.hpp>
 #include <EFModLoader/api/Redirect.hpp>
-#include <EFModLoader/Android.hpp>
+#include "EFModLoader/android/Android.hpp"
+#include <EFModLoader/android/api.hpp>
 
 
 void LoadMod() {
@@ -23,6 +24,10 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
     vm->GetEnv((void **) &env, JNI_VERSION_1_6);
 
     EFModLoader::Android::Load(env, "TEFModLoader-EternalFuture");
+
+
+    //EFModLoader::Loader::LoadELFMods::LoadALLModX(env, *EFModLoader::Android::get_cacheDir + "EFModX"); //不可用QAQ
+
 
     BNM::Loading::TryLoadByJNI(env);
 
@@ -37,6 +42,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
     }
 
     BNM::Loading::AddOnLoadedEvent(EFModLoader::RegisterHook::Unity::Register);
+
 
     return JNI_VERSION_1_6;
 }

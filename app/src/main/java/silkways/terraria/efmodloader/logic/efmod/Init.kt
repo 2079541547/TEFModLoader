@@ -63,7 +63,7 @@ class Init(private val context: Context) {
                     0 -> {
                         FileUtils.deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX/"))
                         FileUtils.deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod/"))
-
+                        syncDirectories(File(context.getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/export/private/"))
                         copyFilesFromToOgg(File(context.getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/Private/"))
                     }
 
@@ -71,7 +71,8 @@ class Init(private val context: Context) {
                         val a = JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.GamePackageName) as String
                         FileUtils.deleteDirectory(File("data/data/$a/cache/EFModX/"))
                         FileUtils.deleteDirectory(File("data/data/$a/cache/EFMod/"))
-                        copyFilesFromTo(File(context.getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Android/data/${JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.GamePackageName) as String}/files/EFMod-Private/"))
+                        syncDirectories(File(context.getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Android/data/${SPUtils.readString(Settings.GamePackageName, "com.and.games505.TerrariaPaid") as String}/files/EFMod-Private/"))
+                        copyFilesFromTo(File(context.getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Android/data/${SPUtils.readString(Settings.GamePackageName, "com.and.games505.TerrariaPaid") as String}/files/EFMod-Private/"))
                     }
                 }
             } catch (e: IOException) {
@@ -134,7 +135,6 @@ class Init(private val context: Context) {
                 it.dismiss()
             }
         }
-        //Tool.RunApp(JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.GamePackageName) as String, context)
     }
 
     @SuppressLint("SetWorldReadable")
@@ -262,6 +262,79 @@ class Init(private val context: Context) {
             }
         }
     }
+
+
+    @Throws(Exception::class)
+    fun syncDirectories(dir1: File, dir2: File) {
+        if (!dir1.isDirectory || !dir2.isDirectory) {
+            println("Both paths must be directories.")
+            return
+        }
+
+        // 获取两个目录下的所有文件列表
+        val files1 = dir1.listFiles()?.filter { it.isFile }?.toList() ?: emptyList<File>()
+        val files2 = dir2.listFiles()?.filter { it.isFile }?.toList() ?: emptyList<File>()
+
+        // 创建文件映射，以便快速查找
+        val fileMap1 = HashMap<String, File>()
+        for (file in files1) {
+            fileMap1[file.name] = file
+        }
+
+        val fileMap2 = HashMap<String, File>()
+        for (file in files2) {
+            fileMap2[file.name] = file
+        }
+
+        // 检查dir1中的文件是否需要更新到dir2
+        for ((fileName, file) in fileMap1.entries) {
+            val otherFile = fileMap2[fileName]
+            if (otherFile == null || file.lastModified() > otherFile.lastModified() || file.length() != otherFile.length()) {
+                copyFileWithAttributes(file, File(dir2, fileName))
+            }
+        }
+
+        // 检查dir2中的文件是否需要更新到dir1
+        for ((fileName, file) in fileMap2.entries) {
+            val otherFile = fileMap1[fileName]
+            if (otherFile == null || file.lastModified() > otherFile.lastModified() || file.length() != otherFile.length()) {
+                copyFileWithAttributes(file, File(dir1, fileName))
+            }
+        }
+
+        // 删除dir1中不存在于dir2的文件
+        for (file in files1) {
+            if (!fileMap2.containsKey(file.name)) {
+                file.delete()
+                println("删除文件: ${file.absolutePath}")
+            }
+        }
+
+        // 删除dir2中不存在于dir1的文件
+        for (file in files2) {
+            if (!fileMap1.containsKey(file.name)) {
+                file.delete()
+                println("删除文件: ${file.absolutePath}")
+            }
+        }
+    }
+
+    @Throws(Exception::class)
+    fun copyFileWithAttributes(source: File, target: File) {
+        if (!target.parentFile.exists()) {
+            target.parentFile.mkdirs()
+        }
+        FileInputStream(source).use { input ->
+            FileOutputStream(target).use { output ->
+                val channelIn: FileChannel = input.channel
+                val channelOut: FileChannel = output.channel
+                channelIn.transferTo(0, channelIn.size(), channelOut)
+            }
+        }
+        target.setLastModified(source.lastModified())
+        println("复制文件: ${source.absolutePath} 到 ${target.absolutePath}")
+    }
+
 
 
 

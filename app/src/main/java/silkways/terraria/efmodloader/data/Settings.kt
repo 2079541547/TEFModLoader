@@ -12,20 +12,10 @@ object Settings {
     val autoClean = "autoClean" //是否自动清除缓存
     val CleanDialog = "CleanDialog" //是否弹出清除缓存弹窗
     val CoveringFiles = "CoveringFiles"
-    val OnlineVideo = "OnlineVideo"
     val Runtime = "Runtime" //工作模式
     val GamePackageName = "GamePackageName" //游戏包名
+    val FileManagementPath = "FileManagementPath" //文件管理管理位置
+    val FileExportPath = "FileExportPath" //文件导出路径
+    val FileImportPath = "FileImportPath" //文件导入路径
 
-    //json数据
-    val Data = mapOf(
-        themeKey to 0,
-        languageKey to 0,
-        agreement to false,
-        autoClean to false,
-        CleanDialog to true,
-        CoveringFiles to false,
-        OnlineVideo to "https://www.bilibili.com/",
-        Runtime to 0,
-        GamePackageName to "com.and.games505.TerrariaPaid"
-    )
 }

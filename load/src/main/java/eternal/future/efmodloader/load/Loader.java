@@ -1,7 +1,7 @@
 package eternal.future.efmodloader.load;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
+import android.app.Application;
 import android.util.Log;
 
 import java.io.File;
@@ -39,11 +39,8 @@ import java.util.Objects;
 public class Loader {
 
     private static final String TAG = "EFModLoader";
-    private static final Map<String, String> archToLib = new HashMap<String, String>(4);
+    private static final Map<String, String> archToLib = new HashMap<>(4);
 
-    private static String PackName = "包名";
-    private static String LoaderPath;
-    private static String EFModX_Path;
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     public static void load() {
@@ -53,8 +50,6 @@ public class Loader {
         try {
             archToLib.put("arm", "armeabi-v7a");
             archToLib.put("arm64", "arm64-v8a");
-            //archToLib.put("x86", "x86");
-            //archToLib.put("x86_64", "x86_64");
 
             ClassLoader cl = Objects.requireNonNull(Loader.class.getClassLoader());
             Class<?> VMRuntime = Class.forName("dalvik.system.VMRuntime");
@@ -68,41 +63,40 @@ public class Loader {
             Log.i(TAG, "来自嵌入式的Bootstrap加载器");
 
             try {
-                log("尝试加载assets中的data库");
-                loadSoFromInputStream(cl.getResourceAsStream("assets/EFModLoader/" + libName + "/libdata.so"), "data");
+                log("尝试加载assets中的EFandroid库");
+                loadSoFromInputStream(cl.getResourceAsStream("assets/EFModLoader/" + libName + "/libEFandroid.so"), "EFandroid");
             } catch (Exception e) {
-                log("尝试加载data库");
-                System.loadLibrary("data");
+                log("加载assets中的EFandroid库失败: ", e);
+                log("尝试加载默认EFandroid库...");
+                System.loadLibrary("EFandroid");
             }
 
-            log(agreement());
+            log(getAgreement());
 
-            PackName = getPackName();
-            LoaderPath = "data/data/" + PackName + "/cache/EFModLoader/loader";
-            EFModX_Path = "data/data/" + PackName + "/cache/EFModX";
-
-            if (new File(LoaderPath).exists()) {
-                log("加载内核: " + LoaderPath);
-                System.load(LoaderPath);
-            } else {
+            if (!new File(getContext().getCacheDir(), "EFModLoader/libloader.so").exists()) {
                 try {
                     log("尝试加载assets中的内核");
-                    loadSoFromInputStream(cl.getResourceAsStream("assets/EFModLoader/" + libName + "/libloader.so"), "data");
+                    loadSoFromInputStream(cl.getResourceAsStream("assets/EFModLoader/" + libName + "/libloader.so"), "loader");
                 } catch (Exception e) {
                     log("加载assets中的内核失败: ", e);
                     log("尝试加载默认内核...");
                     System.loadLibrary("loader");
                 }
+            } else {
+                log("尝试加载自定义内核...");
+                System.load(new File(getContext().getCacheDir(), "EFModLoader/libloader.so").getAbsolutePath());
             }
 
-            log("加载独立Mod: " + EFModX_Path);
-            loadEFModX(EFModX_Path);
         } catch (Exception e) {
             log("加载EFModLoader失败", e);
         }
 
         log("完成加载EFModLoader");
+
+        log("开始加载独立Mod...");
+        loadEFModX(new File(getContext().getCacheDir(), "EFModX").getAbsolutePath());
     }
+
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     private static void loadEFModX(String path) {
@@ -132,8 +126,6 @@ public class Loader {
         log("完成加载EFModX");
     }
 
-    public static native String getPackName();
-    public static native String agreement();
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     public static void loadSoFromInputStream(InputStream inputStream, String soFileName) throws IOException {
@@ -148,9 +140,8 @@ public class Loader {
             while ((read = inputStream.read(buffer)) != -1) {
                 fos.write(buffer, 0, read);
             }
-        } finally {
-            inputStream.close(); // 关闭输入流
         }
+        // 关闭输入流
 
         // 加载 .so 文件
         System.load(tempSoFile.getAbsolutePath());
@@ -176,4 +167,7 @@ public class Loader {
         int lineNumber = caller.getLineNumber();
         Log.e(TAG, String.format("%s.%s(%d): %s", className, methodName, lineNumber, message), e);
     }
+
+    public static native Application getContext();
+    public static native String getAgreement();
 }

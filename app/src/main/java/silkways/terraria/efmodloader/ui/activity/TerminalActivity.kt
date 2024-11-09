@@ -5,9 +5,12 @@ import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import silkways.terraria.efmodloader.R
+import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.ActivityTerminalBinding
+import silkways.terraria.efmodloader.logic.LanguageHelper
 import silkways.terraria.efmodloader.logic.terminal.CommandParser
 import silkways.terraria.efmodloader.ui.adapter.CommandAdapter
+import silkways.terraria.efmodloader.utils.SPUtils
 
 /*******************************************************************************
  * 文件名称: TerminalActivity
@@ -38,6 +41,9 @@ class TerminalActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        LanguageHelper.setAppLanguage(this, LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
+
         binding = ActivityTerminalBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

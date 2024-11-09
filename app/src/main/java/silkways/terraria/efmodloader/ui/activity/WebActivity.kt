@@ -10,7 +10,9 @@ import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.ActivityWebBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import silkways.terraria.efmodloader.logic.LanguageHelper
+import silkways.terraria.efmodloader.logic.LanguageHelper.getLanguage
 import silkways.terraria.efmodloader.logic.Markdown
+import silkways.terraria.efmodloader.utils.SPUtils
 import kotlin.toString
 
 /*******************************************************************************
@@ -43,6 +45,9 @@ class WebActivity: AppCompatActivity() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        LanguageHelper.setAppLanguage(this, LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
+
         binding = ActivityWebBinding.inflate(layoutInflater)
 
         binding.topAppBar.title = intent.getStringExtra("Title").toString()
@@ -74,13 +79,13 @@ class WebActivity: AppCompatActivity() {
             val markdownContent = Markdown.loadMarkdownFromAssets(
                 this,
                 LanguageHelper.getMDLanguage(
-                    JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.languageKey),
+                    SPUtils.readInt(Settings.languageKey, 0),
                     this,
                     webUrl
                 ),
             )
 
-            val htmlContent = Markdown.markdownToHtml(markdownContent, JsonConfigModifier.readJsonValue(this, Settings.jsonPath, Settings.themeKey))
+            val htmlContent = Markdown.markdownToHtml(markdownContent, SPUtils.readInt(Settings.themeKey, -1))
             webView.loadDataWithBaseURL(null, htmlContent, "text/html", "utf-8", null)
         }
 

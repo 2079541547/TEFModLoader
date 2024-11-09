@@ -4,9 +4,12 @@ project("TEFModLoader")
 
 
 set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_C_STANDARD 23)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O3 -flto")
 
+
 set(DOBBY_LIB ${CMAKE_CURRENT_SOURCE_DIR}/EFModLoader/DependencyLibrary/Dobby/${CMAKE_ANDROID_ARCH_ABI}/libdobby.a)
+
 
 set(BNM_INCLUDE_DIRS
         EFModLoader/DependencyLibrary/BNM/include
@@ -14,7 +17,6 @@ set(BNM_INCLUDE_DIRS
         EFModLoader/DependencyLibrary/BNM/external
         EFModLoader/DependencyLibrary/BNM/external/utf8
         EFModLoader/DependencyLibrary/BNM/src/private
-        EFModLoader/DependencyLibrary/Dobby
 )
 
 add_library(
@@ -43,13 +45,14 @@ target_include_directories(
         BNM
         PUBLIC
         ${BNM_INCLUDE_DIRS}
+        EFModLoader/DependencyLibrary/Dobby
 )
 
 target_link_libraries(
         BNM
         PUBLIC
-        ${DOBBY_LIB}
         log
+        ${DOBBY_LIB}
 )
 
 
@@ -66,8 +69,10 @@ add_library(
         EFModLoader/src/api/RegisterAPI.cpp
         EFModLoader/src/hook/unity/RegisterHook.cpp
         EFModLoader/src/loader/LoadELFMods.cpp
-        EFModLoader/src/Android.cpp
+        EFModLoader/src/android/Android.cpp
         EFModLoader/src/getData.cpp
+        EFModLoader/src/android/api.cpp
+        EFModLoader/src/agreement.cpp
 )
 
 target_include_directories(
@@ -89,7 +94,7 @@ set(TEFMODLOADER_INCLUDE_DIRS
         TEFModLoader/include
 )
 
-add_library(${CMAKE_PROJECT_NAME}
+add_library(loader
         SHARED
         TEFModLoader/src/TEFModLoader/UnityEngine/TextAsset.cpp
         TEFModLoader/src/TEFModLoader/Terraria/ID/ItemID.cpp
@@ -102,23 +107,26 @@ add_library(${CMAKE_PROJECT_NAME}
 )
 
 target_include_directories(
-        ${CMAKE_PROJECT_NAME}
+        loader
         PUBLIC
         ${TEFMODLOADER_INCLUDE_DIRS}
 )
 
 target_link_libraries(
-        ${CMAKE_PROJECT_NAME}
+        loader
         PUBLIC
         EFModLoader
 )
 
 
+add_library(EFandroid
+        SHARED
+        EFandroid.cpp
+)
 
-
-add_library(data SHARED
-        load.cpp)
-
-target_link_libraries(data
+target_link_libraries(
+        EFandroid
+        PUBLIC
+        log
         android
-        log)
+)
