@@ -1,16 +1,23 @@
 # Table of Contents
 
-- [Significant Contributions](#important-contribution)
+- [Special Contribution](#Special-Contribution)
+- [Important Contributions](#important-contribution)
 - [Code Contributions](#code-contribution)
 - [Design Contributions](#design-contribution)
 - [Documentation Contributions](#documentation-contribution)
 - [Community Contributions](#community-contribution)
 - [Other Contributions](#other-contributions)
 
-# Significant Contributions <a id="important-contribution"></a>
+# Important Contributions <a id="important-contribution"></a>
 
 ## MoreRx
-- Provided a clean, unencrypted version of Terraria-1.4.4.9.5-aarch64
+- Provided a clean, unencrypted version of Terraria-1.4.4.9.5-aarch64.
+- Rewrote the software, addressing most of the maintenance issues.
+
+---
+
+## 雨鹜
+- Participated in the software rewrite, optimizing the settings page.
 
 ---
 
@@ -21,21 +28,27 @@
 # Design Contributions <a id="design-contribution"></a>
 
 ## 雨鹜
-- Logo design
+- Designed the logo.
 
 ---
 
 ## QwQ3094
-- Partial UI improvements
+- Improved some UI elements.
+---
 
+## MoreRx
+- Optimize fluency and performance
 ---
 
 # Documentation Contributions <a id="documentation-contribution"></a>
 
 ## 雨鹜
-- English translation
+- English translation.
 
 ---
+
+## MoreRx
+- English translation.
 
 ---
 
@@ -46,4 +59,9 @@
 # Other Contributions <a id="other-contributions"></a>
 
 ## aaa1115910
-- Guidance on how to open files in TR Save Editor format
+- Guided on how to open files with TR Save Editor.
+
+---
+
+# Special Contribution <a id="Special-Contribution"></a>
+* Thank you to all players who support and think highly of this project. Your support is what makes this project meaningful. Your existence is the reason for the existence of this project.

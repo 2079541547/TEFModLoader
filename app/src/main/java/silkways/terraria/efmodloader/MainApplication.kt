@@ -38,7 +38,7 @@ class MainApplication : Application() {
         //设置语言&主题
         AppCompatDelegate.setDefaultNightMode(SPUtils.readInt(Settings.themeKey, -1))
 
-        LanguageHelper.setAppLanguage(this, LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
+        LanguageHelper.setAppLanguage(this, LanguageHelper.getAppLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
     }
 
 }

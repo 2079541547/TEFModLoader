@@ -56,7 +56,7 @@ class AboutActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        LanguageHelper.setAppLanguage(this, LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
+        LanguageHelper.setAppLanguage(this, LanguageHelper.getAppLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
 
         binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)

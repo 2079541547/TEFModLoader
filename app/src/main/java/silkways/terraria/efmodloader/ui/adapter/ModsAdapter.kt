@@ -28,8 +28,11 @@ import silkways.terraria.efmodloader.databinding.ManageEfmodsettingDialogBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import java.io.File
 import eternal.future.effsystem.fileSystem.EFMC
+import silkways.terraria.efmodloader.data.Settings
+import silkways.terraria.efmodloader.logic.LanguageHelper
 import silkways.terraria.efmodloader.logic.efmod.ModManager
 import silkways.terraria.efmodloader.ui.activity.WebActivity
+import silkways.terraria.efmodloader.utils.SPUtils
 
 data class ModInfo(
     val filePath: String,
@@ -60,7 +63,7 @@ fun loadModsFromDirectory(directoryPath: String, context: Context): List<ModInfo
                     identifier = Infomap["identifier"].toString(),
                     modName = Infomap["modName"].toString(),
                     author = Infomap["author"].toString(),
-                    introduce = Infomap["introduce"].toString(),
+                    introduce = Infomap[LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), context)].toString(),
                     version = Infomap["version"].toString(),
                     openSource = Infomap["openSource"] as Boolean,
                     openSourceUrl = Infomap["openSourceUrl"].toString(),

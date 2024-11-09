@@ -18,10 +18,13 @@ import com.google.android.material.materialswitch.MaterialSwitch
 import eternal.future.effsystem.fileSystem
 import org.json.JSONObject
 import silkways.terraria.efmodloader.R
+import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.databinding.ManageEfmodresDialogBinding
 import silkways.terraria.efmodloader.databinding.ManageEfmodsettingDialogBinding
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
+import silkways.terraria.efmodloader.logic.LanguageHelper
 import silkways.terraria.efmodloader.logic.efmod.LoaderManager
+import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
 import java.io.FileOutputStream
 
@@ -49,7 +52,7 @@ fun loadLoaderFromDirectory(directoryPath: String, context: Context): List<Loade
                     filePath = file.absolutePath,
                     LoaderName = Infomap["LoaderName"].toString(),
                     author = Infomap["author"].toString(),
-                    introduce = Infomap["introduce"].toString(),
+                    introduce = Infomap[LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), context)].toString(),
                     version = Infomap["version"].toString(),
                     openSourceUrl = Infomap["openSourceUrl"].toString(),
                 )

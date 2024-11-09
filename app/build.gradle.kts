@@ -19,8 +19,8 @@ android {
         applicationId = "silkways.terraria.efmodloader"
         minSdk = 24
         targetSdk = 35
-        versionCode = 150
-        versionName = "1.5.0"
+        versionCode = 155
+        versionName = "1.5.5 Stable"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

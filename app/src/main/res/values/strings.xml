@@ -54,6 +54,9 @@
     <string name="logs_title_150" translatable="false">1.5.0</string>
     <string name="logs_text_150">1.重写软件架构 \n2.重写底层 \n3.脱离内置游戏 \n4.使用标准化EFModLoader \n5.支持两种工作模式：共享 and 外部 \n6.优化UI表现 \n7.更强大的错误处理 \n8.减小占用 \n9.软件性能优化 \n10.增加日志系统 \n11.移除游戏面板 \n12.增加代码复用 \n注：部分功能可能无法使用或没有预期效果，请谅解QAQ</string>
 
+    <string name="logs_title_155" translatable="false">1.5.5 Stable</string>
+    <string name="logs_text_155">1.支持共享内核 \n2.内核支持Java API \n3.完善之前除游戏面板外的所有功能 \n4.更新帮助文档 \n5.Mod私有目录的双向更新 \n6.更好的权限申请 \n7.更强大的内核 \n8.自定义内核 \n9.性能优化 \n10.繁体中文 \n11.更新Mod标准，支持多语言 \n注：此版本为1.5.5 Stable，长期稳定，更新慢，调试/测试可选择周构建</string>
+
     <string name="Clear_cache_title">是否清除缓存？</string>
     <string name="Clear_cache_message">此工具会缓存各种文件，如：您安装的Mod，存档，人物等</string>
     <string name="Clear_cache">清除缓存</string>

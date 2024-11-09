@@ -113,4 +113,28 @@ object LanguageHelper {
         EFLog.i("获取到的语言代码: $language")
         return language
     }
+
+    fun getAppLanguage(languageCode: Any?, context: Context): String {
+        var language = "zh-cn"
+
+        when (languageCode) {
+            0 -> {
+                language = when (getLanguageAsNumber(context)) {
+                    1 -> "zh-cn"
+                    2 -> "hk"
+                    3 -> "ru"
+                    4 -> "en"
+                    else -> "zh-cn"
+                }
+            }
+            1 -> language = "zh-cn"
+            2 -> language = "hk"
+            3 -> language = "ru"
+            4 -> language = "en"
+            else -> language = "zh-cn"
+        }
+
+        EFLog.i("获取到的语言代码: $language")
+        return language
+    }
 }

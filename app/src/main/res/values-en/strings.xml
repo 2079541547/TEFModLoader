@@ -173,4 +173,17 @@
     <string name="Please_enter_the_package_name">Please enter the packageName</string>
     <string name="Set_target_package_name">Set target packageName</string>
     <string name="important">Important</string>
+
+    <string name="logs_text_155">1. Support for shared kernel\n2. Kernel support for Java API\n3. Improve all features except the game panel\n4. Update help documentation\n5. Two-way updates for Mod private directories\n6. Better permission requests\n7. More powerful kernel\n8. Customizable kernel\n9. Performance optimization\n10. Traditional Chinese\n11. Update Mod standards, support multiple languages\nNote: This version is 1.5.5 Stable, long-term stable, with slow updates; for debugging/testing, you can choose the weekly builds.</string>
+
+    <string name="FileManagementPath">File Management Directory</string>
+    <string name="setFileManagementPath">Set File Management Path</string>
+    <string name="inputFileManagementPath">Please enter the new path for file management</string>
+    <string name="FileImportPath">File Import Path</string>
+    <string name="setFileImportPath">Set File Import Directory</string>
+    <string name="inputFileImportPath">Please enter the path to import data into</string>
+    <string name="FileExportPath">Data Export Package Name</string>
+    <string name="setFileExportPath">Set Designated Application for Data Export</string>
+    <string name="inputFileExportPath">Please enter the new package name</string>
+    <string name="settings_architecture">Mod/Loader Runtime Architecture</string>
 </resources>

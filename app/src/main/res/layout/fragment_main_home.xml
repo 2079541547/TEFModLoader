@@ -121,14 +121,14 @@
                 android:id="@+id/materialTextView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/logs_title_150"/>
+                android:text="@string/logs_title_155" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="@string/logs_text_150"
-                android:textSize="13sp"/>
+                android:text="@string/logs_text_155"
+                android:textSize="13sp" />
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

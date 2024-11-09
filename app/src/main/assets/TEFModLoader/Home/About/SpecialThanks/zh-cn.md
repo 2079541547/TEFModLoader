@@ -1,5 +1,6 @@
 # 目录
 
+- [特别贡献](#Special-Contribution)
 - [重要贡献](#important-contribution)
 - [代码贡献](#code-contribution)
 - [设计贡献](#design-contribution)
@@ -32,9 +33,17 @@
 - 部分UI改进
 ---
 
+## MoreRx
+- 优化流畅度&表现性
+---
+
 # 文档贡献 <a id="documentation-contribution"></a>
 
 ## 雨鹜
+- 英语翻译
+---
+
+## MoreRx
 - 英语翻译
 ---
 
@@ -50,3 +59,7 @@
 - 指导文件如何才能以TR Save Editor方式打开
 
 ---
+
+
+# 特别贡献 <a id="Special-Contribution"></a>
+* 感谢所有支持&认为此项目好的玩家，有你们才会有这个项目，你的存在便是这个项目存在的意义

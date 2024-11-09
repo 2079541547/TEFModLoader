@@ -35,115 +35,128 @@ namespace EFModLoader::Android::API {
 
     // 加载类并调用Java方法
     jobject callJavaMethod(JNIEnv *env, const char *className, const char *methodName, const char *methodSignature, const std::vector<jvalue> &args) {
-        // 加载类
+        // 尝试加载指定名称的Java类
         jclass loadedClass = env->FindClass(className);
 
         if (loadedClass == nullptr) {
-            // 类未找到，处理错误
-            EFLOG(EFModLoader::LogLevel::ERROR, "EFModLoader", "Android::API", "callJavaMethod", "Failed to load class: " + std::string(className));
+            // 如果类未找到，则记录错误日志
+            EFLOG(EFModLoader::LogLevel::ERROR, "EFModLoader", "Android::API", "callJavaMethod",
+                  "无法加载类: " + std::string(className) + "，请检查类名是否正确或类是否已存在");
             return nullptr;
         }
 
-        // 获取方法ID
+        // 尝试获取指定名称和签名的Java方法ID
         jmethodID methodID = env->GetStaticMethodID(loadedClass, methodName, methodSignature);
 
         if (methodID == nullptr) {
-            // 方法未找到，处理错误
-            EFLOG(EFModLoader::LogLevel::ERROR, "EFModLoader", "Android::API", "callJavaMethod", "Failed to get method ID: " + std::string(methodName));
+            // 如果方法未找到，则记录错误日志
+            EFLOG(EFModLoader::LogLevel::ERROR, "EFModLoader", "Android::API", "callJavaMethod",
+                  "无法获取方法ID: " + std::string(methodName) + "，请检查方法名和签名是否正确");
             return nullptr;
         }
 
-        // 调用Java方法
+        // 使用提供的参数列表调用Java方法
         jobject result = env->CallStaticObjectMethodA(loadedClass, methodID, args.data());
 
         if (env->ExceptionCheck()) {
-            // 处理异常
+            // 如果Java方法调用过程中发生异常，则记录异常详情
             env->ExceptionDescribe();
             env->ExceptionClear();
+            EFLOG(EFModLoader::LogLevel::ERROR, "EFModLoader", "Android::API", "callJavaMethod",
+                  "调用方法: " + std::string(methodName) + "时发生异常，请查看上一条日志获取异常详情");
             return nullptr;
         }
 
         return result;
     }
 
-
     void callToast(JNIEnv *env, jobject context, const char *message) {
-        // 准备参数
+        // 准备Toast显示所需参数
         jvalue args[2];
-        args[0].l = context; // Context 对象
-        args[1].l = env->NewStringUTF(message); // 消息字符串
+        args[0].l = context; // 应用上下文
+        args[1].l = env->NewStringUTF(message); // 显示的消息文本
 
-        // 调用Java方法
+        // 调用Toast显示方法
         std::vector<jvalue> argVector(args, args + 2);
-        jobject result = callJavaMethod(env, "eternal/future/efmodloader/load/ToastApi", "show", "(Landroid/content/Context;Ljava/lang/String;)V", argVector);
+        jobject result = callJavaMethod(env, "eternal/future/efmodloader/load/ToastApi", "show",
+                                        "(Landroid/content/Context;Ljava/lang/String;)V", argVector);
 
-        // 由于showAgreement是void方法，所以result应该是nullptr
+        // 由于show方法没有返回值，因此这里应该总是得到nullptr
         if (result != nullptr) {
-            EFLOG(EFModLoader::LogLevel::WARN, "EFModLoader", "Android::API", "callShowAgreement", "Unexpected result, should be nullptr");
+            EFLOG(EFModLoader::LogLevel::WARN, "EFModLoader", "Android::API", "callToast",
+                  "意外的结果，显示Toast的方法不应该有返回值");
         }
     }
 
     void callILog(JNIEnv *env, const char *TAG, const char *message) {
-        // 准备参数
+        // 准备日志记录所需的参数
         jvalue args[2];
-        args[0].l = env->NewStringUTF(TAG); // TAG
-        args[1].l = env->NewStringUTF(message); // 消息字符串
+        args[0].l = env->NewStringUTF(TAG); // 日志标签
+        args[1].l = env->NewStringUTF(message); // 日志消息
 
-        // 调用Java方法
+        // 调用日志记录方法
         std::vector<jvalue> argVector(args, args + 2);
-        jobject result = callJavaMethod(env, "eternal/future/efmodloader/load/Log", "i", "(Ljava/lang/String;Ljava/lang/String;)V", argVector);
+        jobject result = callJavaMethod(env, "eternal/future/efmodloader/load/Log", "i",
+                                        "(Ljava/lang/String;Ljava/lang/String;)V", argVector);
 
-        // 由于showAgreement是void方法，所以result应该是nullptr
+        // 由于日志记录方法没有返回值，因此这里应该总是得到nullptr
         if (result != nullptr) {
-            EFLOG(EFModLoader::LogLevel::WARN, "EFModLoader", "Android::API", "callShowAgreement", "Unexpected result, should be nullptr");
+            EFLOG(EFModLoader::LogLevel::WARN, "EFModLoader", "Android::API", "callILog",
+                  "意外的结果，记录日志的方法不应该有返回值");
         }
     }
 
     void callDLog(JNIEnv *env, const char *TAG, const char *message) {
-        // 准备参数
+        // 准备日志记录所需的参数
         jvalue args[2];
-        args[0].l = env->NewStringUTF(TAG); // TAG
-        args[1].l = env->NewStringUTF(message); // 消息字符串
+        args[0].l = env->NewStringUTF(TAG); // 日志标签
+        args[1].l = env->NewStringUTF(message); // 日志消息
 
-        // 调用Java方法
+        // 调用日志记录方法
         std::vector<jvalue> argVector(args, args + 2);
-        jobject result = callJavaMethod(env, "eternal/future/efmodloader/load/Log", "d", "(Ljava/lang/String;Ljava/lang/String;)V", argVector);
+        jobject result = callJavaMethod(env, "eternal/future/efmodloader/load/Log", "d",
+                                        "(Ljava/lang/String;Ljava/lang/String;)V", argVector);
 
-        // 由于showAgreement是void方法，所以result应该是nullptr
+        // 由于日志记录方法没有返回值，因此这里应该总是得到nullptr
         if (result != nullptr) {
-            EFLOG(EFModLoader::LogLevel::WARN, "EFModLoader", "Android::API", "callShowAgreement", "Unexpected result, should be nullptr");
+            EFLOG(EFModLoader::LogLevel::WARN, "EFModLoader", "Android::API", "callDLog",
+                  "意外的结果，记录日志的方法不应该有返回值");
         }
     }
 
     void callELog(JNIEnv *env, const char *TAG, const char *message) {
-        // 准备参数
+        // 准备日志记录所需的参数
         jvalue args[2];
-        args[0].l = env->NewStringUTF(TAG); // TAG
-        args[1].l = env->NewStringUTF(message); // 消息字符串
+        args[0].l = env->NewStringUTF(TAG); // 日志标签
+        args[1].l = env->NewStringUTF(message); // 日志消息
 
-        // 调用Java方法
+        // 调用日志记录方法
         std::vector<jvalue> argVector(args, args + 2);
-        jobject result = callJavaMethod(env, "eternal/future/efmodloader/load/Log", "e", "(Ljava/lang/String;Ljava/lang/String;)V", argVector);
+        jobject result = callJavaMethod(env, "eternal/future/efmodloader/load/Log", "e",
+                                        "(Ljava/lang/String;Ljava/lang/String;)V", argVector);
 
-        // 由于showAgreement是void方法，所以result应该是nullptr
+        // 由于日志记录方法没有返回值，因此这里应该总是得到nullptr
         if (result != nullptr) {
-            EFLOG(EFModLoader::LogLevel::WARN, "EFModLoader", "Android::API", "callShowAgreement", "Unexpected result, should be nullptr");
+            EFLOG(EFModLoader::LogLevel::WARN, "EFModLoader", "Android::API", "callELog",
+                  "意外的结果，记录日志的方法不应该有返回值");
         }
     }
 
     void callWLog(JNIEnv *env, const char *TAG, const char *message) {
-        // 准备参数
+        // 准备日志记录所需的参数
         jvalue args[2];
-        args[0].l = env->NewStringUTF(TAG); // TAG
-        args[1].l = env->NewStringUTF(message); // 消息字符串
+        args[0].l = env->NewStringUTF(TAG); // 日志标签
+        args[1].l = env->NewStringUTF(message); // 日志消息
 
-        // 调用Java方法
+        // 调用日志记录方法
         std::vector<jvalue> argVector(args, args + 2);
-        jobject result = callJavaMethod(env, "eternal/future/efmodloader/load/Log", "w", "(Ljava/lang/String;Ljava/lang/String;)V", argVector);
+        jobject result = callJavaMethod(env, "eternal/future/efmodloader/load/Log", "w",
+                                        "(Ljava/lang/String;Ljava/lang/String;)V", argVector);
 
-        // 由于showAgreement是void方法，所以result应该是nullptr
+        // 由于日志记录方法没有返回值，因此这里应该总是得到nullptr
         if (result != nullptr) {
-            EFLOG(EFModLoader::LogLevel::WARN, "EFModLoader", "Android::API", "callShowAgreement", "Unexpected result, should be nullptr");
+            EFLOG(EFModLoader::LogLevel::WARN, "EFModLoader", "Android::API", "callWLog",
+                  "意外的结果，记录日志的方法不应该有返回值");
         }
     }
 
