@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.FragmentMainManageBinding
@@ -72,6 +73,7 @@ class ManageFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("ShowToast")
     private fun handleSelectedFiles(
         uris: List<Uri>,
         installAction: (context: Context, file: File, destination: File) -> Unit,
@@ -97,8 +99,10 @@ class ManageFragment : Fragment() {
                         try {
                             installAction(requireActivity(), file, destination)
                             EFLog.i("文件安装成功：${file.name}")
+                            Snackbar.make(binding.root, getString(R.string.Installation_successful), Snackbar.LENGTH_SHORT).show()
                         } catch (e: Exception) {
                             EFLog.e("文件安装失败：${file.name}，原因：${e.message}")
+                            Snackbar.make(binding.root, getString(R.string.Installation_failed), Snackbar.LENGTH_SHORT).show()
                         }
                     }
                 }

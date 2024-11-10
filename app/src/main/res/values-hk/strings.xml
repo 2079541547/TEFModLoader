@@ -192,4 +192,6 @@
 
     <string name="settings_architecture">Mod/Loader運行架構</string>
 
+    <string name="installation_successful_zh_tw">安裝成功！</string>
+    <string name="installation_failed_zh_tw">安裝失敗！</string>
 </resources>

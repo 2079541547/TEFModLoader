@@ -33,8 +33,6 @@ class MainApplication : Application() {
         //加载文件系统
         System.loadLibrary("EFFileSystem")
 
-        FileUtils.checkAndWriteFile()
-
         //设置语言&主题
         AppCompatDelegate.setDefaultNightMode(SPUtils.readInt(Settings.themeKey, -1))
 

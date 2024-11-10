@@ -187,7 +187,7 @@ object LoaderManager {
             // 检查文件是否存在
             if (filePath.exists()) {
                 // 获取info.json文件的路径
-                val infoJsonPath = "${filePath.parent}/info.json"
+                val infoJsonPath = "TEFModLoader/EFModLoaderData/info.json"
                 val infoFile = File(infoJsonPath)
 
                 // 检查info.json文件是否存在

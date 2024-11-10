@@ -216,5 +216,8 @@
     <string name="important">重要</string>
 
     <string name="settings_architecture">Mod/Loader运行架构</string>
+    
+    <string name="Installation_successful">安装成功！</string>
+    <string name="Installation_failed">安装失败！</string>
 
 </resources>

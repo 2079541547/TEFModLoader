@@ -51,11 +51,9 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         binding.navView.setupWithNavController(navHostFragment.navController)
 
-        if (!SPUtils.readBoolean(silkways.terraria.efmodloader.data.Settings.agreement, false)) {
+        if (!SPUtils.readBoolean(agreement, false)) {
             showAgreementDialog(this)
         }
-
-        FileUtils.clearCache()
 
         onBackPressedDispatcher.addCallback(this) { handleBackPress() }
         checkPermission()

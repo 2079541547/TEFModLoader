@@ -208,7 +208,7 @@ object ModManager {
     fun remove(context: Context, filePath: File, identifier: String) {
         try {
             // 从info.json中移除Mod文件路径
-            val jsonFilePath = "${filePath.parent}/info.json"
+            val jsonFilePath = "TEFModLoader/EFModData/info.json"
             JsonConfigModifier.removeKeyFromJson(context, jsonFilePath, filePath.absolutePath)
             EFLog.i("已从info.json中移除Mod文件路径: $filePath")
 

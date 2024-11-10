@@ -22,6 +22,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.snackbar.Snackbar
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.databinding.ManageEfmodresDialogBinding
 import silkways.terraria.efmodloader.databinding.ManageEfmodsettingDialogBinding
@@ -29,6 +30,7 @@ import silkways.terraria.efmodloader.logic.JsonConfigModifier
 import java.io.File
 import eternal.future.effsystem.fileSystem.EFMC
 import silkways.terraria.efmodloader.data.Settings
+import silkways.terraria.efmodloader.databinding.ActivityManageBinding
 import silkways.terraria.efmodloader.logic.LanguageHelper
 import silkways.terraria.efmodloader.logic.efmod.ModManager
 import silkways.terraria.efmodloader.ui.activity.WebActivity
@@ -127,28 +129,6 @@ class ModsAdapter(private val mods: List<ModInfo>, private val context: Context)
     @SuppressLint("SetJavaScriptEnabled")
     private fun showCustomPage(mod: ModInfo) {
 
-        // 确保context是一个FragmentActivity
-        val activity = context as? FragmentActivity ?: return
-
-        // 获取FragmentManager
-        val fragmentManager: FragmentManager = activity.supportFragmentManager
-
-        // 查找NavHostFragment
-        val navHostFragment = fragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as? NavHostFragment
-            ?: throw IllegalStateException("NavHostFragment not found")
-
-        val navOptions = NavOptions.Builder()
-            // 设置导航动画
-            .setEnterAnim(R.anim.fragment_anim_enter)
-            .setExitAnim(R.anim.fragment_anim_exit)
-            .setPopEnterAnim(R.anim.fragment_anim_enter)
-            .setPopExitAnim(R.anim.fragment_anim_exit)
-            .build()
-
-
-        // 获取NavController
-        val navController: NavController = navHostFragment.navController
-
         // 解压page文件夹到缓存目录
         val cacheDir = context.cacheDir
         val modCacheDir = File(cacheDir, "EFMOD_WEB")
@@ -163,15 +143,11 @@ class ModsAdapter(private val mods: List<ModInfo>, private val context: Context)
 
         val intent = Intent(context, WebActivity::class.java)
 
-        // 添加额外的数据，即你的信号
         intent.putExtra("isMod", true)
         intent.putExtra("webUrl", uri.toString())
-        intent.putExtra("private", "${context.getExternalFilesDir(null)}/EFMod-Private/${mod.identifier}/")
+        intent.putExtra("private", "${context.getExternalFilesDir(null)}/TEModLoader/EFModData/EFMod-Private/${mod.identifier}/")
 
-        // 启动新的Activity
         context.startActivity(intent)
-
-        //navController.navigate(R.id.nanavigation_EFModWeb, bundle, navOptions)
     }
 
 
@@ -222,7 +198,6 @@ class ModsAdapter(private val mods: List<ModInfo>, private val context: Context)
 
     private fun ModsAdapter.showSettingDialog(mod: ModInfo) {
         var dialogBinding: ManageEfmodsettingDialogBinding? = ManageEfmodsettingDialogBinding.inflate(LayoutInflater.from(context))
-
 
         val builder = MaterialAlertDialogBuilder(context)
             .setCancelable(false)

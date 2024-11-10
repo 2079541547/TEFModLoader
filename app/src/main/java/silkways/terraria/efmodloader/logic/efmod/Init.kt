@@ -63,16 +63,16 @@ class Init(private val context: Context) {
                     0 -> {
                         FileUtils.deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX/"))
                         FileUtils.deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod/"))
-                        syncDirectories(File(context.getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/export/private/"))
-                        copyFilesFromToOgg(File(context.getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/Private/"))
+                        syncDirectories(File(context.getExternalFilesDir(null), "TEFModLoader/EFModData/EFMod-Private/"), File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/export/private/"))
+                        copyFilesFromToOgg(File(context.getExternalFilesDir(null), "TEFModLoader/EFModData/EFMod-Private/"), File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/Private/"))
                     }
 
                     1 -> {
                         val a = JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.GamePackageName) as String
                         FileUtils.deleteDirectory(File("data/data/$a/cache/EFModX/"))
                         FileUtils.deleteDirectory(File("data/data/$a/cache/EFMod/"))
-                        syncDirectories(File(context.getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Android/data/${SPUtils.readString(Settings.GamePackageName, "com.and.games505.TerrariaPaid") as String}/files/EFMod-Private/"))
-                        copyFilesFromTo(File(context.getExternalFilesDir(null), "EFMod-Private/"), File("/sdcard/Android/data/${SPUtils.readString(Settings.GamePackageName, "com.and.games505.TerrariaPaid") as String}/files/EFMod-Private/"))
+                        syncDirectories(File(context.getExternalFilesDir(null), "TEFModLoader/EFModData/EFMod-Private/"), File("/sdcard/Android/data/${SPUtils.readString(Settings.GamePackageName, "com.and.games505.TerrariaPaid") as String}/files/EFMod-Private/"))
+                        copyFilesFromTo(File(context.getExternalFilesDir(null), "TEFModLoader/EFModData/EFMod-Private/"), File("/sdcard/Android/data/${SPUtils.readString(Settings.GamePackageName, "com.and.games505.TerrariaPaid") as String}/files/EFMod-Private/"))
                     }
                 }
             } catch (e: IOException) {
