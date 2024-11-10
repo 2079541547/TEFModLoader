@@ -187,6 +187,6 @@
     <string name="inputFileExportPath">Please enter the new package name</string>
     <string name="settings_architecture">Mod/Loader Runtime Architecture</string>
 
-    <string name="installation_successful">Installation successful!</string>
-    <string name="installation_failed">Installation failed!</string>
+    <string name="Installation_successful">Installation successful!</string>
+    <string name="Installation_failed">Installation failed!</string>
 </resources>
