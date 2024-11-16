@@ -1,0 +1,209 @@
+{
+  "main": {
+    "home": {
+      "title": "首页",
+      "about": "关于",
+      "setting": "设置",
+      "feedback": "反馈",
+      "help": "帮助",
+      "quotes": "\uD83D\uDC46(*≧▽≦)ﾉｼ))好听的一言",
+      "morning": "ヽ(。ゝω・)ノ☆;:*早上好*:;☆",
+      "noon": "ヽ(´･∀･｀)ﾉ〔*…..**★中午好★**…..*〕",
+      "afternoon": "下午好！(*´∀｀)ﾉ",
+      "night": "(=^･ω･)ﾉ 晚上好♪",
+      "good night": "○Ｏo。.（T￢T)/~~~晚安"
+    },
+
+    "toolbox": {
+      "title": "工具箱",
+      "unfinished": "还在加班QAQ...",
+      "terminal": "终端",
+      "start": "配置并启动游戏",
+      "import archive": "导入存档",
+      "import configuration": "导入配置",
+      "manager": {
+        "title": "文件查看"
+      },
+      "export archive": "导出存档",
+      "export data": "导出所有数据"
+    },
+
+    "manager": {
+      "title": "管理",
+      "efmod": {
+        "install": "安装EFMod",
+        "manager": "EFMod管理"
+      },
+      "development settings": "实验性选项",
+      "efmodloader": {
+        "install": "安装内核",
+        "manager": "内核管理"
+      }
+    },
+
+    "Update log": {
+      "title": "更新日志|x･`)(一定会按时更新的)",
+      "close": "关闭",
+      "100": [
+        "可使用EFMod作为游戏扩展",
+        "可导入存档/配置",
+        "EFMod基本支持",
+        "调试工具",
+        "额外的游戏菜单"
+      ],
+      "120": [
+        "开放自定义内核",
+        "可导出数据",
+        "更强大的内存管理",
+        "英语翻译",
+        "更换Mod文件格式以及新文件系统",
+        "不再携带汉化版本，而是纯原版",
+        "修复文件无法选择bug",
+        "更新一言",
+        "优化Mod安装、读取、启用速度",
+        "优化游戏启动速度",
+        "优化内核",
+        "更多API支持",
+        "更换DodyHook，移除shadowhook",
+        "移除不稳定的调试工具",
+        "支持独立Mod"
+      ],
+      "121": [
+        "更新文件系统",
+        "添加解压进度",
+        "优化Mod以及Loader读取速度",
+        "防呆/手残安装错误文件"
+      ],
+      "150": [
+        "重写软件架构",
+        "重写底层",
+        "脱离内置游戏",
+        "使用标准化EFModLoader",
+        "支持两种工作模式：共享 and 外部",
+        "优化UI表现",
+        "更强大的错误处理",
+        "减小占用",
+        "软件性能优化",
+        "增加日志系统",
+        "移除游戏面板",
+        "增加代码复用",
+        "注：部分功能可能无法使用或没有预期效果，请谅解QAQ"
+      ],
+      "151": [
+        "支持共享内核",
+        "内核支持Java API",
+        "完善之前除游戏面板外的所有功能",
+        "更新帮助文档",
+        "Mod私有目录的双向更新",
+        "更好的权限申请",
+        "更强大的内核",
+        "自定义内核",
+        "性能优化",
+        "繁体中文",
+        "更新Mod标准，支持多语言",
+        "注：此版本为1.5.5 Stable，长期稳定，更新慢，调试/测试可选择周构建"
+      ]
+    }
+  },
+
+  "about": {
+    "title": "关于",
+    "app": "致力打造最好的工具",
+    "developers": {
+      "title": "开发者",
+      "close": "关闭",
+      "developer_0": "介里什么都没有(*´∀ ˋ*) "
+
+    },
+    "open source license": "开源协议",
+    "open source repository": "开源仓库",
+    "special thanks": "特别鸣谢",
+    "future plans": "未来计划"
+  },
+
+  "setting": {
+    "title": "设置",
+
+    "important": {
+      "title": "重要",
+      "runtime": {
+        "title": "工作模式",
+        "external": "外部内核",
+        "share": "共享内核",
+        "embed": "嵌入内核"
+      },
+      "target": {
+        "title": "目标包名",
+        "dialog": {
+          "title": "设置目标包名",
+          "hint": "请输入包名",
+          "determine": "确定",
+          "cancel": "取消"
+        }
+      },
+      "architecture": {
+        "title": "Mod & Loader运行架构",
+        "system": "跟随系统",
+        "arm64-v8a": "arm64-v8a(64位)",
+        "armeabi-v7a": "armeabi-v7a(32位)"
+      }
+    },
+
+    "general": {
+      "title": "常规",
+      "theme": {
+        "title": "主题",
+        "system": "跟随系统",
+        "light": "亮色",
+        "dark": "暗色"
+      },
+      "language": {
+        "title": "语言",
+        "system": "跟随系统",
+        "zh-cn": "中文(简体)",
+        "zh-hant": "中文(繁体)",
+        "ru": "Русский(俄语)",
+        "en": "English(英语)",
+        "jp": "日本語(日语)",
+        "ko": "한국어(韩语)",
+        "it": "Italiano(意大利语)",
+        "es": "Lengua española(西班牙语)",
+        "fr": "Français(法语)",
+        "de": "Deutsch(德语)"
+      }
+    },
+
+    "file": {
+      "title": "文件",
+      "manage": {
+        "title": "文件查看目录",
+        "dialog": {
+          "title": "设置文件查看路径",
+          "hint": "请输入路径",
+          "determine": "确定",
+          "cancel": "取消"
+        }
+      },
+      "import": {
+        "title": "导入文件路径",
+        "dialog": {
+          "title": "设置文件导入的目录",
+          "hint": "请输入路径",
+          "determine": "确定",
+          "cancel": "取消"
+        }
+      },
+      "export": {
+        "title": "导出数据包名",
+        "dialog": {
+          "title": "设置数据导出时的指定应用",
+          "hint": "请输入应用包名",
+          "determine": "确定",
+          "cancel": "取消"
+        }
+      }
+    }
+  },
+
+  "Unable_to_retrieve_text": "无法获取文本"
+}

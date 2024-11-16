@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "me.jiangnight.tefmodloader_compose"
+    namespace = "silkways.terraria.efmodloader"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "me.jiangnight.tefmodloader_compose"
+        applicationId = "silkways.terraria.efmodloader"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -29,11 +29,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
@@ -41,6 +41,11 @@ android {
 }
 
 dependencies {
+    implementation(libs.commonmark)
+
+    implementation(libs.androidx.appcompat)
+
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
