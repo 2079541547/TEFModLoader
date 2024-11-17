@@ -205,5 +205,9 @@
     }
   },
 
+  "terminal": {
+    "title": "终端"
+  },
+
   "Unable_to_retrieve_text": "无法获取文本"
 }

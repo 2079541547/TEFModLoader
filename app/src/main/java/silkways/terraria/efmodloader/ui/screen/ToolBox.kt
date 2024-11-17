@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.clickable
@@ -33,6 +34,8 @@ import kotlinx.coroutines.launch
 import silkways.terraria.efmodloader.MainApplication
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.logic.LanguageHelper
+import silkways.terraria.efmodloader.ui.activity.TerminalActivity
+import silkways.terraria.efmodloader.ui.activity.WebActivity
 import silkways.terraria.efmodloader.ui.utils.LanguageUtils
 import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
@@ -82,6 +85,10 @@ fun ToolBoxScreen() {
                                 scope.launch {
                                     snackbarHostState.showSnackbar(jsonUtils.getString("toolbox", "unfinished"))
                                 }
+
+                                val intent = Intent(context, TerminalActivity::class.java)
+                                intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+                                context.startActivity(intent)
                             },
                             modifier = Modifier.weight(1f)
                         ) {

@@ -35,6 +35,9 @@
         <activity android:name=".ui.activity.TerminalActivity"
             android:exported="true"/>
 
+        <activity android:name=".ui.activity.EFManagerActivity"
+            android:exported="true"/>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
