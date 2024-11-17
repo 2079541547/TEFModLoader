@@ -26,7 +26,11 @@
 #include <iostream>
 #include <jni.h>
 <<<<<<<< HEAD:load/src/main/cpp/EFModLoader/include/EFModLoader/android/Android.hpp
+<<<<<<<< HEAD:load/src/main/cpp/EFModLoader/include/EFModLoader/android/Android.hpp
 #include <EFModLoader/android/api.hpp>
+========
+#include "../api/RegisterApi.hpp"
+>>>>>>>> main:load/src/main/cpp/EFModLoader/include/EFModLoader/android/api.hpp
 ========
 #include "../api/RegisterApi.hpp"
 >>>>>>>> main:load/src/main/cpp/EFModLoader/include/EFModLoader/android/api.hpp
@@ -35,6 +39,7 @@ namespace EFModLoader::Android::API {
 
     using namespace std;
 <<<<<<<< HEAD:load/src/main/cpp/EFModLoader/include/EFModLoader/android/Android.hpp
+<<<<<<<< HEAD:load/src/main/cpp/EFModLoader/include/EFModLoader/android/Android.hpp
 
     extern string* get_PackageName;
     extern string* get_cacheDir;
@@ -42,6 +47,8 @@ namespace EFModLoader::Android::API {
     void Load(JNIEnv *env, const string& EFModLoader);
     void Load_Loader(JNIEnv *env, const string& EFModLoader);
 ========
+========
+>>>>>>>> main:load/src/main/cpp/EFModLoader/include/EFModLoader/android/api.hpp
     
     void Register();
 
