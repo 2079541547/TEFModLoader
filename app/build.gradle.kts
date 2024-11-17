@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -19,16 +21,15 @@ android {
         applicationId = "silkways.terraria.efmodloader"
         minSdk = 24
         targetSdk = 35
-        versionCode = 155
-        versionName = "1.5.5 Stable"
+        versionCode = 1
+        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            isShrinkResources = true
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -43,24 +44,37 @@ android {
         jvmTarget = "17"
     }
     buildFeatures {
-        viewBinding = true
-        prefab = true
+        compose = true
     }
-
-    ndkVersion = "28.0.12433566 rc1"
-
-    buildToolsVersion = "35.0.0"
 }
 
-
-dependencies{
+dependencies {
     implementation(libs.commonmark)
-    implementation(libs.material)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
+
+    implementation(libs.androidx.appcompat)
+
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
-    implementation(libs.androidx.preference.ktx)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+    implementation(libs.com.google.accompanist.navigation.animation) //tab栏
+    implementation(libs.androidx.compose.material.icons.extended) //图标
+    implementation(libs.compose.destinations.animations.core)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.io.coil.kt.coil.compose)
+    implementation(libs.me.zhanghai.android.appiconloader.coil)
+
+    ksp(libs.compose.destinations.ksp)
+
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
 }

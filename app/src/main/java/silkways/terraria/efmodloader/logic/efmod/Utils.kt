@@ -3,6 +3,11 @@ package silkways.terraria.efmodloader.logic.efmod
 import android.content.Context
 import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import org.json.JSONObject
 import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.logic.EFLog
@@ -34,52 +39,6 @@ import java.io.IOException
  *******************************************************************************/
 
 object Utils {
-
-    /**
-     * 显示确认对话框，询问用户是否确认某个操作。
-     *
-     * @param context 应用上下文
-     * @param message 要显示的消息
-     * @param onConfirm 用户点击确定或取消按钮后的回调函数
-     */
-    fun showConfirmationDialog(context: Context, message: String, onConfirm: (Boolean) -> Unit) {
-        try {
-            // 创建对话框构建器
-            val dialogBuilder = AlertDialog.Builder(context)
-
-            // 设置对话框的消息
-            dialogBuilder.setMessage("${context.getString(R.string.file)} $message ${context.getString(R.string.file_text)}")
-                .setCancelable(false) // 不允许用户通过点击外部区域取消对话框
-
-            // 设置确定按钮
-            dialogBuilder.setPositiveButton(R.string.determine) { _: DialogInterface, _: Int ->
-                onConfirm(true)
-                EFLog.i("用户确认了操作: $message")
-            }
-
-            // 设置取消按钮
-            dialogBuilder.setNegativeButton(R.string.cancel) { dialog: DialogInterface, _: Int ->
-                dialog.cancel()
-                onConfirm(false)
-                EFLog.i("用户取消了操作: $message")
-            }
-
-            // 创建对话框
-            val alert = dialogBuilder.create()
-
-            // 设置对话框标题
-            alert.setTitle("${context.getString(R.string.file)}${context.getString(R.string.file_text)}")
-
-            // 显示对话框
-            alert.show()
-            EFLog.i("显示确认对话框: $message")
-        } catch (e: Exception) {
-            // 捕获并记录所有异常
-            EFLog.e("显示确认对话框时发生错误: ${e.message}")
-            e.printStackTrace()
-        }
-    }
-
 
     /**
      * 将JSON对象写入指定文件中。

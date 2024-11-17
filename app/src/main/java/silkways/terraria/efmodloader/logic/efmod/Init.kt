@@ -9,10 +9,6 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.progressindicator.CircularProgressIndicator
-import silkways.terraria.efmodloader.R
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.data.TEFModLoader
 import silkways.terraria.efmodloader.logic.EFLog
@@ -48,13 +44,13 @@ import java.nio.channels.FileChannel
  * 注意事项: 请严格遵守GNU AGPL v3.0协议使用本代码，任何未经授权的商业用途均属侵权行为。
  *******************************************************************************/
 
+
 class Init(private val context: Context) {
 
-    private var loadingDialog: AlertDialog? = null
 
     @SuppressLint("SdCardPath")
     fun initialization() {
-        showLoadingDialog()
+        //showLoadingDialog()
         // 模拟加载过程
         Thread {
 
@@ -95,7 +91,6 @@ class Init(private val context: Context) {
             } catch (e: IOException) {
                 Log.e("TEFModLoader", "错误：" , e)
             }
-            dismissLoadingDialog()
 
             
             val launchIntent = context.packageManager.getLaunchIntentForPackage(
@@ -110,32 +105,8 @@ class Init(private val context: Context) {
     }
 
 
-    private fun showLoadingDialog() {
-        if (loadingDialog == null) {
-            val circularProgressIndicator = CircularProgressIndicator(context).apply {
-                setIndeterminate(true)
-                setPadding(15, 15, 15, 15)
-            }
 
-            loadingDialog = MaterialAlertDialogBuilder(context)
-                .setTitle(context.getString(R.string.loadingMod))
-                .setView(circularProgressIndicator)
-                .setCancelable(true)
-                .create()
 
-            // 确保加载框不会因为点击外部区域而消失
-            loadingDialog?.setCanceledOnTouchOutside(false)
-        }
-        loadingDialog?.show()
-    }
-
-    private fun dismissLoadingDialog() {
-        loadingDialog?.let {
-            if (it.isShowing) {
-                it.dismiss()
-            }
-        }
-    }
 
     @SuppressLint("SetWorldReadable")
     private fun renameFilesWithOggExtension(directory: File) {
@@ -172,29 +143,38 @@ class Init(private val context: Context) {
     }
 
     private fun addFileToMediaStore(file: File) {
-        val values = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
-            put(MediaStore.MediaColumns.MIME_TYPE, "audio/ogg")
-            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_MUSIC)
-            put(MediaStore.MediaColumns.IS_PENDING, 1)
-        }
-
-        val uri: Uri? = context.contentResolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values)
-        if (uri == null) {
-            Log.e("GamePanelFragment", "无法插入文件到 MediaStore: ${file.path}")
+        if (!file.exists()) {
+            EFLog.e("File does not exist: ${file.absolutePath}")
             return
         }
 
-        context.contentResolver.openFileDescriptor(uri, "w", null)?.use { parcelFileDescriptor ->
-            FileOutputStream(parcelFileDescriptor.fileDescriptor).use { fos ->
-                FileInputStream(file).copyTo(fos)
-            }
+        val values = ContentValues().apply {
+            put(MediaStore.Audio.Media.DISPLAY_NAME, file.name)
+            put(MediaStore.Audio.Media.MIME_TYPE, "audio/ogg") // 设置为 audio/ogg 以欺骗系统
+            put(MediaStore.Audio.Media.RELATIVE_PATH, "${Environment.DIRECTORY_MUSIC}/")
         }
 
-        values.put(MediaStore.MediaColumns.IS_PENDING, 0)
-        context.contentResolver.update(uri, values, null, null)
-        Log.i("GamePanelFragment", "文件已添加到 MediaStore: ${file.path}, URI: $uri")
+        var uri: Uri? = null
+        try {
+            uri = context.contentResolver.insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, values)
+            if (uri == null) {
+                EFLog.e("无法插入文件到 MediaStore: ${file.path}")
+                return
+            }
+
+            context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                FileInputStream(file).copyTo(outputStream)
+            }
+
+            EFLog.i("文件已添加到 MediaStore: ${file.path}, URI: $uri")
+        } catch (e: Exception) {
+            EFLog.e("Error inserting file into media store: ${file.absolutePath}" + e)
+            if (uri != null) {
+                context.contentResolver.delete(uri, null, null)
+            }
+        }
     }
+
 
     private fun scanFile(file: File) {
         MediaScannerConnection.scanFile(

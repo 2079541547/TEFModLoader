@@ -4,10 +4,10 @@ import android.content.Context;
 import android.widget.Toast;
 
 /*******************************************************************************
-<<<<<<<< HEAD:load/src/main/cpp/EFModLoader/include/EFModLoader/android/api.hpp
- * 文件名称: api
- * 项目名称: TEFModLoader
- * 创建时间: 2024/11/9 上午4:07
+<<<<<<<< HEAD:app/src/main/java/silkways/terraria/efmodloader/logic/efmod/Loader.kt
+ * 文件名称: Loader
+ * 项目名称: TEFModLoader-Compose
+ * 创建时间: 2024/11/17 下午1:49
 ========
  * 文件名称: Toast
  * 项目名称: TEFModLoader
@@ -28,36 +28,29 @@ import android.widget.Toast;
  *
  *         You should have received a copy of the GNU Affero General Public License
  *         along with this program. If not, see <https://www.gnu.org/licenses/>.
+<<<<<<<< HEAD:app/src/main/java/silkways/terraria/efmodloader/logic/efmod/Loader.kt
+ * 描述信息: 本文件为TEFModLoader-Compose项目中的一部分。
+========
  * 描述信息: 本文件为TEFModLoader项目中的一部分。
+>>>>>>>> main:load/src/main/java/eternal/future/efmodloader/load/ToastApi.java
  * 注意事项: 请严格遵守GNU AGPL v3.0协议使用本代码，任何未经授权的商业用途均属侵权行为。
  *******************************************************************************/
+package silkways.terraria.efmodloader.logic.efmod
 
+<<<<<<<< HEAD:app/src/main/java/silkways/terraria/efmodloader/logic/efmod/Loader.kt
+import android.graphics.Bitmap
 
-<<<<<<<< HEAD:load/src/main/cpp/EFModLoader/include/EFModLoader/android/api.hpp
-#include <iostream>
-#include <jni.h>
-<<<<<<<< HEAD:load/src/main/cpp/EFModLoader/include/EFModLoader/android/api.hpp
-#include "../api/RegisterApi.hpp"
-========
-#include <EFModLoader/android/api.hpp>
->>>>>>>> main:load/src/main/cpp/EFModLoader/include/EFModLoader/android/Android.hpp
-
-namespace EFModLoader::Android::API {
-
-    using namespace std;
-<<<<<<<< HEAD:load/src/main/cpp/EFModLoader/include/EFModLoader/android/api.hpp
-    
-    void Register();
-
+data class Loader(
+    val filePath: String,
+    val loaderName: String,
+    val author: String,
+    val introduce: String,
+    val version: String,
+    val openSourceUrl: String,
+    var icon: Bitmap? = null
+)
 ========
 
-    extern string* get_PackageName;
-    extern string* get_cacheDir;
-
-    void Load(JNIEnv *env, const string& EFModLoader);
-    void Load_Loader(JNIEnv *env, const string& EFModLoader);
->>>>>>>> main:load/src/main/cpp/EFModLoader/include/EFModLoader/android/Android.hpp
-========
 /**
  * 自定义Toast工具类，用于在Android应用中显示高度自定义的Toast消息。
  * 提供了多种方法来设置Toast的持续时间、位置、背景颜色、文本颜色等。
@@ -73,5 +66,5 @@ public class ToastApi {
     public static void show(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
->>>>>>>> main:load/src/main/java/eternal/future/efmodloader/load/ToastApi.java
 }
+>>>>>>>> main:load/src/main/java/eternal/future/efmodloader/load/ToastApi.java

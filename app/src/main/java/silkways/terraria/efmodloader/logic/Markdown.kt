@@ -1,6 +1,10 @@
 package silkways.terraria.efmodloader.logic
 
 import android.content.Context
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import org.commonmark.Extension
 import org.commonmark.parser.Parser
 import org.commonmark.renderer.html.HtmlRenderer
@@ -38,10 +42,10 @@ object Markdown {
      * 将 Markdown 字符串转换为 HTML。
      *
      * @param markdown Markdown 内容字符串。
-     * @param colorScheme 颜色方案，1 表示浅色模式，2 表示深色模式，其他值表示自动。
+     * @param isDarkTheme 当前是否为暗黑模式。
      * @return 转换后的 HTML 字符串。
      */
-    fun markdownToHtml(markdown: String, colorScheme: Any?): String {
+    fun markdownToHtml(markdown: String, isDarkTheme: Boolean): String {
         val extensions: List<Extension> = emptyList() // 不需要任何扩展
         val parser = Parser.builder().extensions(extensions).build()
         val renderer = HtmlRenderer.builder().extensions(extensions).build()
@@ -56,13 +60,13 @@ object Markdown {
             <style>
                 body {
                     font-size: 28px;
-                    color: ${if (colorScheme == 1) "#000" else if (colorScheme == 2) "#fff" else "var(--text-color)"};
-                    background-color: ${if (colorScheme == 1) "#fff" else if (colorScheme == 2) "#0F1416" else "var(--bg-color)"};
+                    color: ${if (isDarkTheme) "#fff" else "#000"};
+                    background-color: ${if (isDarkTheme) "#0F1416" else "#fff"};
                 }
                 hr {
                     border: none;
                     height: 1px;
-                    background-color: ${if (colorScheme == 1) "#4C626B" else if (colorScheme == 2) "#B3CAD5" else "var(--hr-color)"};
+                    background-color: ${if (isDarkTheme) "#B3CAD5" else "#4C626B"};
                 }
                 
                 /* 导航链接样式 */
@@ -70,7 +74,7 @@ object Markdown {
                     display: inline-block;
                     margin-right: 1em;
                     text-decoration: none;
-                    color: ${if (colorScheme == 1) "#226488" else if (colorScheme == 2) "#92CDF6" else "var(--nav-link-color)"};
+                    color: ${if (isDarkTheme) "#92CDF6" else "#226488"};
                 }
 
                 /* 媒体查询 */
@@ -111,4 +115,24 @@ object Markdown {
 
         return finalHtml
     }
+}
+
+/**
+ * Composable 函数，用于加载 Markdown 文件并转换为 HTML，根据当前主题调整样式。
+ */
+@Composable
+fun MarkdownContent(fileName: String) {
+    val context = LocalContext.current
+    val isDarkTheme = isSystemInDarkTheme()
+
+    val markdownContent = remember {
+        Markdown.loadMarkdownFromAssets(context, fileName)
+    }
+
+    val htmlContent = remember(markdownContent, isDarkTheme) {
+        Markdown.markdownToHtml(markdownContent, isDarkTheme)
+    }
+
+    // 在这里可以使用 WebView 或其他方式显示 HTML 内容
+    // 例如：AndroidView(factory = { WebView(it).apply { loadData(htmlContent, "text/html", "UTF-8") } })
 }

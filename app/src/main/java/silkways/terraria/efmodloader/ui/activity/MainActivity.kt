@@ -1,102 +1,154 @@
 package silkways.terraria.efmodloader.ui.activity
 
-import android.Manifest
-import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.SystemClock
 import android.provider.Settings
-import android.view.LayoutInflater
-import androidx.activity.addCallback
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.compose.setContent
+import androidx.compose.animation.core.*
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
-import silkways.terraria.efmodloader.R
-import silkways.terraria.efmodloader.data.Settings.CleanDialog
-import silkways.terraria.efmodloader.data.Settings.agreement
-import silkways.terraria.efmodloader.data.Settings.autoClean
-import silkways.terraria.efmodloader.data.Settings.jsonPath
-import silkways.terraria.efmodloader.data.Settings.languageKey
-import silkways.terraria.efmodloader.databinding.ActivityMainBinding
-import silkways.terraria.efmodloader.databinding.HomeDialogAgreementBinding
-import silkways.terraria.efmodloader.logic.JsonConfigModifier
-import silkways.terraria.efmodloader.logic.LanguageHelper
-import silkways.terraria.efmodloader.utils.FileUtils
-import silkways.terraria.efmodloader.utils.SPUtils
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import coil.Coil
+import coil.ImageLoader
+import com.ramcosta.composedestinations.DestinationsNavHost
+import com.ramcosta.composedestinations.animations.defaults.NestedNavGraphDefaultAnimations
+import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
+import com.ramcosta.composedestinations.rememberNavHostEngine
+import com.ramcosta.composedestinations.utils.isRouteOnBackStackAsState
+import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable.isActive
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import me.zhanghai.android.appiconloader.coil.AppIconFetcher
+import me.zhanghai.android.appiconloader.coil.AppIconKeyer
+import silkways.terraria.efmodloader.logic.ApplicationSettings.isDarkThemeEnabled
+import silkways.terraria.efmodloader.ui.screen.BottomBarDestination
+import silkways.terraria.efmodloader.ui.screen.NavGraphs
+import silkways.terraria.efmodloader.ui.theme.TEFModLoaderComposeTheme
+import silkways.terraria.efmodloader.ui.utils.LocalSnackbarHost
+import java.io.File
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : EFActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-    private var backPressedTime: Long = 0
-    private val timeInterval: Long = 2000
+    private var isLoading by mutableStateOf(true)
+    private lateinit var job: Job
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        init()
+        checkPermission()
+
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
-        LanguageHelper.setAppLanguage(this, LanguageHelper.getAppLanguage(SPUtils.readInt(silkways.terraria.efmodloader.data.Settings.languageKey, 0), this))
+        splashScreen.setKeepOnScreenCondition { isLoading }
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContent {
+            TEFModLoaderComposeTheme(darkTheme = isDarkThemeEnabled(this)) {
+                val navController = rememberNavController()
+                val snackBarHostState = remember { SnackbarHostState() }
+                val navHostEngine = rememberNavHostEngine(
+                    navHostContentAlignment = Alignment.TopCenter,
+                    rootDefaultAnimations = RootNavGraphDefaultAnimations(
+                        enterTransition = { fadeIn(animationSpec = tween(300, easing = FastOutSlowInEasing)) },
+                        exitTransition = { fadeOut(animationSpec = tween(300, easing = FastOutSlowInEasing)) }
+                    ),
+                    defaultAnimationsForNestedNavGraph = mapOf(
+                        NavGraphs.root to NestedNavGraphDefaultAnimations(
+                            enterTransition = { fadeIn(animationSpec = tween(300, easing = FastOutSlowInEasing)) },
+                            exitTransition = { fadeOut(animationSpec = tween(300, easing = FastOutSlowInEasing)) }
+                        )
+                    )
+                )
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
-        binding.navView.setupWithNavController(navHostFragment.navController)
-
-        if (!SPUtils.readBoolean(agreement, false)) {
-            showAgreementDialog(this)
-        }
-
-        onBackPressedDispatcher.addCallback(this) { handleBackPress() }
-        checkPermission()
-    }
-
-    private fun handleBackPress() {
-        if (SystemClock.elapsedRealtime() - backPressedTime < timeInterval) {
-            if (SPUtils.readBoolean(autoClean, false)) {
-                FileUtils.clearCache()
-                finishAffinity()
-            } else if (SPUtils.readBoolean(CleanDialog, true)) {
-                showCleanDialog()
-            } else {
-                finishAffinity()
+                Scaffold(
+                    bottomBar = { BottomBar(navController, this) },
+                    snackbarHost = { SnackbarHost(snackBarHostState) }
+                ) { paddingValues ->
+                    CompositionLocalProvider(LocalSnackbarHost provides snackBarHostState) {
+                        DestinationsNavHost(
+                            modifier = Modifier.padding(paddingValues),
+                            navGraph = NavGraphs.root,
+                            navController = navController,
+                            engine = navHostEngine
+                        )
+                    }
+                }
             }
-        } else {
-            backPressedTime = SystemClock.elapsedRealtime()
-            val snackbar = Snackbar.make(binding.root, R.string.onBackPressedDispatcher_exit, Snackbar.LENGTH_SHORT)
-            snackbar.anchorView = binding.navView
-            snackbar.animationMode = Snackbar.ANIMATION_MODE_SLIDE
-            snackbar.show()
+        }
+        val context = this
+        val iconSize = resources.getDimensionPixelSize(android.R.dimen.app_icon_size)
+        Coil.setImageLoader(
+            ImageLoader.Builder(context)
+                .components {
+                    add(AppIconKeyer())
+                    add(AppIconFetcher.Factory(iconSize, false, context))
+                }
+                .build()
+        )
+
+        isLoading = false
+        startFolderCheck()
+    }
+
+    private fun startFolderCheck() {
+        job = CoroutineScope(Dispatchers.Main).launch {
+            while (true) {
+                delay(500)
+                checkAndDeleteFolder()
+            }
         }
     }
 
-    private fun showCleanDialog() {
-        val builder = MaterialAlertDialogBuilder(this)
-        builder.setTitle(getString(R.string.Clear_cache_title))
-        builder.setMessage(getString(R.string.Clear_cache_message))
+    private fun checkAndDeleteFolder() {
+        val folderPath = "${this.externalCacheDir}/Reboot" // 替换为你的文件夹路径
+        val folder = File(folderPath)
 
-        builder.setPositiveButton(getString(R.string.Clear_cache)) { dialog: DialogInterface, _ ->
-            FileUtils.clearCache()
-            dialog.dismiss()
-            finishAffinity()
+        if (folder.exists()) {
+            deleteFolder(folder)
+            recreate() // 重启Activity
         }
-
-        builder.setNegativeButton(getString(R.string.NOClear_cache)) { dialog: DialogInterface, _ ->
-            dialog.dismiss()
-            finishAffinity()
-        }
-
-        val dialog: Dialog = builder.create()
-        dialog.show()
     }
+
+    private fun deleteFolder(folder: File) {
+        if (folder.isDirectory) {
+            folder.listFiles()?.forEach { file ->
+                if (file.isDirectory) {
+                    deleteFolder(file)
+                } else {
+                    file.delete()
+                }
+            }
+        }
+        folder.delete()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel() // 取消协程任务
+    }
+
 
     private fun checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -130,47 +182,47 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+}
 
 
 
-    private fun showAgreementDialog(context: Context) {
-        var dialogBinding: HomeDialogAgreementBinding? = HomeDialogAgreementBinding.inflate(LayoutInflater.from(this))
-
-        val builder = MaterialAlertDialogBuilder(this)
-            .setCancelable(false)
-            .setView(dialogBinding?.root)
-            .setTitle(R.string.Agreement_title)
-
-        builder.setPositiveButton(getString(R.string.Agreement_ok)) { dialog: DialogInterface, _ ->
-            SPUtils.putBoolean(agreement, true)
-            dialog.dismiss()
-        }
-
-        builder.setNegativeButton(getString(R.string.Agreement_no)) { dialog: DialogInterface, _ ->
-            dialog.dismiss()
-            finishAffinity()
-        }
-
-        val dialog = builder.create().apply {
-            window?.let { dialogWindow ->
-                setCanceledOnTouchOutside(false)
-            }
-
-            dialogBinding?.AgreementContent?.text = FileUtils.readFileFromAssets(
-                LanguageHelper.getFileLanguage(
-                    JsonConfigModifier.readJsonValue(
-                        context,
-                        jsonPath,
-                        languageKey
-                    ), context, "agreement", ""
-                )
+@Composable
+private fun BottomBar(navController: NavController, context: Context) {
+    val navigator = navController.rememberDestinationsNavigator()
+    NavigationBar(tonalElevation = 8.dp) {
+        BottomBarDestination.init(context)
+        BottomBarDestination.entries.forEach { destination ->
+            val isCurrentDestOnBackStack by navController.isRouteOnBackStackAsState(destination.direction)
+            NavigationBarItem(
+                selected = isCurrentDestOnBackStack,
+                onClick = {
+                    if (isCurrentDestOnBackStack) {
+                        navigator.popBackStack(destination.direction, false)
+                    }
+                    navigator.navigate(destination.direction) {
+                        popUpTo(NavGraphs.root) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                icon = {
+                    Icon(
+                        if (isCurrentDestOnBackStack) destination.iconSelected else destination.iconNotSelected,
+                        contentDescription = null
+                    )
+                },
+                label = {
+                    Text(
+                        destination.label,
+                        overflow = TextOverflow.Visible,
+                        maxLines = 1,
+                        softWrap = false
+                    )
+                },
+                alwaysShowLabel = false
             )
-
-            setOnDismissListener {
-                dialogBinding = null
-            }
         }
-
-        dialog.show()
     }
 }

@@ -13,6 +13,7 @@ object Settings {
     val CleanDialog = "CleanDialog" //是否弹出清除缓存弹窗
     val CoveringFiles = "CoveringFiles"
     val Runtime = "Runtime" //工作模式
+    val architecture = "Architecture" //架构
     val GamePackageName = "GamePackageName" //游戏包名
     val FileManagementPath = "FileManagementPath" //文件管理管理位置
     val FileExportPath = "FileExportPath" //文件导出路径

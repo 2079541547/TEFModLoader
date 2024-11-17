@@ -4,9 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.android.material.color.DynamicColors
+import androidx.compose.ui.platform.LocalContext
 import silkways.terraria.efmodloader.data.Settings
+import silkways.terraria.efmodloader.logic.ApplicationSettings
 import silkways.terraria.efmodloader.logic.LanguageHelper
+import silkways.terraria.efmodloader.logic.efmod.LoaderManager.install
+import silkways.terraria.efmodloader.ui.utils.LanguageUtils
 import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
 
@@ -25,7 +28,7 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        DynamicColors.applyToActivitiesIfAvailable(this)
+        //DynamicColors.applyToActivitiesIfAvailable(this)
         File("${this.getExternalFilesDir(null)}/TEFModLoader/").mkdirs()
 
         //加载文件系统
@@ -34,7 +37,19 @@ class MainApplication : Application() {
         //设置语言&主题
         AppCompatDelegate.setDefaultNightMode(SPUtils.readInt(Settings.themeKey, -1))
 
-        LanguageHelper.setAppLanguage(this, LanguageHelper.getAppLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
+        LanguageUtils(
+            this,
+            LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), this),
+            ""
+        ).loadJsonFromAsset()
+
+        val isDarkThemeEnabled = ApplicationSettings.isDarkThemeEnabled(this)
+        AppCompatDelegate.setDefaultNightMode(
+            if (isDarkThemeEnabled) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+        )
+
+
+        //LanguageHelper.setAppLanguage(this, LanguageHelper.getAppLanguage(SPUtils.readInt(Settings.languageKey, 0), this))
     }
 
 }

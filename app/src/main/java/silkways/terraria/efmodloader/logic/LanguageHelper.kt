@@ -19,26 +19,33 @@ object LanguageHelper {
         val script: String = primaryLocale.script
         val country: String = primaryLocale.country
 
-        var languageCode = 1
+        var languageCode = 1 // 默认为中文(简体)
 
         when (language) {
-            "zh" -> if ("Hans" == script) {
+            "zh" -> if (script == "Hans") {
                 languageCode = 1 // 简体中文
-            } else if ("Hant" == script) {
-                languageCode = if ("TW" == country || "HK" == country) {
+            } else if (script == "Hant") {
+                languageCode = if (country == "TW" || country == "HK") {
                     2 // 繁体中文
                 } else {
-                    1
+                    1 // 默认为简体中文
                 }
             }
 
             "ru" -> languageCode = 3 // 俄语
             "en" -> languageCode = 4 // 英语
+            "ja" -> languageCode = 5 // 日语
+            "ko" -> languageCode = 6 // 韩语
+            "it" -> languageCode = 7 // 意大利语
+            "es" -> languageCode = 8 // 西班牙语
+            "fr" -> languageCode = 9 // 法语
+            "de" -> languageCode = 10 // 德语
             else -> EFLog.i("未识别的语言: $language")
         }
 
         return languageCode
     }
+
 
     /**
      * 设置应用程序的语言。
@@ -91,7 +98,7 @@ object LanguageHelper {
      * @return 语言代码字符串，例如 "zh-cn"。
      */
     fun getLanguage(languageCode: Any?, context: Context): String {
-        var language = "zh-cn"
+        var language = ""
 
         when (languageCode) {
             0 -> {
@@ -100,6 +107,12 @@ object LanguageHelper {
                     2 -> "zh-hant"
                     3 -> "ru"
                     4 -> "en"
+                    5 -> "ja"
+                    6 -> "ko"
+                    7 -> "it"
+                    8 -> "es"
+                    9 -> "fr"
+                    10 -> "de"
                     else -> "zh-cn"
                 }
             }
@@ -107,6 +120,12 @@ object LanguageHelper {
             2 -> language = "zh-hant"
             3 -> language = "ru"
             4 -> language = "en"
+            5 -> language = "ja"
+            6 -> language = "ko"
+            7 -> language = "it"
+            8 -> language = "es"
+            9 -> language = "fr"
+            10 -> language = "de"
             else -> language = "zh-cn"
         }
 
@@ -114,27 +133,4 @@ object LanguageHelper {
         return language
     }
 
-    fun getAppLanguage(languageCode: Any?, context: Context): String {
-        var language = "zh-cn"
-
-        when (languageCode) {
-            0 -> {
-                language = when (getLanguageAsNumber(context)) {
-                    1 -> "zh-cn"
-                    2 -> "hk"
-                    3 -> "ru"
-                    4 -> "en"
-                    else -> "zh-cn"
-                }
-            }
-            1 -> language = "zh-cn"
-            2 -> language = "hk"
-            3 -> language = "ru"
-            4 -> language = "en"
-            else -> language = "zh-cn"
-        }
-
-        EFLog.i("获取到的语言代码: $language")
-        return language
-    }
 }

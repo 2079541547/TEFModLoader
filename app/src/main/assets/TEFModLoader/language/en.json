@@ -1,0 +1,163 @@
+{
+  "main": {
+    "home": {
+      "title": "Home",
+      "about": "About",
+      "setting": "Settings",
+      "feedback": "Feedback",
+      "help": "Help",
+      "quotes": "\uD83D\uDC46(*≧▽≦)ﾉＳ)A good quote",
+      "morning": "ヽ(。ゝω・)ノ☆;:*Good morning*:;☆",
+      "noon": "ヽ(´･∀･｀)ﾉ〔*…..**★Good noon★**…..*〕",
+      "afternoon": "Good afternoon! (*´∀｀)ﾉ",
+      "night": "(=^･ω･)ﾉ Good evening♪",
+      "good night": "○Ｏo。.（T￢T)/~~~Good night"
+    },
+
+    "toolbox": {
+      "title": "Toolbox"
+    },
+
+    "manager": {
+      "title": "Manager"
+    },
+
+    "Update log": {
+      "title": "Update Log|x･`)(Will update on time)",
+      "close": "Close",
+      "100": [
+        "Can use EFMod as game extension",
+        "Can import save files/configurations",
+        "Basic EFMod support",
+        "Debugging tools",
+        "Additional game menu"
+      ],
+      "120": [
+        "Open customization of kernel",
+        "Can export data",
+        "More powerful memory management",
+        "English translation",
+        "Change Mod file format and new file system",
+        "No longer carries Chinese localized version, but pure original version",
+        "Fix file selection bug",
+        "Update one-liner quotes",
+        "Optimize Mod installation, reading, and activation speed",
+        "Optimize game startup speed",
+        "Optimize kernel",
+        "Support more APIs",
+        "Switch to DodyHook, remove shadowhook",
+        "Remove unstable debugging tools",
+        "Support independent Mods"
+      ],
+      "121": [
+        "Update file system",
+        "Add decompression progress",
+        "Optimize Mod and Loader reading speed",
+        "Prevent silly/misoperation during installation of incorrect files"
+      ],
+      "150": [
+        "Rewrite software architecture",
+        "Rewrite underlying layer",
+        "Decouple from built-in game",
+        "Use standardized EFModLoader",
+        "Support two working modes: Shared and External",
+        "Optimize UI presentation",
+        "More powerful error handling",
+        "Reduce resource consumption",
+        "Optimize software performance",
+        "Add logging system",
+        "Remove game panel",
+        "Increase code reusability",
+        "Note: Some features may not work or may not have the expected effect, please understand QAQ"
+      ],
+      "151": [
+        "Support shared kernel",
+        "Kernel supports Java API",
+        "Improve all functions except for the game panel",
+        "Update help documentation",
+        "Bidirectional updates for Mod private directories",
+        "Better permission requests",
+        "More powerful kernel",
+        "Customize kernel",
+        "Performance optimization",
+        "Traditional Chinese",
+        "Update Mod standards, support multiple languages",
+        "Note: This version is 1.5.5 Stable, long-term stable, slow updates, debugging/testing can choose weekly builds"
+      ]
+    }
+  },
+
+  "about": {
+    "title": "About",
+    "app": "Strive to create the best tool",
+    "developers": {
+      "title": "Developers",
+      "close": "Close",
+      "developer_0": "Nothing here (*´∀ ˋ*) "
+    },
+    "open source license": "Open Source License",
+    "open source repository": "Open Source Repository",
+    "special thanks": "Special Thanks",
+    "future plans": "Future Plans"
+  },
+
+  "setting": {
+    "title": "Settings",
+
+    "important": {
+      "title": "Important",
+      "runtime": {
+        "title": "Runtime mode",
+        "external": "External kernel",
+        "share": "Shared kernel",
+        "embed": "Embedded kernel"
+      },
+      "target": {
+        "title": "Target package name",
+        "dialog": {
+          "title": "Set target package name",
+          "hint": "Please enter the package name",
+          "determine": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "architecture": {
+        "title": "Mod & Loader runtime architecture",
+        "system": "Follow system",
+        "arm64-v8a": "arm64-v8a (64-bit)",
+        "armeabi-v7a": "armeabi-v7a (32-bit)"
+      }
+    },
+
+    "general": {
+      "title": "General",
+      "theme": {
+        "title": "Theme",
+        "system": "Follow system",
+        "light": "Light",
+        "dark": "Dark"
+      },
+      "language": {
+        "title": "Language",
+        "system": "Follow system",
+        "zh-cn": "Chinese (Simplified)",
+        "zh-hant": "Chinese (Traditional)",
+        "ru": "Russian (Русский)",
+        "en": "English",
+        "jp": "Japanese (日本語)",
+        "ko": "Korean (한국어)",
+        "it": "Italian (Italiano)",
+        "es": "Spanish (Lengua española)",
+        "fr": "French (Français)",
+        "de": "German (Deutsch)"
+      }
+    },
+
+    "file": {
+      "title": "File"
+    }
+
+  },
+
+  "Unable_to_retrieve_text": "Unable to retrieve text"
+}

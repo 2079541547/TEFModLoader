@@ -8,7 +8,6 @@ import eternal.future.effsystem.fileSystem
 import org.json.JSONObject
 import silkways.terraria.efmodloader.logic.EFLog
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
-import silkways.terraria.efmodloader.logic.efmod.Utils.showConfirmationDialog
 import silkways.terraria.efmodloader.utils.FileUtils
 import java.io.File
 import java.io.FileReader
@@ -59,18 +58,7 @@ object LoaderManager {
 
         val targetFile = File("$targetDir/${loaderFile.name}")
 
-        if (targetFile.exists()) {
-            // 如果目标文件已存在，显示确认对话框
-            showConfirmationDialog(context, targetFile.absolutePath) { shouldReplace ->
-                if (shouldReplace) {
-                    // 复制Loader文件并覆盖目标文件
-                    FileUtils.copyFile(loaderFile.absolutePath, targetFile.absolutePath, true)
-                    EFLog.i("已覆盖并安装Loader文件: ${targetFile.absolutePath}")
-                } else {
-                    EFLog.d("用户选择不覆盖现有Loader文件: ${targetFile.absolutePath}")
-                }
-            }
-        } else {
+        
             // 如果目标文件不存在，直接安装Loader文件
             val configFilePath = File(targetDir, "info.json")
             val configExists = configFilePath.exists()
@@ -88,7 +76,7 @@ object LoaderManager {
             // 复制Loader文件到目标位置
             FileUtils.copyFile(loaderFile.absolutePath, targetFile.absolutePath, true)
             EFLog.i("Loader文件已成功安装: ${targetFile.absolutePath}")
-        }
+        
     }
 
 

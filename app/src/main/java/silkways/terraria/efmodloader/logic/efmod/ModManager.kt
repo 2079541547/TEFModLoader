@@ -9,7 +9,6 @@ import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.data.TEFModLoader
 import silkways.terraria.efmodloader.logic.EFLog
 import silkways.terraria.efmodloader.logic.JsonConfigModifier
-import silkways.terraria.efmodloader.logic.efmod.Utils.showConfirmationDialog
 import silkways.terraria.efmodloader.utils.FileUtils
 import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
@@ -57,19 +56,6 @@ object ModManager {
 
         val targetFile = File("$targetDir/${modFile.name}")
 
-        if (targetFile.exists()) {
-            // 如果目标文件已存在，显示确认对话框
-            showConfirmationDialog(context, targetFile.absolutePath) { shouldReplace ->
-                if (shouldReplace) {
-                    // 复制Mod文件并覆盖目标文件
-                    FileUtils.copyFile(modFile.absolutePath, targetFile.absolutePath, true)
-                    handleModFile(targetFile)
-                    EFLog.i("已覆盖并安装Mod文件: ${targetFile.absolutePath}")
-                } else {
-                    EFLog.d("用户选择不覆盖现有Mod文件: ${targetFile.absolutePath}")
-                }
-            }
-        } else {
             // 如果目标文件不存在，直接安装Mod文件
             val configFilePath = File(targetDir, "info.json")
             val configExists = configFilePath.exists()
@@ -88,7 +74,7 @@ object ModManager {
             FileUtils.copyFile(modFile.absolutePath, targetFile.absolutePath, true)
             handleModFile(targetFile)
             EFLog.i("Mod文件已成功安装: ${targetFile.absolutePath}")
-        }
+
     }
 
 

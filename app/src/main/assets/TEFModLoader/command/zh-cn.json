@@ -1,16 +1,84 @@
 {
-  "ls": "列出某个目录的文件&文件夹，实例用法: ls 或者 ls /sdcard/",
-  "cd": "改变当前工作目录，实例用法：cd /sdcard/",
-  "cp": "复制指定文件到指定目录，实例用法：cp /sdcard/文件.txt /sdcard/Android/",
-  "cp -r": "复制指定文件夹到指定目录，实例用法：cp -r /sdcard/文件夹 /sdcard/Android/",
-  "mkdir": "创建一个文件夹，实例用法：mkdir 文件夹 或者 mkdir /sdcard/Android/ 文件夹",
-  "rm": "删除文件指定文件，实例用法：rm /sdcard/1.txt",
-  "rm -rf": "递归删除一个目录，实例用法：rm -rf /*",
-  "mv": "移动指定文件到指定目录，实例用法：mv /sdcard/文件.txt /sdcard/Android/",
-  "mv -r": "移动指定文件夹到指定目录，实例用法：mv -r /sdcard/文件夹 /sdcard/Android/",
+  "unknown": "未知命令: ",
 
-  "install -mod": "安装指定EFMod文件到本地储存，实例用法：install -mod /sdcard/MyMod.efmod",
-  "remove -mod": "卸载指定已安装的EFMod，实例用法：remove -mod 模组名称 作者名称",
-  "enable -mod": "启用指定已安装的EFMod，实例用法：enable -mod 模组名称 作者名称",
-  "disable -mod": "禁用指定已安装的EFMod，实例用法：disable -mod 模组名称 作者名称"
+  "conventional": {
+    "ls": {
+      "result": "路径下的文件/文件夹: \n",
+      "error": {
+        "0": "用法错误: ls 或 ls <directory>",
+        "1": "无法读取目录内容",
+        "2": "目录为空",
+        "3": "指定的路径不是一个有效的目录"
+      },
+      "document": [
+        "用法: ls 或 ls <directory>",
+        "说明：列出当前目录/指定目录下的文件和文件夹"
+      ]
+    },
+
+    "cd": {
+      "result": "跳转到路径: \n",
+      "error": {
+        "0": "用法错误: cd <directory>",
+        "1": "路径不存在",
+        "2": "路径是一个文件"
+      },
+      "document": [
+        "用法: cd <directory>",
+        "说明：切换当前工作目录到指定的目录"
+      ]
+    },
+
+    "pwd": {
+      "result": "当前目录: \n",
+      "document": [
+        "用法: pwd",
+        "说明：显示当前工作目录的完整路径"
+      ]
+    },
+
+    "whoami": {
+      "result": "当前用户: \n",
+      "document": [
+        "用法: whoami",
+        "说明：显示当前用户的用户名"
+      ]
+    },
+
+    "exit": {
+      "result": "加纳～",
+      "document": [
+        "用法: exit",
+        "说明：退出终端"
+      ]
+    },
+
+    "help": {
+      "result": "命令文档:\n",
+      "error": {
+        "0": "用法错误: help-c <cmd>",
+        "1": "命令不存在"
+      },
+      "document": [
+        "用法: help-c <cmd>",
+        "说明：列出指定常规指令的文档"
+      ]
+    }
+  },
+
+  "ModManager": {
+    "install-mod": {
+      "result": "已安装：",
+      "error": {
+        "0": "用法错误: install-mod <filePath>",
+        "1": "文件不存在",
+        "2": "指定为文件夹而非文件"
+      },
+      "document": [
+        "用法：install-mod <filePath>",
+        "说明：安装Mod文件"
+      ]
+    }
+  }
+
 }
