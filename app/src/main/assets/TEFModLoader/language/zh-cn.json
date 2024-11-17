@@ -18,18 +18,25 @@
       "title": "工具箱",
       "unfinished": "还在加班QAQ...",
       "terminal": "终端",
-      "start": "配置并启动游戏",
+      "start": "配置&启动",
       "import archive": "导入存档",
       "import configuration": "导入配置",
       "manager": {
         "title": "文件查看"
       },
       "export archive": "导出存档",
-      "export data": "导出所有数据"
+      "export data": "导出所有数据",
+      "dialog": {
+        "title": "少女祈祷中...",
+        "close": "关闭",
+        "text": "正在为您配置Mod&内核"
+      }
     },
 
     "manager": {
       "title": "管理",
+      "installation successful": "安装成功",
+      "installation failed": "安装失败",
       "efmod": {
         "install": "安装EFMod",
         "manager": "EFMod管理"
@@ -207,6 +214,39 @@
 
   "terminal": {
     "title": "终端"
+  },
+
+  "manager": {
+    "mod": {
+      "title": "EFMod管理",
+      "info_dialog": {
+        "version": "版本：",
+        "author": "作者：",
+        "introduce": "介绍：",
+        "url": "开源链接：",
+        "close": "关闭"
+      },
+      "delete_dialog": {
+        "title": "移除",
+        "determine": "确定",
+        "cancel": "取消",
+        "result": "请退出页面刷新"
+      }
+    },
+
+    "loader": {
+      "title": "内核管理",
+      "version": "版本：",
+      "author": "作者：",
+      "introduce": "介绍：",
+      "url": "开源链接：",
+      "delete_dialog": {
+        "title": "移除",
+        "determine": "确定",
+        "cancel": "取消",
+        "result": "请退出页面刷新"
+      }
+    }
   },
 
   "Unable_to_retrieve_text": "无法获取文本"

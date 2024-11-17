@@ -7,12 +7,12 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.DriveFileMove
@@ -28,20 +28,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import com.ramcosta.composedestinations.annotation.Destination
-import kotlinx.coroutines.launch
 import silkways.terraria.efmodloader.MainApplication
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.logic.LanguageHelper
+import silkways.terraria.efmodloader.logic.efmod.Init
 import silkways.terraria.efmodloader.ui.activity.TerminalActivity
-import silkways.terraria.efmodloader.ui.activity.WebActivity
 import silkways.terraria.efmodloader.ui.utils.LanguageUtils
+import silkways.terraria.efmodloader.utils.FileUtils
 import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
-
-
-
+import java.io.FileInputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 
 @SuppressLint("StaticFieldLeak")
@@ -51,12 +52,70 @@ private val jsonUtils = LanguageUtils(
     "main"
 )
 
+private var snackbarHostState = SnackbarHostState()
+
 @Destination
 @Composable
 fun ToolBoxScreen() {
     val context = LocalContext.current
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
+    var showDialog by remember { mutableStateOf(false) }
+
+    val selectFilesLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+        if (uris.isNotEmpty()) {
+            val efmodFilePaths = uris.mapNotNull { uri ->
+                FileUtils.getRealPathFromURI(uri, context)?.let { path ->
+                    File(path).absolutePath
+                }
+            }
+
+            if (efmodFilePaths.isNotEmpty()) {
+                efmodFilePaths.forEach { filePath ->
+                    val file = File(filePath)
+                    val extension = file.extension
+
+                    val rootDirectory = SPUtils.readString(Settings.FileImportPath, "${context.getExternalFilesDir(null)?.absolutePath?.let { File(it).parent }}")
+
+                    val destinationPlyPath = "$rootDirectory/Players/"
+                    val destinationWldPath = "$rootDirectory/Worlds/"
+                    val destinationPath = "$rootDirectory/"
+
+                    when (extension) {
+                        "plr" -> {
+                            // 复制 .plr 文件
+                            handleFile(file, destinationPlyPath, "PLR")
+                        }
+                        "wld" -> {
+                            // 复制 .wld 文件
+                            handleFile(file, destinationWldPath, "WLD")
+                        }
+                        else -> {
+                            // 复制其他类型的文件
+                            handleFile(file, destinationPath, "OTHER")
+                        }
+                    }
+                }
+            } else {
+                println("No valid files selected.")
+            }
+        }
+    }
+
+    val createFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uris ->
+       if (uris != null) {
+           val dirPaths = listOf(
+               "${context.getExternalFilesDir(null)?.parent}/Worlds",
+               "${context.getExternalFilesDir(null)?.parent}/Players",
+               "${context.getExternalFilesDir(null)?.parent}/OldSaves"
+           )
+           saveZipToFile(uris, dirPaths, context)
+       }
+    }
+
+    val createFileLauncher_1 = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uris ->
+        if (uris != null) {
+            saveZipToFile(uris, listOf(), context, true)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -82,10 +141,6 @@ fun ToolBoxScreen() {
                     ) {
                         Button(
                             onClick = {
-                                scope.launch {
-                                    snackbarHostState.showSnackbar(jsonUtils.getString("toolbox", "unfinished"))
-                                }
-
                                 val intent = Intent(context, TerminalActivity::class.java)
                                 intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                                 context.startActivity(intent)
@@ -100,7 +155,10 @@ fun ToolBoxScreen() {
                             }
                         }
                         Button(
-                            onClick = {},
+                            onClick = {
+                                Init(context).initialization()
+                                showDialog = true
+                            },
                             modifier = Modifier.weight(1f)
                         ) {
                             Row(
@@ -119,7 +177,7 @@ fun ToolBoxScreen() {
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         Button(
-                            onClick = {},
+                            onClick = { selectFilesLauncher.launch("*/*") },
                             modifier = Modifier.weight(1f)
                         ) {
                             Row(
@@ -130,7 +188,7 @@ fun ToolBoxScreen() {
                             }
                         }
                         Button(
-                            onClick = {},
+                            onClick = { selectFilesLauncher.launch("*/*") },
                             modifier = Modifier.weight(1f)
                         ) {
                             Row(
@@ -167,7 +225,7 @@ fun ToolBoxScreen() {
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         Button(
-                            onClick = {},
+                            onClick = { createFileLauncher.launch("游戏存档.zip") },
                             modifier = Modifier.weight(1f)
                         ) {
                             Row(
@@ -178,7 +236,7 @@ fun ToolBoxScreen() {
                             }
                         }
                         Button(
-                            onClick = {},
+                            onClick = { createFileLauncher_1.launch("TEFModLoader数据") },
                             modifier = Modifier.weight(1f)
                         ) {
                             Row(
@@ -193,6 +251,47 @@ fun ToolBoxScreen() {
             }
         }
     )
+
+    if (showDialog) {
+        AlertDialog(
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 18.dp),
+            onDismissRequest = { showDialog = false },
+            title = {
+                Text(
+                    text = jsonUtils.getString("toolbox", "dialog", "title"),
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            },
+            text = {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text(
+                        text = jsonUtils.getString("toolbox", "dialog", "text"),
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showDialog = false
+                    }
+                ) {
+                    Text(text = jsonUtils.getString("toolbox", "dialog", "close"), fontSize = 14.sp)
+                }
+            },
+            shape = MaterialTheme.shapes.extraLarge,
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            containerColor = MaterialTheme.colorScheme.surface,
+            iconContentColor = MaterialTheme.colorScheme.onSurface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
 }
 
 data class FileItem(val name: String, val isDirectory: Boolean, val path: String)
@@ -306,4 +405,83 @@ private fun getUriForFile(context: Context, fileName: String): Uri? {
         Log.i("MainActivity", "无法获取外部文件目录")
         return null
     }
+}
+
+
+private fun saveZipToFile(
+    uri: Uri, dirPaths: List<String> = listOf<String>(), context: Context,
+    isAll: Boolean = false) {
+    try {
+        val fileOutputStream = context.contentResolver.openOutputStream(uri)
+        fileOutputStream?.use { outputStream ->
+            val zipOut = ZipOutputStream(outputStream)
+
+            if (isAll) {
+                val dir = File("sdcard/Android/data/${SPUtils.readString(Settings.FileExportPath, context.packageName)}")
+                val dir2 = File("data/data${SPUtils.readString(Settings.FileExportPath, context.packageName)}")
+
+                compressDir(dir, "sdcard/", zipOut)
+                compressDir(dir2, "data/", zipOut)
+            }
+            else {
+                for (dirPath in dirPaths) {
+                    val dir = File(dirPath)
+                    if (dir.exists()) {
+                        compressDir(dir, dir.name + "/", zipOut)
+                    }
+
+                }
+            }
+            zipOut.close()
+        }
+    } catch (e: Exception) {
+        Log.e("MainActivity", "Error saving ZIP file", e)
+    }
+}
+
+private fun compressDir(dir: File, parentPath: String, zipOut: ZipOutputStream) {
+    val files = dir.listFiles()
+    if (files != null) {
+        for (file in files) {
+            try {
+                if (file.isDirectory) {
+                    compressDir(file, parentPath + file.name + "/", zipOut)
+                } else {
+                    val entryName = parentPath + file.name
+                    zipOut.putNextEntry(ZipEntry(entryName))
+                    val buffer = ByteArray(1024)
+                    var length: Int
+                    val fis = FileInputStream(file)
+                    while (fis.read(buffer).also { length = it } > 0) {
+                        zipOut.write(buffer, 0, length)
+                    }
+                    zipOut.closeEntry()
+                    fis.close()
+                }
+            } catch (e: Exception) {
+                // Log the exception and continue to the next file
+                println("Failed to compress file: ${file.absolutePath}. Reason: ${e.message}")
+                continue
+            }
+        }
+    }
+}
+
+
+
+private fun handleFile(file: File, destinationPath: String, fileType: String) {
+    val fileName = file.name
+    val destinationFile = File(destinationPath, fileName)
+
+    // 创建目录（如果不存在）
+    val destinationDirectory = destinationFile.parentFile
+    if (destinationDirectory != null) {
+        if (!destinationDirectory.exists() && !destinationDirectory.mkdirs()) {
+            println("Failed to create directory: ${destinationDirectory.absolutePath}")
+            return
+        }
+    }
+        // 文件不存在，复制文件
+    FileUtils.copyFile(file.absolutePath, destinationFile.absolutePath, true)
+    println("Copied $fileType file: ${file.name} to $destinationPath")
 }

@@ -32,6 +32,8 @@ import silkways.terraria.efmodloader.MainApplication
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.logic.EFLog
 import silkways.terraria.efmodloader.logic.LanguageHelper
+import silkways.terraria.efmodloader.logic.efmod.LoaderManager
+import silkways.terraria.efmodloader.logic.efmod.ModManager.install
 import silkways.terraria.efmodloader.ui.activity.TerminalViewModel
 import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
@@ -46,6 +48,12 @@ class TerminalManager(context: Context) {
         MainApplication.getContext(),
         LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), MainApplication.getContext()),
         "conventional"
+    )
+
+    private val ModManager = LanguageUtils(
+        MainApplication.getContext(),
+        LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), MainApplication.getContext()),
+        "ModManager"
     )
 
     var workPath = context.dataDir.toString()
@@ -105,6 +113,36 @@ class TerminalManager(context: Context) {
                 CommandResult(AnnotatedString("'${args.first()}'" + Conventional.getString("help", "result") + Conventional.getArrayString(args.first(), "document")))
             } else {
                 CommandResult(AnnotatedString(Conventional.getString("help", "error", "0")))
+            }
+        }
+
+        registerCommand("install-mod") { args ->
+            if (args.isNotEmpty()) {
+                if (!File(args.first()).exists()) {
+                    CommandResult(AnnotatedString("'${args.first()}': " + ModManager.getString("install-mod", "error", "1")))
+                } else if (File(args.first()).isDirectory) {
+                    CommandResult(AnnotatedString("'${args.first()}': " + ModManager.getString("install-mod", "error", "2")))
+                } else {
+                    install(context, File(args.first()), File("${context.getExternalFilesDir(null)?.absolutePath}/TEFModLoader/EFModData"))
+                    CommandResult(AnnotatedString(ModManager.getString("install-mod", "result") + "'${args.first()}'"))
+                }
+            } else {
+                CommandResult(AnnotatedString(ModManager.getString("install-mod", "error", "0")))
+            }
+        }
+
+        registerCommand("install-loader") { args ->
+            if (args.isNotEmpty()) {
+                if (!File(args.first()).exists()) {
+                    CommandResult(AnnotatedString("'${args.first()}': " + ModManager.getString("install-mod", "error", "1")))
+                } else if (File(args.first()).isDirectory) {
+                    CommandResult(AnnotatedString("'${args.first()}': " + ModManager.getString("install-mod", "error", "2")))
+                } else {
+                    LoaderManager.install(context, File(args.first()), File("${context.getExternalFilesDir(null)?.absolutePath}/TEFModLoader/EFModLoaderData"))
+                    CommandResult(AnnotatedString(ModManager.getString("install-mod", "result") + "'${args.first()}'"))
+                }
+            } else {
+                CommandResult(AnnotatedString(ModManager.getString("install-mod", "error", "0")))
             }
         }
     }

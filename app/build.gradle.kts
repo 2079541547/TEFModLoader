@@ -6,6 +6,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("TEFModLoader.keystore")
+            keyAlias = "TEFModLoader"
+            storePassword = "EternalFuture"
+            keyPassword = "TEFModLoader"
+        }
+    }
     namespace = "silkways.terraria.efmodloader"
     compileSdk = 35
 

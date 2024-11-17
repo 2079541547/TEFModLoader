@@ -39,6 +39,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import silkways.terraria.efmodloader.MainApplication
 import silkways.terraria.efmodloader.data.Settings
+import silkways.terraria.efmodloader.logic.ApplicationSettings.isDarkThemeEnabled
 import silkways.terraria.efmodloader.logic.LanguageHelper
 import silkways.terraria.efmodloader.logic.terminal.LanguageUtils
 import silkways.terraria.efmodloader.logic.terminal.TerminalManager
@@ -59,7 +60,7 @@ class TerminalActivity : EFActivity() {
         ).loadJsonFromAsset()
 
         setContent {
-            TEFModLoaderComposeTheme {
+            TEFModLoaderComposeTheme(darkTheme = isDarkThemeEnabled(this)) {
                 TerminalComposable()
             }
         }
@@ -202,7 +203,7 @@ fun TerminalComposable() {
                         horizontalArrangement = Arrangement.SpaceEvenly,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        val commands = listOf("ls", "cd", "pwd", "whoami", "clear", "exit", "help-", "help-c")
+                        val commands = listOf("help-", "help-c", "install-mod", "install-loader")
 
                         items(commands.size) { index ->
                             CommandItem(cmd = commands[index], viewModel = viewModel)

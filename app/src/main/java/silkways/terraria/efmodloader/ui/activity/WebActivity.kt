@@ -35,6 +35,7 @@ import com.ramcosta.composedestinations.animations.defaults.NestedNavGraphDefaul
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.rememberNavHostEngine
 import silkways.terraria.efmodloader.data.Settings
+import silkways.terraria.efmodloader.logic.ApplicationSettings.isDarkThemeEnabled
 import silkways.terraria.efmodloader.logic.LanguageHelper
 import silkways.terraria.efmodloader.logic.Markdown
 import silkways.terraria.efmodloader.ui.screen.CustomTopBar
@@ -78,7 +79,7 @@ class WebActivity: EFActivity() {
         intent.getStringExtra("webUrl").toString()
 
         setContent {
-            TEFModLoaderComposeTheme {
+            TEFModLoaderComposeTheme(darkTheme = isDarkThemeEnabled(this)) {
                 val navController = rememberNavController()
                 val snackBarHostState = remember { SnackbarHostState() }
                 val navHostEngine = rememberNavHostEngine(
@@ -127,7 +128,7 @@ fun WebViewComposable(
     privateDirectory: String? = null
 ) {
     val context = LocalContext.current
-    val isDarkTheme = isSystemInDarkTheme()
+    val isDarkTheme = isDarkThemeEnabled(context)
 
     val markdownContent = Markdown.loadMarkdownFromAssets(
         context,

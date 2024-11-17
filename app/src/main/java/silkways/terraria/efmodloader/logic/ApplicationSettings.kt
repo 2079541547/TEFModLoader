@@ -3,6 +3,7 @@ package silkways.terraria.efmodloader.logic
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import silkways.terraria.efmodloader.data.Settings
+import silkways.terraria.efmodloader.utils.SPUtils
 
 object ApplicationSettings {
 
@@ -14,13 +15,12 @@ object ApplicationSettings {
      */
     @JvmStatic
     fun isDarkThemeEnabled(context: Context): Boolean {
-        // 从 JSON 配置文件中读取主题值
-        val themeValue = JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.themeKey)
+        val themeValue = SPUtils.readInt(Settings.themeKey, -1)
         EFLog.i("读取的主题值: $themeValue")
 
         // 根据主题值确定是否启用暗黑主题
         val isDarkThemeEnabled = when (themeValue) {
-            0 -> {
+            -1 -> {
                 // 使用系统默认设置
                 val defaultNightMode = AppCompatDelegate.getDefaultNightMode()
                 val isSystemDarkModeEnabled = defaultNightMode == AppCompatDelegate.MODE_NIGHT_YES

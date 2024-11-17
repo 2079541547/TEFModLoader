@@ -19,6 +19,7 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.animations.defaults.NestedNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.animations.defaults.RootNavGraphDefaultAnimations
 import com.ramcosta.composedestinations.rememberNavHostEngine
+import silkways.terraria.efmodloader.logic.ApplicationSettings.isDarkThemeEnabled
 import silkways.terraria.efmodloader.ui.screen.AboutScreen
 import silkways.terraria.efmodloader.ui.screen.NavGraphs
 import silkways.terraria.efmodloader.ui.theme.TEFModLoaderComposeTheme
@@ -53,7 +54,7 @@ class AboutActivity: EFActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            TEFModLoaderComposeTheme {
+            TEFModLoaderComposeTheme(darkTheme = isDarkThemeEnabled(this)) {
                 val navController = rememberNavController()
                 val snackBarHostState = remember { SnackbarHostState() }
                 val navHostEngine = rememberNavHostEngine(

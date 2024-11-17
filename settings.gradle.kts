@@ -21,4 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "TEFModLoader-Compose"
 include(":app")
- 
+include(":load")

@@ -1,6 +1,8 @@
 package silkways.terraria.efmodloader.ui.screen
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,16 +22,20 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import com.ramcosta.composedestinations.spec.DestinationStyle
 import silkways.terraria.efmodloader.MainApplication
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.logic.EFLog
 import silkways.terraria.efmodloader.logic.LanguageHelper
+import silkways.terraria.efmodloader.ui.activity.MainActivity
 import silkways.terraria.efmodloader.ui.utils.LanguageUtils
 import silkways.terraria.efmodloader.utils.SPUtils
+import java.io.File
 
 @SuppressLint("StaticFieldLeak")
 private val jsonUtils = LanguageUtils(
@@ -47,7 +53,9 @@ private var ExportDialog = mutableStateOf(false)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen() {
-    val settings = remember { buildSettingsList() }
+    val context = LocalContext.current
+
+    val settings = remember { buildSettingsList(context) }
 
     Scaffold(
         topBar = { CustomTopBar(jsonUtils.getString("title")) },
@@ -66,8 +74,6 @@ fun SettingsScreen() {
         }
     )
 
-
-
     if (targetDialog.value) {
         SettingsPacknameDialog(onDismissRequest = { targetDialog.value = false })
     }
@@ -85,7 +91,9 @@ fun SettingsScreen() {
     }
 }
 
-fun buildSettingsList(): List<SettingItem> {
+fun buildSettingsList(context: Context): List<SettingItem> {
+
+    context as Activity
     return listOf(
 
         SettingItem.Title(jsonUtils.getString("important", "title")),
@@ -159,16 +167,19 @@ fun buildSettingsList(): List<SettingItem> {
             onMenuItemClick = { menuItem ->
                 when(menuItem){
                     jsonUtils.getString("general", "theme", "system") -> {
+                        File("${context.externalCacheDir}/Reboot").mkdirs()
                         SPUtils.putInt(Settings.themeKey, -1)
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                        context.recreate()
                     }
                     jsonUtils.getString("general", "theme", "light") -> {
+                        File("${context.externalCacheDir}/Reboot").mkdirs()
                         SPUtils.putInt(Settings.themeKey, 1)
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                        context.recreate()
                     }
                     jsonUtils.getString("general", "theme", "dark") -> {
+                        File("${context.externalCacheDir}/Reboot").mkdirs()
                         SPUtils.putInt(Settings.themeKey, 2)
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        context.recreate()
                     }
                 }
             }
@@ -210,6 +221,8 @@ fun buildSettingsList(): List<SettingItem> {
                 ).indexOf(menuItem)
                 if (index != -1) {
                     setLanguage(index)
+                    File("${context.externalCacheDir}/Reboot").mkdirs()
+                    context.recreate()
                 } else {
                     EFLog.e("未找到匹配的语言选项")
                 }

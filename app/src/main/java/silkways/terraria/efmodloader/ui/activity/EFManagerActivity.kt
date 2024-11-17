@@ -25,16 +25,22 @@ package silkways.terraria.efmodloader.ui.activity
 
 import android.os.Bundle
 import androidx.activity.compose.setContent
+import silkways.terraria.efmodloader.logic.ApplicationSettings.isDarkThemeEnabled
+import silkways.terraria.efmodloader.ui.screen.EFModManagerScreen
+import silkways.terraria.efmodloader.ui.screen.PreviewKernelManager
 import silkways.terraria.efmodloader.ui.theme.TEFModLoaderComposeTheme
 
 class EFManagerActivity: EFActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         init()
         super.onCreate(savedInstanceState)
-
         setContent {
-            TEFModLoaderComposeTheme {
-                //TerminalComposable()
+            TEFModLoaderComposeTheme(darkTheme = isDarkThemeEnabled(this)) {
+                if (intent.getBooleanExtra("isMod", true)) {
+                    EFModManagerScreen()
+                } else {
+                    PreviewKernelManager()
+                }
             }
         }
     }
