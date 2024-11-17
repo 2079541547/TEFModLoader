@@ -1,7 +1,7 @@
 /*******************************************************************************
- * 文件名称: Android
- * 项目名称: EFModLoader
- * 创建时间: 2024/11/1
+ * 文件名称: api
+ * 项目名称: TEFModLoader
+ * 创建时间: 2024/11/9 上午4:07
  * 作者: EternalFuture゙
  * Github: https://github.com/2079541547
  * 版权声明: Copyright © 2024 EternalFuture゙. All rights reserved.
@@ -17,7 +17,7 @@
  *
  *         You should have received a copy of the GNU Affero General Public License
  *         along with this program. If not, see <https://www.gnu.org/licenses/>.
- * 描述信息: 本文件为EFModLoader项目中的一部分。
+ * 描述信息: 本文件为TEFModLoader项目中的一部分。
  * 注意事项: 请严格遵守GNU AGPL v3.0协议使用本代码，任何未经授权的商业用途均属侵权行为。
  *******************************************************************************/
 
@@ -25,15 +25,25 @@
 
 #include <iostream>
 #include <jni.h>
+<<<<<<<< HEAD:load/src/main/cpp/EFModLoader/include/EFModLoader/android/Android.hpp
 #include <EFModLoader/android/api.hpp>
+========
+#include "../api/RegisterApi.hpp"
+>>>>>>>> main:load/src/main/cpp/EFModLoader/include/EFModLoader/android/api.hpp
 
-namespace EFModLoader::Android {
+namespace EFModLoader::Android::API {
 
     using namespace std;
+<<<<<<<< HEAD:load/src/main/cpp/EFModLoader/include/EFModLoader/android/Android.hpp
 
     extern string* get_PackageName;
     extern string* get_cacheDir;
 
     void Load(JNIEnv *env, const string& EFModLoader);
     void Load_Loader(JNIEnv *env, const string& EFModLoader);
+========
+    
+    void Register();
+
+>>>>>>>> main:load/src/main/cpp/EFModLoader/include/EFModLoader/android/api.hpp
 }

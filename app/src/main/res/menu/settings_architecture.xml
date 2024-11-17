@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/fllow_sysytem"
+        android:title="@string/settings_language_1" />
+
+    <item
+        android:id="@+id/arm64"
+        android:title="arm64-v8a" />
+
+    <item
+        android:id="@+id/arm32"
+        android:title="armeabi-v7a" />
+
+</menu>
