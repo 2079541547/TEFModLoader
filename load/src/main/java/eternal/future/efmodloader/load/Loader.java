@@ -3,7 +3,6 @@ package eternal.future.efmodloader.load;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.util.Log;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
