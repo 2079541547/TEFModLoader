@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.2"
+agp = "8.6.1"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 accompanist = "0.36.0"
@@ -10,7 +10,7 @@ activityCompose = "1.9.3"
 composeBom = "2024.04.01"
 ksp = "2.0.21-1.0.25"
 androidxCoreSplashscreen = "1.0.1"
-commonmark = "0.22.0"
+commonmark = "0.24.0"
 appcompat = "1.7.0"
 
 [libraries]
@@ -24,7 +24,7 @@ androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.7.2" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 
