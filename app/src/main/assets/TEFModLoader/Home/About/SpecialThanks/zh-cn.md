@@ -19,6 +19,10 @@
 - 参与软件重写，优化设置页面
 ---
 
+## JiangNight
+- UI架构重写基础
+---
+
 # 代码贡献 <a id="code-contribution"></a>
 
 ---

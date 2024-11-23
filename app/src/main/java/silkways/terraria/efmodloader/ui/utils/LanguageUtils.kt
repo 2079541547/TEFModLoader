@@ -146,10 +146,10 @@ class LanguageUtils(private val context: Context, private val language: String, 
         val sb = StringBuilder()
         for (i in 0 until array.length()) {
             val item = array.optString(i, "Unable_to_retrieve_text")
-            sb.append("$i. $item\n")
+            sb.append("${i + 1}. $item\n") // 序号从1开始
         }
         if (sb.isNotEmpty()) {
-            sb.deleteCharAt(sb.length - 1) // Remove the last newline character
+            sb.deleteCharAt(sb.length - 1) // 移除最后一个换行符
         }
         EFLog.d("成功获取代码 '$code' 对应的数组并拼接为字符串")
         return sb.toString()
@@ -171,10 +171,10 @@ class LanguageUtils(private val context: Context, private val language: String, 
         val sb = StringBuilder()
         for (i in 0 until array.length()) {
             val item = array.optString(i, "Unable_to_retrieve_text")
-            sb.append("$i. $item\n")
+            sb.append("${i + 1}. $item\n") // 序号从1开始
         }
         if (sb.isNotEmpty()) {
-            sb.deleteCharAt(sb.length - 1) // Remove the last newline character
+            sb.deleteCharAt(sb.length - 1) // 移除最后一个换行符
         }
         EFLog.d("成功获取代码 '$code' 和 '$subCode' 对应的数组并拼接为字符串")
         return sb.toString()

@@ -76,7 +76,7 @@ object LoaderManager {
             // 复制Loader文件到目标位置
             FileUtils.copyFile(loaderFile.absolutePath, targetFile.absolutePath, true)
             EFLog.i("Loader文件已成功安装: ${targetFile.absolutePath}")
-        
+
     }
 
 
@@ -100,23 +100,23 @@ object LoaderManager {
                 val jsonObject = JSONObject(jsonString)
                 EFLog.i("成功解析JSON配置文件")
 
-                // 遍历JSON对象
-                val iterator = jsonObject.keys()
-                while (iterator.hasNext()) {
-                    val key = iterator.next()
-                    if (jsonObject.getBoolean(key)) {
-                        if (!File(key).exists()) return
+                    val key = JsonConfigModifier.readJsonValue(context, "TEFModLoader/EFModLoaderData/info.json", "selectedLoaderPath").toString()
+                    if (File(key).exists()) {
                         EFLog.d("处理Loader文件: $key")
-                        when (SPUtils.readInt(Settings.jsonPath, 0)) {
+                        when (SPUtils.readInt(Settings.Runtime, 0)) {
                             0 -> {
                                 fileSystem.EFML.extractLoader(
                                     key,
-                                    when(SPUtils.readString("architecture", Build.CPU_ABI)) {
-                                        "x86" -> "armeabi-v7a"
-                                        "x86_64" -> "arm64-v8a"
-                                        else -> SPUtils.readString("architecture", Build.CPU_ABI)
-                                    }.toString(),
-                                    "/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/kernel"
+                                    when(SPUtils.readInt("architecture", 0)) {
+                                        1 -> "armeabi-v7a"
+                                        2 -> "arm64-v8a"
+                                        else -> when(Build.CPU_ABI){
+                                            "x86_64" -> "arm64-v8a"
+                                            "x86" -> "armeabi-v7a"
+                                            else -> Build.CPU_ABI
+                                        }
+                                    },
+                                    "/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModLoader"
                                 )
                                 EFLog.i("提取Loader到: /sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/kernel, Key: $key")
                             }
@@ -130,10 +130,14 @@ object LoaderManager {
 
                                 fileSystem.EFML.extractLoader(
                                     key,
-                                    when(SPUtils.readString("architecture", Build.CPU_ABI)) {
-                                        "x86" -> "armeabi-v7a"
-                                        "x86_64" -> "arm64-v8a"
-                                        else -> SPUtils.readString("architecture", Build.CPU_ABI)
+                                    when(SPUtils.readInt("architecture", 0)) {
+                                        1 -> "armeabi-v7a"
+                                        2 -> "arm64-v8a"
+                                        else -> when(Build.CPU_ABI){
+                                            "x86_64" -> "arm64-v8a"
+                                            "x86" -> "armeabi-v7a"
+                                            else -> Build.CPU_ABI
+                                        }
                                     }.toString(),
                                     "data/data/$gamePackageName/cache/EFModLoader"
                                 )
@@ -145,7 +149,7 @@ object LoaderManager {
                             }
                         }
                     }
-                }
+
             } catch (e: IOException) {
                 // 捕获并记录IO异常
                 EFLog.e("读取或解析配置文件时发生错误: $filePath, 错误信息: ${e.message}")

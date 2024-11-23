@@ -1,3 +1,5 @@
+import org.gradle.internal.configuration.problems.PropertyTrace
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -21,8 +23,8 @@ android {
         applicationId = "silkways.terraria.efmodloader"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 200
+        versionName = "2.0.0 Stable"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -49,6 +51,8 @@ android {
 }
 
 dependencies {
+    compileOnly(project(":load"))
+
     implementation(libs.commonmark)
 
     implementation(libs.androidx.appcompat)

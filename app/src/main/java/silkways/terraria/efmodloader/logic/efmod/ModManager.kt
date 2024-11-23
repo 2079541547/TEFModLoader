@@ -89,6 +89,12 @@ object ModManager {
         val file = File(filePath)
         if (file.exists()) {
             try {
+
+                val gamePackageName = SPUtils.readString(
+                    Settings.GamePackageName, "com.and.games505.TerrariaPaid")
+                if (File("data/data/$gamePackageName/cache/EFModX/").exists()) FileUtils.deleteDirectory(File("data/data/$gamePackageName/cache/EFModX"))
+                if (File("data/data/$gamePackageName/cache/EFMod/").exists()) FileUtils.deleteDirectory(File("data/data/$gamePackageName/cache/EFMod"))
+
                 // 读取文件内容
                 val bufferedReader = file.bufferedReader()
                 val jsonString = bufferedReader.use { it.readText() }
@@ -105,15 +111,19 @@ object ModManager {
                     if (jsonObject.getBoolean(key)) {
                         if (!File(key).exists()) return
                         EFLog.d("处理Mod文件: $key")
-                        when (SPUtils.readInt(Settings.jsonPath, 0)) {
+                        when (SPUtils.readInt(Settings.Runtime, 0)) {
                             0 -> {
                                 if (fileSystem.EFMC.getModInfo(key)["SpecialLoading"] as Boolean) {
                                     fileSystem.EFMC.extractExecutable(
                                         key,
-                                        when(SPUtils.readString("architecture", Build.CPU_ABI)) {
-                                            "x86" -> "armeabi-v7a"
-                                            "x86_64" -> "arm64-v8a"
-                                            else -> SPUtils.readString("architecture", Build.CPU_ABI)
+                                        when(SPUtils.readInt("architecture", 0)) {
+                                            1 -> "armeabi-v7a"
+                                            2 -> "arm64-v8a"
+                                            else -> when(Build.CPU_ABI){
+                                                "x86_64" -> "arm64-v8a"
+                                                "x86" -> "armeabi-v7a"
+                                                else -> Build.CPU_ABI
+                                            }
                                         }.toString(),
                                         "/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX/"
                                     )
@@ -121,10 +131,14 @@ object ModManager {
                                 } else {
                                     fileSystem.EFMC.extractExecutable(
                                         key,
-                                        when(SPUtils.readString("architecture", Build.CPU_ABI)) {
-                                            "x86" -> "armeabi-v7a"
-                                            "x86_64" -> "arm64-v8a"
-                                            else -> SPUtils.readString("architecture", Build.CPU_ABI)
+                                        when(SPUtils.readInt("architecture", 0)) {
+                                            1 -> "armeabi-v7a"
+                                            2 -> "arm64-v8a"
+                                            else -> when(Build.CPU_ABI){
+                                                "x86_64" -> "arm64-v8a"
+                                                "x86" -> "armeabi-v7a"
+                                                else -> Build.CPU_ABI
+                                            }
                                         }.toString(),
                                         "/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod/"
                                     )
@@ -133,19 +147,17 @@ object ModManager {
                             }
 
                             1 -> {
-                                val gamePackageName = JsonConfigModifier.readJsonValue(
-                                    context,
-                                    Settings.jsonPath,
-                                    Settings.GamePackageName
-                                ) as String
-
                                 if (fileSystem.EFMC.getModInfo(key)["SpecialLoading"] as Boolean) {
                                     fileSystem.EFMC.extractExecutable(
                                         key,
-                                        when(SPUtils.readString("architecture", Build.CPU_ABI)) {
-                                            "x86" -> "armeabi-v7a"
-                                            "x86_64" -> "arm64-v8a"
-                                            else -> SPUtils.readString("architecture", Build.CPU_ABI)
+                                        when(SPUtils.readInt("architecture", 0)) {
+                                            1 -> "armeabi-v7a"
+                                            2 -> "arm64-v8a"
+                                            else -> when(Build.CPU_ABI){
+                                                "x86_64" -> "arm64-v8a"
+                                                "x86" -> "armeabi-v7a"
+                                                else -> Build.CPU_ABI
+                                            }
                                         }.toString(),
                                         "data/data/$gamePackageName/cache/EFModX/"
                                     )
@@ -153,10 +165,14 @@ object ModManager {
                                 } else {
                                     fileSystem.EFMC.extractExecutable(
                                         key,
-                                        when(SPUtils.readString("architecture", Build.CPU_ABI)) {
-                                            "x86" -> "armeabi-v7a"
-                                            "x86_64" -> "arm64-v8a"
-                                            else -> SPUtils.readString("architecture", Build.CPU_ABI)
+                                        when(SPUtils.readInt("architecture", 0)) {
+                                            1 -> "armeabi-v7a"
+                                            2 -> "arm64-v8a"
+                                            else -> when(Build.CPU_ABI){
+                                                "x86_64" -> "arm64-v8a"
+                                                "x86" -> "armeabi-v7a"
+                                                else -> Build.CPU_ABI
+                                            }
                                         }.toString(),
                                         "data/data/$gamePackageName/cache/EFMod/"
                                     )

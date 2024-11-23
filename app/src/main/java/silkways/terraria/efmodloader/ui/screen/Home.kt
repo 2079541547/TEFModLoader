@@ -7,7 +7,6 @@ import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -39,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -46,6 +46,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import org.json.JSONArray
@@ -62,6 +63,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.Calendar
 import java.util.Random
+import kotlin.system.exitProcess
 
 @SuppressLint("StaticFieldLeak")
 private val jsonUtils = LanguageUtils(
@@ -78,6 +80,7 @@ fun HomeScreen() {
     val yiYanArray = remember { getQuotesArray() }
     val (currentYiYan, setCurrentYiYan) = remember { mutableStateOf(getRandomQuote(yiYanArray)) }
     val showUpdateLogsDialog = remember { mutableStateOf(false) }
+    val showAgreementDialog  = remember { mutableStateOf(SPUtils.readBoolean("Agreement", true)) }
 
     Scaffold(
         topBar = {
@@ -164,11 +167,11 @@ fun HomeScreen() {
                                 modifier = Modifier.fillMaxWidth()
                             )
                             Text(
-                                text = "1.5.5 Stable",
+                                text = "2.0.0 Stable",
                                 modifier = Modifier.fillMaxWidth()
                             )
                             Text(
-                                text = jsonUtils.getArrayString("Update log", "151"),
+                                text = jsonUtils.getArrayString("Update log", "200"),
                                 fontSize = 13.sp,
                                 modifier = Modifier
                                     .padding(start = 10.dp)
@@ -183,6 +186,8 @@ fun HomeScreen() {
 
     if (showUpdateLogsDialog.value) {
         AlertDialog(
+            modifier = Modifier
+                .padding(horizontal = 5.dp, vertical = 20.dp),
             onDismissRequest = {
                 showUpdateLogsDialog.value = false
             },
@@ -192,11 +197,11 @@ fun HomeScreen() {
             text = {
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(5.dp),
-                    contentPadding = PaddingValues(5.dp)
+                        .padding(horizontal = 5.dp, vertical = 5.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     val logItems = listOf(
+                        LogItem("2.0.0 Stable", jsonUtils.getArrayString("Update log", "200")),
                         LogItem("1.5.5 Stable", jsonUtils.getArrayString("Update log", "151")),
                         LogItem("1.5.0", jsonUtils.getArrayString("Update log", "150")),
                         LogItem("1.2.1", jsonUtils.getArrayString("Update log", "121")),
@@ -218,6 +223,8 @@ fun HomeScreen() {
             }
         )
     }
+
+    agreementDialog(showAgreementDialog)
 }
 
 @Composable
@@ -355,6 +362,72 @@ private fun LogItemCard(logItem: LogItem) {
             color = MaterialTheme.colorScheme.outline,
             thickness = 1.dp,
             modifier = Modifier.padding(vertical = 8.dp)
+        )
+    }
+}
+
+
+@Composable
+private fun agreementDialog(agreementDialog: MutableState<Boolean>) {
+    if (agreementDialog.value) {
+
+        val text = LanguageUtils(
+            MainApplication.getContext(),
+            LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), MainApplication.getContext()),
+            "agreement"
+        )
+
+        AlertDialog(
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 18.dp),
+            onDismissRequest = { agreementDialog.value = false },
+            title = {
+                Text(
+                    text = text.getString("title"),
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            },
+            text = {
+                Scaffold(
+                    content = { innerPadding ->
+                        LazyColumn(
+                            contentPadding = innerPadding,
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            item {
+                                Text(
+                                    text = text.getArrayString("content")
+                                )
+                            }
+                        }
+                    }
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        agreementDialog.value = false
+                        SPUtils.putBoolean("Agreement", false)
+                    }
+                ) {
+                    Text(text = text.getString("agree"), fontSize = 14.sp)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        agreementDialog.value = false
+                        exitProcess(0)
+                    }
+                ) {
+                    Text(text = text.getString("refuse"), fontSize = 14.sp)
+                }
+            },
+            shape = MaterialTheme.shapes.extraLarge,
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            containerColor = MaterialTheme.colorScheme.surface,
+            iconContentColor = MaterialTheme.colorScheme.onSurface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

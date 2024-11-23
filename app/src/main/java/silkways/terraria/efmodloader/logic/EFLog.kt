@@ -1,10 +1,21 @@
 package silkways.terraria.efmodloader.logic
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.icu.text.SimpleDateFormat
-import android.util.Log
-import java.util.Locale
 import android.os.Process
+import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import silkways.terraria.efmodloader.MainApplication
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
+import java.io.IOException
+import java.util.Locale
 
 /*******************************************************************************
  * 文件名称: EFLog
@@ -70,6 +81,16 @@ object EFLog {
         log(Log.ERROR, message)
     }
 
+    private fun getLevel(level: Int): String {
+        return when(level) {
+            3 -> "DEBUG"
+            4 -> "INFO"
+            5 -> "WARN"
+            6 -> "ERROR"
+            else -> ""
+        }
+    }
+
     /**
      * 实际执行日志记录的方法。
      * @param level 日志级别（如 DEBUG, INFO, WARN, ERROR）
@@ -93,7 +114,8 @@ object EFLog {
         targetElement?.let {
             val pid = Process.myPid() // 获取当前进程ID
             // 构建完整的日志消息，包括时间戳、进程ID、文件名、行号、类名、方法名以及实际的消息
-            val logMessage = "${dateFormat.format(System.currentTimeMillis())} [PID: $pid] [${it.fileName}:${it.lineNumber}] ${it.className}.${it.methodName} - $message"
+            val logMessage = "[${getLevel(level)}] ${dateFormat.format(System.currentTimeMillis())} [PID: $pid] [${it.fileName}:${it.lineNumber}] ${it.className}.${it.methodName} - $message"
+            writeLog("$TAG $logMessage")
             // 根据不同的日志级别调用不同的Log.x方法
             when (level) {
                 Log.DEBUG -> Log.d(TAG, logMessage)
@@ -104,6 +126,57 @@ object EFLog {
         } ?: run {
             // 如果没有找到调用者信息，打印错误日志
             Log.e(TAG, "Could not find the caller information.")
+        }
+    }
+
+
+    private val logScope = CoroutineScope(Dispatchers.IO)
+
+    private fun writeLog(logMessage: String) {
+        // 如果启用了文件写入功能
+        if (MainApplication.getContext().getSharedPreferences("TEFModLoaderConfig", Context.MODE_PRIVATE).getBoolean("LogCache", true)) {
+            logScope.launch {
+                val file = File(MainApplication.getContext().getExternalFilesDir(null), "TEFModLoader/runtime.log")
+
+                // 检查文件是否存在
+                if (!file.exists()) {
+                    file.createNewFile()
+                }
+
+                // 检查文件大小是否超过最大限制
+                val maxSizeInBytes = MainApplication.getContext().getSharedPreferences("TEFModLoaderConfig", Context.MODE_PRIVATE).getInt("LogCacheSize", 1024) * 1024
+                if (maxSizeInBytes > 0 && file.length() >= maxSizeInBytes) {
+                    // 使用缓冲流逐行读取和写入文件
+                    val tempFile = File(file.parent, "runtime_temp.log")
+                    BufferedReader(FileReader(file)).use { reader ->
+                        BufferedWriter(FileWriter(tempFile)).use { writer ->
+                            var line: String?
+                            var isFirstLine = true
+                            while (reader.readLine().also { line = it } != null) {
+                                if (!isFirstLine) {
+                                    writer.write(line)
+                                    writer.newLine()
+                                }
+                                isFirstLine = false
+                            }
+                        }
+                    }
+                    // 替换原文件
+                    if (tempFile.exists()) {
+                        file.delete()
+                        tempFile.renameTo(file)
+                    }
+                }
+
+                // 追加新的日志条目
+                try {
+                    FileWriter(file, true).use { writer ->
+                        writer.append("$logMessage\n")
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
         }
     }
 }

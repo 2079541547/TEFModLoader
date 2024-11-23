@@ -24,7 +24,6 @@ package silkways.terraria.efmodloader.logic.efmod
 
 import android.graphics.Bitmap
 
-<<<<<<<< HEAD:app/src/main/java/silkways/terraria/efmodloader/logic/efmod/Mod.kt
 data class Mod(
     val filePath: String,
     val identifier: String,
@@ -38,19 +37,3 @@ data class Mod(
     var icon: Bitmap? = null,
     var isEnabled: Boolean = false
 )
-========
-#include <iostream>
-#include <jni.h>
-#include <EFModLoader/android/api.hpp>
-
-namespace EFModLoader::Android {
-
-    using namespace std;
-
-    extern string* get_PackageName;
-    extern string* get_cacheDir;
-
-    void Load(JNIEnv *env, const string& EFModLoader);
-    void Load_Loader(JNIEnv *env, const string& EFModLoader);
-}
->>>>>>>> main:load/src/main/cpp/EFModLoader/include/EFModLoader/android/Android.hpp

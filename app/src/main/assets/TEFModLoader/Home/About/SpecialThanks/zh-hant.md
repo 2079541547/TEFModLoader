@@ -19,6 +19,8 @@
 ## 雨鹜
 - 參與軟體重寫，優化設置頁面
 
+# JiangNight
+- UI架構重寫基礎
 ---
 
 # 代碼貢獻 <a id="code-contribution"></a>

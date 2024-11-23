@@ -1,18 +1,7 @@
-package eternal.future.efmodloader.load;
-
-import android.content.Context;
-import android.widget.Toast;
-
 /*******************************************************************************
-<<<<<<<< HEAD:app/src/main/java/silkways/terraria/efmodloader/logic/efmod/Loader.kt
  * 文件名称: Loader
  * 项目名称: TEFModLoader-Compose
  * 创建时间: 2024/11/17 下午1:49
-========
- * 文件名称: Toast
- * 项目名称: TEFModLoader
- * 创建时间: 2024/11/9 上午4:19
->>>>>>>> main:load/src/main/java/eternal/future/efmodloader/load/ToastApi.java
  * 作者: EternalFuture゙
  * Github: https://github.com/2079541547
  * 版权声明: Copyright © 2024 EternalFuture゙. All rights reserved.
@@ -28,16 +17,11 @@ import android.widget.Toast;
  *
  *         You should have received a copy of the GNU Affero General Public License
  *         along with this program. If not, see <https://www.gnu.org/licenses/>.
-<<<<<<<< HEAD:app/src/main/java/silkways/terraria/efmodloader/logic/efmod/Loader.kt
  * 描述信息: 本文件为TEFModLoader-Compose项目中的一部分。
-========
- * 描述信息: 本文件为TEFModLoader项目中的一部分。
->>>>>>>> main:load/src/main/java/eternal/future/efmodloader/load/ToastApi.java
  * 注意事项: 请严格遵守GNU AGPL v3.0协议使用本代码，任何未经授权的商业用途均属侵权行为。
  *******************************************************************************/
 package silkways.terraria.efmodloader.logic.efmod
 
-<<<<<<<< HEAD:app/src/main/java/silkways/terraria/efmodloader/logic/efmod/Loader.kt
 import android.graphics.Bitmap
 
 data class Loader(
@@ -49,22 +33,3 @@ data class Loader(
     val openSourceUrl: String,
     var icon: Bitmap? = null
 )
-========
-
-/**
- * 自定义Toast工具类，用于在Android应用中显示高度自定义的Toast消息。
- * 提供了多种方法来设置Toast的持续时间、位置、背景颜色、文本颜色等。
- */
-public class ToastApi {
-
-    /**
-     * 显示一个默认的Toast消息。
-     *
-     * @param context 应用上下文。
-     * @param message 要显示的消息。
-     */
-    public static void show(Context context, String message) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-    }
-}
->>>>>>>> main:load/src/main/java/eternal/future/efmodloader/load/ToastApi.java

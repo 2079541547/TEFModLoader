@@ -3,7 +3,6 @@ package silkways.terraria.efmodloader.ui.screen
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,7 +11,9 @@ import androidx.compose.material.icons.filled.AddToDrive
 import androidx.compose.material.icons.filled.Api
 import androidx.compose.material.icons.filled.Architecture
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.AssignmentLate
 import androidx.compose.material.icons.filled.ColorLens
+import androidx.compose.material.icons.filled.Construction
 import androidx.compose.material.icons.filled.DriveFileMove
 import androidx.compose.material.icons.filled.DriveFileMoveRtl
 import androidx.compose.material.icons.filled.FolderOpen
@@ -27,12 +28,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.ramcosta.composedestinations.spec.DestinationStyle
 import silkways.terraria.efmodloader.MainApplication
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.logic.EFLog
 import silkways.terraria.efmodloader.logic.LanguageHelper
-import silkways.terraria.efmodloader.ui.activity.MainActivity
 import silkways.terraria.efmodloader.ui.utils.LanguageUtils
 import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
@@ -112,7 +111,11 @@ fun buildSettingsList(context: Context): List<SettingItem> {
                 jsonUtils.getString("important", "runtime", "embed")),
             onMenuItemClick = { menuItem ->
                 when(menuItem) {
-                    jsonUtils.getString("important", "runtime", "external") -> SPUtils.putInt(Settings.Runtime, 0)
+                    jsonUtils.getString("important", "runtime", "external") -> {
+                        SPUtils.putInt(Settings.Runtime, 0)
+                        SPUtils.putBoolean("ApplyForPermission", true)
+                        File("${context.externalCacheDir}/Reboot").mkdirs()
+                    }
                     jsonUtils.getString("important", "runtime", "share") -> SPUtils.putInt(Settings.Runtime, 1)
                     jsonUtils.getString("important", "runtime", "embed") -> SPUtils.putInt(Settings.Runtime, 2)
                 }
@@ -253,6 +256,40 @@ fun buildSettingsList(context: Context): List<SettingItem> {
             onClick = {
                 ExportDialog.value = true
             }
+        ),
+
+        SettingItem.Title(jsonUtils.getString("log", "title")),
+
+        SettingItem.Switch(
+            icon = Icons.Filled.AssignmentLate,
+            title = jsonUtils.getString("log", "switch"),
+            isChecked = SPUtils.readBoolean("LogCache", true),
+            onCheckedChange = { it ->
+                SPUtils.putBoolean("LogCache", it)
+            }
+        ),
+
+        SettingItem.PopupMenu(
+            icon = Icons.Filled.Construction,
+            title = jsonUtils.getString("log", "cache", "title"),
+            subtitle = when(SPUtils.readInt("LogCacheSize", 0)){
+                0 -> jsonUtils.getString("log", "cache", "unlimited")
+                else -> "${SPUtils.readInt(" LogCacheSize ", 0)} KB"
+            },
+            menuOptions = listOf(
+                jsonUtils.getString("log", "cache", "1024"),
+                jsonUtils.getString("log", "cache", "4096"),
+                jsonUtils.getString("log", "cache", "8192"),
+                jsonUtils.getString("log", "cache", "unlimited"),
+                ),
+            onMenuItemClick = { menuItem ->
+                when(menuItem) {
+                    jsonUtils.getString("log", "cache", "1024") -> SPUtils.putInt("LogCacheSize", 1024)
+                    jsonUtils.getString("log", "cache", "4096") -> SPUtils.putInt("LogCacheSize", 4096)
+                    jsonUtils.getString("log", "cache", "8192") -> SPUtils.putInt("LogCacheSize", 8192)
+                    jsonUtils.getString("log", "cache", "unlimited") -> SPUtils.putInt("LogCacheSize", 0)
+                }
+            }
         )
     )
 }
@@ -326,6 +363,12 @@ fun SettingSwitch(setting: SettingItem.Switch) {
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Icon(
+                imageVector = setting.icon,
+                contentDescription = null,
+                modifier = Modifier.size(24.dp),
+            )
+            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = setting.title,
                 modifier = Modifier.weight(1f),
@@ -559,6 +602,7 @@ sealed class SettingItem {
         val onClick: () -> Unit
     ) : SettingItem()
     data class Switch(
+        val icon: ImageVector,
         val title: String,
         val isChecked: Boolean,
         val onCheckedChange: (Boolean) -> Unit

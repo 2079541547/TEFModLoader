@@ -34,6 +34,5 @@ namespace EFModLoader::Android {
     extern string* get_PackageName;
     extern string* get_cacheDir;
 
-    void Load(JNIEnv *env, const string& EFModLoader);
-    void Load_Loader(JNIEnv *env, const string& EFModLoader);
+    void Load(JNIEnv *env);
 }

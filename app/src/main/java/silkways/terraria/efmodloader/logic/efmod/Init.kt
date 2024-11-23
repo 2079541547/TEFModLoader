@@ -3,12 +3,14 @@ package silkways.terraria.efmodloader.logic.efmod
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import silkways.terraria.efmodloader.LoadService
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.data.TEFModLoader
 import silkways.terraria.efmodloader.logic.EFLog
@@ -53,26 +55,29 @@ class Init(private val context: Context) {
         //showLoadingDialog()
         // 模拟加载过程
         Thread {
-
             try {
-                when (SPUtils.readInt(Settings.jsonPath, 0)) {
+                FileUtils.deleteDirectory(File(context.cacheDir, "/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModLoader"))
+                when (SPUtils.readInt(Settings.Runtime, 0)) {
                     0 -> {
                         FileUtils.deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX/"))
                         FileUtils.deleteDirectory(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod/"))
+                        copyFilesFromTo(File(context.getExternalFilesDir(null), "TEFModLoader/EFModData/EFMod-Private/"), File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/Private/"))
                         syncDirectories(File(context.getExternalFilesDir(null), "TEFModLoader/EFModData/EFMod-Private/"), File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/export/private/"))
-                        copyFilesFromToOgg(File(context.getExternalFilesDir(null), "TEFModLoader/EFModData/EFMod-Private/"), File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/Private/"))
                     }
-
                     1 -> {
-                        val a = JsonConfigModifier.readJsonValue(context, Settings.jsonPath, Settings.GamePackageName) as String
+                        val a = SPUtils.readString(Settings.GamePackageName, "com.and.games505.TerrariaPaid")
                         FileUtils.deleteDirectory(File("data/data/$a/cache/EFModX/"))
                         FileUtils.deleteDirectory(File("data/data/$a/cache/EFMod/"))
-                        syncDirectories(File(context.getExternalFilesDir(null), "TEFModLoader/EFModData/EFMod-Private/"), File("/sdcard/Android/data/${SPUtils.readString(Settings.GamePackageName, "com.and.games505.TerrariaPaid") as String}/files/EFMod-Private/"))
-                        copyFilesFromTo(File(context.getExternalFilesDir(null), "TEFModLoader/EFModData/EFMod-Private/"), File("/sdcard/Android/data/${SPUtils.readString(Settings.GamePackageName, "com.and.games505.TerrariaPaid") as String}/files/EFMod-Private/"))
+                        copyFilesFromTo(File(context.getExternalFilesDir(null), "TEFModLoader/EFModData/EFMod-Private/"), File("/sdcard/Android/data/$a/files/EFMod-Private/"))
+                        syncDirectories(File(context.getExternalFilesDir(null), "TEFModLoader/EFModData/EFMod-Private/"), File("/sdcard/Android/data/$a/files/EFMod-Private/"))
+                    }
+                    2 -> {
+                        FileUtils.deleteDirectory(File(context.cacheDir, "EFModX/"))
+                        FileUtils.deleteDirectory(File(context.cacheDir, "EFMod/"))
                     }
                 }
             } catch (e: IOException) {
-                Log.e("TEFModLoader", "错误：" , e)
+                EFLog.e("错误：$e")
             }
 
             LoaderManager.init(
@@ -83,24 +88,21 @@ class Init(private val context: Context) {
                 "${context.getExternalFilesDir(null)}/TEFModLoader/EFModData/info.json",
                 context)
 
-            try {
-                if (SPUtils.readInt(Settings.jsonPath, 0) == 0) {
-                    renameFilesWithOggExtension(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModX"))
-                    renameFilesWithOggExtension(File("/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFMod"))
+
+            if (SPUtils.readInt(Settings.Runtime, 0) == 2) {
+                context.startActivity(Intent(context, Class.forName("com.unity3d.player.UnityPlayerActivity")))
+                context.startService(Intent(context, LoadService::class.java))
+            } else {
+                val launchIntent = context.packageManager.getLaunchIntentForPackage(
+                    SPUtils.readString(
+                        Settings.GamePackageName, "com.and.games505.TerrariaPaid").toString())
+                if (launchIntent != null) {
+                    context.startActivity(launchIntent)
+                } else {
+                    EFLog.e("无法找到该应用: $launchIntent")
                 }
-            } catch (e: IOException) {
-                Log.e("TEFModLoader", "错误：" , e)
             }
 
-            
-            val launchIntent = context.packageManager.getLaunchIntentForPackage(
-                SPUtils.readString(
-                Settings.GamePackageName, "com.and.games505.TerrariaPaid").toString())
-            if (launchIntent != null) {
-                context.startActivity(launchIntent)
-            } else {
-                EFLog.e("无法找到该应用: $launchIntent")
-            }
         }.start()
     }
 
@@ -182,7 +184,7 @@ class Init(private val context: Context) {
             arrayOf(file.path),
             null
         ) { path, uri ->
-            Log.i("GamePanelFragment", "文件已扫描: $path, URI: $uri")
+            EFLog.i("文件已扫描: $path, URI: $uri")
         }
     }
 
@@ -191,13 +193,13 @@ class Init(private val context: Context) {
 
     fun copyFilesFromTo(sourceDir: File, destDir: File) {
         if (!sourceDir.exists()) {
-            println("源目录不存在: ${sourceDir.absolutePath}")
+            EFLog.e("源目录不存在: ${sourceDir.absolutePath}")
             return
         }
 
         if (!destDir.exists()) {
             destDir.mkdirs()
-            println("创建目标目录: ${destDir.absolutePath}")
+            EFLog.i("创建目标目录: ${destDir.absolutePath}")
         }
 
         sourceDir.listFiles()?.forEach { entry ->
@@ -217,13 +219,13 @@ class Init(private val context: Context) {
 
     fun copyFilesFromToOgg(sourceDir: File, destDir: File) {
         if (!sourceDir.exists()) {
-            println("源目录不存在: ${sourceDir.absolutePath}")
+            EFLog.e("源目录不存在: ${sourceDir.absolutePath}")
             return
         }
 
         if (!destDir.exists()) {
             destDir.mkdirs()
-            println("创建目标目录: ${destDir.absolutePath}")
+            EFLog.i("创建目标目录: ${destDir.absolutePath}")
         }
 
         sourceDir.listFiles()?.forEach { entry ->
@@ -247,7 +249,7 @@ class Init(private val context: Context) {
     @Throws(Exception::class)
     fun syncDirectories(dir1: File, dir2: File) {
         if (!dir1.isDirectory || !dir2.isDirectory) {
-            println("Both paths must be directories.")
+            EFLog.e("Both paths must be directories.")
             return
         }
 
@@ -286,7 +288,7 @@ class Init(private val context: Context) {
         for (file in files1) {
             if (!fileMap2.containsKey(file.name)) {
                 file.delete()
-                println("删除文件: ${file.absolutePath}")
+                EFLog.i("删除文件: ${file.absolutePath}")
             }
         }
 
@@ -294,7 +296,7 @@ class Init(private val context: Context) {
         for (file in files2) {
             if (!fileMap1.containsKey(file.name)) {
                 file.delete()
-                println("删除文件: ${file.absolutePath}")
+                EFLog.i("删除文件: ${file.absolutePath}")
             }
         }
     }
@@ -312,7 +314,7 @@ class Init(private val context: Context) {
             }
         }
         target.setLastModified(source.lastModified())
-        println("复制文件: ${source.absolutePath} 到 ${target.absolutePath}")
+        EFLog.i("复制文件: ${source.absolutePath} 到 ${target.absolutePath}")
     }
 
 
@@ -332,20 +334,20 @@ class Init(private val context: Context) {
                 try {
                     copyFile(sourcePath, destPath)
                     setLastModifiedTime(destPath, sourceLastWriteTime)
-                    println("复制文件: ${sourcePath.absolutePath} 到 ${destPath.absolutePath}")
+                    EFLog.i("复制文件: ${sourcePath.absolutePath} 到 ${destPath.absolutePath}")
                 } catch (e: IOException) {
-                    println("复制文件失败: ${sourcePath.absolutePath} 错误: ${e.message}")
+                    EFLog.e("复制文件失败: ${sourcePath.absolutePath} 错误: ${e.message}")
                 }
             } else {
-                println("文件相同，跳过复制: ${sourcePath.absolutePath}")
+                EFLog.i("文件相同，跳过复制: ${sourcePath.absolutePath} -> ${destPath.absolutePath}")
             }
         } else {
             try {
                 copyFile(sourcePath, destPath)
                 setLastModifiedTime(destPath, sourcePath.lastModified())
-                println("复制文件: ${sourcePath.absolutePath} 到 ${destPath.absolutePath}")
+                EFLog.i("复制文件: ${sourcePath.absolutePath} 到 ${destPath.absolutePath}")
             } catch (e: IOException) {
-                println("复制文件失败: ${sourcePath.absolutePath} 错误: ${e.message}")
+                EFLog.e("复制文件失败: ${sourcePath.absolutePath} 错误: ${e.message}")
             }
         }
     }

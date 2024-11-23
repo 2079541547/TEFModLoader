@@ -23,11 +23,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
     JNIEnv *env;
     vm->GetEnv((void **) &env, JNI_VERSION_1_6);
 
-    EFModLoader::Android::Load(env, "TEFModLoader-EternalFuture");
-
-
-    //EFModLoader::Loader::LoadELFMods::LoadALLModX(env, *EFModLoader::Android::get_cacheDir + "EFModX"); //不可用QAQ
-
+    EFModLoader::Android::Load(env);
 
     BNM::Loading::TryLoadByJNI(env);
 

@@ -1,4 +1,20 @@
 {
+  "agreement": {
+    "title": "Software Agreement",
+    "content": [
+      "Free and Open Source: This software is a completely free open source project. We encourage users to freely use, modify, and distribute the software in accordance with the provisions of the AGPLv3 license.",
+      "Commercial Use Prohibited: Without our explicit written consent, it is prohibited to use this software for any commercial purposes. This includes selling, leasing, or otherwise commercially utilizing the software as part of a product or service.",
+      "Official Channels Only: To ensure that users receive the latest and most secure version of the software, we strongly recommend that users download the software only from our official channels. We do not provide support for or guarantee the security of software versions obtained from non-official channels.",
+      "Disclaimer: The software is provided 'as is' without any form of warranty. We will not be liable for any damages, losses, or costs arising from the use or inability to use this software.",
+      "Privacy Policy: This software does not collect, store, or process any personal data. We do not require users to provide any personal information and do not use any form of data tracking within the software.",
+      "Security Statement: We are committed to providing a secure software experience. Although our software does not collect user data, we still implement appropriate security measures to protect the integrity and performance of the software.",
+      "Open Source License: This software is released under the GNU Affero General Public License version 3 (AGPLv3). The full text of the license can be found at the following link: http://www.gnu.org/licenses/agpl-3.0.html.",
+      "Contribution and Community: We encourage users to contribute code and participate in our open source community. If you have any questions about the license or wish to contribute code, please contact us."
+    ],
+    "refuse": "Refuse and Exit",
+    "agree": "Agree and Comply with this Agreement"
+  },
+
   "main": {
     "home": {
       "title": "Home",
@@ -15,11 +31,37 @@
     },
 
     "toolbox": {
-      "title": "Toolbox"
+      "title": "Toolbox",
+      "unfinished": "Still working overtime QAQ...",
+      "terminal": "Terminal",
+      "start": "Configure & Start",
+      "import archive": "Import Archive",
+      "import configuration": "Import Configuration",
+      "manager": {
+        "title": "File Viewer"
+      },
+      "export archive": "Export Archive",
+      "export data": "Export All Data",
+      "dialog": {
+        "title": "A maiden's prayer...",
+        "close": "Close",
+        "text": "Configuring Mod & Kernel for you"
+      }
     },
 
     "manager": {
-      "title": "Manager"
+      "title": "Management",
+      "installation successful": "Installation Successful",
+      "installation failed": "Installation Failed",
+      "efmod": {
+        "install": "Install EFMod",
+        "manager": "EFMod Management"
+      },
+      "development settings": "Experimental Options",
+      "efmodloader": {
+        "install": "Install Kernel",
+        "manager": "Kernel Management"
+      }
     },
 
     "Update log": {
@@ -83,6 +125,18 @@
         "Traditional Chinese",
         "Update Mod standards, support multiple languages",
         "Note: This version is 1.5.5 Stable, long-term stable, slow updates, debugging/testing can choose weekly builds"
+      ],
+      "200": [
+        "Fix external mode bug",
+        "Rewrite UI using Composable",
+        "Update kernel, reduce C++ usage",
+        "Rewrite pages: Settings, Mod Management, Kernel Management",
+        "Support terminal",
+        "Fix shared mode bug",
+        "Unfinished mode: Embedded mode",
+        "Integrate kernel version 20241123",
+        "Update log cache system",
+        "Switch language/theme without restarting the software"
       ]
     }
   },
@@ -107,23 +161,23 @@
     "important": {
       "title": "Important",
       "runtime": {
-        "title": "Runtime mode",
-        "external": "External kernel",
-        "share": "Shared kernel",
-        "embed": "Embedded kernel"
+        "title": "Runtime Mode",
+        "external": "External Mode",
+        "share": "Shared Mode",
+        "embed": "Embedded Mode"
       },
       "target": {
-        "title": "Target package name",
+        "title": "Target Package Name",
         "dialog": {
-          "title": "Set target package name",
-          "hint": "Please enter the package name",
+          "title": "Set Target Package Name",
+          "hint": "Please enter package name",
           "determine": "Confirm",
           "cancel": "Cancel"
         }
       },
       "architecture": {
-        "title": "Mod & Loader runtime architecture",
-        "system": "Follow system",
+        "title": "Mod & Loader Runtime Architecture",
+        "system": "Follow System",
         "arm64-v8a": "arm64-v8a (64-bit)",
         "armeabi-v7a": "armeabi-v7a (32-bit)"
       }
@@ -133,13 +187,13 @@
       "title": "General",
       "theme": {
         "title": "Theme",
-        "system": "Follow system",
+        "system": "Follow System",
         "light": "Light",
         "dark": "Dark"
       },
       "language": {
         "title": "Language",
-        "system": "Follow system",
+        "system": "Follow System",
         "zh-cn": "Chinese (Simplified)",
         "zh-hant": "Chinese (Traditional)",
         "ru": "Russian (Русский)",
@@ -147,17 +201,93 @@
         "jp": "Japanese (日本語)",
         "ko": "Korean (한국어)",
         "it": "Italian (Italiano)",
-        "es": "Spanish (Lengua española)",
+        "es": "Spanish (Español)",
         "fr": "French (Français)",
         "de": "German (Deutsch)"
       }
     },
 
     "file": {
-      "title": "File"
-    }
+      "title": "Files",
+      "manage": {
+        "title": "File View Directory",
+        "dialog": {
+          "title": "Set File View Path",
+          "hint": "Please enter path",
+          "determine": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "import": {
+        "title": "Import File Path",
+        "dialog": {
+          "title": "Set Directory for File Import",
+          "hint": "Please enter path",
+          "determine": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "export": {
+        "title": "Export Data Package Name",
+        "dialog": {
+          "title": "Set Specific Application for Data Export",
+          "hint": "Please enter application package name",
+          "determine": "Confirm",
+          "cancel": "Cancel"
+        }
+      }
+    },
 
+    "log": {
+      "title": "Logs",
+      "switch": "Auto Cache Logs",
+      "cache": {
+        "title": "Maximum Cache Size",
+        "1024": "1024 KB",
+        "4096": "4096 KB",
+        "8192": "8192 KB",
+        "unlimited": "Unlimited"
+      }
+    }
   },
 
+
+  "terminal": {
+    "title": "Terminal"
+  },
+
+  "manager": {
+    "mod": {
+      "title": "EFMod Management",
+      "info_dialog": {
+        "version": "Version:",
+        "author": "Author:",
+        "introduce": "Introduction:",
+        "url": "Open Source Link:",
+        "close": "Close"
+      },
+      "delete_dialog": {
+        "title": "Remove",
+        "determine": "Confirm",
+        "cancel": "Cancel",
+        "result": "Please exit the page and refresh"
+      }
+    },
+
+    "loader": {
+      "title": "Kernel Management",
+      "version": "Version:",
+      "author": "Author:",
+      "introduce": "Introduction:",
+      "url": "Open Source Link:",
+      "delete_dialog": {
+        "title": "Remove",
+        "determine": "Confirm",
+        "cancel": "Cancel",
+        "result": "Please exit the page and refresh"
+      }
+    }
+  },
+  
   "Unable_to_retrieve_text": "Unable to retrieve text"
 }

@@ -1,17 +1,3 @@
-package eternal.future.efmodloader.load;
-
-import android.annotation.SuppressLint;
-import android.app.Application;
-import android.util.Log;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
 /*******************************************************************************
  * 文件名称: Loader
  * 项目名称: EFModLoader
@@ -35,22 +21,37 @@ import java.util.Objects;
  * 注意事项: 请严格遵守GNU AGPL v3.0协议使用本代码，任何未经授权的商业用途均属侵权行为。
  *******************************************************************************/
 
-public class Loader {
+package eternal.future.efmodloader.load;
 
+import static eternal.future.efmodloader.load.FileUtils.copyFile;
+import static eternal.future.efmodloader.load.FileUtils.copyFilesFromTo;
+
+import android.annotation.SuppressLint;
+import android.app.Application;
+import android.content.pm.PackageManager;
+import android.os.Environment;
+import android.util.Log;
+import java.io.*;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Loader {
     private static final String TAG = "EFModLoader";
+    private static final String RUNTIME = "TEFModLoader-EternalFuture";
     private static final Map<String, String> archToLib = new HashMap<>(4);
 
+    static {
+        archToLib.put("arm", "armeabi-v7a");
+        archToLib.put("arm64", "arm64-v8a");
+        archToLib.put("x86", "x86");
+        archToLib.put("x86_64", "x86_64");
+    }
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     public static void load() {
-
-        log("EFModLoader启动中...");
-
         try {
-            archToLib.put("arm", "armeabi-v7a");
-            archToLib.put("arm64", "arm64-v8a");
-
-            ClassLoader cl = Objects.requireNonNull(Loader.class.getClassLoader());
+            ClassLoader cl = Loader.class.getClassLoader();
             Class<?> VMRuntime = Class.forName("dalvik.system.VMRuntime");
             Method getRuntime = VMRuntime.getDeclaredMethod("getRuntime");
             getRuntime.setAccessible(true);
@@ -59,60 +60,40 @@ public class Loader {
             String arch = (String) vmInstructionSet.invoke(getRuntime.invoke(null));
             String libName = archToLib.get(arch);
 
-            Log.i(TAG, "来自嵌入式的Bootstrap加载器");
-
-            try {
+            if (cl != null) {
                 log("尝试加载assets中的EFandroid库");
-                loadSoFromInputStream(cl.getResourceAsStream("assets/EFModLoader/" + libName + "/libEFandroid.so"), "EFandroid");
-            } catch (Exception e) {
-                log("加载assets中的EFandroid库失败: ", e);
-                log("尝试加载默认EFandroid库...");
+                loadSoFromInputStream(cl.getResourceAsStream("assets/EFModLoader/" + libName + "/libEFandroid.so"));
+            } else {
+                log("尝试加载lib中的EFandroid库");
                 System.loadLibrary("EFandroid");
             }
 
             log(getAgreement());
 
-            if (!new File(getContext().getCacheDir(), "EFModLoader/libloader.so").exists()) {
-                try {
-                    log("尝试加载assets中的内核");
-                    loadSoFromInputStream(cl.getResourceAsStream("assets/EFModLoader/" + libName + "/libloader.so"), "loader");
-                } catch (Exception e) {
-                    log("加载assets中的内核失败: ", e);
-                    log("尝试加载默认内核...");
-                    System.loadLibrary("loader");
-                }
-            } else {
-                log("尝试加载自定义内核...");
-                System.load(new File(getContext().getCacheDir(), "EFModLoader/libloader.so").getAbsolutePath());
-            }
+            checkExternalMode();
 
+            File EFModX = new File(getContext().getCacheDir(), "EFModX");
+            loadEFModX(EFModX.getAbsolutePath());
+            loadModLoader();
         } catch (Exception e) {
             log("加载EFModLoader失败", e);
         }
-
         log("完成加载EFModLoader");
-
-        log("开始加载独立Mod...");
-        loadEFModX(new File(getContext().getCacheDir(), "EFModX").getAbsolutePath());
     }
-
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     private static void loadEFModX(String path) {
         log("开始加载EFModX: " + path);
-
-        File directory = new File(path);
-        if (directory.isDirectory()) {
-            File[] files = directory.listFiles();
+        File dir = new File(path);
+        if (dir.isDirectory()) {
+            File[] files = dir.listFiles();
             if (files != null) {
                 for (File file : files) {
                     try {
                         log("加载文件: " + file.getAbsolutePath());
                         System.load(file.getAbsolutePath());
-                    } catch (UnsatisfiedLinkError e) {
-                        log("无法加载文件: " + file.getAbsolutePath() + ", 错误: " + e.getMessage(), e);
-                    } catch (SecurityException e) {
-                        log("没有权限加载文件: " + file.getAbsolutePath() + ", 错误: " + e.getMessage(), e);
+                    } catch (Exception e) {
+                        log("加载文件出错: " + e.getMessage(), e);
                     }
                 }
             } else {
@@ -121,50 +102,136 @@ public class Loader {
         } else {
             log("指定的路径不是一个目录: " + path);
         }
-
         log("完成加载EFModX");
     }
 
+    @SuppressLint("UnsafeDynamicallyLoadedCode")
+    private static void loadSoFromInputStream(InputStream is) {
+        try {
+            File tempSoFile = File.createTempFile("EFandroid", ".so");
+            tempSoFile.deleteOnExit();
+            try (FileOutputStream fos = new FileOutputStream(tempSoFile)) {
+                byte[] buffer = new byte[8192];
+                int len;
+                while ((len = is.read(buffer)) != -1) {
+                    fos.write(buffer, 0, len);
+                }
+            }
+            System.load(tempSoFile.getAbsolutePath());
+        } catch (IOException | UnsatisfiedLinkError e) {
+            log("加载so文件失败: " + "EFandroid", e);
+        }
+    }
+
+
+    private static void checkExternalMode() {
+        if (hasReadWritePermission()) {
+            log("已获取权限！");
+            @SuppressLint("SdCardPath") File externalDir = new File("/sdcard/Documents/EFModLoader", RUNTIME);
+            log("外部目录: " + externalDir.getAbsolutePath());
+
+            if (externalDir.exists()) {
+                log("正在进行外部模式的额外操作...");
+
+                File efModX = new File(getContext().getCacheDir(), "EFModX/");
+                File efMod = new File(getContext().getCacheDir(), "EFMod/");
+                File loader = new File(getContext().getCacheDir(), "EFModLoader/");
+                File modPrivate = new File(getContext().getExternalFilesDir(null), "EFMod-Private/");
+
+                File efModXExterior = new File(externalDir, "EFModX/");
+                File efModExterior = new File(externalDir, "EFMod/");
+                File loaderExterior = new File(externalDir, "EFModLoader/");
+                File modPrivateExterior = new File(externalDir, "Private/");
+
+                log("EFModX 目标: " + efModX.getAbsolutePath());
+                log("EFMod 目标: " + efMod.getAbsolutePath());
+                log("Loader 目标: " + loader.getAbsolutePath());
+                log("ModPrivate 目标: " + modPrivate.getAbsolutePath());
+
+                log("EFModX 外部: " + efModXExterior.getAbsolutePath());
+                log("EFMod 外部: " + efModExterior.getAbsolutePath());
+                log("Loader 外部: " + loaderExterior.getAbsolutePath());
+                log("ModPrivate 外部: " + modPrivateExterior.getAbsolutePath());
+
+                if (efMod.exists()) {
+                    log("删除 EFMod: " + efMod.getAbsolutePath());
+                    efMod.delete();
+                }
+                if (efModX.exists()) {
+                    log("删除 EFModX: " + efModX.getAbsolutePath());
+                    efModX.delete();
+                }
+                if (loader.exists()) {
+                    log("删除 Loader: " + loader.getAbsolutePath());
+                    loader.delete();
+                }
+
+                if (loaderExterior.exists()) {
+                    log("复制 Loader: " + loaderExterior.getAbsolutePath() + " 到 " + loader.getAbsolutePath());
+                    copyFilesFromTo(loaderExterior, loader);
+                } else {
+                    log("Loader 外部文件不存在: " + loaderExterior.getAbsolutePath());
+                }
+
+                if (efModXExterior.exists()) {
+                    log("复制 EFModX: " + efModXExterior.getAbsolutePath() + " 到 " + efModX.getAbsolutePath());
+                    copyFilesFromTo(efModXExterior, efModX);
+                } else {
+                    log("EFModX 外部文件不存在: " + efModXExterior.getAbsolutePath());
+                }
+
+                if (efModExterior.exists()) {
+                    log("复制 EFMod: " + efModExterior.getAbsolutePath() + " 到 " + efMod.getAbsolutePath());
+                    copyFilesFromTo(efModExterior, efMod);
+                } else {
+                    log("EFMod 外部文件不存在: " + efModExterior.getAbsolutePath());
+                }
+
+                if (modPrivateExterior.exists()) {
+                    log("复制 ModPrivate: " + modPrivateExterior.getAbsolutePath() + " 到 " + modPrivate.getAbsolutePath());
+                    copyFilesFromTo(modPrivateExterior, modPrivate);
+
+
+                    log("");
+                    copyFilesFromTo(modPrivate, new File(externalDir, "export/private"));
+                } else {
+                    log("ModPrivate 外部文件不存在: " + modPrivateExterior.getAbsolutePath());
+                }
+            } else {
+                log("外部目录不存在: " + externalDir.getAbsolutePath());
+            }
+        } else {
+            log("未获取权限！");
+        }
+    }
+
+    private static boolean hasReadWritePermission() {
+        Application context = getContext();
+        return context.checkSelfPermission("android.permission.READ_EXTERNAL_STORAGE") == PackageManager.PERMISSION_GRANTED &&
+                context.checkSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE") == PackageManager.PERMISSION_GRANTED;
+    }
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
-    public static void loadSoFromInputStream(InputStream inputStream, String soFileName) throws IOException {
-        // 创建临时文件
-        File tempSoFile = File.createTempFile(soFileName, ".so");
-        tempSoFile.deleteOnExit(); // 确保临时文件在程序退出时删除
-
-        // 将输入流写入临时文件
-        try (FileOutputStream fos = new FileOutputStream(tempSoFile)) {
-            byte[] buffer = new byte[8096];
-            int read;
-            while ((read = inputStream.read(buffer)) != -1) {
-                fos.write(buffer, 0, read);
+    private static void loadModLoader() {
+        try {
+            File loader = new File(getContext().getCacheDir(), "EFModLoader/libLoader.so");
+            if (loader.exists()) {
+                log("正在尝试加载EFModLoader内核...");
+                System.load(loader.getAbsolutePath());
+            } else {
+                log("无EFModLoader内核可加载，跳过操作...");
             }
+        } catch (Exception e) {
+            log("加载EFModLoader内核时出现错误：", e);
         }
-        // 关闭输入流
-
-        // 加载 .so 文件
-        System.load(tempSoFile.getAbsolutePath());
     }
 
-
-    private static void log(String message) {
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        // 获取调用者的堆栈信息
-        StackTraceElement caller = stackTraceElements[3];
-        String className = caller.getClassName();
-        String methodName = caller.getMethodName();
-        int lineNumber = caller.getLineNumber();
-        Log.d(TAG, String.format("%s.%s(%d): %s", className, methodName, lineNumber, message));
+    private static void log(String msg, Throwable t) {
+        Log.e(TAG, msg, t);
     }
 
-    private static void log(String message, Throwable e) {
-        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-        // 获取调用者的堆栈信息
-        StackTraceElement caller = stackTraceElements[3];
-        String className = caller.getClassName();
-        String methodName = caller.getMethodName();
-        int lineNumber = caller.getLineNumber();
-        Log.e(TAG, String.format("%s.%s(%d): %s", className, methodName, lineNumber, message), e);
+    private static void log(String msg) {
+        Log.i(TAG, msg);
     }
 
     public static native Application getContext();

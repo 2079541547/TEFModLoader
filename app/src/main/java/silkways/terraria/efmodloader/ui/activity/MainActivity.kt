@@ -1,7 +1,7 @@
 package silkways.terraria.efmodloader.ui.activity
 
-import android.content.Context
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -13,7 +13,6 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -37,17 +36,25 @@ import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.NonCancellable.isActive
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import me.zhanghai.android.appiconloader.coil.AppIconFetcher
 import me.zhanghai.android.appiconloader.coil.AppIconKeyer
 import silkways.terraria.efmodloader.logic.ApplicationSettings.isDarkThemeEnabled
+import silkways.terraria.efmodloader.logic.EFLog
+import silkways.terraria.efmodloader.logic.JsonConfigModifier
+import silkways.terraria.efmodloader.logic.efmod.LoaderManager.install
 import silkways.terraria.efmodloader.ui.screen.BottomBarDestination
 import silkways.terraria.efmodloader.ui.screen.NavGraphs
 import silkways.terraria.efmodloader.ui.theme.TEFModLoaderComposeTheme
 import silkways.terraria.efmodloader.ui.utils.LocalSnackbarHost
+import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
+import java.io.FileOutputStream
+import java.io.FileWriter
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 
 class MainActivity : EFActivity() {
 
@@ -57,7 +64,43 @@ class MainActivity : EFActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         init()
-        checkPermission()
+
+        if (SPUtils.readBoolean("ApplyForPermission", false)) {
+            checkPermission()
+        }
+
+        if (!File("${this.getExternalFilesDir(null)}/TEFModLoader/EFModLoaderData").exists()) {
+            val file = File(this.externalCacheDir, "TEFModLoader.efml")
+            copyAssetToFile(this, "TEFModLoader/kernel/TEFModLoader.efml", file.absolutePath)
+            install(this, file, File("${this.getExternalFilesDir(null)}/TEFModLoader/EFModLoaderData"))
+            file.delete()
+            try {
+                // 创建文件路径
+                val dir = File(getExternalFilesDir(null), "TEFModLoader/EFModLoaderData")
+                if (!dir.exists()) {
+                    dir.mkdirs()
+                }
+
+                val file = File(dir, "info.json")
+
+                // 创建文件内容
+                val content = """
+            {
+                "selectedLoaderPath": "${this.getExternalFilesDir(null)}/TEFModLoader/EFModLoaderData/TEFModLoader.efml"
+            }
+            """.trimIndent()
+
+                // 写入文件
+                FileWriter(file).use { writer ->
+                    writer.write(content)
+                }
+
+                EFLog.i("文件创建并写入成功")
+            } catch (e: IOException) {
+                e.printStackTrace()
+                EFLog.e("文件创建并写入失败: ${e.message}")
+            }
+        }
 
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -169,6 +212,32 @@ class MainActivity : EFActivity() {
         }
     }
 
+    private fun copyAssetToFile(context: Context, assetPath: String, destinationPath: String) {
+        try {
+            // 打开Assets中的文件
+            val inputStream: InputStream = context.assets.open(assetPath)
+            // 创建输出流，用于写入文件
+            val outputStream: OutputStream = FileOutputStream(destinationPath)
+
+            // 缓冲区大小可以适当调整
+            val buffer = ByteArray(1024)
+            var read: Int
+
+            // 循环读取并写入
+            while (inputStream.read(buffer).also { read = it } != -1) {
+                outputStream.write(buffer, 0, read)
+            }
+
+            // 关闭流
+            outputStream.close()
+            inputStream.close()
+
+            EFLog.i("文件复制成功")
+        } catch (e: IOException) {
+            e.printStackTrace()
+            EFLog.e("文件复制失败: ${e.message}")
+        }
+    }
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

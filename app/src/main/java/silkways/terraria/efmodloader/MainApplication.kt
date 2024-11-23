@@ -4,11 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.compose.ui.platform.LocalContext
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.logic.ApplicationSettings
 import silkways.terraria.efmodloader.logic.LanguageHelper
-import silkways.terraria.efmodloader.logic.efmod.LoaderManager.install
 import silkways.terraria.efmodloader.ui.utils.LanguageUtils
 import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File

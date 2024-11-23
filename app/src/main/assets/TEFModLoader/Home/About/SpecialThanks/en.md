@@ -18,7 +18,10 @@
 
 ## 雨鹜
 - Participated in the software rewrite, optimizing the settings page.
+---
 
+# JiangNight
+- UI architecture rewrite foundation
 ---
 
 # Code Contributions <a id="code-contribution"></a>

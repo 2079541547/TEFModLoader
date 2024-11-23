@@ -59,6 +59,8 @@
                 android:resource="@xml/file_paths"/>
         </provider>
 
+        <service android:name=".LoadService" android:enabled="true" android:exported="true" android:stopWithTask="true"/>
+
     </application>
 
 </manifest>

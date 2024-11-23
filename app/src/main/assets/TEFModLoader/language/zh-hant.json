@@ -1,12 +1,28 @@
 {
+  "agreement": {
+    "title": "軟體協議",
+    "content": [
+      "免費和開源：本軟體是一個完全免費的開源項目。我們鼓勵用戶自由地使用、修改和分發本軟體，遵循AGPLv3許可證的規定。",
+      "禁止商用：未經我們的明確書面同意，禁止將本軟體用於任何商業目的。這包括將軟體作為產品或服務的一部分進行銷售、租賃或其他商業利用。",
+      "官方渠道獲取：為確保用戶獲得最新、最安全的軟體版本，我們強烈建議用戶僅從我們的官方渠道下載軟體。我們不對從非官方渠道獲得的軟體版本提供支持或保證其安全性。",
+      "免責聲明：本軟體按‘現狀’提供，不提供任何形式的保證。我們不對因使用或無法使用本軟體而可能引起的任何損害、損失或費用承擔責任。",
+      "隱私政策：本軟體不收集、存儲或處理任何個人數據。我們不要求用戶提供任何個人資訊，也不會在軟體中使用任何形式的數據追蹤。",
+      "安全聲明：我們致力於提供安全的軟體體驗。雖然我們的軟體不收集用戶數據，我們仍舊採取適當的安全措施來保護軟體的完整性和性能。",
+      "開源協議：本軟體採用GNU Affero General Public License version 3（AGPLv3）許可證發佈。完整的許可證文本可在以下連結找到：http://www.gnu.org/licenses/agpl-3.0.html。",
+      "貢獻和社區：我們鼓勵用戶貢獻代碼並參與到我們的開源社區中來。如果您對許可證有任何疑問，或希望貢獻代碼，請與我們聯繫。"
+    ],
+    "refuse": "拒絕並退出",
+    "agree": "同意並遵守該協議"
+  },
+
   "main": {
     "home": {
-      "title": "首页",
-      "about": "关于",
-      "setting": "设置",
-      "feedback": "反馈",
-      "help": "帮助",
-      "quotes": "\uD83D\uDC46(*≧▽≦)ﾉｼ))好听的一言",
+      "title": "首頁",
+      "about": "關於",
+      "setting": "設置",
+      "feedback": "反饋",
+      "help": "幫助",
+      "quotes": "\uD83D\uDC46(*≧▽≦)ﾉｼ))好聽的一言",
       "morning": "ヽ(。ゝω・)ノ☆;:*早上好*:;☆",
       "noon": "ヽ(´･∀･｀)ﾉ〔*…..**★中午好★**…..*〕",
       "afternoon": "下午好！(*´∀｀)ﾉ",
@@ -15,149 +31,262 @@
     },
 
     "toolbox": {
-      "title": "工具箱"
+      "title": "工具箱",
+      "unfinished": "還在加班QAQ...",
+      "terminal": "終端",
+      "start": "配置&啟動",
+      "import archive": "導入存檔",
+      "import configuration": "導入配置",
+      "manager": {
+        "title": "文件查看"
+      },
+      "export archive": "導出存檔",
+      "export data": "導出所有數據",
+      "dialog": {
+        "title": "少女祈禱中...",
+        "close": "關閉",
+        "text": "正在為您配置Mod&內核"
+      }
     },
 
     "manager": {
-      "title": "管理"
+      "title": "管理",
+      "installation successful": "安裝成功",
+      "installation failed": "安裝失敗",
+      "efmod": {
+        "install": "安裝EFMod",
+        "manager": "EFMod管理"
+      },
+      "development settings": "實驗性選項",
+      "efmodloader": {
+        "install": "安裝內核",
+        "manager": "內核管理"
+      }
     },
 
     "Update log": {
-      "title": "更新日志|x･`)(一定会按时更新的)",
-      "close": "关闭",
+      "title": "更新日誌|x･`)(一定會按時更新的)",
+      "close": "關閉",
       "100": [
-        "可使用EFMod作为游戏扩展",
-        "可导入存档/配置",
+        "可使用EFMod作為遊戲擴展",
+        "可導入存檔/配置",
         "EFMod基本支持",
-        "调试工具",
-        "额外的游戏菜单"
+        "調試工具",
+        "額外的遊戲菜單"
       ],
       "120": [
-        "开放自定义内核",
-        "可导出数据",
-        "更强大的内存管理",
-        "英语翻译",
-        "更换Mod文件格式以及新文件系统",
-        "不再携带汉化版本，而是纯原版",
-        "修复文件无法选择bug",
+        "開放自定義內核",
+        "可導出數據",
+        "更強大的內存管理",
+        "英語翻譯",
+        "更改Mod文件格式以及新文件系統",
+        "不再攜帶漢化版本，而是純原版",
+        "修復文件無法選擇bug",
         "更新一言",
-        "优化Mod安装、读取、启用速度",
-        "优化游戏启动速度",
-        "优化内核",
+        "優化Mod安裝、讀取、啟用速度",
+        "優化遊戲啟動速度",
+        "優化內核",
         "更多API支持",
-        "更换DodyHook，移除shadowhook",
-        "移除不稳定的调试工具",
-        "支持独立Mod"
+        "更改DodyHook，移除shadowhook",
+        "移除不穩定的調試工具",
+        "支持獨立Mod"
       ],
       "121": [
-        "更新文件系统",
-        "添加解压进度",
-        "优化Mod以及Loader读取速度",
-        "防呆/手残安装错误文件"
+        "更新文件系統",
+        "添加解壓進度",
+        "優化Mod以及Loader讀取速度",
+        "防呆/手殘安裝錯誤文件"
       ],
       "150": [
-        "重写软件架构",
-        "重写底层",
-        "脱离内置游戏",
-        "使用标准化EFModLoader",
-        "支持两种工作模式：共享 and 外部",
-        "优化UI表现",
-        "更强大的错误处理",
-        "减小占用",
-        "软件性能优化",
-        "增加日志系统",
-        "移除游戏面板",
-        "增加代码复用",
-        "注：部分功能可能无法使用或没有预期效果，请谅解QAQ"
+        "重寫軟件架構",
+        "重寫底層",
+        "脫離內置遊戲",
+        "使用標準化的EFModLoader",
+        "支持兩種工作模式：共享 and 外部",
+        "優化UI表現",
+        "更強大的錯誤處理",
+        "減小佔用",
+        "軟件性能優化",
+        "增加日誌系統",
+        "移除遊戲面板",
+        "增加代碼複用",
+        "註：部分功能可能無法使用或沒有預期效果，請諒解QAQ"
       ],
       "151": [
-        "支持共享内核",
-        "内核支持Java API",
-        "完善之前除游戏面板外的所有功能",
-        "更新帮助文档",
-        "Mod私有目录的双向更新",
-        "更好的权限申请",
-        "更强大的内核",
-        "自定义内核",
-        "性能优化",
-        "繁体中文",
-        "更新Mod标准，支持多语言",
-        "注：此版本为1.5.5 Stable，长期稳定，更新慢，调试/测试可选择周构建"
+        "支持共享內核",
+        "內核支持Java API",
+        "完善之前除遊戲面板外的所有功能",
+        "更新幫助文檔",
+        "Mod私有目錄的雙向更新",
+        "更好的權限申請",
+        "更強大的內核",
+        "自定義內核",
+        "性能優化",
+        "繁體中文",
+        "更新Mod標準，支持多語言",
+        "註：此版本為1.5.5 Stable，長期穩定，更新慢，調試/測試可選擇週構建"
+      ],
+      "200": [
+        "修復外部模式bug",
+        "使用Composable重寫UI",
+        "更新內核，減少C++的使用",
+        "重寫頁面：設置 Mod管理 內核管理",
+        "終端支持",
+        "修復共享模式bug",
+        "未完成的模式：嵌入模式",
+        "內置20241123版本的內核",
+        "更新日誌緩存系統",
+        "切換語言/主題無需重啟軟件"
       ]
     }
   },
 
   "about": {
-    "title": "关于",
+    "title": "關於",
     "app": "致力打造最好的工具",
     "developers": {
-      "title": "开发者",
-      "close": "关闭",
-      "developer_0": "介里什么都没有(*´∀ ˋ*) "
-
+      "title": "開發者",
+      "close": "關閉",
+      "developer_0": "介里什麼都沒有(*´∀ ˋ*) "
     },
-    "open source license": "开源协议",
-    "open source repository": "开源仓库",
-    "special thanks": "特别鸣谢",
-    "future plans": "未来计划"
+    "open source license": "開源協議",
+    "open source repository": "開源倉庫",
+    "special thanks": "特別鳴謝",
+    "future plans": "未來計劃"
   },
 
   "setting": {
-    "title": "设置",
+    "title": "設置",
 
     "important": {
       "title": "重要",
       "runtime": {
         "title": "工作模式",
-        "external": "外部内核",
-        "share": "共享内核",
-        "embed": "嵌入内核"
+        "external": "外部模式",
+        "share": "共享模式",
+        "embed": "嵌入模式"
       },
       "target": {
-        "title": "目标包名",
+        "title": "目標包名",
         "dialog": {
-          "title": "设置目标包名",
-          "hint": "请输入包名",
-          "determine": "确定",
+          "title": "設置目標包名",
+          "hint": "請輸入包名",
+          "determine": "確定",
           "cancel": "取消"
         }
       },
       "architecture": {
-        "title": "Mod & Loader运行架构",
-        "system": "跟随系统",
+        "title": "Mod & Loader運行架構",
+        "system": "跟隨系統",
         "arm64-v8a": "arm64-v8a(64位)",
         "armeabi-v7a": "armeabi-v7a(32位)"
       }
     },
 
     "general": {
-      "title": "常规",
+      "title": "常規",
       "theme": {
-        "title": "主题",
-        "system": "跟随系统",
+        "title": "主題",
+        "system": "跟隨系統",
         "light": "亮色",
         "dark": "暗色"
       },
       "language": {
-        "title": "语言",
-        "system": "跟随系统",
-        "zh-cn": "中文(简体)",
-        "zh-hant": "中文(繁体)",
-        "ru": "Русский(俄语)",
-        "en": "English(英语)",
-        "jp": "日本語(日语)",
-        "ko": "한국어(韩语)",
-        "it": "Italiano(意大利语)",
-        "es": "Lengua española(西班牙语)",
-        "fr": "Français(法语)",
-        "de": "Deutsch(德语)"
+        "title": "語言",
+        "system": "跟隨系統",
+        "zh-cn": "中文(簡體)",
+        "zh-hant": "中文(繁體)",
+        "ru": "Русский(俄語)",
+        "en": "English(英語)",
+        "jp": "日本語(日語)",
+        "ko": "한국어(韓語)",
+        "it": "Italiano(義大利語)",
+        "es": "Lengua española(西班牙語)",
+        "fr": "Français(法語)",
+        "de": "Deutsch(德語)"
       }
     },
 
     "file": {
-      "title": "文件"
+      "title": "文件",
+      "manage": {
+        "title": "文件查看目錄",
+        "dialog": {
+          "title": "設置文件查看路徑",
+          "hint": "請輸入路徑",
+          "determine": "確定",
+          "cancel": "取消"
+        }
+      },
+      "import": {
+        "title": "導入文件路徑",
+        "dialog": {
+          "title": "設置文件導入的目錄",
+          "hint": "請輸入路徑",
+          "determine": "確定",
+          "cancel": "取消"
+        }
+      },
+      "export": {
+        "title": "導出數據包名",
+        "dialog": {
+          "title": "設置數據導出時的指定應用",
+          "hint": "請輸入應用包名",
+          "determine": "確定",
+          "cancel": "取消"
+        }
+      }
+    },
+
+    "log": {
+      "title": "日誌",
+      "switch": "自動緩存日誌",
+      "cache": {
+        "title": "最大緩存大小",
+        "1024": "1024 KB",
+        "4096": "4096 KB",
+        "8192": "8192 KB",
+        "unlimited": "無限制"
+      }
     }
   },
 
-  "Unable_to_retrieve_text": "无法获取文本"
+  "terminal": {
+    "title": "終端"
+  },
+
+  "manager": {
+    "mod": {
+      "title": "EFMod管理",
+      "info_dialog": {
+        "version": "版本：",
+        "author": "作者：",
+        "introduce": "介紹：",
+        "url": "開源鏈接：",
+        "close": "關閉"
+      },
+      "delete_dialog": {
+        "title": "移除",
+        "determine": "確定",
+        "cancel": "取消",
+        "result": "請退出頁面刷新"
+      }
+    },
+
+    "loader": {
+      "title": "內核管理",
+      "version": "版本：",
+      "author": "作者：",
+      "introduce": "介紹：",
+      "url": "開源鏈接：",
+      "delete_dialog": {
+        "title": "移除",
+        "determine": "確定",
+        "cancel": "取消",
+        "result": "請退出頁面刷新"
+      }
+    }
+  },
+
+  "Unable_to_retrieve_text": "無法獲取文本"
 }

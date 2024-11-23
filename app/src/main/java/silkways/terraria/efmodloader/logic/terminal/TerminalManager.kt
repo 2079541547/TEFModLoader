@@ -24,141 +24,182 @@
 
 package silkways.terraria.efmodloader.logic.terminal
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import androidx.compose.ui.text.AnnotatedString
-import silkways.terraria.efmodloader.MainApplication
-import silkways.terraria.efmodloader.data.Settings
+import eternal.future.effsystem.Tool
 import silkways.terraria.efmodloader.logic.EFLog
-import silkways.terraria.efmodloader.logic.LanguageHelper
 import silkways.terraria.efmodloader.logic.efmod.LoaderManager
 import silkways.terraria.efmodloader.logic.efmod.ModManager.install
 import silkways.terraria.efmodloader.ui.activity.TerminalViewModel
-import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
 import java.util.Locale
 
-data class CommandResult(val output: AnnotatedString)
+data class CommandResult(val output: String)
 
 class TerminalManager(context: Context) {
 
-
-    private val Conventional = LanguageUtils(
-        MainApplication.getContext(),
-        LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), MainApplication.getContext()),
-        "conventional"
-    )
-
-    private val ModManager = LanguageUtils(
-        MainApplication.getContext(),
-        LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), MainApplication.getContext()),
-        "ModManager"
-    )
-
     var workPath = context.dataDir.toString()
     private val commandMap = mutableMapOf<String, (List<String>) -> CommandResult>()
-
 
     init {
 
         registerCommand("ls") { args ->
             if (args.isNotEmpty()) {
-                CommandResult(AnnotatedString("'${args.first()}' ${Conventional.getString("ls", "result")}${ls(args.first())}"))
+                CommandResult("error: 'ls' does not accept arguments")
             } else {
-                CommandResult(AnnotatedString("'$workPath' ${Conventional.getString("ls", "result")}${ls(workPath)}"))
+                CommandResult(ls(workPath))
             }
         }
 
         registerCommand("cd") { args ->
             if (args.isNotEmpty()) {
                 if(!File(args.first()).exists()) {
-                    CommandResult(AnnotatedString(Conventional.getString("cd", "error", "1")))
+                    CommandResult("error: The specified path does not exist")
                 } else if(!File(args.first()).isDirectory) {
-                    CommandResult(AnnotatedString(Conventional.getString("cd", "error", "2")))
+                    CommandResult("error: The specified path is not a directory")
                 } else {
                     workPath = args.first()
-                    CommandResult(AnnotatedString("${Conventional.getString("cd", "result")} ${args.first()}"))
+                    CommandResult("Changed to directory: ${args.first()}")
                 }
             } else {
-                CommandResult(AnnotatedString(Conventional.getString("cd", "error", "0")))
+                CommandResult("error: No directory specified")
             }
         }
 
         registerCommand("pwd") { _ ->
-            CommandResult(AnnotatedString("${Conventional.getString("pwd", "result")}${context.dataDir}"))
+            CommandResult("Current working directory: ${context.dataDir}")
         }
 
         registerCommand("whoami") { _ ->
-            CommandResult(AnnotatedString("${Conventional.getString("whoami", "result")}$workPath"))
+            CommandResult("Current user: ${context.packageName}")
         }
 
         registerCommand("clear") { _ ->
             TerminalViewModel().clearHistory()
-            CommandResult(AnnotatedString(""))
+            CommandResult("")
         }
 
         registerCommand("exit") { _ ->
             val a = context as Activity
             a.finishAffinity()
-            CommandResult(AnnotatedString(Conventional.getString("exit", "result")))
+            CommandResult("Exiting...")
         }
 
-        registerCommand("help") { _ ->
-            CommandResult(AnnotatedString(Conventional.getString("help", "error", "0")))
+        registerCommand("help") { args ->
+            CommandResult("""
+            Available commands:
+            ls - List files in the current directory
+            cd [path] - Change the current directory
+            pwd - Print the current working directory
+            whoami - Print the current user
+            clear - Clear the terminal screen
+            exit - Exit the application
+            help - Display this help message
+            install -mod [file] - Install a mod from the specified file
+            install-loader [file] - Install a loader from the specified file
+            EFModTool -c -mod [name] [version] [description] - Create a new mod
+            EFModTool -c loader [name] [version] [description] - Create a new loader
+            EFModTool -b -mod [version] [name] [output] - Build a mod
+            EFModTool -b loader [version] [name] [output] - Build a loader
+            """.trimIndent())
         }
 
-        registerCommand("help-c") { args ->
+        registerCommand("install") { args ->
             if (args.isNotEmpty()) {
-                CommandResult(AnnotatedString("'${args.first()}'" + Conventional.getString("help", "result") + Conventional.getArrayString(args.first(), "document")))
+                when(args[0]) {
+                    "-mod" -> {
+                        if (!File(args[1]).exists()) {
+                            CommandResult("'${args[1]}' does not exist")
+                        } else if (File(args[1]).isDirectory) {
+                            CommandResult("'${args[1]}' is a directory, not a file")
+                        } else {
+                            install(context, File(args[1]), File("${context.getExternalFilesDir(null)?.absolutePath}/TEFModLoader/EFModData"))
+                            CommandResult("Mod installed successfully")
+                        }
+                    }
+                    "-loader" -> {
+                        if (!File(args[1]).exists()) {
+                            CommandResult("'${args[1]}' does not exist")
+                        } else if (File(args[1]).isDirectory) {
+                            CommandResult("'${args[1]}' is a directory, not a file")
+                        } else {
+                            LoaderManager.install(context, File(args[1]), File("${context.getExternalFilesDir(null)?.absolutePath}/TEFModLoader/EFModLoaderData"))
+                            CommandResult("Loader installed successfully")
+                        }
+                    }
+                    else -> CommandResult("error: Invalid usage of 'install'")
+                }
             } else {
-                CommandResult(AnnotatedString(Conventional.getString("help", "error", "0")))
+                CommandResult("error: No arguments provided for 'install'")
             }
         }
 
-        registerCommand("install-mod") { args ->
-            if (args.isNotEmpty()) {
-                if (!File(args.first()).exists()) {
-                    CommandResult(AnnotatedString("'${args.first()}': " + ModManager.getString("install-mod", "error", "1")))
-                } else if (File(args.first()).isDirectory) {
-                    CommandResult(AnnotatedString("'${args.first()}': " + ModManager.getString("install-mod", "error", "2")))
-                } else {
-                    install(context, File(args.first()), File("${context.getExternalFilesDir(null)?.absolutePath}/TEFModLoader/EFModData"))
-                    CommandResult(AnnotatedString(ModManager.getString("install-mod", "result") + "'${args.first()}'"))
-                }
+        registerCommand("EFModTool") { args ->
+            if (args.isEmpty()) {
+                CommandResult("error: No arguments provided for 'EFModTool'")
             } else {
-                CommandResult(AnnotatedString(ModManager.getString("install-mod", "error", "0")))
-            }
-        }
-
-        registerCommand("install-loader") { args ->
-            if (args.isNotEmpty()) {
-                if (!File(args.first()).exists()) {
-                    CommandResult(AnnotatedString("'${args.first()}': " + ModManager.getString("install-mod", "error", "1")))
-                } else if (File(args.first()).isDirectory) {
-                    CommandResult(AnnotatedString("'${args.first()}': " + ModManager.getString("install-mod", "error", "2")))
-                } else {
-                    LoaderManager.install(context, File(args.first()), File("${context.getExternalFilesDir(null)?.absolutePath}/TEFModLoader/EFModLoaderData"))
-                    CommandResult(AnnotatedString(ModManager.getString("install-mod", "result") + "'${args.first()}'"))
+                when (args[0]) {
+                    "-c" -> {
+                        when (args.getOrNull(1)) {
+                            "-mod" -> {
+                                if (args.size >= 5) {
+                                    Tool.createMod(args[2], args[3], args[4])
+                                    CommandResult("Mod created successfully")
+                                } else {
+                                    CommandResult("error: Invalid usage of 'EFModTool -c -mod'")
+                                }
+                            }
+                            "loader" -> {
+                                if (args.size >= 5) {
+                                    Tool.createLoader(args[2], args[3], args[4])
+                                    CommandResult("Loader created successfully")
+                                } else {
+                                    CommandResult("error: Invalid usage of 'EFModTool -c loader'")
+                                }
+                            }
+                            else -> CommandResult("error: Invalid usage of 'EFModTool -c'")
+                        }
+                    }
+                    "-b" -> {
+                        when (args.getOrNull(1)) {
+                            "-mod" -> {
+                                if (args.size >= 5) {
+                                    try {
+                                        Tool.buildMod(args[2].toInt(), args[3], args[4])
+                                        CommandResult("Mod built successfully")
+                                    } catch (e: NumberFormatException) {
+                                        CommandResult("error: Invalid version number")
+                                    }
+                                } else {
+                                    CommandResult("error: Invalid usage of 'EFModTool -b -mod'")
+                                }
+                            }
+                            "loader" -> {
+                                if (args.size >= 5) {
+                                    try {
+                                        Tool.buildLoader(args[2].toInt(), args[3], args[4])
+                                        CommandResult("Loader built successfully")
+                                    } catch (e: NumberFormatException) {
+                                        CommandResult("error: Invalid version number")
+                                    }
+                                } else {
+                                    CommandResult("error: Invalid usage of 'EFModTool -b loader'")
+                                }
+                            }
+                            else -> CommandResult("error: Invalid usage of 'EFModTool -b'")
+                        }
+                    }
+                    else -> CommandResult("error: Invalid usage of 'EFModTool'")
                 }
-            } else {
-                CommandResult(AnnotatedString(ModManager.getString("install-mod", "error", "0")))
             }
         }
     }
 
-    @SuppressLint("DefaultLocale")
     fun execute(command: String): CommandResult {
         val parts = command.trim().split("\\s+".toRegex())
         val cmdName = parts.firstOrNull()?.toLowerCase(Locale.ROOT)
         val arguments = parts.drop(1)
-        return commandMap[cmdName]?.invoke(arguments) ?: CommandResult(AnnotatedString("${
-            LanguageUtils(
-                MainApplication.getContext(),
-                LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), MainApplication.getContext()),
-                "unknown"
-            ).getString()
-        } $command"))
+        return commandMap[cmdName]?.invoke(arguments) ?: CommandResult("")
     }
 
     fun registerCommand(name: String, action: (List<String>) -> CommandResult) {
@@ -176,16 +217,14 @@ class TerminalManager(context: Context) {
             }
 
             if (files == null) {
-                Conventional.getString("ls", "error", "1")
+                "error: Could not read directory"
             } else if (files.isEmpty()) {
-                Conventional.getString("ls", "error", "2")
+                "error: Directory is empty"
             } else {
                 files.joinToString("\n") { it.name }
             }
         } else {
-            Conventional.getString("ls", "error", "3")
+            "error: Path does not exist or is not a directory"
         }
     }
-
-
 }

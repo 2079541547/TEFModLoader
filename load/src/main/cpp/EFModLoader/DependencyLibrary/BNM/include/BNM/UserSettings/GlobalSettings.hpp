@@ -28,6 +28,12 @@ static_assert(false, "ByNameModding requires C++20 and above!");
 #define UNITY_VER 194 // 2019.4.x
 #elif defined(__aarch64__)
 #define UNITY_VER 213 // 2021.3.x
+#elif defined(__i386__)
+#define UNITY_VER 194 // 2019.4.x for x86
+#elif defined(__x86_64__)
+#define UNITY_VER 213 // 2021.3.x for x86_64
+#else
+#error "Unsupported architecture"
 #endif
 
 #define UNITY_PATCH_VER 16 // Для особых случаев (For special cases)

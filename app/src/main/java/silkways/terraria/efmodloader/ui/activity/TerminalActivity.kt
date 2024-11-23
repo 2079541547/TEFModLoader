@@ -3,16 +3,11 @@ package silkways.terraria.efmodloader.ui.activity
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,6 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -41,9 +37,7 @@ import silkways.terraria.efmodloader.MainApplication
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.logic.ApplicationSettings.isDarkThemeEnabled
 import silkways.terraria.efmodloader.logic.LanguageHelper
-import silkways.terraria.efmodloader.logic.terminal.LanguageUtils
 import silkways.terraria.efmodloader.logic.terminal.TerminalManager
-import silkways.terraria.efmodloader.ui.screen.CustomTopBar
 import silkways.terraria.efmodloader.ui.theme.TEFModLoaderComposeTheme
 import silkways.terraria.efmodloader.utils.SPUtils
 
@@ -52,12 +46,6 @@ class TerminalActivity : EFActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         init()
         super.onCreate(savedInstanceState)
-
-        LanguageUtils(
-            MainApplication.getContext(),
-            LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), MainApplication.getContext()),
-            ""
-        ).loadJsonFromAsset()
 
         setContent {
             TEFModLoaderComposeTheme(darkTheme = isDarkThemeEnabled(this)) {
@@ -76,6 +64,11 @@ class TerminalViewModel : ViewModel() {
     private var scrollJob: Job? = null
     private val terminalManager = TerminalManager(context = MainApplication.getContext())
 
+    init {
+        // Add welcome message
+        historyOutput.add(AnnotatedString("Welcome to TEFML Terminal\nType 'help' for a list of commands"))
+    }
+
     fun executeCommand(command: String) {
         viewModelScope.launch(Dispatchers.IO) {
             when (command.lowercase()) {
@@ -88,7 +81,8 @@ class TerminalViewModel : ViewModel() {
                 else -> {
                     val result = terminalManager.execute(command)
                     withContext(Dispatchers.Main) {
-                        historyOutput.add(result.output)
+                        historyOutput.add(AnnotatedString("$command >> "))
+                        historyOutput.add(AnnotatedString(result.output))
                         inputCommand = ""
                         scrollToBottom()
                     }
@@ -113,7 +107,6 @@ class TerminalViewModel : ViewModel() {
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TerminalComposable() {
@@ -132,146 +125,100 @@ fun TerminalComposable() {
 
     Scaffold(
         topBar = {
-            CustomTopBar(silkways.terraria.efmodloader.ui.utils.LanguageUtils(
-                MainApplication.getContext(),
-                LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), MainApplication.getContext()),
-                "terminal"
-            ).getString("title"))
+            TopAppBar(
+                title = {
+                    Text(
+                        text = silkways.terraria.efmodloader.ui.utils.LanguageUtils(
+                            MainApplication.getContext(),
+                            LanguageHelper.getLanguage(
+                                SPUtils.readInt(Settings.languageKey, 0),
+                                MainApplication.getContext()
+                            ),
+                            "terminal"
+                        ).getString("title"), color = Color.White
+                    )
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black)
+            )
         },
         content = { padding ->
-            Surface(
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(Color.Black)
                     .padding(padding)
-                    .background(MaterialTheme.colorScheme.background)
             ) {
-                Column(
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(24.dp)
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .background(Color.Black)
                 ) {
-
-                    // Device Info Section
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
-                            .padding(16.dp)
-                            .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(8.dp)),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                        state = listState
                     ) {
-                        Text(text = "TEFML@${Build.DEVICE}&${Build.CPU_ABI}", color = MaterialTheme.colorScheme.onSurface, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        items(viewModel.historyOutput.size) { index ->
+                            Text(
+                                text = viewModel.historyOutput[index],
+                                fontSize = 14.sp,
+                                color = Color.White,
+                                fontFamily = FontFamily.Monospace
+                            )
+                        }
                     }
+                }
 
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Output History Section
-                    Box(
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Black)
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    BasicTextField(
+                        value = viewModel.inputCommand,
+                        onValueChange = { newCommand ->
+                            viewModel.inputCommand = newCommand
+                        },
                         modifier = Modifier
-                            .fillMaxWidth()
                             .weight(1f)
-                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
-                            .padding(16.dp)
-                            .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(8.dp))
-                    ) {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                            state = listState
-                        ) {
-                            items(viewModel.historyOutput.size) { index ->
+                            .background(Color.Black)
+                            .padding(
+                                start = 8.dp,
+                                end = 8.dp,
+                                top = 4.dp,
+                                bottom = 4.dp
+                            ),
+                        textStyle = TextStyle(
+                            color = Color.White,
+                            fontSize = 14.sp,
+                            fontFamily = FontFamily.Monospace
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                            keyboardType = KeyboardType.Text
+                        ),
+                        keyboardActions = KeyboardActions(onDone = {
+                            viewModel.executeCommand(
+                                viewModel.inputCommand
+                            )
+                        }),
+                        decorationBox = { innerTextField ->
+                            Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
-                                    text = viewModel.historyOutput[index],
-                                    fontSize = 15.sp,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    fontFamily = FontFamily.Monospace
+                                    text = "TEFML@${Build.DEVICE}>> ",
+                                    color = Color.White,
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Bold
                                 )
+                                innerTextField()
                             }
                         }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Command Buttons Section
-                    LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
-                            .padding(16.dp)
-                            .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(8.dp)),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        val commands = listOf("help-", "help-c", "install-mod", "install-loader")
-
-                        items(commands.size) { index ->
-                            CommandItem(cmd = commands[index], viewModel = viewModel)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    // Input Section
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
-                            .padding(16.dp)
-                            .border(width = 1.dp, color = MaterialTheme.colorScheme.outline, shape = RoundedCornerShape(8.dp)),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        BasicTextField(
-                            value = viewModel.inputCommand,
-                            onValueChange = { newCommand ->
-                                viewModel.inputCommand = newCommand
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.8f))
-                                .padding(12.dp),
-                            textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp, fontFamily = FontFamily.Monospace),
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done, keyboardType = KeyboardType.Text),
-                            keyboardActions = KeyboardActions(onDone = { viewModel.executeCommand(viewModel.inputCommand) }),
-                            decorationBox = { innerTextField ->
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(text = "TEFML@${Build.DEVICE}>>", color = MaterialTheme.colorScheme.onSurface, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    innerTextField()
-                                }
-                            }
-                        )
-                    }
+                    )
                 }
             }
         }
     )
-}
-
-
-
-
-@Composable
-fun CommandItem(cmd: String, viewModel: TerminalViewModel) {
-    Surface(
-        modifier = Modifier
-            .clickable {
-                viewModel.inputCommand = cmd
-            }
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-        shape = MaterialTheme.shapes.small
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = cmd,
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-    }
 }
