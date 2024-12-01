@@ -12,6 +12,8 @@ ksp = "2.0.21-1.0.25"
 androidxCoreSplashscreen = "1.0.1"
 commonmark = "0.24.0"
 appcompat = "1.7.0"
+junit = "4.13.2"
+junitVersion = "1.1.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +45,8 @@ me-zhanghai-android-appiconloader-coil = { group = "me.zhanghai.android.appiconl
 commonmark = { module = "org.commonmark:commonmark", version.ref = "commonmark" }
 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
