@@ -1,6 +1,6 @@
 [versions]
 agp = "8.6.1"
-kotlin = "2.0.0"
+kotlin = "2.1.0"
 coreKtx = "1.15.0"
 accompanist = "0.36.0"
 compose-destination = "1.11.7"
@@ -12,8 +12,7 @@ ksp = "2.0.21-1.0.25"
 androidxCoreSplashscreen = "1.0.1"
 commonmark = "0.24.0"
 appcompat = "1.7.0"
-junit = "4.13.2"
-junitVersion = "1.1.5"
+palette = "1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -22,6 +21,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-palette = { module = "androidx.palette:palette", version.ref = "palette" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -45,8 +45,6 @@ me-zhanghai-android-appiconloader-coil = { group = "me.zhanghai.android.appiconl
 commonmark = { module = "org.commonmark:commonmark", version.ref = "commonmark" }
 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

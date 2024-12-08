@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import kotlinx.coroutines.delay
 import silkways.terraria.efmodloader.MainApplication
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.logic.EFLog
@@ -48,13 +49,20 @@ private var ManageDialog = mutableStateOf(false)
 private var ImportDialog = mutableStateOf(false)
 private var ExportDialog = mutableStateOf(false)
 
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen() {
     val context = LocalContext.current
 
-    val settings = remember { buildSettingsList(context) }
+    var settings by remember { mutableStateOf(buildSettingsList(context)) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(500)
+            settings = buildSettingsList(context)
+        }
+    }
 
     Scaffold(
         topBar = { CustomTopBar(jsonUtils.getString("title")) },
@@ -273,8 +281,10 @@ fun buildSettingsList(context: Context): List<SettingItem> {
             icon = Icons.Filled.Construction,
             title = jsonUtils.getString("log", "cache", "title"),
             subtitle = when(SPUtils.readInt("LogCacheSize", 0)){
-                0 -> jsonUtils.getString("log", "cache", "unlimited")
-                else -> "${SPUtils.readInt(" LogCacheSize ", 0)} KB"
+                1024 -> jsonUtils.getString("log", "cache", "1024")
+                4096 -> jsonUtils.getString("log", "cache", "4096")
+                8192 -> jsonUtils.getString("log", "cache", "8192")
+                else -> jsonUtils.getString("log", "cache", "unlimited")
             },
             menuOptions = listOf(
                 jsonUtils.getString("log", "cache", "1024"),

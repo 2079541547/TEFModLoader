@@ -27,6 +27,11 @@ android {
         versionName = "2.0.0 Stable"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags += ""
+            }
+        }
     }
 
     buildTypes {
@@ -48,12 +53,20 @@ android {
     buildFeatures {
         compose = true
     }
+    externalNativeBuild {
+        cmake {
+            path = file("src/main/cpp/CMakeLists.txt")
+            version = "3.22.1"
+        }
+    }
 }
 
 dependencies {
     compileOnly(project(":load"))
 
     implementation(libs.commonmark)
+
+    implementation(libs.androidx.palette)
 
     implementation(libs.androidx.appcompat)
 

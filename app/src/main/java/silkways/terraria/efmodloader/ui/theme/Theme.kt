@@ -9,6 +9,34 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import android.app.WallpaperManager
+import android.content.Context
+import androidx.compose.material3.ColorScheme
+import androidx.compose.ui.graphics.Color
+import androidx.core.graphics.drawable.toBitmap
+import androidx.palette.graphics.Palette
+
+fun createColorSchemeFromWallpaper(context: Context): ColorScheme {
+    return try {
+        val wallpaperManager = WallpaperManager.getInstance(context)
+        val bitmap = wallpaperManager.drawable?.toBitmap()
+
+        if (bitmap != null) {
+            val palette = Palette.from(bitmap).generate()
+            lightColorScheme(
+                primary = Color(palette.getVibrantColor(Color.LTGRAY).toArgb()),
+                secondary = Color(palette.getMutedColor(Color.GRAY).toArgb()),
+                tertiary = Color(palette.getDarkVibrantColor(Color.DKGRAY).toArgb())
+                // 根据需要添加更多属性
+            )
+        } else {
+            LightColorScheme
+        }
+    } catch (e: Exception) {
+        // 如果遇到任何问题，回退到默认颜色方案
+        LightColorScheme
+    }
+}
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
