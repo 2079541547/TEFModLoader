@@ -32,7 +32,6 @@ import silkways.terraria.efmodloader.logic.efmod.LoaderManager
 import silkways.terraria.efmodloader.logic.efmod.ModManager.install
 import silkways.terraria.efmodloader.ui.activity.TerminalViewModel
 import java.io.File
-import java.util.Locale
 
 data class CommandResult(val output: String)
 
@@ -167,7 +166,7 @@ class TerminalManager(context: Context) {
                                     try {
                                         Tool.buildMod(args[2].toInt(), args[3], args[4])
                                         CommandResult("Mod built successfully")
-                                    } catch (e: NumberFormatException) {
+                                    } catch (_: NumberFormatException) {
                                         CommandResult("error: Invalid version number")
                                     }
                                 } else {
@@ -179,7 +178,7 @@ class TerminalManager(context: Context) {
                                     try {
                                         Tool.buildLoader(args[2].toInt(), args[3], args[4])
                                         CommandResult("Loader built successfully")
-                                    } catch (e: NumberFormatException) {
+                                    } catch (_: NumberFormatException) {
                                         CommandResult("error: Invalid version number")
                                     }
                                 } else {
@@ -197,13 +196,13 @@ class TerminalManager(context: Context) {
 
     fun execute(command: String): CommandResult {
         val parts = command.trim().split("\\s+".toRegex())
-        val cmdName = parts.firstOrNull()?.toLowerCase(Locale.ROOT)
+        val cmdName = parts.firstOrNull()?.lowercase() // 使用 lowercase() 方法替代 toLowerCase(Locale.ROOT)
         val arguments = parts.drop(1)
         return commandMap[cmdName]?.invoke(arguments) ?: CommandResult("")
     }
 
     fun registerCommand(name: String, action: (List<String>) -> CommandResult) {
-        commandMap[name.toLowerCase(Locale.ROOT)] = action
+        commandMap[name.lowercase()] = action // 同样使用 lowercase()
     }
 
     private fun ls(directoryPath: String): String {
