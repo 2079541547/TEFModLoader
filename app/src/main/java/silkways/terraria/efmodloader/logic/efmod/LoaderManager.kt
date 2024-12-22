@@ -1,29 +1,10 @@
-package silkways.terraria.efmodloader.logic.efmod
-
-import android.annotation.SuppressLint
-import android.content.Context
-import android.os.Build
-import android.util.Log
-import eternal.future.effsystem.fileSystem
-import org.json.JSONObject
-import silkways.terraria.efmodloader.logic.EFLog
-import silkways.terraria.efmodloader.logic.JsonConfigModifier
-import silkways.terraria.efmodloader.utils.FileUtils
-import java.io.File
-import java.io.FileReader
-import java.io.IOException
-import org.json.JSONException
-import silkways.terraria.efmodloader.data.Settings
-import silkways.terraria.efmodloader.data.TEFModLoader
-import silkways.terraria.efmodloader.utils.SPUtils
-
 /*******************************************************************************
  * 文件名称: LoaderManager
  * 项目名称: TEFModLoader
- * 创建时间: 2024/11/3 上午8:47
+ * 创建时间: 2024/12/21
  * 作者: EternalFuture゙
  * Github: https://github.com/2079541547
- * 版权声明: Copyright © 2024 EternalFuture゙. All rights reserved.
+ * 版权声明: Copyright © 2024 EternalFuture. All rights reserved.
  * 许可证: This program is free software: you can redistribute it and/or modify
  *         it under the terms of the GNU Affero General Public License as published
  *         by the Free Software Foundation, either version 3 of the License, or
@@ -36,180 +17,136 @@ import silkways.terraria.efmodloader.utils.SPUtils
  *
  *         You should have received a copy of the GNU Affero General Public License
  *         along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
  * 描述信息: 本文件为TEFModLoader项目中的一部分。
  * 注意事项: 请严格遵守GNU AGPL v3.0协议使用本代码，任何未经授权的商业用途均属侵权行为。
  *******************************************************************************/
 
+package silkways.terraria.efmodloader.logic.efmod
+
+import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.os.Build
+import android.os.Environment
+import org.json.JSONArray
+import org.json.JSONObject
+import silkways.terraria.efmodloader.data.Settings
+import silkways.terraria.efmodloader.logic.EFLog
+import silkways.terraria.efmodloader.utils.FileUtils
+import silkways.terraria.efmodloader.utils.SPUtils
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.nio.channels.FileChannel
+import java.nio.charset.StandardCharsets
+
+
 object LoaderManager {
+        external fun install(inpuPath: String, outPath: String)
+        external fun getLoaderInfo(inpuPath: String): ByteArray
 
-    /**
-     * 安装Loader文件到目标目录。
-     *
-     * @param context 上下文
-     * @param loaderFile Loader文件
-     * @param targetDir 目标目录
-     */
-    fun install(context: Context, loaderFile: File, targetDir: File) {
-        // 确保目标目录存在
-        if (!targetDir.exists()) {
-            targetDir.mkdirs()
-            EFLog.i("目标目录不存在，已创建: ${targetDir.absolutePath}")
-        }
-
-        val targetFile = File("$targetDir/${loaderFile.name}")
-
-        
-            // 如果目标文件不存在，直接安装Loader文件
-            val configFilePath = File(targetDir, "info.json")
-            val configExists = configFilePath.exists()
-
-            val jsonObject = if (configExists) {
-                JSONObject(FileReader(configFilePath).readText())
-            } else {
-                JSONObject()
-            }
-
-            // 更新info.json文件，将新的Loader文件路径添加进去
-            jsonObject.put(targetFile.absolutePath, false)
-            Utils.writeJsonToFile(jsonObject, configFilePath)
-
-            // 复制Loader文件到目标位置
-            FileUtils.copyFile(loaderFile.absolutePath, targetFile.absolutePath, true)
-            EFLog.i("Loader文件已成功安装: ${targetFile.absolutePath}")
-
-    }
-
-
-    /**
-     * 初始化Loader文件。
-     *
-     * @param filePath Loader配置文件的路径
-     * @param context 应用上下文
-     */
-    @SuppressLint("SdCardPath")
-    fun init(filePath: String, context: Context) {
-        val file = File(filePath)
-        if (file.exists()) {
-            try {
-                // 读取文件内容
-                val bufferedReader = file.bufferedReader()
-                val jsonString = bufferedReader.use { it.readText() }
-                EFLog.i("成功读取配置文件: $filePath")
-
-                // 解析JSON
+        fun parseLoaderInfoToMap(inpuPath: String): Map<String, Any> {
+                val jsonString = String(getLoaderInfo(inpuPath), StandardCharsets.UTF_8)
                 val jsonObject = JSONObject(jsonString)
-                EFLog.i("成功解析JSON配置文件")
+                return toMap(jsonObject)
+        }
 
-                    val key = JsonConfigModifier.readJsonValue(context, "TEFModLoader/EFModLoaderData/info.json", "selectedLoaderPath").toString()
-                    if (File(key).exists()) {
-                        EFLog.d("处理Loader文件: $key")
-                        when (SPUtils.readInt(Settings.Runtime, 0)) {
-                            0 -> {
-                                fileSystem.EFML.extractLoader(
-                                    key,
-                                    when(SPUtils.readInt("architecture", 0)) {
-                                        1 -> "armeabi-v7a"
-                                        2 -> "arm64-v8a"
-                                        else -> when(Build.CPU_ABI){
-                                            "x86_64" -> "arm64-v8a"
-                                            "x86" -> "armeabi-v7a"
-                                            else -> Build.CPU_ABI
-                                        }
-                                    },
-                                    "/sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/EFModLoader"
-                                )
-                                EFLog.i("提取Loader到: /sdcard/Documents/EFModLoader/${TEFModLoader.TAG}/kernel, Key: $key")
-                            }
-
-                            1 -> {
-                                val gamePackageName = JsonConfigModifier.readJsonValue(
-                                    context,
-                                    Settings.jsonPath,
-                                    Settings.GamePackageName
-                                ) as String
-
-                                fileSystem.EFML.extractLoader(
-                                    key,
-                                    when(SPUtils.readInt("architecture", 0)) {
-                                        1 -> "armeabi-v7a"
-                                        2 -> "arm64-v8a"
-                                        else -> when(Build.CPU_ABI){
-                                            "x86_64" -> "arm64-v8a"
-                                            "x86" -> "armeabi-v7a"
-                                            else -> Build.CPU_ABI
-                                        }
-                                    }.toString(),
-                                    "data/data/$gamePackageName/cache/EFModLoader"
-                                )
-                                EFLog.i("提取Loader到: data/data/$gamePackageName/cache/EFModLoader, Key: $key")
-                            }
-
-                            else -> {
-                                EFLog.w("未知的Runtime配置值: ${SPUtils.readInt(Settings.jsonPath, 0)}")
-                            }
+        fun initialization(context: Context) {
+                val architecture = when(SPUtils.readString(Settings.architecture, "system")) {
+                        "arm64-v8a" -> "arm64-v8a"
+                        "armeabi-v7a" -> "armeabi-v7a"
+                        else -> when(Build.CPU_ABI){
+                                "x86_64" -> "arm64-v8a"
+                                "x86" -> "armeabi-v7a"
+                                else -> Build.CPU_ABI
                         }
-                    }
+                }.toString()
 
-            } catch (e: IOException) {
-                // 捕获并记录IO异常
-                EFLog.e("读取或解析配置文件时发生错误: $filePath, 错误信息: ${e.message}")
-            } catch (e: JSONException) {
-                // 捕获并记录JSON解析异常
-                EFLog.e("解析JSON配置文件时发生错误: $filePath, 错误信息: ${e.message}")
-            } catch (e: Exception) {
-                // 捕获并记录其他异常
-                EFLog.e("初始化Mod文件时发生错误: $filePath, 错误信息: ${e.message}")
-                e.printStackTrace()
-            }
-        } else {
-            // 记录文件不存在的错误
-            EFLog.e("配置文件不存在: $filePath")
-        }
-    }
+                var loaderPath = try {
+                                File(JSONObject(File("${context.getExternalFilesDir(null)}/EFModLoader/info.json").readText()).getString("selectedLoaderPath"), "lib/android/$architecture")
+                        } catch (e: IOException) {
+                                e.printStackTrace()
+                                File("")
+                        }
 
+                when (SPUtils.readInt(Settings.Runtime, 0)) {
+                        0 -> {
+                                val tagPath = File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader/Loader")
+                                if (tagPath.exists()) {
+                                        for (path in tagPath.listFiles { file -> file.isFile }!!) {
+                                                path.delete()
+                                        }
+                                } else {
+                                        tagPath.mkdirs()
+                                }
 
-    /**
-     * 卸载Loader文件及其相关资源。
-     *
-     * @param context 应用上下文
-     * @param filePath Loader文件的路径
-     */
-    fun remove(context: Context, filePath: File) {
-        try {
-            // 检查文件是否存在
-            if (filePath.exists()) {
-                // 获取info.json文件的路径
-                val infoJsonPath = "TEFModLoader/EFModLoaderData/info.json"
-                val infoFile = File(infoJsonPath)
+                                if (loaderPath.exists()) {
+                                        for (path in loaderPath.listFiles { file -> file.isFile }!!) {
+                                                FileUtils.copyFile(
+                                                        path.path,
+                                                        "$tagPath/${path.name}",
+                                                        true
+                                                )
+                                        }
+                                }
+                        }
 
-                // 检查info.json文件是否存在
-                if (infoFile.exists()) {
-                    // 从info.json中移除Loader文件路径
-                    JsonConfigModifier.removeKeyFromJson(context, infoJsonPath, filePath.absolutePath)
-                    EFLog.i("已从info.json中移除Loader文件路径: ${filePath.absolutePath}")
-                } else {
-                    EFLog.w("info.json文件不存在: $infoJsonPath")
+                        1 -> {
+                                val packageName = SPUtils.readString(Settings.GamePackageName, "com.and.games505.TerrariaPaid").toString()
+                                val packageManager: PackageManager = context.packageManager
+                                val applicationInfo: ApplicationInfo = packageManager.getApplicationInfo(packageName, 0)
+                                val gameCache = File(applicationInfo.dataDir, "cache").path
+                                val tagPath = File(gameCache, "Loader")
+
+                                if (tagPath.exists()) {
+                                        for (path in tagPath.listFiles { file -> file.isFile }!!) {
+                                                path.delete()
+                                        }
+                                } else {
+                                        tagPath.mkdirs()
+                                }
+
+                                if (loaderPath.exists()) {
+                                        for (path in loaderPath.listFiles { file -> file.isFile }!!) {
+                                                FileUtils.copyFile(
+                                                        path.path,
+                                                        "$tagPath/${path.name}",
+                                                        true
+                                                )
+                                        }
+                                }
+                        }
                 }
-
-                // 删除Loader文件
-                if (filePath.delete()) {
-                    EFLog.i("Loader文件已成功删除: ${filePath.absolutePath}")
-                } else {
-                    EFLog.e("无法删除Loader文件: ${filePath.absolutePath}")
-                }
-            } else {
-                EFLog.w("Loader文件不存在: ${filePath.absolutePath}")
-            }
-        } catch (e: JSONException) {
-            // 捕获并记录JSON解析异常
-            EFLog.e("解析info.json时发生错误: ${e.message}")
-        } catch (e: IOException) {
-            // 捕获并记录IO异常
-            EFLog.e("读取或写入info.json时发生错误: ${e.message}")
-        } catch (e: Exception) {
-            // 捕获并记录其他异常
-            EFLog.e("卸载Loader时发生错误: ${e.message}")
-            e.printStackTrace()
         }
-    }
+
+        private fun toMap(jsonObject: JSONObject): Map<String, Any> {
+                val map = mutableMapOf<String, Any>()
+
+                val keys = jsonObject.keys()
+                while (keys.hasNext()) {
+                        val key = keys.next()
+                        val value = jsonObject[key]
+                        when (value) {
+                                is JSONObject -> map[key] = toMap(value)
+                                is JSONArray -> map[key] = toList(value)
+                                else -> map[key] = value
+                        }
+                }
+                return map
+        }
+
+        private fun toList(jsonArray: JSONArray): List<Any> {
+                val list = mutableListOf<Any>()
+                for (i in 0 until jsonArray.length()) {
+                        val value = jsonArray[i]
+                        when (value) {
+                                is JSONObject -> list.add(toMap(value))
+                                is JSONArray -> list.add(toList(value))
+                                else -> list.add(value)
+                        }
+                }
+                return list
+        }
 }

@@ -10,12 +10,24 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import androidx.activity.compose.setContent
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -42,13 +54,12 @@ import me.zhanghai.android.appiconloader.coil.AppIconFetcher
 import me.zhanghai.android.appiconloader.coil.AppIconKeyer
 import silkways.terraria.efmodloader.logic.ApplicationSettings.isDarkThemeEnabled
 import silkways.terraria.efmodloader.logic.EFLog
-import silkways.terraria.efmodloader.logic.JsonConfigModifier
-import silkways.terraria.efmodloader.logic.efmod.LoaderManager.install
+import silkways.terraria.efmodloader.logic.efmod.LoaderManager
+import silkways.terraria.efmodloader.logic.efmod.ModManager
 import silkways.terraria.efmodloader.ui.screen.BottomBarDestination
 import silkways.terraria.efmodloader.ui.screen.NavGraphs
 import silkways.terraria.efmodloader.ui.theme.TEFModLoaderComposeTheme
 import silkways.terraria.efmodloader.ui.utils.LocalSnackbarHost
-import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.FileWriter
@@ -64,15 +75,15 @@ class MainActivity : EFActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         init()
+        checkPermission()
 
-        if (SPUtils.readBoolean("ApplyForPermission", false)) {
-            checkPermission()
-        }
+        //LoaderManager.install("/sdcard/Android/data/silkways.terraria.efmodloader/files/MyLoader.skc", "/sdcard/Android/data/silkways.terraria.efmodloader/files/EFModLoader/MyLoader")
+        //ModManager.install("/sdcard/Android/data/silkways.terraria.efmodloader/MyMod.skc", "/sdcard/Android/data/silkways.terraria.efmodloader/files/EFMod/MyLoader")
 
-        if (!File("${this.getExternalFilesDir(null)}/TEFModLoader/EFModLoaderData").exists()) {
+        if (!File("${this.getExternalFilesDir(null)}/EFModLoader").exists()) {
             val file = File(this.externalCacheDir, "TEFModLoader.efml")
             copyAssetToFile(this, "TEFModLoader/kernel/TEFModLoader.efml", file.absolutePath)
-            install(this, file, File("${this.getExternalFilesDir(null)}/TEFModLoader/EFModLoaderData"))
+            //install(this, file, File("${this.getExternalFilesDir(null)}/TEFModLoader/EFModLoaderData"))
             file.delete()
             try {
                 // 创建文件路径
@@ -195,6 +206,11 @@ class MainActivity : EFActivity() {
 
     private fun checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_MEDIA_IMAGES), 1001)
+            }
+
             if (!Environment.isExternalStorageManager()) {
                 val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
                 intent.addCategory("android.intent.category.DEFAULT")
@@ -240,6 +256,7 @@ class MainActivity : EFActivity() {
     }
 
 
+    @Deprecated("This method has been deprecated in favor of using the Activity Result API\n      which brings increased type safety via an {@link ActivityResultContract} and the prebuilt\n      contracts for common intents available in\n      {@link androidx.activity.result.contract.ActivityResultContracts}, provides hooks for\n      testing, and allow receiving results in separate, testable classes independent from your\n      activity. Use\n      {@link #registerForActivityResult(ActivityResultContract, ActivityResultCallback)} passing\n      in a {@link RequestMultiplePermissions} object for the {@link ActivityResultContract} and\n      handling the result in the {@link ActivityResultCallback#onActivityResult(Object) callback}.")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1001) {

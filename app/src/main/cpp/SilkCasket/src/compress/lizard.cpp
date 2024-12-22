@@ -28,12 +28,13 @@
 #include <filesystem>
 #include <fstream>
 #include <cstring>
+#include <temp_directory_path.hpp>
 
 std::vector<uint8_t> SilkCasket::Compress::Lizard::compress(const vector<uint8_t> &data, size_t blockSize) {
-    auto tempFilePath = filesystem::temp_directory_path() / "temp_compressed_data.lizard";
+    auto tempFilePath = tempPath / "temp_compressed_data.lizard";
     std::ofstream tempFile(tempFilePath, std::ios::binary);
     if (!tempFile.is_open()) {
-        throw std::runtime_error("Failed to open temporary file for compression.");
+        throw std::runtime_error("Failed to open temporary file for compression.\n" + tempFilePath.string());
     }
 
     // 写入块大小信息
@@ -82,10 +83,10 @@ std::vector<uint8_t> SilkCasket::Compress::Lizard::compress(const vector<uint8_t
 
 
 std::vector <uint8_t> SilkCasket::Compress::Lizard::decompress(const vector<uint8_t> &compressed) {
-    auto tempFilePath = filesystem::temp_directory_path() / "temp_compressed_data.lizard";
+    auto tempFilePath = tempPath / "temp_compressed_data.lizard";
     std::ofstream tempFile(tempFilePath, std::ios::binary);
     if (!tempFile.is_open()) {
-        throw std::runtime_error("Failed to open temporary file for decompression.");
+            throw std::runtime_error("Failed to open temporary file for decompression.");
     }
 
     // 读取块大小信息

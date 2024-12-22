@@ -7,18 +7,31 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -37,9 +50,11 @@ import silkways.terraria.efmodloader.logic.efmod.LoaderManager
 import silkways.terraria.efmodloader.logic.efmod.ModManager
 import silkways.terraria.efmodloader.ui.activity.EFManagerActivity
 import silkways.terraria.efmodloader.ui.utils.LanguageUtils
-import silkways.terraria.efmodloader.utils.FileUtils
 import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.util.UUID
 
 @SuppressLint("StaticFieldLeak")
 private val jsonUtils = LanguageUtils(
@@ -50,22 +65,24 @@ private val jsonUtils = LanguageUtils(
 
 private var snackbarHostState = SnackbarHostState()
 private var scope: CoroutineScope? = null
+private val showProgressDialog = mutableStateOf(false)
+
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Destination
 @Composable
 fun ManagerScreen() {
     val context = LocalContext.current
-
-    scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     // 启动选择文件的活动结果
     val selectModsLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
-        handleSelectedFiles(uris, ModManager::install, "TEFModLoader/EFModData", context)
+        handleSelectedFiles(context, uris, ModManager::install, "EFMod")
     }
 
     val selectLoadersLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
-        handleSelectedFiles(uris, LoaderManager::install, "TEFModLoader/EFModLoaderData", context)
+        handleSelectedFiles(context, uris, LoaderManager::install, "EFModLoader")
     }
 
     Scaffold(
@@ -176,40 +193,77 @@ fun ManagerScreen() {
             }
         }
     )
+    if (showProgressDialog.value) {
+        InstallationProgressDialog()
+    }
 }
 
-
-private fun handleSelectedFiles(
-    uris: List<Uri>,
-    installAction: (context: Context, file: File, destination: File) -> Unit,
-    destPath: String,
+fun handleSelectedFiles(
     context: Context,
+    uris: List<Uri>,
+    installAction: (inputPath: String, outPath: String) -> Unit,
+    dest: String
 ) {
-    if (uris.isEmpty()) {
-        EFLog.w("没有选择任何文件。")
-        return
+    // 生成随机目录名
+    val randomDirectoryName = UUID.randomUUID().toString()
+    val destination = File(context.getExternalFilesDir(null), "$dest/$randomDirectoryName")
+
+    // 确保目标目录存在
+    if (!destination.exists()) {
+        destination.mkdirs()
     }
 
-    val rootDirectory = "${context.getExternalFilesDir(null)?.absolutePath}/$destPath"
-    val destination = File(rootDirectory)
+    CoroutineScope(Dispatchers.Main).launch {
 
-    CoroutineScope(Dispatchers.IO).launch {
-        uris.forEach { uri ->
-            val filePath = FileUtils.getRealPathFromURI(uri, context)
-            filePath?.let {
-                val file = File(it)
-                EFLog.i("开始安装文件：${file.name}")
-                withContext(Dispatchers.Main) {
+        if (uris.isEmpty()) {
+            EFLog.w("没有选择任何文件。")
+            return@launch
+        }
+
+        showProgressDialog.value = true
+
+        withContext(Dispatchers.IO) {
+            uris.forEachIndexed { index, uri ->
+                try {
+                    // 创建临时文件用于复制内容
+                    val tempFile = File.createTempFile("temp", null, context.cacheDir)
+                    context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                        FileOutputStream(tempFile).use { outputStream ->
+                            inputStream.copyTo(outputStream)
+                        }
+                    }
+
+                    EFLog.i("开始安装文件：${uri.lastPathSegment}")
+
                     try {
-                        installAction(context, file, destination)
-                        EFLog.i("文件安装成功：${file.name}")
-                        snackbarHostState.showSnackbar(jsonUtils.getString("manager", "installation successful"))
+                        installAction(tempFile.absolutePath, destination.absolutePath)
+                        EFLog.i("文件安装成功：${uri.lastPathSegment}")
                     } catch (e: Exception) {
-                        EFLog.e("文件安装失败：${file.name}，原因：${e.message}")
-                        snackbarHostState.showSnackbar(jsonUtils.getString("manager", "installation failed"))
+                        EFLog.e("文件安装失败：${uri.lastPathSegment}，原因：${e.message}")
+                    } finally {
+                        // 删除临时文件
+                        tempFile.delete()
+                    }
+                } catch (e: FileNotFoundException) {
+                    EFLog.e("无法打开文件流：${uri.lastPathSegment}，原因：${e.message}")
+                } finally {
+                    // 在最后一个文件处理完毕后关闭进度对话框
+                    if (index == uris.lastIndex) {
+                        showProgressDialog.value = false
                     }
                 }
             }
         }
     }
+}
+
+
+@Composable
+fun InstallationProgressDialog() {
+    AlertDialog(
+        onDismissRequest = {},
+        title = { Text(jsonUtils.getString("manager", "install", "title")) },
+        text = { Text(jsonUtils.getString("manager", "install", "installing")) },
+        confirmButton = {}
+    )
 }

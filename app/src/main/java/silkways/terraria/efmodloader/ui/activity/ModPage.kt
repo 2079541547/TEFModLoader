@@ -12,48 +12,104 @@ import java.io.FileNotFoundException
 
 class ModPage : EFActivity() {
 
-    private lateinit var privateData: String
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         init()
 
-        privateData = intent.getStringExtra("private").toString()
+        val path = intent.getStringExtra("page").toString()
 
         setContent {
             TEFModLoaderComposeTheme(darkTheme = isDarkThemeEnabled(this)) {
-                loadPluginView()
+                LoadPluginView(path, File(path).parent)
             }
         }
 
     }
 
     @Composable
-    private fun loadPluginView() {
-        val pluginJarPath = "/storage/emulated/0/Android/data/silkways.terraria.efmodloader/classes.dex"
+    private fun LoadPluginView(pluginJarPath: String, Data: String) {
         val dexClassLoader = loadLocalDex(this, pluginJarPath)
-        val klass = dexClassLoader.loadClass("tech.wcw.compose.plugin.PluginV2")
+        val klass = dexClassLoader.loadClass("eternalfuture.efmod.page")
         val obj = klass.newInstance()
-        val method = klass.getDeclaredMethod("getPluginView").apply { isAccessible = true }
-        (method.invoke(
-            this,
-            privateData,
-            obj) as (@Composable () -> Unit))()
+
+        klass.getDeclaredField("private").apply {
+            isAccessible = true
+            set(obj, Data)
+        }
+
+        klass.getDeclaredField("platform").apply {
+            isAccessible = true
+            set(obj, "Android")
+        }
+
+        val method = klass.getDeclaredMethod("getModView").apply { isAccessible = true }
+        (method.invoke(obj) as (@Composable () -> Unit))()
     }
 
     private fun loadLocalDex(context: Context, pluginDexPath: String): DexClassLoader {
-        val dexFile = File(pluginDexPath)
-        if (!dexFile.exists()) {
+        // 清除旧的插件缓存
+        clearPluginCache(context)
+
+        val originalFile = File(pluginDexPath)
+        if (!originalFile.exists()) {
             throw FileNotFoundException("The plugin JAR file does not exist at path: $pluginDexPath")
         }
-        val dexOutputDir = File(context.cacheDir, "modPage/dex")
-        if (!dexOutputDir.exists()) dexOutputDir.mkdirs()
+
+        // 创建一个临时文件名，并确保它是只读的
+        val tempFileName = "temp_plugin_" + System.currentTimeMillis() + ".jar"
+        val cacheFile = File(context.cacheDir, tempFileName)
+
+        // 将原始文件复制到缓存目录
+        originalFile.inputStream().use { input ->
+            cacheFile.outputStream().use { output ->
+                input.copyTo(output)
+            }
+        }
+
+        // 设置文件为只读
+        cacheFile.setReadOnly()
+
+        // 使用新的 dex 输出目录
+        val dexOutputDir = File(context.cacheDir, "modPage/dex/${System.currentTimeMillis()}")
+        dexOutputDir.mkdirs()
 
         return DexClassLoader(
-            dexFile.absolutePath,
+            cacheFile.absolutePath,
             dexOutputDir.absolutePath,
             null,
             this.classLoader
         )
+    }
+
+    /**
+     * 清除缓存目录中的所有插件相关文件。
+     */
+    private fun clearPluginCache(context: Context) {
+        val cacheDir = context.cacheDir
+        val pluginCacheFiles = cacheDir.listFiles { file ->
+            file.isFile && (file.name.startsWith("temp_plugin_") || file.isDirectory && file.name.startsWith("modPage"))
+        }
+
+        pluginCacheFiles?.forEach { file ->
+            if (file.isDirectory) {
+                deleteDirectory(file)
+            } else {
+                file.delete()
+            }
+        }
+    }
+
+    /**
+     * 递归删除目录及其内容。
+     */
+    private fun deleteDirectory(directory: File) {
+        directory.listFiles()?.forEach { file ->
+            if (file.isDirectory) {
+                deleteDirectory(file)
+            } else {
+                file.delete()
+            }
+        }
+        directory.delete()
     }
 }

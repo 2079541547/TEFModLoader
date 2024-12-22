@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * 文件名称: LoaderManager
  * 项目名称: TEFModLoader-Compose
@@ -33,37 +32,69 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Animation
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.content.FileProvider
 import coil.compose.rememberAsyncImagePainter
-import eternal.future.effsystem.fileSystem.EFMC
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import silkways.terraria.efmodloader.MainApplication
 import silkways.terraria.efmodloader.data.Settings
-import silkways.terraria.efmodloader.logic.JsonConfigModifier
+import silkways.terraria.efmodloader.logic.EFLog
 import silkways.terraria.efmodloader.logic.LanguageHelper
+import silkways.terraria.efmodloader.logic.efmod.ModManager
 import silkways.terraria.efmodloader.logic.efmod.Mod
-import silkways.terraria.efmodloader.logic.efmod.ModManager.remove
-import silkways.terraria.efmodloader.ui.activity.WebActivity
+import silkways.terraria.efmodloader.logic.efmod.Mod.GithubInfo
+import silkways.terraria.efmodloader.logic.efmod.Mod.ModDetails
+import silkways.terraria.efmodloader.logic.efmod.Mod.ModInfo
+import silkways.terraria.efmodloader.logic.efmod.Mod.PlatformArchitectures
+import silkways.terraria.efmodloader.logic.efmod.Mod.PlatformSupport
+import silkways.terraria.efmodloader.ui.activity.ModPage
 import silkways.terraria.efmodloader.ui.utils.LanguageUtils
+import silkways.terraria.efmodloader.utils.FileUtils
 import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
-
 
 
 @SuppressLint("StaticFieldLeak")
@@ -91,7 +122,7 @@ fun EFModManagerScreen() {
         },
         content = { innerPadding ->
             val mods = remember {
-                loadModsFromDirectory("${MainApplication.getContext().getExternalFilesDir(null)}/TEFModLoader/EFModData", MainApplication.getContext())
+                loadModsFromDirectory("${MainApplication.getContext().getExternalFilesDir(null)}/EFMod", MainApplication.getContext())
             }
 
             LazyColumn(
@@ -116,29 +147,57 @@ fun loadModsFromDirectory(directoryPath: String, context: Context): List<Mod> {
     val directory = File(directoryPath)
     val mods = mutableListOf<Mod>()
 
-    if (directory.exists() && directory.isDirectory) {
-        for (file in directory.listFiles()) {
-            if (file.isFile && file.extension != "json") {
 
-                val Infomap = EFMC.getModInfo(file.absolutePath)
-                val ModIcon = EFMC.getModIcon(file.absolutePath)
+
+    if (directory.exists() && directory.isDirectory) {
+        // 遍历主目录中的所有子目录
+        for (modDir in directory.listFiles { file -> file.isDirectory }) {
+            if (modDir != null && File(modDir, "mod").exists()) {
+                // 存在一个符合条件的文件，继续处理
+                EFLog.i("${File(modDir, "mod")}")
+                val Infomap = ModManager.parseModInfoToMap(modDir.absolutePath)
+                val ModIcon = BitmapFactory.decodeFile(File(modDir, "mod.icon").absolutePath)
 
                 val info = Mod(
-                    filePath = file.absolutePath,
-                    identifier = Infomap["identifier"].toString(),
-                    modName = Infomap["modName"].toString(),
-                    author = Infomap["author"].toString(),
-                    introduce = Infomap[LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), context)].toString(),
-                    version = Infomap["version"].toString(),
-                    openSource = Infomap["openSource"] as Boolean,
-                    openSourceUrl = Infomap["openSourceUrl"].toString(),
-                    customizePage = Infomap["customizePage"] as Boolean,
-                    isEnabled = JsonConfigModifier.readJsonValue(context, "TEFModLoader/EFModData/info.json", file.absolutePath) as Boolean
+                    filePath = modDir.absolutePath,
+                    isEnabled = File(modDir, "enable").exists(),
+                    info = ModInfo(
+                        name = Infomap["name"].toString(),
+                        author = Infomap["author"].toString(),
+                        version = Infomap["version"].toString(),
+                        introduce = (Infomap["introduce"] as Map<*, *>)[LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), context)].toString(),
+                        github = GithubInfo(
+                            openSource = (Infomap["github"] as Map<*, *>)["open source"] as Boolean,
+                            overview = (Infomap["github"] as Map<*, *>)["overview"].toString(),
+                            url = (Infomap["github"] as Map<*, *>)["url"].toString()
+                        ),
+                        mod = ModDetails(
+                            Modx = (Infomap["mod"] as Map<*, *>)["Modx"] as Boolean,
+                            privateData = (Infomap["mod"] as Map<*, *>)["private data"] as Boolean,
+                            page = (Infomap["mod"] as Map<*, *>)["page"] as Boolean,
+                            platform = PlatformSupport(
+                                Windows = PlatformArchitectures(
+                                    arm64 = (((Infomap["mod"] as Map<*, *>)["platform"] as Map<*, *>)["Windows"] as Map<*, *>)["arm64"] as Boolean,
+                                    arm32 = (((Infomap["mod"] as Map<*, *>)["platform"] as Map<*, *>)["Windows"] as Map<*, *>)["arm32"] as Boolean,
+                                    x86_64 = (((Infomap["mod"] as Map<*, *>)["platform"] as Map<*, *>)["Windows"] as Map<*, *>)["x86_64"] as Boolean,
+                                    x86 = (((Infomap["mod"] as Map<*, *>)["platform"] as Map<*, *>)["Windows"] as Map<*, *>)["x86"] as Boolean
+                                ),
+                                Android = PlatformArchitectures(
+                                    arm64 = (((Infomap["mod"] as Map<*, *>)["platform"] as Map<*, *>)["Android"] as Map<*, *>)["arm64"] as Boolean,
+                                    arm32 = (((Infomap["mod"] as Map<*, *>)["platform"] as Map<*, *>)["Android"] as Map<*, *>)["arm32"] as Boolean,
+                                    x86_64 = (((Infomap["mod"] as Map<*, *>)["platform"] as Map<*, *>)["Android"] as Map<*, *>)["x86_64"] as Boolean,
+                                    x86 = (((Infomap["mod"] as Map<*, *>)["platform"] as Map<*, *>)["Android"] as Map<*, *>)["x86"] as Boolean
+                                )
+                            )
+                        )
+                    ),
+                    icon = ModIcon
                 )
 
-                info.icon = BitmapFactory.decodeStream(context.assets.open("TEFModLoader/未知.png"))
-                if (ModIcon.size != 0) info.icon = BitmapFactory.decodeByteArray(ModIcon, 0, ModIcon.size)
-
+                if (!File(modDir, "mod.icon").exists()) {
+                    info.icon =
+                        BitmapFactory.decodeStream(context.assets.open("TEFModLoader/未知.png"))
+                }
                 mods.add(info)
             }
         }
@@ -180,7 +239,7 @@ fun ModItem(mod: Mod) {
                         Image(
                             painter = rememberAsyncImagePainter(mod.icon),
                             contentDescription = null,
-                            modifier = Modifier.size(56.dp) // 增大图标尺寸
+                            modifier = Modifier.size(56.dp)
                         )
                     } else {
                         Icon(
@@ -194,20 +253,20 @@ fun ModItem(mod: Mod) {
                     // 显示Mod标题、作者和版本号
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = mod.modName,
+                            text = mod.info.name,
                             fontSize = 18.sp, // 减小字体
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "by ${mod.author}",
+                            text = "by ${mod.info.author}",
                             fontSize = 14.sp, // 减小字体
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "v ${mod.version}",
+                            text = "v ${mod.info.version}",
                             fontSize = 14.sp,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -221,41 +280,20 @@ fun ModItem(mod: Mod) {
                     checked = isEnabled, // 使用isEnabled变量
                     onCheckedChange = { newValue ->
                         isEnabled = newValue // 更新isEnabled状态
-                        JsonConfigModifier.modifyJsonConfig(context, "TEFModLoader/EFModData/info.json", mod.filePath, isEnabled) // 调用修改配置的函数
-                    },
-                    colors = SwitchDefaults.colors(
-                        checkedThumbColor = MaterialTheme.colorScheme.primary,
-                        uncheckedThumbColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                        checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
-                        uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
+                        if (newValue) {
+                            File(mod.filePath, "enable").mkdirs()
+                        } else {
+                            FileUtils.deleteDirectory(File(mod.filePath, "enable"))
+                        }
+                    }
                 )
                 Spacer(modifier = Modifier.height(8.dp)) // 添加间距
                 Row(horizontalArrangement = Arrangement.End) {
-                    if (mod.customizePage) {
+                    if (mod.info.mod.page) {
                         IconButton(onClick = {
-                            // 解压page文件夹到缓存目录
-                            val cacheDir = context.cacheDir
-                            val modCacheDir = File(cacheDir, "EFMOD_WEB")
-                            modCacheDir.mkdirs()
 
-                            EFMC.extractPage(mod.filePath, modCacheDir.absolutePath)
-
-                            // 使用FileProvider获取文件URI
-                            val mainHtmlFile = File(modCacheDir, "main.html")
-                            val uri = FileProvider.getUriForFile(
-                                context,
-                                "${context.packageName}.fileprovider",
-                                mainHtmlFile
-                            )
-                            val intent = Intent(context, WebActivity::class.java)
-                            intent.putExtra("Title", mod.modName)
-                            intent.putExtra("isMod", true)
-                            intent.putExtra("webUrl", uri.toString())
-                            intent.putExtra(
-                                "private",
-                                "${context.getExternalFilesDir(null)}/TEModLoader/EFModData/EFMod-Private/${mod.identifier}/"
-                            )
+                            val intent = Intent(context, ModPage::class.java)
+                            intent.putExtra("page", File(mod.filePath, "page.jar").absolutePath)
                             intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
                             context.startActivity(intent)
                         }) {
@@ -283,7 +321,7 @@ fun ModItem(mod: Mod) {
             modifier = Modifier
                 .padding(horizontal = 18.dp, vertical = 18.dp),
             onDismissRequest = { showDetailsDialog = false },
-            title = { Text(text = mod.modName, style = MaterialTheme.typography.headlineSmall) }, // 使用适当标题样式
+            title = { Text(text = mod.info.name, style = MaterialTheme.typography.headlineSmall) }, // 使用适当标题样式
             text = {
                 Scaffold(
                     content = { innerPadding ->
@@ -297,36 +335,36 @@ fun ModItem(mod: Mod) {
                                         painter = rememberAsyncImagePainter(mod.icon),
                                         contentDescription = null,
                                         modifier = Modifier
-                                            .size(192.dp) // 增大图标尺寸
+                                            .size(192.dp)
                                     )
                                     Spacer(modifier = Modifier.height(16.dp)) // 减少间距
                                 }
                                 Text(
-                                    text = "${jsonUtils.getString("mod", "info_dialog", "version")}${mod.version}",
+                                    text = "${jsonUtils.getString("mod", "info_dialog", "version")}${mod.info.version}",
                                     fontSize = 16.sp, // 减小字体
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Spacer(modifier = Modifier.height(8.dp)) // 减少间距
                                 Text(
-                                    text = "${jsonUtils.getString("mod", "info_dialog", "author")}${mod.author}",
+                                    text = "${jsonUtils.getString("mod", "info_dialog", "author")}${mod.info.author}",
                                     fontSize = 16.sp, // 减小字体
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Spacer(modifier = Modifier.height(8.dp)) // 减少间距
                                 Text(
-                                    text = "${jsonUtils.getString("mod", "info_dialog", "introduce")}${mod.introduce}",
+                                    text = "${jsonUtils.getString("mod", "info_dialog", "introduce")}${mod.info.introduce}",
                                     fontSize = 14.sp, // 减小字体
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                                if (mod.openSource && mod.openSourceUrl != null) {
+                                if (mod.info.github.openSource) {
                                     Spacer(modifier = Modifier.height(8.dp)) // 减少间距
                                     Text(
-                                        text = "${jsonUtils.getString("mod", "info_dialog", "url")}${mod.openSourceUrl}",
+                                        text = "${jsonUtils.getString("mod", "info_dialog", "url")}${mod.info.github.url}",
                                         fontSize = 14.sp, // 减小字体
                                         color = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier.clickable {
                                             // 打开URL
-                                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(mod.openSourceUrl))
+                                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(mod.info.github.url))
                                             context.startActivity(intent)
                                         }
                                     )
@@ -342,11 +380,7 @@ fun ModItem(mod: Mod) {
                 }
             },
             shape = MaterialTheme.shapes.extraLarge,
-            properties = DialogProperties(usePlatformDefaultWidth = false),
-            containerColor = MaterialTheme.colorScheme.surface,
-            iconContentColor = MaterialTheme.colorScheme.onSurface,
-            titleContentColor = MaterialTheme.colorScheme.onSurface,
-            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+            properties = DialogProperties(usePlatformDefaultWidth = false)
         )
     }
 
@@ -357,14 +391,14 @@ fun ModItem(mod: Mod) {
             onDismissRequest = { showDeleteDialog = false },
             title = {
                 Text(
-                    text = "${jsonUtils.getString("mod", "delete_dialog", "title")} ${mod.modName} ?",
+                    text = "${jsonUtils.getString("mod", "delete_dialog", "title")} ${mod.info.name} ?",
                     style = MaterialTheme.typography.headlineSmall
                 )
             },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        remove(context, File(mod.filePath), mod.identifier)
+                        FileUtils.deleteDirectory(File(mod.filePath))
                         showDeleteDialog = false
                         scope?.launch {
                             snackbarHostState.showSnackbar(jsonUtils.getString("mod", "delete_dialog", "result"))

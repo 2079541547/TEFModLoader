@@ -11,12 +11,10 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -40,7 +38,6 @@ import silkways.terraria.efmodloader.logic.LanguageHelper
 import silkways.terraria.efmodloader.logic.Markdown
 import silkways.terraria.efmodloader.ui.screen.CustomTopBar
 import silkways.terraria.efmodloader.ui.screen.NavGraphs
-import silkways.terraria.efmodloader.ui.screen.SettingsScreen
 import silkways.terraria.efmodloader.ui.theme.TEFModLoaderComposeTheme
 import silkways.terraria.efmodloader.ui.utils.LocalSnackbarHost
 import silkways.terraria.efmodloader.utils.SPUtils

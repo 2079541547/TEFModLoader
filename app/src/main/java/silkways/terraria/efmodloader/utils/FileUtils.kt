@@ -236,6 +236,5 @@ class FileUtils {
                 EFLog.w("指定的目录不存在: ${directory.absolutePath}")
             }
         }
-
     }
 }

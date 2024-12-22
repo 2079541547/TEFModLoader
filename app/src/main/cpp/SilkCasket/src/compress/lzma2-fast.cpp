@@ -26,12 +26,13 @@
 #include <filesystem>
 #include <fstream>
 #include <cstring>
+#include <temp_directory_path.hpp>
 
 std::vector <uint8_t> SilkCasket::Compress::LZMA2_Fast::compress(const vector<uint8_t> &data, size_t blockSize) {
-    auto tempFilePath = std::filesystem::temp_directory_path() / "temp_compressed_data.lzma2-fast";
+    auto tempFilePath = tempPath / "temp_compressed_data.lzma2-fast";
     std::ofstream tempFile(tempFilePath, std::ios::binary);
     if (!tempFile.is_open()) {
-        throw std::runtime_error("Failed to open temporary file for compression.");
+            throw std::runtime_error("Failed to open temporary file for compression.\n" + tempFilePath.string());
     }
 
     const size_t inputSize = data.size();
@@ -82,10 +83,10 @@ std::vector <uint8_t> SilkCasket::Compress::LZMA2_Fast::compress(const vector<ui
 
 
 std::vector <uint8_t> SilkCasket::Compress::LZMA2_Fast::decompress(const vector<uint8_t> &compressed) {
-    auto tempFilePath = std::filesystem::temp_directory_path() / "temp_compressed_data.lzma2-fast";
+    auto tempFilePath = tempPath / "temp_compressed_data.lzma2-fast";
     std::ofstream tempFile(tempFilePath, std::ios::binary);
     if (!tempFile.is_open()) {
-        throw std::runtime_error("Failed to open temporary file for decompression.");
+            throw std::runtime_error("Failed to open temporary file for decompression.");
     }
 
     size_t offset = 0;

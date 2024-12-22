@@ -23,7 +23,6 @@
 
 package eternal.future.efmodloader.load;
 
-import static eternal.future.efmodloader.load.FileUtils.copyFile;
 import static eternal.future.efmodloader.load.FileUtils.copyFilesFromTo;
 
 import android.annotation.SuppressLint;
@@ -33,12 +32,13 @@ import android.os.Environment;
 import android.util.Log;
 import java.io.*;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Loader {
     private static final String TAG = "EFModLoader";
-    private static final String RUNTIME = "TEFModLoader-EternalFuture";
+    private static final String RUNTIME = "TEFModLoader";
     private static final Map<String, String> archToLib = new HashMap<>(4);
 
     static {
@@ -72,7 +72,8 @@ public class Loader {
 
             checkExternalMode();
 
-            File EFModX = new File(getContext().getCacheDir(), "EFModX");
+            File EFModX = new File(getContext().getCacheDir(), "EFMod/Modx");
+            log("EFModX：" + Arrays.toString(EFModX.listFiles()));
             loadEFModX(EFModX.getAbsolutePath());
             loadModLoader();
         } catch (Exception e) {
@@ -86,9 +87,22 @@ public class Loader {
         log("开始加载EFModX: " + path);
         File dir = new File(path);
         if (dir.isDirectory()) {
-            File[] files = dir.listFiles();
-            if (files != null) {
-                for (File file : files) {
+            loadSoFilesFromDirectory(dir);
+        } else {
+            log("指定的路径不是一个目录: " + path);
+        }
+        log("完成加载EFModX");
+    }
+
+    @SuppressLint("UnsafeDynamicallyLoadedCode")
+    private static void loadSoFilesFromDirectory(File dir) {
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    // 递归调用，处理子目录
+                    loadSoFilesFromDirectory(file);
+                } else if (file.isFile() && file.getName().toLowerCase().endsWith(".so")) {
                     try {
                         log("加载文件: " + file.getAbsolutePath());
                         System.load(file.getAbsolutePath());
@@ -96,13 +110,10 @@ public class Loader {
                         log("加载文件出错: " + e.getMessage(), e);
                     }
                 }
-            } else {
-                log("没有找到任何文件在路径: " + path);
             }
         } else {
-            log("指定的路径不是一个目录: " + path);
+            log("没有找到任何文件在路径: " + dir.getAbsolutePath());
         }
-        log("完成加载EFModX");
     }
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
@@ -127,20 +138,20 @@ public class Loader {
     private static void checkExternalMode() {
         if (hasReadWritePermission()) {
             log("已获取权限！");
-            @SuppressLint("SdCardPath") File externalDir = new File("/sdcard/Documents/EFModLoader", RUNTIME);
+            @SuppressLint("SdCardPath") File externalDir = new File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader");
             log("外部目录: " + externalDir.getAbsolutePath());
 
             if (externalDir.exists()) {
                 log("正在进行外部模式的额外操作...");
 
-                File efModX = new File(getContext().getCacheDir(), "EFModX/");
-                File efMod = new File(getContext().getCacheDir(), "EFMod/");
-                File loader = new File(getContext().getCacheDir(), "EFModLoader/");
+                File efModX = new File(getContext().getCacheDir(), "EFMod/Modx");
+                File efMod = new File(getContext().getCacheDir(), "EFMod/Mod");
+                File loader = new File(getContext().getCacheDir(), "Loader/");
                 File modPrivate = new File(getContext().getExternalFilesDir(null), "EFMod-Private/");
 
-                File efModXExterior = new File(externalDir, "EFModX/");
-                File efModExterior = new File(externalDir, "EFMod/");
-                File loaderExterior = new File(externalDir, "EFModLoader/");
+                File efModXExterior = new File(externalDir, "EFMod/Modx");
+                File efModExterior = new File(externalDir, "EFMod/Mod");
+                File loaderExterior = new File(externalDir, "Loader/");
                 File modPrivateExterior = new File(externalDir, "Private/");
 
                 log("EFModX 目标: " + efModX.getAbsolutePath());
@@ -190,9 +201,6 @@ public class Loader {
                 if (modPrivateExterior.exists()) {
                     log("复制 ModPrivate: " + modPrivateExterior.getAbsolutePath() + " 到 " + modPrivate.getAbsolutePath());
                     copyFilesFromTo(modPrivateExterior, modPrivate);
-
-
-                    log("");
                     copyFilesFromTo(modPrivate, new File(externalDir, "export/private"));
                 } else {
                     log("ModPrivate 外部文件不存在: " + modPrivateExterior.getAbsolutePath());
@@ -214,7 +222,7 @@ public class Loader {
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     private static void loadModLoader() {
         try {
-            File loader = new File(getContext().getCacheDir(), "EFModLoader/libLoader.so");
+            File loader = new File(getContext().getCacheDir(), "Loader/libLoader.so");
             if (loader.exists()) {
                 log("正在尝试加载EFModLoader内核...");
                 System.load(loader.getAbsolutePath());

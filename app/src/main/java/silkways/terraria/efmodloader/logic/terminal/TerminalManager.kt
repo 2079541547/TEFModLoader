@@ -29,9 +29,10 @@ import android.content.Context
 import eternal.future.effsystem.Tool
 import silkways.terraria.efmodloader.logic.EFLog
 import silkways.terraria.efmodloader.logic.efmod.LoaderManager
-import silkways.terraria.efmodloader.logic.efmod.ModManager.install
+import silkways.terraria.efmodloader.logic.efmod.ModManager
 import silkways.terraria.efmodloader.ui.activity.TerminalViewModel
 import java.io.File
+import java.util.UUID
 
 data class CommandResult(val output: String)
 
@@ -112,7 +113,7 @@ class TerminalManager(context: Context) {
                         } else if (File(args[1]).isDirectory) {
                             CommandResult("'${args[1]}' is a directory, not a file")
                         } else {
-                            install(context, File(args[1]), File("${context.getExternalFilesDir(null)?.absolutePath}/TEFModLoader/EFModData"))
+                            ModManager.install(args[1], "${context.getExternalFilesDir(null)?.absolutePath}/EFMod/${UUID.randomUUID()}")
                             CommandResult("Mod installed successfully")
                         }
                     }
@@ -122,7 +123,7 @@ class TerminalManager(context: Context) {
                         } else if (File(args[1]).isDirectory) {
                             CommandResult("'${args[1]}' is a directory, not a file")
                         } else {
-                            LoaderManager.install(context, File(args[1]), File("${context.getExternalFilesDir(null)?.absolutePath}/TEFModLoader/EFModLoaderData"))
+                            LoaderManager.install(args[1], "${context.getExternalFilesDir(null)?.absolutePath}/EFModLoader/${UUID.randomUUID()}")
                             CommandResult("Loader installed successfully")
                         }
                     }

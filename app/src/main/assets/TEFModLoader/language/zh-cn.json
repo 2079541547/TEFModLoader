@@ -61,6 +61,10 @@
       "efmodloader": {
         "install": "安装内核",
         "manager": "内核管理"
+      },
+      "install": {
+        "title": "安装Mod/Loader",
+        "installing": "少女祈祷中..."
       }
     },
 

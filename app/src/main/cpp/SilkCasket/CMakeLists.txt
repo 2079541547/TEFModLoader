@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.22.1)
 
 project("silkcasket")
 
-set(ANDROID_ENABLE ON)
-set(ENABLE_LOG ON)
+set(ANDROID_ENABLE OFF)
+set(ENABLE_LOG OFF)
 set(EXAMPLE OFF)
 
 if(${ANDROID_ENABLE})

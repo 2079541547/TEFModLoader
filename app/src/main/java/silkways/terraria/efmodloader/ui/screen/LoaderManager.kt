@@ -2,57 +2,75 @@ package silkways.terraria.efmodloader.ui.screen
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.compose.animation.*
-import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.RadioButtonUnchecked
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.rememberAsyncImagePainter
-import eternal.future.effsystem.fileSystem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import silkways.terraria.efmodloader.MainApplication
 import silkways.terraria.efmodloader.data.Settings
+import silkways.terraria.efmodloader.logic.EFLog
 import silkways.terraria.efmodloader.logic.LanguageHelper
-import silkways.terraria.efmodloader.logic.efmod.LoaderManager.remove
+import silkways.terraria.efmodloader.logic.efmod.LoaderManager
+import silkways.terraria.efmodloader.logic.efmod.Loader
 import silkways.terraria.efmodloader.ui.utils.LanguageUtils
+import silkways.terraria.efmodloader.utils.FileUtils
 import silkways.terraria.efmodloader.utils.SPUtils
 import java.io.File
 import java.io.FileOutputStream
-
-data class Loader(
-    val filePath: String,
-    val loaderName: String,
-    val author: String,
-    val introduce: String,
-    val version: String,
-    val openSourceUrl: String,
-    var icon: Bitmap? = null
-)
 
 private var scope: CoroutineScope? = null
 
@@ -131,14 +149,14 @@ fun KernelManager(context: Context, kernelList: List<Loader>) {
                             // 显示内核名称和作者
                             Column {
                                 Text(
-                                    text = kernel.loaderName,
+                                    text = kernel.info.name,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
-                                    text = "by ${kernel.author}",
+                                    text = "by ${kernel.info.author}",
                                     fontSize = 14.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -147,7 +165,7 @@ fun KernelManager(context: Context, kernelList: List<Loader>) {
                                 if (selectedKernelIndex == index) {
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(
-                                        text = "v ${kernel.version}",
+                                        text = "v ${kernel.info.version}",
                                         fontSize = 14.sp,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -214,7 +232,7 @@ fun KernelManager(context: Context, kernelList: List<Loader>) {
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
-                                    text = kernel.introduce,
+                                    text = kernel.info.introduce,
                                     fontSize = 14.sp,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -227,7 +245,7 @@ fun KernelManager(context: Context, kernelList: List<Loader>) {
                                 )
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
-                                    text = kernel.openSourceUrl,
+                                    text = kernel.info.github.url,
                                     fontSize = 14.sp,
                                     color = MaterialTheme.colorScheme.primary
                                 )
@@ -248,14 +266,14 @@ fun KernelManager(context: Context, kernelList: List<Loader>) {
             onDismissRequest = { showDeleteDialog = false },
             title = {
                 Text(
-                    text = "${jsonUtils.getString("loader", "delete_dialog", "title")} ${deleteTargetKernel?.loaderName}",
+                    text = "${jsonUtils.getString("loader", "delete_dialog", "title")} ${deleteTargetKernel?.info?.name}",
                     style = MaterialTheme.typography.headlineSmall
                 )
             },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        remove(context, File(deleteTargetKernel!!.filePath))
+                        FileUtils.deleteDirectory(File(deleteTargetKernel!!.filePath))
                         showDeleteDialog = false
                         scope?.launch {
                             snackbarHostState.showSnackbar(jsonUtils.getString("loader", "delete_dialog", "result"))
@@ -288,7 +306,7 @@ fun KernelManager(context: Context, kernelList: List<Loader>) {
 
 // 加载已选择的内核路径
 private fun loadSelectedLoaderPath(context: Context): String {
-    val file = File(context.getExternalFilesDir(null), "TEFModLoader/EFModLoaderData/info.json")
+    val file = File(context.getExternalFilesDir(null), "EFModLoader/info.json")
     return if (file.exists()) {
         try {
             val jsonString = file.bufferedReader().use { it.readText() }
@@ -304,7 +322,7 @@ private fun loadSelectedLoaderPath(context: Context): String {
 
 // 保存已选择的内核路径
 private fun saveSelectedLoaderPath(context: Context, filePath: String) {
-    val directory = File(context.getExternalFilesDir(null), "TEFModLoader/EFModLoaderData")
+    val directory = File(context.getExternalFilesDir(null), "EFModLoader")
     if (!directory.exists()) {
         directory.mkdirs()
     }
@@ -320,47 +338,67 @@ private fun saveSelectedLoaderPath(context: Context, filePath: String) {
 
 fun loadLoaderFromDirectory(directoryPath: String, context: Context): List<Loader> {
     val directory = File(directoryPath)
-    val mods = mutableListOf<Loader>()
+    val loaders = mutableListOf<Loader>()
+
 
     if (directory.exists() && directory.isDirectory) {
-        for (file in directory.listFiles()) {
-            if (file.isFile && file.extension != "json") {
-
-                val Infomap = fileSystem.EFML.getLoaderInfo(file.absolutePath)
+        // 遍历主目录中的所有子目录
+        for (loaderDir in directory.listFiles { file -> file.isDirectory }) {
+            if (loaderDir != null && File(loaderDir, "loader").exists()) {
+                // 存在一个符合条件的文件，继续处理
+                EFLog.i("${File(loaderDir, "loader")}")
+                val Infomap = LoaderManager.parseLoaderInfoToMap(loaderDir.absolutePath)
+                val LoaderIcon = BitmapFactory.decodeFile(File(loaderDir, "loader.icon").absolutePath)
 
                 val info = Loader(
-                    filePath = file.absolutePath,
-                    loaderName = Infomap["LoaderName"].toString(),
-                    author = Infomap["author"].toString(),
-                    introduce = Infomap[LanguageHelper.getLanguage(SPUtils.readInt(Settings.languageKey, 0), context)].toString(),
-                    version = Infomap["version"].toString(),
-                    openSourceUrl = Infomap["openSourceUrl"].toString(),
+                    filePath = loaderDir.absolutePath,
+                    info = Loader.LoaderInfo(
+                        name = Infomap["name"].toString(),
+                        author = Infomap["author"].toString(),
+                        version = Infomap["version"].toString(),
+                        introduce = (Infomap["introduce"] as Map<*, *>)[LanguageHelper.getLanguage(
+                            SPUtils.readInt(Settings.languageKey, 0),
+                            context
+                        )].toString(),
+                        github = Loader.GithubInfo(
+                            overview = (Infomap["github"] as Map<*, *>)["overview"].toString(),
+                            url = (Infomap["github"] as Map<*, *>)["url"].toString()
+                        ),
+                        mod = Loader.LoaderDetails(
+                             platform = Loader.PlatformSupport(
+                                Windows = Loader.PlatformArchitectures(
+                                    arm64 = (((Infomap["loader"] as Map<*, *>)["platform"] as Map<*, *>)["Windows"] as Map<*, *>)["arm64"] as Boolean,
+                                    arm32 = (((Infomap["loader"] as Map<*, *>)["platform"] as Map<*, *>)["Windows"] as Map<*, *>)["arm32"] as Boolean,
+                                    x86_64 = (((Infomap["loader"] as Map<*, *>)["platform"] as Map<*, *>)["Windows"] as Map<*, *>)["x86_64"] as Boolean,
+                                    x86 = (((Infomap["loader"] as Map<*, *>)["platform"] as Map<*, *>)["Windows"] as Map<*, *>)["x86"] as Boolean
+                                ),
+                                Android = Loader.PlatformArchitectures(
+                                    arm64 = (((Infomap["loader"] as Map<*, *>)["platform"] as Map<*, *>)["Android"] as Map<*, *>)["arm64"] as Boolean,
+                                    arm32 = (((Infomap["loader"] as Map<*, *>)["platform"] as Map<*, *>)["Android"] as Map<*, *>)["arm32"] as Boolean,
+                                    x86_64 = (((Infomap["loader"] as Map<*, *>)["platform"] as Map<*, *>)["Android"] as Map<*, *>)["x86_64"] as Boolean,
+                                    x86 = (((Infomap["loader"] as Map<*, *>)["platform"] as Map<*, *>)["Android"] as Map<*, *>)["x86"] as Boolean
+                                )
+                            )
+                        )
+                    ),
+                    icon = LoaderIcon
                 )
 
-
-                info.icon = BitmapFactory.decodeStream(context.assets.open("TEFModLoader/未知.png"))
-
-                try {
-                    val ModIcon = fileSystem.EFML.getLoaderIcon(file.absolutePath)
-                    if (ModIcon.size != 0) info.icon = BitmapFactory.decodeByteArray(ModIcon, 0, ModIcon.size)
-                } catch (A: Exception) {
-                    println(A)
-                    info.icon = BitmapFactory.decodeStream(context.assets.open("TEFModLoader/未知.png"))
+                if (!File(loaderDir, "loader.icon").exists()) {
+                    info.icon =
+                        BitmapFactory.decodeStream(context.assets.open("TEFModLoader/未知.png"))
                 }
-
-                mods.add(info)
+                loaders.add(info)
             }
         }
     }
-    return mods
+    return loaders
 }
 
 
 
-// 示例用法
-@Preview(showBackground = true)
 @Composable
 fun PreviewKernelManager() {
-    val dummyKernels = loadLoaderFromDirectory("${LocalContext.current.getExternalFilesDir(null)}/TEFModLoader/EFModLoaderData/", LocalContext.current)
+    val dummyKernels = loadLoaderFromDirectory("${LocalContext.current.getExternalFilesDir(null)}/EFModLoader", LocalContext.current)
     KernelManager(context = LocalContext.current, kernelList = dummyKernels)
 }

@@ -24,7 +24,7 @@ android {
         minSdk = 24
         targetSdk = 35
         versionCode = 200
-        versionName = "2.0.0 Stable"
+        versionName = "3.0.0 Alpha"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
@@ -59,6 +59,7 @@ android {
             version = "3.22.1"
         }
     }
+        ndkVersion = "28.0.12674087 rc2"
 }
 
 dependencies {

@@ -1,11 +1,7 @@
-package silkways.terraria.efmodloader.logic.efmod;
-
-import java.util.Map;
-
 /*******************************************************************************
- * 文件名称: SilkCasketCompressor
+ * 文件名称: temp_directory_path
  * 项目名称: TEFModLoader
- * 创建时间: 2024/12/8
+ * 创建时间: 2024/12/22
  * 作者: EternalFuture゙
  * Github: https://github.com/2079541547 
  * 版权声明: Copyright © 2024 EternalFuture. All rights reserved.
@@ -26,13 +22,10 @@ import java.util.Map;
  * 注意事项: 请严格遵守GNU AGPL v3.0协议使用本代码，任何未经授权的商业用途均属侵权行为。
  *******************************************************************************/
 
-public class SilkCasket {
-    public static native void compressDirectory(boolean suffix, String targetPath, String outPath, boolean[] mode, long blockSize, boolean entryEncryption, String key);
-    public static native void compressAFile(boolean suffix, String targetPath, String outPath, boolean[] mode, long blockSize, boolean entryEncryption, String key);
-    public static native void compressFiles(boolean suffix, Map<String, String> targetPaths, String outPath, boolean[] mode, long blockSize, boolean entryEncryption, String key);
-    public static native void compress(boolean suffix, Map<String, String> targetPaths, String outPath, boolean[] mode, long blockSize, boolean entryEncryption, String key);
-    public static native void releaseAllEntry(String filePath, String outPath, String key);
-    public static native void releaseEntry(String filePath, String entry, String outPath, String key);
-    public static native void releaseFolder(String filePath, String entry, String outPath, String key);
-    public static native byte[] getEntryData(String filePath, String entry, String key);
-}
+#ifndef TEFMODLOADER_TEMP_DIRECTORY_PATH_HPP
+#define TEFMODLOADER_TEMP_DIRECTORY_PATH_HPP
+
+#include <filesystem>
+inline auto tempPath = std::filesystem::temp_directory_path();
+
+#endif //TEFMODLOADER_TEMP_DIRECTORY_PATH_HPP

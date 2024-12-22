@@ -15,7 +15,7 @@
 
 
 void LoadMod() {
-    EFModLoader::Loader::LoadELFMods::LoadALLMod(*EFModLoader::Android::get_cacheDir + "EFMod/");
+    EFModLoader::Loader::LoadELFMods::LoadALLMod(*EFModLoader::Android::get_cacheDir + "EFMod/Mod");
 }
 
 

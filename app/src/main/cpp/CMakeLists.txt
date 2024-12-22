@@ -4,7 +4,8 @@ project("EFMod")
 
 add_subdirectory(SilkCasket)
 add_library(${CMAKE_PROJECT_NAME} SHARED
-        EFMod.cpp)
+        EFModLoader.cpp
+)
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
     android silkcasket log)

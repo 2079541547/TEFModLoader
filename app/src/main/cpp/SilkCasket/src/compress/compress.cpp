@@ -34,6 +34,7 @@
 #include <vector>
 #include <algorithm>
 #include <filesystem>
+#include <temp_directory_path.hpp>
 
 size_t BlockSize = 8096 * 1024;
 
@@ -95,7 +96,7 @@ std::future<std::pair<SilkCasket::Compress::Mode::Mode, std::filesystem::path>>
 asyncCompressData(const std::vector<uint8_t>& data, SilkCasket::Compress::Mode::Mode mode) {
     return std::async(std::launch::async, [&data, mode](){
         auto compressedData = compressData(data, mode);
-        auto tempFile = std::filesystem::temp_directory_path() / ("compressed_" + std::to_string(static_cast<int>(mode)) + ".tmp");
+        auto tempFile = tempPath / ("compressed_" + std::to_string(static_cast<int>(mode)) + ".tmp");
         SilkCasket::Utils::File::Vuint8ToFile(tempFile, compressedData);
         return std::make_pair(mode, tempFile);
     });

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.DriveFileMove
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.DriveFileMove
 import androidx.compose.material.icons.filled.DriveFileMoveRtl
@@ -31,14 +32,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.FileProvider
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.spec.DestinationStyle
 import silkways.terraria.efmodloader.LoadService
 import silkways.terraria.efmodloader.MainApplication
 import silkways.terraria.efmodloader.data.Settings
 import silkways.terraria.efmodloader.logic.EFLog
 import silkways.terraria.efmodloader.logic.LanguageHelper
-import silkways.terraria.efmodloader.logic.efmod.Init
-import silkways.terraria.efmodloader.ui.activity.MainActivity
+import silkways.terraria.efmodloader.logic.efmod.LoaderManager
+import silkways.terraria.efmodloader.logic.efmod.ModManager
 import silkways.terraria.efmodloader.ui.activity.TerminalActivity
 import silkways.terraria.efmodloader.ui.utils.LanguageUtils
 import silkways.terraria.efmodloader.utils.FileUtils
@@ -160,8 +160,25 @@ fun ToolBoxScreen() {
                         }
                         Button(
                             onClick = {
-                                Init(context).initialization()
                                 showDialog = true
+                                Thread {
+                                    LoaderManager.initialization(context)
+                                    ModManager.initialization(context)
+                                    showDialog = false
+                                    if (SPUtils.readInt(Settings.Runtime, 0) == 2) {
+                                        context.startActivity(Intent(context, Class.forName("com.unity3d.player.UnityPlayerActivity")))
+                                        context.startService(Intent(context, LoadService::class.java))
+                                    } else {
+                                        val launchIntent = context.packageManager.getLaunchIntentForPackage(
+                                            SPUtils.readString(
+                                                Settings.GamePackageName, "com.and.games505.TerrariaPaid").toString())
+                                        if (launchIntent != null) {
+                                            context.startActivity(launchIntent)
+                                        } else {
+                                            EFLog.e("无法找到该应用: $launchIntent")
+                                        }
+                                    }
+                                }.start()
                             },
                             modifier = Modifier.weight(1f)
                         ) {
@@ -187,7 +204,7 @@ fun ToolBoxScreen() {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(Icons.Filled.DriveFileMove, contentDescription = "Import Archive")
+                                Icon(Icons.AutoMirrored.Filled.DriveFileMove, contentDescription = "Import Archive")
                                 Text(text = jsonUtils.getString("toolbox", "import archive"), fontSize = 16.sp)
                             }
                         }
@@ -198,7 +215,7 @@ fun ToolBoxScreen() {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(Icons.Filled.DriveFileMove, contentDescription = "Import Configuration")
+                                Icon(Icons.AutoMirrored.Filled.DriveFileMove, contentDescription = "Import Configuration")
                                 Text(text = jsonUtils.getString("toolbox", "import configuration"), fontSize = 16.sp)
                             }
                         }

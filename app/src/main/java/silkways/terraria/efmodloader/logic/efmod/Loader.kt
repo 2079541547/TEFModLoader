@@ -25,11 +25,37 @@ package silkways.terraria.efmodloader.logic.efmod
 import android.graphics.Bitmap
 
 data class Loader(
+    val info: LoaderInfo,
     val filePath: String,
-    val loaderName: String,
-    val author: String,
-    val introduce: String,
-    val version: String,
-    val openSourceUrl: String,
     var icon: Bitmap? = null
-)
+) {
+    data class LoaderInfo(
+        val name: String,
+        val author: String,
+        val version: String,
+        val introduce: String,
+        val github: GithubInfo,
+        val mod: LoaderDetails
+    )
+
+    data class GithubInfo(
+        val overview: String,
+        val url: String
+    )
+
+    data class LoaderDetails(
+        val platform: PlatformSupport
+    )
+
+    data class PlatformSupport(
+        val Windows: PlatformArchitectures,
+        val Android: PlatformArchitectures
+    )
+
+    data class PlatformArchitectures(
+        val arm64: Boolean,
+        val arm32: Boolean,
+        val x86_64: Boolean,
+        val x86: Boolean
+    )
+}

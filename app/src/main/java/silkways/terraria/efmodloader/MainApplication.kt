@@ -30,7 +30,7 @@ class MainApplication : Application() {
         File("${this.getExternalFilesDir(null)}/TEFModLoader/").mkdirs()
 
         //加载文件系统
-        System.loadLibrary("EFFileSystem")
+        System.loadLibrary("EFMod")
 
         //设置语言&主题
         AppCompatDelegate.setDefaultNightMode(SPUtils.readInt(Settings.themeKey, -1))

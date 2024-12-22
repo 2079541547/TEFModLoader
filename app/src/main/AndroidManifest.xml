@@ -10,6 +10,8 @@
         tools:ignore="QueryAllPackagesPermission" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"
+        tools:ignore="SelectedPhotoAccess" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
 
@@ -47,6 +49,9 @@
             android:exported="true"/>
 
         <activity android:name=".ui.activity.EFManagerActivity"
+            android:exported="true"/>
+
+        <activity android:name=".ui.activity.ModPage"
             android:exported="true"/>
 
         <provider

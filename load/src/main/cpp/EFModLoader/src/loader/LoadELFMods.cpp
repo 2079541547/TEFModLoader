@@ -141,55 +141,57 @@ void EFModLoader::Loader::LoadELFMods::LoadModX(JNIEnv *env, const std::string &
 }
 
 void EFModLoader::Loader::LoadELFMods::LoadALLMod(const std::string &LibPath) {
-    // 检查路径是否为空
-    if (LibPath.empty()) {
-        EFLOG(LogLevel::WARN, "Loader", "LoadELFMods", "LoadALLMod", "提供的路径为空");
-        return;
-    }
-
-    // 检查路径是否存在
-    if (!filesystem::exists(LibPath)) {
-        EFLOG(LogLevel::WARN, "Loader", "LoadELFMods", "LoadALLMod", "提供的路径不存在: " + LibPath);
-        return;
-    }
-
-    // 如果路径是一个文件而不是目录，也可以选择处理这种情况
-    if (!filesystem::is_directory(LibPath)) {
-        EFLOG(LogLevel::ERROR, "Loader", "LoadELFMods", "LoadALLMod", "提供的路径不是一个目录: " + LibPath);
-        return;
-    }
-
-    // 记录开始遍历目录
-    EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLMod", "开始遍历目录: " + LibPath);
-
-    // 获取目录中的文件总数
-    std::uintmax_t totalFiles = std::distance(filesystem::directory_iterator(LibPath), filesystem::directory_iterator());
-    if (totalFiles == 0) {
-        EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLMod", "目录中没有文件");
-        return;
-    }
-
-    // 遍历目录下的所有文件
-    std::uintmax_t processedFiles = 0;
-    for (const auto& entry : filesystem::directory_iterator(LibPath)) {
-        if (entry.is_regular_file()) {
-            std::string filePath = entry.path().string();
-
-            // 更新进度
-            processedFiles++;
-            std::string progress = "正在加载Mod (" + std::to_string(processedFiles) + "/" + std::to_string(totalFiles) + "): " + filePath;
-            EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLMod", progress);
-
-            // 尝试加载Mod
-            LoadMod(filePath);
-
-            // 记录每个Mod加载后的内存使用情况
-            EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLMod", "Mod加载后内存使用情况: " + GetMemoryUsage());
+        // 检查路径是否为空
+        if (LibPath.empty()) {
+                EFLOG(LogLevel::WARN, "Loader", "LoadELFMods", "LoadALLMod", "提供的路径为空");
+                return;
         }
-    }
-
-    // 记录遍历结束
-    EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLMod", "目录遍历结束");
+        
+        // 检查路径是否存在
+        if (!filesystem::exists(LibPath)) {
+                EFLOG(LogLevel::WARN, "Loader", "LoadELFMods", "LoadALLMod", "提供的路径不存在: " + LibPath);
+                return;
+        }
+        
+        // 如果路径不是一个目录，则报错并退出
+        if (!filesystem::is_directory(LibPath)) {
+                EFLOG(LogLevel::ERROR, "Loader", "LoadELFMods", "LoadALLMod", "提供的路径不是一个目录: " + LibPath);
+                return;
+        }
+        
+        // 记录开始遍历目录
+        EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLMod", "开始遍历目录: " + LibPath);
+        
+        // 使用递归迭代器遍历目录和所有子目录中的所有文件
+        std::uintmax_t processedFiles = 0;
+        try {
+                for (const auto& entry : filesystem::recursive_directory_iterator(LibPath)) {
+                        if (entry.is_regular_file() && entry.path().extension() == ".so") { // 只处理.so文件
+                                std::string filePath = entry.path().string();
+                                
+                                // 更新进度
+                                processedFiles++;
+                                std::string progress = "正在加载Mod (" + std::to_string(processedFiles) + "): " + filePath;
+                                EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLMod", progress);
+                                
+                                // 尝试加载Mod
+                                LoadMod(filePath);
+                                
+                                // 记录每个Mod加载后的内存使用情况
+                                EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLMod", "Mod加载后内存使用情况: " + GetMemoryUsage());
+                        }
+                }
+        } catch (const filesystem::filesystem_error& e) {
+                EFLOG(LogLevel::ERROR, "Loader", "LoadELFMods", "LoadALLMod", "遍历或加载过程中出现错误: " + std::string(e.what()));
+        }
+        
+        // 记录遍历结束
+        EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLMod", "目录遍历结束，共加载了 " + std::to_string(processedFiles) + " 个Mod");
+        
+        // 如果没有找到任何.so文件，也记录一下
+        if (processedFiles == 0) {
+                EFLOG(LogLevel::INFO, "Loader", "LoadELFMods", "LoadALLMod", "未找到任何.so文件进行加载");
+        }
 }
 
 void EFModLoader::Loader::LoadELFMods::LoadALLModX(JNIEnv *env, const std::string &LibPath) {
