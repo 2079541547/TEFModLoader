@@ -71,8 +71,11 @@ void EFModLoader::Manager::API::processing() {
         if (ApiDescriptor.empty()) EFLOG(WARNING, "自动创建API", "收集的数组为空");
         for (const auto& _: ApiDescriptor) {
                 if (!_.File.empty()) {
-                        EFLOG(INFO, "自动创建API", "创建API:", _.getID(), "指针:", BNM::Class(_.Namespace, _.Class, BNM::Image(_.File)).GetField(_.Name).GetOffset());
-                        EFModAPI::getEFModAPI().registerAPI(_.getID(), BNM::Class(_.Namespace, _.Class, BNM::Image(_.File)).GetField(_.Name).GetFieldPointer());
+                        if(_.Type == "Field") {
+                                auto* a = new BNM::FieldBase(BNM::Class(_.Namespace, _.Class, BNM::Image(_.File)).GetField(_.Name));
+                                EFLOG(INFO, "自动创建API", "创建API:", _.getID(), "指针:", (uintptr_t)a);
+                                EFModAPI::getEFModAPI().registerAPI(_.getID(), a);
+                        }
                 }
         }
 }
