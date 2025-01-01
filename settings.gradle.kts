@@ -23,3 +23,4 @@ rootProject.name = "TEFModLoader-Compose"
 include(":app")
 include(":load")
 include(":myapplication")
+include(":core")
