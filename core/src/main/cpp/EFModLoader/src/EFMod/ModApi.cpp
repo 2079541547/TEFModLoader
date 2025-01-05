@@ -21,7 +21,8 @@
  * 描述信息: 本文件为EFModLoader项目中的一部分。
  * 注意事项: 请严格遵守GNU AGPL v3.0协议使用本代码，任何未经授权的商业用途均属侵权行为。
  *******************************************************************************/
- 
+
+#include <EFMod/EFMod.hpp>
 #include <EFMod/ModApi.hpp>
 #include <Load/Loader.hpp>
 #include <Manager/API.hpp>
@@ -50,6 +51,6 @@ void EFModLoader::ModApi::modLog(std::string tag, int level,  std::string msg) {
 }
 
 void EFModLoader::ModApi::initialize() {
-        Manager::API::registerAPI({"","EFModLoader","EFMod","closeMod","void"}, (void*)closeMod);
-        Manager::API::registerAPI({"","EFModLoader","EFMod","Log","void"}, (void*)modLog);
+    EFModAPI::getEFModAPI().registerAPI(ModApiDescriptor{"","EFModLoader","EFMod","closeMod","void"}.getID(), (void*)closeMod);
+    EFModAPI::getEFModAPI().registerAPI(ModApiDescriptor{"","EFModLoader","EFMod","Log","void"}.getID(), (void*)modLog);
 }

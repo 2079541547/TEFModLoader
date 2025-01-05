@@ -57,8 +57,8 @@ struct ModFuncDescriptor {
     std::string Name;
     std::string Type;
     int Arg;
-    void* FunPtr;
-    
+    std::vector<void *> FunPtr;
+
     inline size_t getID() const {
             std::string combined = File + Namespace + Class + Name + Type + std::to_string(Arg);
             return std::hash<std::string>{}(combined);
@@ -68,11 +68,6 @@ struct ModFuncDescriptor {
 struct api {
     size_t id;
     void * apiPtr;
-};
-
-struct extend {
-    size_t id;
-    std::vector<void *> funcPtr;
 };
 
 struct ModDependency {
@@ -103,7 +98,7 @@ public:
             return ApiDescriptor;
     }
     
-    inline auto getFuncDescriptorMutex() {
+    inline auto getFuncDescriptor() {
             return FuncDescriptor;
     }
     
@@ -137,15 +132,24 @@ public:
                     ApiDescriptor.push_back(api);
             }
     }
-    
+
+    inline void registerModFuncDescriptor(const ModFuncDescriptor& Extend) {
+        std::lock_guard<std::mutex> lock(FuncDescriptorMutex);
+        if (FuncDescriptor.empty()) {
+            FuncDescriptor.push_back(Extend);
+            return;
+        }
+        for (auto _: FuncDescriptor) {
+            if (_.getID() == Extend.getID()) {
+                _.FunPtr.insert(_.FunPtr.end(), Extend.FunPtr.begin(), Extend.FunPtr.end());
+            } else {
+                FuncDescriptor.push_back(Extend);
+            }
+        }
+    }
+
     inline void registerAPI(size_t api_id, void *ptr) {
             API.push_back({api_id, ptr});
-    }
-    
-    
-    inline void registerExtend(const ModFuncDescriptor& Extend) {
-            std::lock_guard<std::mutex> lock(FuncDescriptorMutex);
-            FuncDescriptor.push_back(Extend);
     }
     
     inline static EFModAPI& getEFModAPI() {

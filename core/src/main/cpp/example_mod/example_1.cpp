@@ -24,9 +24,43 @@
  
 #include "../EFModLoader/includes/EFModLoader/EFMod/EFMod.hpp"
 #include <android/log.h>
+#include <map>
+#include <BNM/Field.hpp>
+#include "igc.hpp"
 
 #define LOG_TAG "MyMod"
 #define LOG(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__);
+
+template<typename T>
+void redirectPointer(uintptr_t originalPtrAddress, uintptr_t newPtrAddress) {
+    T** originalPtr = reinterpret_cast<T**>(originalPtrAddress);
+    *originalPtr = reinterpret_cast<T*>(newPtrAddress);
+}
+
+std::map<std::string, void*> MODAPI;
+
+void a(BNM::UnityEngine::Object * instance) {
+    BNM::Field<BNM::Structures::Mono::Array<bool>>* Deprecated = (BNM::Field<BNM::Structures::Mono::Array<bool>>*)MODAPI["Deprecated"];
+    size_t size = 5456;
+    bool* trueArray = new bool[size];
+    for (size_t i = 0; i < size; ++i) {
+        trueArray[i] = false;
+    }
+    BNM::Structures::Mono::Array<bool>* myArray = BNM::Structures::Mono::Array<bool>::Create(trueArray, size);
+    redirectPointer<void*>(reinterpret_cast<uintptr_t>(Deprecated->GetPointer()), reinterpret_cast<uintptr_t>(myArray));
+}
+
+int b() {
+    LOG("伤害已修改为%d", Limit_Damage());
+    return Limit_Damage();
+}
+
+int c() {
+    LOG("跳跃高度已修改为114514");
+    return 114514;
+}
+
+
 
 class MyMod: public EFMod {
     
@@ -49,22 +83,66 @@ class MyMod: public EFMod {
                                     "Field"
                             })
                 );
-            return 0;
+
+        MODAPI["Deprecated"] =  mod->getAPI({
+                                                    "Assembly-CSharp.dll",
+                                                    "Terraria.ID",
+                                                    "ItemID.Sets",
+                                                    "Deprecated",
+                                                    "Field"
+                                            });
+
+        return 0;
     }
     
     void RegisterAPI(EFModAPI *mod) override {
             mod->registerModApiDescriptor({
                                                   "Assembly-CSharp.dll",
                                                   "Terraria.ID",
-                                                  "ItemID",
-                                                  "None",
+                                                  "ItemID.Sets",
+                                                  "Deprecated",
                                                   "Field"
                                           });
     }
     
-    void RegisterExtend(EFModAPI *mod) override {}
-    
-private:
+    void RegisterExtend(EFModAPI *mod) override {
+        mod->registerModFuncDescriptor({
+            "Assembly-CSharp.dll",
+            "Terraria.ID",
+            "ItemID.Sets",
+            ".cctor",
+            "hook>>void",
+            1,
+            {
+                    (void*)a
+            }
+        });
+
+        mod->registerModFuncDescriptor({
+                                               "Assembly-CSharp.dll",
+                                               "Terraria",
+                                               "Main",
+                                               "DamageVar",
+                                               "hook>>int",
+                                               2,
+                                               {
+                                                       (void*)b
+                                               }
+        });
+
+
+        mod->registerModFuncDescriptor({
+                                               "Assembly-CSharp.dll",
+                                               "Terraria",
+                                               "Player",
+                                               "get_jumpHeight",
+                                               "hook>>int",
+                                               0,
+                                               {
+                                                       (void*)c
+                                               }
+                                       });
+    }
 };
 
 EFMod* CreateMod() {

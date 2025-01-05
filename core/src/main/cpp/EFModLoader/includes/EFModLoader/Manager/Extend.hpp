@@ -25,12 +25,34 @@
 #pragma once
 
 #include <EFMod/EFMod.hpp>
+#include <log.hpp>
 
 namespace EFModLoader::Manager::Extend {
-    inline std::vector<extend> extend;
-    
     void initialize();
     void processing();
     void Register();
-    void registerFunc(const ModFuncDescriptor& func, void *ptr);
+
+
+    /**
+     * @callFunction 调用函数指针
+     *
+     * @tparam R 返回类型
+     * @tparam Args 参数类型列表
+     * @param funcPtr 函数指针
+     * @param args 函数参数
+     * @return 函数调用的结果
+     */
+    template <typename R, typename... Args>
+    R callFunction(void *funcPtr, Args &&...args) {
+        if (!funcPtr) {
+            throw std::invalid_argument("函数指针不能为NULL");
+        }
+
+        // 从 uintptr_t 转换为函数指针
+        using FuncPtr = R (*)(Args...);
+        auto f = reinterpret_cast<FuncPtr>(funcPtr);
+
+        // 调用函数
+        return f(std::forward<Args>(args)...);
+    }
 }

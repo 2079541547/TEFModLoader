@@ -28,4 +28,5 @@ add_library(example_mod_1
 target_link_libraries(example_mod_1
         android
         log
+        BNM
 )

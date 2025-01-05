@@ -13,7 +13,6 @@ add_library(EFModLoader STATIC
         src/Load/Loader.cpp
         src/log.cpp
         src/Manager/API.cpp
-        src/Manager/Extend.cpp
         src/EFMod/ModApi.cpp
 )
 
