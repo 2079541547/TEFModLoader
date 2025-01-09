@@ -23,8 +23,8 @@ android {
         applicationId = "silkways.terraria.efmodloader"
         minSdk = 24
         targetSdk = 35
-        versionCode = 200
-        versionName = "3.0.0 Alpha"
+        versionCode = 300
+        versionName = "3.0.0 Stable"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {

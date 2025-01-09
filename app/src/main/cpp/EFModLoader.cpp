@@ -42,7 +42,7 @@ Java_silkways_terraria_efmodloader_logic_efmod_LoaderManager_install(JNIEnv *env
                                    outPath / "loader",
                                    {false, true, true, true, true}
         );
-        std::filesystem::remove(outPath / "loader.json");
+        //std::filesystem::remove(outPath / "loader.json");
         std::filesystem::remove_all(outPath / "silk_casket_temp");
         
         Analysis.releaseFolder("lib/android", outPath);

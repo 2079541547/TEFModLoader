@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -162,6 +163,11 @@ fun ToolBoxScreen() {
                             onClick = {
                                 showDialog = true
                                 Thread {
+
+                                    val tagPath =
+                                        File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader")
+                                    if (tagPath.exists()) FileUtils.deleteDirectory(tagPath)
+
                                     LoaderManager.initialization(context)
                                     ModManager.initialization(context)
                                     showDialog = false

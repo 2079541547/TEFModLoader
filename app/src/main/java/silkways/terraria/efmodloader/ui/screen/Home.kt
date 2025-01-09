@@ -167,11 +167,11 @@ fun HomeScreen() {
                                 modifier = Modifier.fillMaxWidth()
                             )
                             Text(
-                                text = "2.0.0 Stable",
+                                text = "3.0.0 Stable",
                                 modifier = Modifier.fillMaxWidth()
                             )
                             Text(
-                                text = jsonUtils.getArrayString("Update log", "200"),
+                                text = jsonUtils.getArrayString("Update log", "300"),
                                 fontSize = 13.sp,
                                 modifier = Modifier
                                     .padding(start = 10.dp)
@@ -201,6 +201,7 @@ fun HomeScreen() {
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     val logItems = listOf(
+                        LogItem("3.0.0 Stable", jsonUtils.getArrayString("Update log", "300")),
                         LogItem("2.0.0 Stable", jsonUtils.getArrayString("Update log", "200")),
                         LogItem("1.5.5 Stable", jsonUtils.getArrayString("Update log", "151")),
                         LogItem("1.5.0", jsonUtils.getArrayString("Update log", "150")),

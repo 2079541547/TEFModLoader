@@ -12,7 +12,8 @@ target_link_libraries(BNM
 )
 
 add_library(${CMAKE_PROJECT_NAME} SHARED
-        core.cpp)
+        core.cpp
+)
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
         android
@@ -30,3 +31,16 @@ target_link_libraries(example_mod_1
         log
         BNM
 )
+
+add_library(auxiliary
+    SHARED
+        auxiliary.cpp
+)
+
+target_link_libraries(auxiliary
+        BNM
+        log
+)
+
+target_compile_options(auxiliary PRIVATE $<$<CONFIG:MinSizeRel>:-Os>)
+

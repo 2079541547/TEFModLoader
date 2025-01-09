@@ -166,16 +166,18 @@ public class Loader {
 
                 if (efMod.exists()) {
                     log("删除 EFMod: " + efMod.getAbsolutePath());
-                    efMod.delete();
+                    deleteDirectory(efMod);
                 }
                 if (efModX.exists()) {
                     log("删除 EFModX: " + efModX.getAbsolutePath());
-                    efModX.delete();
+                    deleteDirectory(efModX);
                 }
                 if (loader.exists()) {
                     log("删除 Loader: " + loader.getAbsolutePath());
-                    loader.delete();
+                    deleteDirectory(loader);
                 }
+
+                efMod.mkdirs();
 
                 if (loaderExterior.exists()) {
                     log("复制 Loader: " + loaderExterior.getAbsolutePath() + " 到 " + loader.getAbsolutePath());
@@ -211,6 +213,28 @@ public class Loader {
         } else {
             log("未获取权限！");
         }
+    }
+
+    private static boolean deleteDirectory(File directory) {
+        if (!directory.exists()) {
+            return true;
+        }
+
+        if (directory.isFile() || directory.list().length == 0) {
+            return directory.delete();
+        }
+
+        String[] files = directory.list();
+        if (files != null) {
+            for (String file : files) {
+                File filePath = new File(directory, file);
+                if (!deleteDirectory(filePath)) {
+                    return false;
+                }
+            }
+        }
+
+        return directory.delete();
     }
 
     private static boolean hasReadWritePermission() {

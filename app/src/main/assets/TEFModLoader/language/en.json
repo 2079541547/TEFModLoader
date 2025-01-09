@@ -141,6 +141,15 @@
         "Integrate kernel version 20241123",
         "Update log cache system",
         "Switch language/theme without restarting the software"
+      ],
+      "300": [
+        "Update Kernel",
+        "Update Mod Standard",
+        "Complete Kernel",
+        "Optimize Dynamic Color Extraction",
+        "Fix Missing Corresponding File When Auto Selecting Language",
+        "Use Silkcasket as Mod File",
+        "Optimize Configuration of Mod Time"
       ]
     }
   },

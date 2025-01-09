@@ -55,6 +55,7 @@ import me.zhanghai.android.appiconloader.coil.AppIconKeyer
 import silkways.terraria.efmodloader.logic.ApplicationSettings.isDarkThemeEnabled
 import silkways.terraria.efmodloader.logic.EFLog
 import silkways.terraria.efmodloader.logic.efmod.LoaderManager
+import silkways.terraria.efmodloader.logic.efmod.LoaderManager.install
 import silkways.terraria.efmodloader.logic.efmod.ModManager
 import silkways.terraria.efmodloader.ui.screen.BottomBarDestination
 import silkways.terraria.efmodloader.ui.screen.NavGraphs
@@ -83,11 +84,11 @@ class MainActivity : EFActivity() {
         if (!File("${this.getExternalFilesDir(null)}/EFModLoader").exists()) {
             val file = File(this.externalCacheDir, "TEFModLoader.efml")
             copyAssetToFile(this, "TEFModLoader/kernel/TEFModLoader.efml", file.absolutePath)
-            //install(this, file, File("${this.getExternalFilesDir(null)}/TEFModLoader/EFModLoaderData"))
+            install(file.path, "${this.getExternalFilesDir(null)}/EFModLoader/TEFModLoader-EternalFuture");
             file.delete()
             try {
                 // 创建文件路径
-                val dir = File(getExternalFilesDir(null), "TEFModLoader/EFModLoaderData")
+                val dir = File(getExternalFilesDir(null), "EFModLoader")
                 if (!dir.exists()) {
                     dir.mkdirs()
                 }
@@ -97,7 +98,7 @@ class MainActivity : EFActivity() {
                 // 创建文件内容
                 val content = """
             {
-                "selectedLoaderPath": "${this.getExternalFilesDir(null)}/TEFModLoader/EFModLoaderData/TEFModLoader.efml"
+                "selectedLoaderPath": "${this.getExternalFilesDir(null)}/EFModLoader/TEFModLoader-EternalFuture"
             }
             """.trimIndent()
 
@@ -261,9 +262,7 @@ class MainActivity : EFActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1001) {
             if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
-                // 所有权限都被授予
             } else {
-                // 至少有一个权限被拒绝
                 checkPermission()
             }
         }

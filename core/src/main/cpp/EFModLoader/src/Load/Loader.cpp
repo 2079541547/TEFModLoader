@@ -34,6 +34,66 @@
 #include <mutex>
 #include <Manager/API.hpp>
 
+void EFModLoader::Load::loadAFile(const std::filesystem::path &Path) {
+    if (!exists(Path)) {
+        EFLOG(ERROR, "获取Mod", "路径不存在：", Path);
+        return;
+    }
+
+    EFLOG(INFO, "加载Mod", "尝试加载Mod:", Path);
+    void* handle = EFopen(Path.c_str());
+    if (!handle) {
+        EFLOG(ERROR, "获取Mod句柄", "句柄为空指针！");
+        return;
+    } else {
+        EFMod* (*CreateMod)();
+        CreateMod = (EFMod* (*)())EFgetsym(handle, "CreateMod");
+        EFLOG(INFO, "创建Mod", "已获取Mod构建函数并尝试创建Mod:", Path);
+        if (!CreateMod) {
+            EFLOG(ERROR, "创建Mod", "构建函数为空指针！\n正在尝试关闭Mod:", Path);
+            EFclose(handle);
+            return;
+        }
+        auto modStandard = CreateMod()->standard;
+        EFLOG(INFO, "创建Mod", "Mod开发标准:", modStandard);
+
+        if (modStandard >= 20250101) {
+
+            auto ModID = std::hash<std::string>{}(CreateMod()->getInfo().name + CreateMod()->getInfo().author);
+
+            std::shared_ptr<Mod> newMod(new Mod());
+            for (const auto& _: mod) {
+                if (ModID == _.id) {
+                    EFLOG(ERROR, "创建Mod", "已创建相同的Mod:", _.loadPath, "\n停止加载Mod:", Path);
+                    return;
+                }
+            }
+
+            CreateMod()->RegisterAPI(&EFModAPI::getEFModAPI());
+            EFLOG(INFO, "创建Mod", "已调用Mod注册API");
+            CreateMod()->RegisterExtend(&EFModAPI::getEFModAPI());
+            EFLOG(INFO, "创建Mod", "已调用Mod注册扩展");
+            newMod->id = ModID;
+            EFLOG(INFO, "创建Mod", "已赋予id");
+            newMod->loaded = handle;
+            EFLOG(INFO, "创建Mod", "已收集句柄");
+            newMod->loadPath = Path;
+            EFLOG(INFO, "创建Mod", "已收集加载路径");
+            newMod->Instance = CreateMod();
+            EFLOG(INFO, "创建Mod", "已收集Mod实例");
+            newMod->info = CreateMod()->getInfo();
+            EFLOG(INFO, "创建Mod", "已收集Mod元数据信息");
+            mod.push_back(*newMod);
+            EFLOG(INFO, "创建Mod", "创建Mod成功:", Path);
+        } else {
+            EFLOG(ERROR, "创建Mod", "未知开发标准");
+            free(CreateMod());
+            EFclose(handle);
+        }
+    }
+}
+
+
 void EFModLoader::Load::loadMod(const std::filesystem::path& Path) {
         if (!exists(Path)) {
                 EFLOG(ERROR, "获取Mod", "路径不存在：", Path);
@@ -208,6 +268,8 @@ void EFModLoader::Load::loadSingleMod(const std::filesystem::path &Path,
 }
 
 void EFModLoader::Load::loadModsAsync(const std::filesystem::path &rootDir) {
+        if (std::filesystem::exists(rootDir)) return;
+
         std::vector<std::filesystem::path> entries;
         unsigned int num_threads = std::thread::hardware_concurrency();
         if (num_threads == 0) num_threads = 2;

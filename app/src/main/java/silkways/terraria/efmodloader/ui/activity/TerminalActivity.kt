@@ -96,7 +96,7 @@ class TerminalViewModel : ViewModel() {
         scrollToBottom()
     }
 
-    fun scrollToBottom() {
+    private fun scrollToBottom() {
         scrollJob?.cancel()
         scrollJob = viewModelScope.launch {
             delay(100) // 等待UI更新

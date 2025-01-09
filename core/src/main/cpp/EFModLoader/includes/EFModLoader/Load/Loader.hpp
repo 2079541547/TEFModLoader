@@ -45,6 +45,7 @@ namespace EFModLoader::Load {
     inline std::vector<Mod> mod{};
 
     void loadMod(const std::filesystem::path& Path);
+    void loadAFile(const std::filesystem::path& Path);
     void addLoadedMod(Mod&& newMod, std::mutex& mtx);
     bool isModIDLoaded(const std::unordered_set<size_t>& loadedModIDs, size_t modID, std::mutex& mtx);
     void loadSingleMod(const std::filesystem::path& entry, std::unordered_set<size_t>& loadedModIDs, std::mutex& modsMtx);

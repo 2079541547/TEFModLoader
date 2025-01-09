@@ -55,7 +55,7 @@ fun createColorSchemeFromWallpaper(context: Context, isDarkTheme: Boolean): Colo
             primary = getAdjustedSwatchColor(palette?.vibrantSwatch, Purple80, 0.5f, 1.5f),
             secondary = getAdjustedSwatchColor(palette?.mutedSwatch, PurpleGrey80),
             tertiary = getAdjustedSwatchColor(palette?.lightMutedSwatch, Pink80),
-            onPrimary = getAdjustedSwatchColor(palette?.darkMutedSwatch, Color.Gray, 2.0f, 0.2f)
+            onPrimary = getAdjustedSwatchColor(palette?.darkMutedSwatch, Color.DarkGray, 2.0f, 0.2f)
         )
     } else {
         lightColorScheme(

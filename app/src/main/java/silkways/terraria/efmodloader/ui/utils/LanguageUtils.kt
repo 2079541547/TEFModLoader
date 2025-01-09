@@ -25,11 +25,11 @@
 package silkways.terraria.efmodloader.ui.utils
 
 import android.content.Context
+import org.json.JSONException
 import org.json.JSONObject
 import silkways.terraria.efmodloader.logic.EFLog
-import java.io.BufferedReader
+import java.io.IOException
 import java.io.InputStream
-import java.io.InputStreamReader
 
 class LanguageUtils(private val context: Context, private val language: String, private val assetsPath: String) {
     companion object {
@@ -40,19 +40,31 @@ class LanguageUtils(private val context: Context, private val language: String, 
     fun loadJsonFromAsset(): JSONObject {
         val fileName = "$ASSETS_FOLDER$language.json"
         EFLog.d("正在打开文件: $fileName")
-        val inputStream: InputStream = context.assets.open(fileName)
-        val stringBuilder = StringBuilder()
-        BufferedReader(InputStreamReader(inputStream)).use { reader ->
-            reader.lines().forEach {
-                stringBuilder.append(it)
-            }
-        }
-        val jsonString = stringBuilder.toString()
-        EFLog.d("已加载JSON字符串: $jsonString")
-        val json = JSONObject(jsonString)
 
-        cachedJson = json // 缓存JSON对象
-        return json
+        return try {
+            // 尝试打开指定语言的JSON文件
+            val inputStream: InputStream = context.assets.open(fileName)
+            val jsonString = inputStream.bufferedReader().use { it.readText() }
+            EFLog.d("已加载JSON字符串: $jsonString")
+            val json = JSONObject(jsonString)
+
+            cachedJson = json // 缓存JSON对象
+            json
+        } catch (e: IOException) {
+            EFLog.e("加载文件失败: $fileName, 使用默认文件: zh-cn.json\n$e")
+            // 如果指定语言的文件加载失败，则尝试加载默认的zh-cn.json文件
+            val defaultFileName = ASSETS_FOLDER + "zh-cn.json"
+            val defaultInputStream: InputStream = context.assets.open(defaultFileName)
+            val defaultJsonString = defaultInputStream.bufferedReader().use { it.readText() }
+            EFLog.d("已加载默认JSON字符串: $defaultJsonString")
+            val defaultJson = JSONObject(defaultJsonString)
+
+            cachedJson = defaultJson // 缓存默认JSON对象
+            defaultJson
+        } catch (e: JSONException) {
+            EFLog.e("解析JSON失败: $e")
+            throw RuntimeException("无法解析JSON文件", e)
+        }
     }
 
     fun getString(code: String): String {
