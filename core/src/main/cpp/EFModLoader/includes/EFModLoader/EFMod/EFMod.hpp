@@ -163,8 +163,7 @@ public:
     virtual ~EFMod() {}
     
     int standard = 20250110; //请不要乱修改，这是Mod标准，可能会导致某些错误因素
-    std::filesystem::path Data = "";
-    
+
     virtual int run(EFModAPI *mod) = 0;
     virtual void RegisterExtend(EFModAPI* mod) = 0;
     virtual void RegisterAPI(EFModAPI* mod) = 0;
