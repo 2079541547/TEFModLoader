@@ -162,13 +162,14 @@ class EFMod {
 public:
     virtual ~EFMod() {}
     
-    int standard = 20250101; //请不要乱修改，这是Mod标准，可能会导致某些错误因素
+    int standard = 20250110; //请不要乱修改，这是Mod标准，可能会导致某些错误因素
     std::filesystem::path Data = "";
     
     virtual int run(EFModAPI *mod) = 0;
-    virtual void RegisterExtend(EFModAPI* api) = 0;
-    virtual void RegisterAPI(EFModAPI* api) = 0;
+    virtual void RegisterExtend(EFModAPI* mod) = 0;
+    virtual void RegisterAPI(EFModAPI* mod) = 0;
     virtual ModMetadata getInfo() = 0;
+    virtual void getPrivate(std::filesystem::path Path) = 0;
 };
 
 

@@ -65,6 +65,9 @@ class MyMod: public EFMod {
     
     void RegisterExtend(EFModAPI *mod) override {
 
+    }
+
+    void getPrivate(std::filesystem::path Path) override {
 
     }
 };

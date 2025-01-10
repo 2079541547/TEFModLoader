@@ -118,7 +118,7 @@ void EFModLoader::Load::loadMod(const std::filesystem::path& Path) {
                                 auto modStandard = CreateMod()->standard;
                                 EFLOG(INFO, "创建Mod", "Mod开发标准:", modStandard);
                                 
-                                if (modStandard >= 20250101) {
+                                if (modStandard >= 20250110) {
                                         
                                         auto ModID = std::hash<std::string>{}(CreateMod()->getInfo().name + CreateMod()->getInfo().author);
                                         
@@ -130,7 +130,7 @@ void EFModLoader::Load::loadMod(const std::filesystem::path& Path) {
                                                 }
                                         }
                                         
-                                        CreateMod()->Data = Path / "private";
+                                        CreateMod()->getPrivate(Path / "private");
                                         EFLOG(INFO, "创建Mod", "已赋予Mod私有目录");
                                         CreateMod()->RegisterAPI(&EFModAPI::getEFModAPI());
                                         EFLOG(INFO, "创建Mod", "已调用Mod注册API");
