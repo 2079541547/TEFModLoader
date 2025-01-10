@@ -268,7 +268,7 @@ void EFModLoader::Load::loadSingleMod(const std::filesystem::path &Path,
 }
 
 void EFModLoader::Load::loadModsAsync(const std::filesystem::path &rootDir) {
-        if (std::filesystem::exists(rootDir)) return;
+        if (!std::filesystem::exists(rootDir)) return;
 
         std::vector<std::filesystem::path> entries;
         unsigned int num_threads = std::thread::hardware_concurrency();

@@ -287,8 +287,10 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
         });
         logger.setSourceCodeMode(true);
         logger.setLoggingEnabled(true);
-        logger.setAutoDumpToFile(false);
-        //logger.setLogFile("/storage/emulated/0/Documents/TEFModLoader/load.log");
+        logger.setAutoDumpToFile(true);
+        logger.setLogFile("/storage/emulated/0/Documents/TEFModLoader/load.log");
+
+    EFLOG(INFO, "初始化", "获取的缓存:", CacheDir);
 
         EFModLoader::ModApi::initialize();
 

@@ -49,33 +49,7 @@ class page {
  public var platform: String = ""
  public var private: String = ""
 
- val ModView: (@Composable () -> Unit) = {
-  Box(
-   modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-   content = {
-    Card(
-     modifier = Modifier
-      .fillMaxWidth()
-      .padding(horizontal = 16.dp, vertical = 8.dp),
-     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-     Row(
-      modifier = Modifier.padding(16.dp),
-      verticalAlignment = Alignment.CenterVertically
-     ) {
-      Spacer(modifier = Modifier.width(16.dp))
-      Text(
-       text = private,
-       modifier = Modifier.weight(1f),
-       fontSize = 16.sp
-      )
-      Switch(
-       checked = true,
-       onCheckedChange = {}
-      )
-     }
-    }
+   val ModView: (@Composable () -> Unit) = {
+
    }
-  )
- }
 }
