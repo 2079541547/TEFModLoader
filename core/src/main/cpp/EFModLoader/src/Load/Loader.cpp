@@ -238,7 +238,7 @@ void EFModLoader::Load::loadSingleMod(const std::filesystem::path &Path,
                                                 loadedModIDs.insert(ModID);
                                         }
                                         
-                                        modInstance->Data = Path / "private";
+                                        modInstance->getPrivate( Path / "private");
                                         EFLOG(INFO, "创建Mod", "已赋予Mod私有目录");
                                         
                                         modInstance->RegisterAPI(&EFModAPI::getEFModAPI());
