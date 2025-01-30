@@ -35,6 +35,11 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
+            implementation(libs.material3)
+            implementation(libs.material.icons.extended)
+            implementation(libs.tomlkt)
+            implementation("org.jetbrains.skiko:skiko:0.8.19")
+            implementation("org.jetbrains.skiko:skiko-awt:0.8.19")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
