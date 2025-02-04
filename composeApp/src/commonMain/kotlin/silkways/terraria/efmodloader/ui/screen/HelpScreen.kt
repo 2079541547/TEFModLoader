@@ -75,7 +75,7 @@ object HelpScreen {
                     val menuItems = mapOf("Exit" to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() })
 
                     AppTopBar(
-                        title = "About",
+                        title = "Help",
                         showMenu = true,
                         menuItems = menuItems,
                         showBackButton = true,

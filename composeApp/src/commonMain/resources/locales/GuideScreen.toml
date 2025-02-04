@@ -1,0 +1,23 @@
+[zh-cn]
+title = "引导"
+exit = "退出"
+last = "上一步"
+language = "语言"
+theme = "主题"
+next = "下一步"
+darkTheme = "暗色模式"
+darkThemeContent = "使用夜间配色方案"
+followSystem = "跟随系统"
+followSystemContent = "使用系统配色方案"
+
+[en]
+title = "Guide"
+exit = "Exit"
+last = "Previous"
+language = "Language"
+theme = "Theme"
+next = "Next"
+darkTheme = "Dark Theme"
+darkThemeContent = "Use a night-time color scheme"
+followSystem = "Follow System"
+followSystemContent = "Use the system's color scheme"

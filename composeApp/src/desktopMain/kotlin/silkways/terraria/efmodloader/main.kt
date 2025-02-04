@@ -4,9 +4,18 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.input.key.*
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.isCtrlPressed
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -28,11 +37,14 @@ import silkways.terraria.efmodloader.ui.screen.main.MainScreen
 import silkways.terraria.efmodloader.ui.screen.welcome.GuideScreen
 import silkways.terraria.efmodloader.ui.screen.welcome.welcomeScreen
 import silkways.terraria.efmodloader.ui.theme.TEFModLoaderComposeTheme
+import silkways.terraria.efmodloader.utility.App
+import silkways.terraria.efmodloader.utility.Zip
+import java.io.File
 import kotlin.reflect.KFunction0
 
 @Composable
 fun NavigationHost(viewModel: NavigationViewModel) {
-    TEFModLoaderComposeTheme((if(systemTheme.value) isSystemInDarkTheme() else darkTheme.value) ) {
+    TEFModLoaderComposeTheme(darkTheme = (if(systemTheme.value) isSystemInDarkTheme() else darkTheme.value), theme = State.theme.value) {
         val currentScreenWithAnimation by viewModel.currentScreen.collectAsState()
         Scaffold {
             Crossfade(targetState = currentScreenWithAnimation, animationSpec = tween(durationMillis = 500)) { state ->
@@ -84,7 +96,27 @@ fun exitApp() {
     appState?.let { it() }
 }
 
+@Suppress("UnsafeDynamicallyLoadedCode")
 fun main() = application {
+
+    File(App.getPrivate(), "SilkCasket").let {
+        if (!it.exists()) {
+            val osName = System.getProperty("os.name")
+            val zipPath = Zip.copyZipFromResources("SilkCasket.zip", it.parent)
+            if (osName.contains("nix") || osName.contains("nux")) {
+                Zip.unzipSpecificFilesIgnorePath(
+                    zipPath,
+                    it.path,
+                    "linux/libsilkcasket.so"
+                )
+            } else {
+                Zip.unzipSpecificFilesIgnorePath(zipPath, it.path,  "windows/${App.getCurrentArchitecture()}/libsilkcasket.dll")
+            }
+
+            File(zipPath).delete()
+        }
+        System.load(it.path)
+    }
 
     val mainViewModel = remember { NavigationViewModel() }
 
@@ -122,7 +154,6 @@ fun main() = application {
         }
     }
 }
-
 
 
 @Composable

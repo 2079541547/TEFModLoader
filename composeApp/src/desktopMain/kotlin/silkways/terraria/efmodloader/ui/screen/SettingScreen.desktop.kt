@@ -23,7 +23,6 @@ import silkways.terraria.efmodloader.State.systemTheme
 import silkways.terraria.efmodloader.State.theme
 import silkways.terraria.efmodloader.ui.navigation.NavigationViewModel
 import silkways.terraria.efmodloader.ui.widget.main.SettingScreen
-import silkways.terraria.efmodloader.utility.File
 
 actual object SettingScreen {
 

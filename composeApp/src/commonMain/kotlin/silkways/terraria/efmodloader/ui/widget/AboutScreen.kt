@@ -112,7 +112,8 @@ object AboutScreen {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    modifier = Modifier.Companion.size(35.dp)
+                    modifier = Modifier.Companion.size(35.dp),
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
 

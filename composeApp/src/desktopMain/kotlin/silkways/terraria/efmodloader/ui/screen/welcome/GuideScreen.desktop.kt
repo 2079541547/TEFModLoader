@@ -15,7 +15,7 @@ import silkways.terraria.efmodloader.ui.screen.welcome.GuideScreen.showNext_disp
 import silkways.terraria.efmodloader.utility.File
 
 @Composable
-actual fun disposition() {
+actual fun GuideScreen.disposition() {
     var selectedPath by remember { mutableStateOf("") }
     val pickFolder: () -> Unit = {
         val newPath = File.openFilePicker()
@@ -34,4 +34,9 @@ actual fun disposition() {
         onFolderSelect = pickFolder,
         modifier = Modifier.fillMaxWidth().padding(10.dp)
     )
+}
+
+@Composable
+actual fun GuideScreen.disposition_2() {
+    TODO("Not yet implemented")
 }

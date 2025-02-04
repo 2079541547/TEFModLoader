@@ -14,10 +14,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.LastPage
+import androidx.compose.material.icons.filled.BeachAccess
 import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.InstallDesktop
+import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.LocalFlorist
+import androidx.compose.material.icons.filled.NaturePeople
 import androidx.compose.material.icons.filled.NightsStay
 import androidx.compose.material.icons.filled.SettingsSystemDaydream
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -39,7 +45,9 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import silkways.terraria.efmodloader.State
 import silkways.terraria.efmodloader.State.darkTheme
+import silkways.terraria.efmodloader.State.language
 import silkways.terraria.efmodloader.State.loggingEnabled
 import silkways.terraria.efmodloader.State.systemTheme
 import silkways.terraria.efmodloader.ui.AppTopBar
@@ -50,16 +58,16 @@ import silkways.terraria.efmodloader.ui.navigation.ScreenRegistry
 import silkways.terraria.efmodloader.ui.widget.main.SettingScreen
 import silkways.terraria.efmodloader.ui.widget.welcome.GuideScreen
 import silkways.terraria.efmodloader.utility.App
-
-
-@Composable
-expect fun disposition()
+import silkways.terraria.efmodloader.utility.Locales
 
 object GuideScreen {
 
-    private val viewModel = NavigationViewModel()
+    val viewModel = NavigationViewModel()
+    val locales = Locales()
 
     init {
+        locales.loadLocalization("GuideScreen.toml", locales.getSystem())
+
         listOf(
             DefaultScreen("personalize"),
             DefaultScreen("disposition"),
@@ -90,13 +98,13 @@ object GuideScreen {
         val currentScreenWithAnimation by viewModel.currentScreen.collectAsState()
         Scaffold(topBar = {
             val menuItems = mutableMapOf(
-                "Exit" to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() }
+                locales.getString("exit") to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() }
             )
 
-            if (showLast.value) menuItems["Last"] = Pair(Icons.AutoMirrored.Filled.LastPage) { viewModel.navigateBack(BackMode.ONE_BY_ONE) } else menuItems.remove("Last")
+            if (showLast.value) menuItems[locales.getString("last")] = Pair(Icons.AutoMirrored.Filled.LastPage) { viewModel.navigateBack(BackMode.ONE_BY_ONE) } else menuItems.remove("Last")
 
             AppTopBar(
-                title = "GuidePage",
+                title = locales.getString("title"),
                 menuItems = menuItems
             )
         }) { innerPadding ->
@@ -104,8 +112,8 @@ object GuideScreen {
                 state.let { (screen, _) ->
                     if (screen != null) {
                         when (screen.id) {
-                            "personalize" -> personalize()
-                            "disposition" -> Disposition({ disposition() })
+                            "personalize" -> personalize(mainViewModel)
+                            "disposition" -> Disposition({ silkways.terraria.efmodloader.ui.screen.welcome.GuideScreen.disposition() })
                             "disposition_2" -> disposition_2()
                             "agreement" -> agreement()
                             "agreement_loader" -> agreement_loader(mainViewModel = mainViewModel)
@@ -118,7 +126,7 @@ object GuideScreen {
     }
 
     @Composable
-    private fun personalize() {
+    private fun personalize(mainViewModel: NavigationViewModel) {
         LaunchedEffect(key1 = Unit) {
             showLast.value = false
         }
@@ -139,37 +147,51 @@ object GuideScreen {
                     .padding(16.dp)
             ) {
                 val languageMap = mapOf(
-                    0 to "English",
-                    1 to "Spanish",
-                    2 to "French",
+                    0 to locales.getString("followSystem"),
+                    1 to "简体中文",
+                    2 to "繁體中文",
+                    // 3 to "Русский",
+                    4 to "English"
                 )
 
                 val themeMap = mapOf(
-                    0 to Pair("pink", Icons.Default.WbSunny),
-                    1 to Pair("blue", Icons.Default.NightsStay)
+                    0 to Pair("沧海明月", Icons.Default.BeachAccess),
+                    1 to Pair("朱雀烈阳", Icons.Default.LocalFireDepartment),
+                    2 to Pair("翠竹幽林", Icons.Default.NaturePeople),
+                    3 to Pair("金秋稻香", Icons.Default.LocalFlorist),
+                    4 to Pair("桃花春水", Icons.Default.Favorite),
+                    5 to Pair("紫气东来", Icons.Default.Star)
                 )
 
                 SettingScreen.Selector(
-                    title = "Select Language",
-                    defaultSelectorId = 0,
+                    title = locales.getString("language"),
+                    defaultSelectorId = language.value,
                     languageMap,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(10.dp),
+                    onClick = { select ->
+                        language.value = select
+                        locales.loadLocalization("GuideScreen.toml", locales.getLanguage(select))
+                        mainViewModel.refreshCurrentScreen()
+                    }
                 )
 
                 SettingScreen.selectorWithIcon(
-                    title = "Select Theme",
-                    defaultSelectorId = 0,
+                    title = locales.getString("theme"),
+                    defaultSelectorId = State.theme.value,
                     themeMap,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(10.dp),
+                    onClick = {
+                        State.theme.value = it
+                    }
                 )
 
                 SettingScreen.SettingsSwitchItem(
-                    title = "Follow system theme",
-                    contentDescription = "Use a system color scheme",
+                    title = locales.getString("followSystem"),
+                    contentDescription = locales.getString("followSystemContent"),
                     checked = systemTheme.value,
                     onCheckedChange = { check ->
                         systemTheme.value = check
@@ -184,8 +206,8 @@ object GuideScreen {
                     SettingScreen.SettingsSwitchItem(
                         iconOff = Icons.Default.WbSunny,
                         iconOn = Icons.Default.NightsStay,
-                        title = "Dark theme",
-                        contentDescription = "Use a dark color scheme",
+                        title = locales.getString("darkTheme"),
+                        contentDescription = locales.getString("darkThemeContent"),
                         checked = darkTheme.value,
                         onCheckedChange = { check ->
                             darkTheme.value = check
@@ -197,7 +219,7 @@ object GuideScreen {
                 }
             }
             ExtendedFloatingActionButton(
-                text = { Text("Next") },
+                text = { Text(locales.getString("next")) },
                 icon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next") },
                 containerColor = MaterialTheme.colorScheme.primary,
                 onClick = { viewModel.navigateTo("disposition") },
@@ -246,7 +268,7 @@ object GuideScreen {
             }
             if (showNext.value) {
                 ExtendedFloatingActionButton(
-                    text = { Text("Next") },
+                    text = { Text(locales.getString("next")) },
                     icon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next") },
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = { viewModel.navigateTo("agreement_loader") },
@@ -301,7 +323,7 @@ object GuideScreen {
             }
             if (showNext.value) {
                 ExtendedFloatingActionButton(
-                    text = { Text("Next") },
+                    text = { Text(locales.getString("next")) },
                     icon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next") },
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = {
@@ -323,123 +345,6 @@ object GuideScreen {
                         .padding(20.dp)
                 )
             }
-        }
-    }
-
-    @Composable
-    fun disposition_2() {
-
-        val ModeMap = mapOf(
-            0 to "Exterior",
-            1 to "Share",
-            2 to "Inline",
-            3 to "Root(risky)",
-        )
-
-        val killerMap = mapOf(
-            0 to "None",
-            1 to "MT Manager",
-            2 to "LSPatch"
-        )
-
-        var showSelector by remember { mutableStateOf(true) }
-
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopStart
-        ) {
-            Column {
-                SettingScreen.Selector(
-                    title = "Select Mode",
-                    defaultSelectorId = 0,
-                    ModeMap,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp),
-                    onClick = { select ->
-                        showSelector = select != 3
-                    }
-                )
-
-                if (showSelector) {
-                    SettingScreen.ModernCheckBox(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        title = "Override the version code",
-                        contentDescription = "Convenient downgrade operation",
-                        isChecked = OverrideVersion.value,
-                        onCheckedChange = { select ->
-                            OverrideVersion.value = select
-                        }
-                    )
-
-                    SettingScreen.ModernCheckBox(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        title = "Debugging",
-                        contentDescription = "Install package debugging",
-                        isChecked = Debugging.value,
-                        onCheckedChange = { select ->
-                            Debugging.value = select
-                        }
-                    )
-
-                    SettingScreen.Selector(
-                        title = "Signature Killer",
-                        defaultSelectorId = 0,
-                        killerMap,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp),
-                        onClick = { select ->
-                            SignatureKiller.value = select
-                        }
-                    )
-
-
-                    Text(
-                        "If you don't want to patch the fixation package",
-                        modifier = Modifier.padding(10.dp)
-                    )
-                    SettingScreen.PathInputWithFilePicker(
-                        title = "Select an API",
-                        path = ApkPath.value,
-                        onPathChange = { },
-                        onFolderSelect = { },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)
-                    )
-                }
-            }
-
-            val fabXOffset: Dp by animateDpAsState(
-                targetValue = 0.dp,
-                animationSpec = tween(durationMillis = 300)
-            )
-            var dragOffset by remember { mutableStateOf(0f) }
-
-            ExtendedFloatingActionButton(
-                text = { Text("Next") },
-                icon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next") },
-                containerColor = MaterialTheme.colorScheme.primary,
-                onClick = { viewModel.navigateTo("agreement") },
-                modifier = Modifier
-                    .offset(x = with(LocalDensity.current) { (fabXOffset.value + dragOffset).toDp() })
-                    .align(Alignment.BottomEnd)
-                    .pointerInput(Unit) {
-                        detectDragGestures { change, dragAmount ->
-                            dragOffset += dragAmount.x
-                            change.consume()
-                        }
-                    }
-                    .graphicsLayer(
-                        translationX = dragOffset
-                    )
-                    .padding(20.dp)
-            )
         }
     }
 
@@ -514,7 +419,7 @@ object GuideScreen {
 
             if (showNext_disposition.value) {
                 ExtendedFloatingActionButton(
-                    text = { Text("Next") },
+                    text = { Text(locales.getString("next")) },
                     icon = {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowForward,
@@ -547,3 +452,10 @@ object GuideScreen {
         }
     }
 }
+
+
+@Composable
+expect fun silkways.terraria.efmodloader.ui.screen.welcome.GuideScreen.disposition()
+
+@Composable
+expect fun silkways.terraria.efmodloader.ui.screen.welcome.GuideScreen.disposition_2()

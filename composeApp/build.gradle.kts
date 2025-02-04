@@ -38,8 +38,9 @@ kotlin {
             implementation(libs.material3)
             implementation(libs.material.icons.extended)
             implementation(libs.tomlkt)
-            implementation("org.jetbrains.skiko:skiko:0.8.19")
-            implementation("org.jetbrains.skiko:skiko-awt:0.8.19")
+            implementation(libs.skiko)
+            implementation(libs.skiko.awt)
+            implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -72,6 +73,21 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    sourceSets {
+        getByName("main") {
+            resources.srcDirs("src/commonMain/resources")
+        }
+    }
+
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("TEFModLoader.keystore")
+            keyAlias = "TEFModLoader"
+            storePassword = "EternalFuture"
+            keyPassword = "TEFModLoader"
+        }
     }
 }
 
