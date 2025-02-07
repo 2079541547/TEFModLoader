@@ -46,7 +46,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import silkways.terraria.efmodloader.State
+import silkways.terraria.efmodloader.State.autoPatch
 import silkways.terraria.efmodloader.State.darkTheme
+import silkways.terraria.efmodloader.State.defaultLoader
 import silkways.terraria.efmodloader.State.language
 import silkways.terraria.efmodloader.State.loggingEnabled
 import silkways.terraria.efmodloader.State.systemTheme
@@ -59,6 +61,7 @@ import silkways.terraria.efmodloader.ui.widget.main.SettingScreen
 import silkways.terraria.efmodloader.ui.widget.welcome.GuideScreen
 import silkways.terraria.efmodloader.utility.App
 import silkways.terraria.efmodloader.utility.Locales
+import java.net.URL
 
 object GuideScreen {
 
@@ -84,13 +87,6 @@ object GuideScreen {
 
     private val showLast = mutableStateOf(false)
 
-    var autoPatch = mutableStateOf(true)
-    var defaultLoader = mutableStateOf(true)
-
-    var Debugging  = mutableStateOf(false)
-    var SignatureKiller = mutableStateOf(0)
-    var ApkPath = mutableStateOf("")
-    var OverrideVersion = mutableStateOf(false)
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable

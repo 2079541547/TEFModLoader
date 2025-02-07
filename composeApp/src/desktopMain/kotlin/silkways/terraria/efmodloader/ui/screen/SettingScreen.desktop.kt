@@ -23,11 +23,12 @@ import silkways.terraria.efmodloader.State.systemTheme
 import silkways.terraria.efmodloader.State.theme
 import silkways.terraria.efmodloader.ui.navigation.NavigationViewModel
 import silkways.terraria.efmodloader.ui.widget.main.SettingScreen
+import silkways.terraria.efmodloader.utility.FileUtils
 
 actual object SettingScreen {
 
     private val pickFolder: () -> Unit = {
-        val newPath = File.openFilePicker()
+        val newPath = FileUtils.openFilePicker()
         if (newPath != null) {
             selectedPath.value = newPath
         }

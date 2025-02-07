@@ -1,9 +1,11 @@
 package silkways.terraria.efmodloader.utility
 
 import androidx.compose.runtime.Composable
+import java.io.File
 import javax.swing.JFileChooser
 
-object File {
+object FileUtils {
+    
     fun openFilePicker(): String? {
         val fileChooser = JFileChooser()
         fileChooser.fileSelectionMode = JFileChooser.DIRECTORIES_ONLY
@@ -12,6 +14,20 @@ object File {
             fileChooser.selectedFile.absolutePath
         } else {
             null
+        }
+    }
+
+    fun deleteDirectory(dir: File) {
+        if (dir.isDirectory()) {
+            val entries = dir.listFiles()
+            if (entries != null) {
+                for (entry in entries) {
+                    deleteDirectory(entry)
+                }
+            }
+        }
+        if (!dir.delete()) {
+            throw RuntimeException("Failed to delete file or directory: " + dir.path)
         }
     }
 

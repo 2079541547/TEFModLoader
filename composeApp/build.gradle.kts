@@ -25,6 +25,9 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(project(":android:core"))
+            implementation(project(":android:axml"))
+            implementation(fileTree(mapOf("dir" to "src/androidMain/libs", "include" to listOf("*.jar", "*.aar"))))
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -40,11 +43,15 @@ kotlin {
             implementation(libs.tomlkt)
             implementation(libs.skiko)
             implementation(libs.skiko.awt)
-            implementation("io.github.oshai:kotlin-logging-jvm:7.0.3")
+            implementation(libs.kotlin.logging.jvm)
+            implementation(libs.apkzlib)
+            implementation(libs.json)
+            implementation(fileTree(mapOf("dir" to "src/commonMain/libs", "include" to listOf("*.jar", "*.aar"))))
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            implementation(fileTree(mapOf("dir" to "src/desktopMain/libs", "include" to listOf("*.jar", "*.aar"))))
         }
     }
 }

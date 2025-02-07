@@ -1,5 +1,6 @@
 package silkways.terraria.efmodloader.ui.screen.main
 
+import android.os.Build
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -20,7 +21,9 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Terminal
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,12 +39,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
+import silkways.terraria.efmodloader.MainApplication
+import silkways.terraria.efmodloader.State
 import silkways.terraria.efmodloader.ui.AppTopBar
 import silkways.terraria.efmodloader.ui.navigation.BackMode
 import silkways.terraria.efmodloader.ui.navigation.DefaultScreen
 import silkways.terraria.efmodloader.ui.navigation.NavigationViewModel
 import silkways.terraria.efmodloader.ui.navigation.Screen
 import silkways.terraria.efmodloader.ui.navigation.ScreenRegistry
+import silkways.terraria.efmodloader.utility.Apk
+import silkways.terraria.efmodloader.utility.copyApk
+import silkways.terraria.efmodloader.utility.doesAnyAppContainMetadata
+import silkways.terraria.efmodloader.utility.encoderAXml
+import silkways.terraria.efmodloader.utility.extractWithPackageName
+import java.io.File
 
 actual object MainScreen {
 
@@ -65,6 +77,61 @@ actual object MainScreen {
         var title by remember { mutableStateOf("home") }
 
         val currentScreenWithAnimation by viewModel.currentScreen.collectAsState()
+
+        if (State.Mode.value != 3) {
+            if (!Apk.doesAnyAppContainMetadata("TEFModLoader")) {
+                var showDialog by remember { mutableStateOf(true) }
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showDialog = false },
+                        title = { Text("Patching...") },
+                        text = {
+                            Column {
+                                Text("Please do not quit")
+                                CircularProgressIndicator()
+                            }
+                        },
+                        confirmButton = {}
+                    )
+                }
+
+
+
+                val t = Thread {
+                    File(MainApplication.getContext().getExternalFilesDir(null), "patch/Game.apk").let {
+                        it.parentFile?.mkdirs()
+                        if (State.autoPatch.value) {
+                            Apk.extractWithPackageName("com.and.games505.TerrariaPaid", it.path)
+                            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
+                                State.Mode.value = 1
+                            }
+                        } else {
+                            if (State.ApkPath.value.toUri().path != "") {
+                                if (!it.exists()) Apk.copyApk(State.ApkPath.value, it.path)
+                            } else {
+                                Apk.extractWithPackageName("com.and.games505.TerrariaPaid", it.path)
+                            }
+                        }
+                        val axml = File(it.parent, "AndroidManifest.xml")
+                        val axml_temp = File(it.parent, "AndroidManifest_temp.xml")
+
+                        Apk.extractFileFromApk(it.path, "AndroidManifest.xml", axml.path)
+
+                        Apk.decodeAXml(axml.path, axml_temp.path)
+                        Apk.modifyManifest(axml_temp.path, State.Mode.value, State.Debugging.value, State.OverrideVersion.value)
+                        axml.delete()
+                        Apk.encoderAXml(axml_temp.path, axml.path)
+                        Apk.replaceFileInApk(it.path, "AndroidManifest.xml", axml.path)
+
+                        axml_temp.delete()
+                    }
+                    showDialog = false
+                }
+
+                t.join()
+                t.start()
+            }
+        }
 
         Scaffold(
             topBar = {

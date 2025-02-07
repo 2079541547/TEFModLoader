@@ -11,14 +11,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import silkways.terraria.efmodloader.ui.widget.main.SettingScreen
-import silkways.terraria.efmodloader.ui.screen.welcome.GuideScreen.showNext_disposition
-import silkways.terraria.efmodloader.utility.File
+import silkways.terraria.efmodloader.utility.FileUtils
 
 @Composable
 actual fun GuideScreen.disposition() {
     var selectedPath by remember { mutableStateOf("") }
     val pickFolder: () -> Unit = {
-        val newPath = File.openFilePicker()
+        val newPath = FileUtils.openFilePicker()
         if (newPath != null) {
             selectedPath = newPath
             showNext_disposition.value = true

@@ -10,6 +10,9 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/android" />
+            <option value="$PROJECT_DIR$/android/axml" />
+            <option value="$PROJECT_DIR$/android/core" />
             <option value="$PROJECT_DIR$/composeApp" />
           </set>
         </option>

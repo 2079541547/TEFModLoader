@@ -1,6 +1,5 @@
 package silkways.terraria.efmodloader.ui.screen.welcome
 
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.animateDpAsState
@@ -32,13 +31,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import silkways.terraria.efmodloader.MainActivity
+import silkways.terraria.efmodloader.State.ApkPath
+import silkways.terraria.efmodloader.State.Debugging
+import silkways.terraria.efmodloader.State.Mode
+import silkways.terraria.efmodloader.State.OverrideVersion
+import silkways.terraria.efmodloader.State.SignatureKiller
+import silkways.terraria.efmodloader.State.autoPatch
 import silkways.terraria.efmodloader.ui.widget.main.SettingScreen
-import java.io.File
-import java.io.FileOutputStream
-import java.nio.file.FileAlreadyExistsException
 
 
 @Composable
@@ -60,13 +59,14 @@ actual fun GuideScreen.disposition() {
     )
 }
 
-private var apkPath: String = ""
 
 @Composable
 actual fun GuideScreen.disposition_2() {
 
     val selectFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { url ->
-        copyAndPath(url)
+        url?.let {
+            ApkPath.value = it.toString()
+        }
     }
 
 
@@ -92,13 +92,14 @@ actual fun GuideScreen.disposition_2() {
         Column {
             SettingScreen.Selector(
                 title = "Select Mode",
-                defaultSelectorId = 0,
+                defaultSelectorId = SignatureKiller.value,
                 ModeMap,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp),
                 onClick = { select ->
-                    showSelector = select != 3
+                    Mode.value = select
+                    showSelector = Mode.value != 3 && Mode.value != 2
                 }
             )
 
@@ -147,7 +148,7 @@ actual fun GuideScreen.disposition_2() {
 
                 SettingScreen.PathInputWithFilePicker(
                     title = "Select an APK",
-                    path = ApkPath.value,
+                    path = ApkPath.value.toString(),
                     onPathChange = {},
                     onFolderSelect = {
                         selectFileLauncher.launch("application/vnd.android.package-archive")
@@ -184,19 +185,5 @@ actual fun GuideScreen.disposition_2() {
                 )
                 .padding(20.dp)
         )
-    }
-}
-
-private fun copyAndPath(url: Uri?) {
-    url?.let {
-        apkPath = it.path.toString()
-        MainActivity.getContext().contentResolver.openInputStream(it)?.use { inputStream ->
-            File(MainActivity.getContext().getExternalFilesDir(null), "patch/game.apk").let {
-                it.parentFile?.mkdirs()
-                FileOutputStream(it).use { outputStream ->
-                    inputStream.copyTo(outputStream)
-                }
-            }
-        }
     }
 }
