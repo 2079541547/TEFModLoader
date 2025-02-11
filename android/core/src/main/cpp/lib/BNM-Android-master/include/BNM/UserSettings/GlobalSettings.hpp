@@ -18,9 +18,9 @@ static_assert(false, "ByNameModding requires C++20 and above!");
 //#define UNITY_VER 203 // 2020.3.20 - 2020.3.xx
 //#define UNITY_VER 211 // 2021.1.x (Need set UNITY_PATCH_VER to 24 if x (2021.1.x) >= 24)
 //#define UNITY_VER 212 // 2021.2.x
-//#define UNITY_VER 213 // 2021.3.x
+#define UNITY_VER 213 // 2021.3.x
 //#define UNITY_VER 221 // 2022.1.x
-#define UNITY_VER 222 // 2022.2.x - 2022.3.x
+//#define UNITY_VER 222 // 2022.2.x - 2022.3.x
 //#define UNITY_VER 231 // 2023.1.x
 //#define UNITY_VER 232 // 2023.2.x+
 
@@ -121,7 +121,7 @@ inline void UNHOOK(PTR_T ptr) {
 
 
 // Dobby
-/*
+
 #include <dobby.h>
 
 template<typename PTR_T, typename NEW_T, typename T_OLD>
@@ -140,8 +140,8 @@ template<typename PTR_T>
 inline void UNHOOK(PTR_T ptr) {
     if ((void *) ptr != nullptr) DobbyDestroy((void *)ptr);
 }
-*/
 
+/*
 // Dummy
 #include <cassert>
 
@@ -164,6 +164,7 @@ inline void UNHOOK(PTR_T ptr) {
     assert("Нет ПО для подмены! (No hooking software!)");
     if ((void *) ptr != nullptr) ((void)0);
 }
+*/
 
 #include <dlfcn.h>
 

@@ -1,0 +1,19 @@
+[en]
+delete_the_loader = "Delete the loader"
+delete_the_loader_content = "Are you sure you want to remove"
+windows_support = "Windows Support"
+android_support = "Android Support"
+confirm = "Confirm"
+cancel = "Cancel"
+update_loader = "Updating..."
+update_loader_content = "Please be patient"
+
+[zh-cn]
+delete_the_loader = "Delete the loader"
+delete_the_loader_content = "Are you sure you want to remove"
+windows_support = "Windows Support"
+android_support = "Android Support"
+confirm = "Confirm"
+cancel = "Cancel"
+update_loader = "Updating..."
+update_loader_content = "Please be patient"

@@ -46,6 +46,7 @@ kotlin {
             implementation(libs.kotlin.logging.jvm)
             implementation(libs.apkzlib)
             implementation(libs.json)
+            implementation(libs.apksig)
             implementation(fileTree(mapOf("dir" to "src/commonMain/libs", "include" to listOf("*.jar", "*.aar"))))
         }
         desktopMain.dependencies {
@@ -57,11 +58,11 @@ kotlin {
 }
 
 android {
-    namespace = "silkways.terraria.efmodloader"
+    namespace = "eternal.future.efmodloader"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "silkways.terraria.efmodloader"
+        applicationId = "eternal.future.efmodloader"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -104,11 +105,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "silkways.terraria.efmodloader.MainKt"
+        mainClass = "eternal.future.efmodloader.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "silkways.terraria.efmodloader"
+            packageName = "eternal.future.efmodloader"
             packageVersion = "1.0.0"
         }
     }
