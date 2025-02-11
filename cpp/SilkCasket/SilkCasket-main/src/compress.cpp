@@ -510,7 +510,7 @@ std::vector<uint8_t> SilkCasket::Lizard::decompress(const std::vector<uint8_t> &
 
 std::vector<uint8_t> SilkCasket::LZMA2Fast::compress(const std::vector<uint8_t> &data, size_t blockSize) {
 
-    auto tempFilePath = std::filesystem::temp_directory_path() / "temp_compressed_data.lzma2-fast";
+    auto tempFilePath = SilkCasket::temp_path / "temp_compressed_data.lzma2-fast";
 
     std::ofstream tempFile(tempFilePath, std::ios::binary);
     if (!tempFile.is_open()) {
@@ -569,7 +569,7 @@ std::vector<uint8_t> SilkCasket::LZMA2Fast::compress(const std::vector<uint8_t> 
 
 std::vector<uint8_t> SilkCasket::LZMA2Fast::decompress(const std::vector<uint8_t> &compressed) {
 
-    auto tempFilePath = std::filesystem::temp_directory_path() / "temp_compressed_data.lzma2-fast";
+    auto tempFilePath = SilkCasket::temp_path / "temp_compressed_data.lzma2-fast";
 
     std::ofstream tempFile(tempFilePath, std::ios::binary);
     if (!tempFile.is_open()) {

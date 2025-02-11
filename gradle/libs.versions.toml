@@ -36,6 +36,7 @@ animationCoreAndroid = "1.7.6"
 uiGraphicsAndroid = "1.7.6"
 
 [libraries]
+apksig = { module = "com.android.tools.build:apksig", version.ref = "apkzlib" }
 json = { module = "org.json:json", version.ref = "json" }
 kotlin-logging-jvm = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlinLoggingJvm" }
 apkzlib = { module = "com.android.tools.build:apkzlib", version.ref = "apkzlib" }

@@ -1,0 +1,62 @@
+package eternal.future.efmodloader.ui.widget.main
+
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import eternal.future.efmodloader.State
+import eternal.future.efmodloader.data.EFMod
+import eternal.future.efmodloader.ui.screen.main.EFModScreen.mods
+import eternal.future.efmodloader.utility.FileUtils
+import java.io.File
+import java.util.UUID
+
+@Composable
+actual fun EFModScreen.EFModCard_o(mod: EFMod) {
+    var showUpdate by remember { mutableStateOf(false) }
+    var path by remember { mutableStateOf("") }
+
+    if (showUpdate) {
+        LaunchedEffect(key1 = showUpdate) {
+            path = FileUtils.openFilePicker() ?: ""
+            if (path.isNotEmpty()) {
+                launch(Dispatchers.IO) {
+                    eternal.future.efmodloader.utility.EFMod.install(
+                        path,
+                        File(State.EFModPath, "${UUID.randomUUID()}").path
+                    )
+                    withContext(Dispatchers.Main) {
+                        showUpdate = false
+                    }
+                    mods.value = eternal.future.efmodloader.utility.EFMod.loadModsFromDirectory(
+                        State.EFModPath)
+                }
+            } else {
+                showUpdate = false
+            }
+        }
+    }
+
+
+
+    EFModCard_Reuse(mod) {
+        showUpdate = true
+    }
+
+    if (showUpdate) {
+        AlertDialog(
+            onDismissRequest = { showUpdate = false },
+            title = { Text(localesText.getString("update_mod")) },
+            text = { Text("${localesText.getString("update_mod_content")} ${mod.info.name}?") },
+            confirmButton = {},
+            dismissButton = {}
+        )
+    }
+}

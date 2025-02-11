@@ -29,9 +29,10 @@ public class Loader {
             for (File file : files) {
                 if (file.isDirectory()) {
                     loadSoFilesFromDirectory(file);
-                } else if (file.isFile() && file.getName().toLowerCase().endsWith(".so")) {
+                } else if (file.isFile()) {
                     try {
                         System.load(file.getAbsolutePath());
+                        System.out.println("Load:" + file.getAbsolutePath());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -54,6 +55,7 @@ public class Loader {
                     if (soFile.exists() && soFile.isFile()) {
                         try {
                             System.load(soFile.getAbsolutePath());
+                            System.out.println("Load:" + soFile.getAbsolutePath());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

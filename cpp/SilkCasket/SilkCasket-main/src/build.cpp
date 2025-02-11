@@ -36,12 +36,6 @@ void SilkCasket::builder::configureEntries(const std::filesystem::path &Path,
         std::string relativePath = parentRelativePath.empty() ? _.path().lexically_relative(Path).string() : (parentRelativePath + "/" + _.path().filename().string());
 
         if (is_directory(_)) {
-            SilkCasket::FileStructure::entry e = {
-                    relativePath,
-                    is_regular_file(_),
-                    0
-            };
-            entry.push_back(e);
             configureEntries(_.path(), relativePath);
         } else if (is_regular_file(_)) {
             std::ifstream file(_.path(), std::ios::binary);
