@@ -30,7 +30,7 @@
 template <typename R, typename... Args>
 R callFunction(void *funcPtr, Args &&...args) {
     if (!funcPtr) {
-        throw std::invalid_argument("函数指针不能为NULL");
+        throw std::invalid_argument("The function pointer cannot be NULL");
     }
     using FuncPtr = R (*)(Args...);
     auto f = reinterpret_cast<FuncPtr>(funcPtr);

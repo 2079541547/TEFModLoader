@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
+import eternal.future.efmodloader.State
 import eternal.future.efmodloader.debug.TerminalScreen
 import eternal.future.efmodloader.ui.AppTopBar
 import eternal.future.efmodloader.ui.navigation.BackMode
@@ -48,6 +49,7 @@ import eternal.future.efmodloader.ui.navigation.Screen
 import eternal.future.efmodloader.ui.navigation.ScreenRegistry
 import eternal.future.efmodloader.ui.screen.SettingScreen
 import eternal.future.efmodloader.utility.App
+import eternal.future.efmodloader.utility.Locales
 
 actual object MainScreen {
 
@@ -71,15 +73,18 @@ actual object MainScreen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     actual fun MainScreen(mainViewModel: NavigationViewModel) {
+
+        mainScreen.loadLocalization("Screen/MainScreen/MainScreen.toml", Locales.getLanguage(State.language.value))
+
         val selectedItem = remember { mutableStateOf(0) }
         var title by remember { mutableStateOf("home") }
 
         val currentScreenWithAnimation by viewModel.currentScreen.collectAsState()
         Scaffold(topBar = {
             val menuItems = mutableMapOf(
-                "About" to Pair(Icons.Default.Info) { mainViewModel.navigateTo("about") },
-                "Help" to Pair(Icons.AutoMirrored.Filled.Help) { mainViewModel.navigateTo("help") },
-                "Exit" to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() }
+                mainScreen.getString("about") to Pair(Icons.Default.Info) { mainViewModel.navigateTo("about") },
+                mainScreen.getString("help") to Pair(Icons.AutoMirrored.Filled.Help) { mainViewModel.navigateTo("help") },
+                mainScreen.getString("exit") to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() }
             )
             AppTopBar(
                 title = title,
@@ -112,7 +117,7 @@ actual object MainScreen {
                                 IconButton(
                                     onClick = {
                                         selectedItem.value = index
-                                        title = label
+                                        title = mainScreen.getString(label)
                                         viewModel.navigateBack(BackMode.DIRECT, label)
                                     },
                                     modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth()

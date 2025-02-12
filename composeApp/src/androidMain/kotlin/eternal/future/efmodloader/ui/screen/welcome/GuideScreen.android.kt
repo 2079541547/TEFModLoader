@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AutoFixNormal
@@ -32,6 +31,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import eternal.future.efmodloader.State
 import eternal.future.efmodloader.State.ApkPath
 import eternal.future.efmodloader.State.Debugging
 import eternal.future.efmodloader.State.Mode
@@ -41,6 +41,7 @@ import eternal.future.efmodloader.State.autoPatch
 import eternal.future.efmodloader.State.gamePack
 import eternal.future.efmodloader.configuration
 import eternal.future.efmodloader.ui.widget.main.SettingScreen
+import eternal.future.efmodloader.utility.Locales
 
 
 @Composable
@@ -52,8 +53,8 @@ actual fun GuideScreen.disposition() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp),
-        title = "Auto-provisioning",
-        contentDescription = "Automatically selects the best patching scenario",
+        title = disposition.getString("auto_provisioning"),
+        contentDescription = disposition.getString("auto_provisioning_content"),
         isChecked = autoPatch.value,
         onCheckedChange = { check ->
             autoPatch.value = check
@@ -66,6 +67,9 @@ actual fun GuideScreen.disposition() {
 @Composable
 actual fun GuideScreen.disposition_2() {
 
+    val disposition = Locales()
+    disposition.loadLocalization("Screen/GuideScreen/disposition_2.toml", Locales.getLanguage(State.language.value))
+
     val selectFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { url ->
         url?.let {
             ApkPath.value = it.toString()
@@ -73,10 +77,10 @@ actual fun GuideScreen.disposition_2() {
     }
 
     val ModeMap = mapOf(
-        0 to "外部模式",
-        // 1 to "Share",
-        // 2 to "Inline",
-        // 3 to "Root(risky)",
+        0 to disposition.getString("external"),
+        // 1 to disposition.getString("share"),
+        // 2 to disposition.getString("inline"),
+        // 3 to disposition.getString("root"),
     )
 
     val killerMap = mapOf(
@@ -111,8 +115,8 @@ actual fun GuideScreen.disposition_2() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    title = "覆写版本代码",
-                    contentDescription = "方便降级安装",
+                    title = disposition.getString("override"),
+                    contentDescription = disposition.getString("override_content"),
                     isChecked = OverrideVersion.value,
                     onCheckedChange = { select ->
                         OverrideVersion.value = select
@@ -123,8 +127,8 @@ actual fun GuideScreen.disposition_2() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    title = "共存",
-                    contentDescription = "将使用另一个包名",
+                    title = disposition.getString("coexistence"),
+                    contentDescription = disposition.getString("coexistence_content"),
                     isChecked = gamePack.value,
                     onCheckedChange = { select ->
                         gamePack.value = select
@@ -135,8 +139,8 @@ actual fun GuideScreen.disposition_2() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    title = "调试",
-                    contentDescription = "允许被调试",
+                    title = disposition.getString("debug"),
+                    contentDescription = disposition.getString("debug_content"),
                     isChecked = Debugging.value,
                     onCheckedChange = { select ->
                         Debugging.value = select
@@ -160,12 +164,12 @@ actual fun GuideScreen.disposition_2() {
 
 
                 Text(
-                    "如果你想修补一个自定义安装包就选择下面的否则不要碰！",
+                    disposition.getString("select_apk_content"),
                     modifier = Modifier.padding(10.dp)
                 )
 
                 SettingScreen.PathInputWithFilePicker(
-                    title = "选择自定义Apk文件",
+                    title = disposition.getString("select_apk"),
                     path = ApkPath.value.toString(),
                     onPathChange = {},
                     onFolderSelect = {

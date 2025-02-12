@@ -47,7 +47,7 @@ actual object HomeScreen {
                 ) {
                     item {
                         if (selectedPath.value == "") {
-                            eternal.future.efmodloader.ui.widget.main.HomeScreen.stateCard(
+                            HomeScreen.stateCard(
                                 title = "Unable to find the game",
                                 description = "If you don't select the game folder, you won't be able to use any features about mods",
                                 isActive = false,
@@ -57,7 +57,7 @@ actual object HomeScreen {
                                 }
                             )
                         } else if (loaderNumber.value == 0) {
-                            eternal.future.efmodloader.ui.widget.main.HomeScreen.stateCard(
+                            HomeScreen.stateCard(
                                 title = "No loader",
                                 description = "You won't be able to use mods!",
                                 isActive = false,
@@ -67,7 +67,7 @@ actual object HomeScreen {
                                 }
                             )
                         } else {
-                            eternal.future.efmodloader.ui.widget.main.HomeScreen.stateCard(
+                            HomeScreen.stateCard(
                                 title = "Activated",
                                 description = "Version: 1.4.4.9\nPath: ${selectedPath.value}\nNumber of mods enabled: 0\nNumber of loaders: 0",
                                 isActive = true,
@@ -80,7 +80,7 @@ actual object HomeScreen {
                     }
 
                     item {
-                        eternal.future.efmodloader.ui.widget.main.HomeScreen.updateLogCard(
+                        HomeScreen.updateLogCard(
                             title = "Changelog",
                             confirmButton = "close",
                             modifier = Modifier.fillMaxWidth().padding(15.dp),

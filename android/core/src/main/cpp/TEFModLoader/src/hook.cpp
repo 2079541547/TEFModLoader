@@ -35,12 +35,20 @@ TEFModLoader::Hook::SharedLibraryManager &TEFModLoader::Hook::SharedLibraryManag
 }
 
 void *TEFModLoader::Hook::SharedLibraryManager::loadUniqueCopy(const std::string &originalPath) {
+    std::cout << "Starting loadUniqueCopy with original path: " << originalPath << std::endl;
+
     std::ostringstream uniqueName;
     uniqueName << "auxiliary_" << getpid() << "_" << nextIndex++ << ".so";
     std::filesystem::path uniquePath = std::filesystem::path(originalPath).parent_path() / uniqueName.str();
 
+    std::cout << "Generated unique library path: " << uniquePath << std::endl;
+
     if (!std::filesystem::exists(uniquePath)) {
+        std::cout << "Attempting to copy file from " << originalPath << " to " << uniquePath << std::endl;
         std::filesystem::copy_file(originalPath, uniquePath);
+        std::cout << "File copied successfully." << std::endl;
+    } else {
+        std::cout << "File already exists at " << uniquePath << std::endl;
     }
 
     void* handle = dlopen(uniquePath.c_str(), RTLD_NOW | RTLD_LOCAL);
@@ -48,11 +56,16 @@ void *TEFModLoader::Hook::SharedLibraryManager::loadUniqueCopy(const std::string
         std::cerr << "Cannot open library: " << dlerror() << '\n';
         return nullptr;
     }
+    std::cout << "Library opened successfully: " << uniquePath << std::endl;
 
     loadedLibraries[uniquePath.string()] = std::shared_ptr<void>(handle, [](void* p) { /* 不关闭句柄 */ });
 
     if (std::filesystem::exists(uniquePath)) {
+        std::cout << "Attempting to remove temporary library file: " << uniquePath << std::endl;
         std::filesystem::remove(uniquePath);
+        std::cout << "Temporary library file removed." << std::endl;
+    } else {
+        std::cout << "No temporary library file found for removal at: " << uniquePath << std::endl;
     }
 
     return handle;
@@ -60,31 +73,46 @@ void *TEFModLoader::Hook::SharedLibraryManager::loadUniqueCopy(const std::string
 
 typedef void (*createHookFunc)(int mode, int type, std::vector<void*> funPtrs, BNM::Class& c, BNM::MethodBase& method, size_t id, EFModAPI* efmodapi);
 void TEFModLoader::Hook::autoHook() {
+    std::cout << "Starting autoHook process." << std::endl;
+
     for(const auto& funcDesc : EFModAPI::getEFModAPI().getFuncDescriptor()) {
         if (!funcDesc.File.empty()) {
+            std::cout << "Processing function descriptor with File: " << funcDesc.File
+                      << ", Namespace: " << funcDesc.Namespace
+                      << ", Class: " << funcDesc.Class
+                      << ", Name: " << funcDesc.Name << std::endl;
+
             size_t dotPosition = funcDesc.Class.find('.');
             BNM::MethodBase* method;
             BNM::Class* Class;
             if (dotPosition != std::string::npos) {
+                std::cout << "Class name contains '.', processing inner class." << std::endl;
                 Class = new BNM::Class(BNM::Class(funcDesc.Namespace, funcDesc.Class.substr(0, dotPosition), BNM::Image(funcDesc.File)).GetInnerClass(funcDesc.Class.substr(dotPosition + 1)));
             } else {
+                std::cout << "Class name does not contain '.', processing regular class." << std::endl;
                 Class = new BNM::Class(BNM::Class(funcDesc.Namespace, funcDesc.Class, BNM::Image(funcDesc.File)));
             }
+
             method = new BNM::MethodBase(Class->GetMethod(funcDesc.Name, funcDesc.Arg));
+            std::cout << "Method retrieved successfully." << std::endl;
 
             void* handle = SharedLibraryManager::getInstance().loadUniqueCopy(TEFModLoader::auxiliaryPath);
             if (!handle) {
-                //EFLOG(ERROR, "自动创建hook", "加载共享库失败");
+                std::cerr << "Failed to load shared library." << std::endl;
+                delete method;
+                delete Class;
                 continue;
             }
+            std::cout << "Shared library loaded successfully." << std::endl;
 
             auto createHook = (createHookFunc)dlsym(handle, "createHook");
             if (!createHook) {
+                std::cerr << "Failed to resolve symbol 'createHook'." << std::endl;
                 delete method;
                 delete Class;
-                //EFLOG(ERROR, "自动创建hook", "解析符号 'createHook' 失败");
                 continue;
             }
+            std::cout << "Symbol 'createHook' resolved successfully." << std::endl;
 
             std::vector<void*> funPtrs{funcDesc.FunPtr};
             Type type;
@@ -92,33 +120,34 @@ void TEFModLoader::Hook::autoHook() {
 
             auto hookT = funcDesc.Type.substr(0, funcDesc.Type.find(">>"));
             auto hookFt = funcDesc.Type.substr(funcDesc.Type.find(">>") + 2);
+
             if (hookT == "hook") {
                 hookMode = Mode::INLINE;
-                // EFLOG(INFO, "自动创建hook", "内联Hook");
+                std::cout << "Setting hook mode to INLINE." << std::endl;
             } else if (hookT == "ihook") {
                 hookMode = Mode::INVOKE;
-                // EFLOG(INFO, "自动创建hook", "引擎Hook");
+                std::cout << "Setting hook mode to INVOKE." << std::endl;
             } else if (hookT == "vhook"){
                 hookMode = Mode::VIRTUAL;
-                // EFLOG(INFO, "自动创建hook", "虚拟Hook");
+                std::cout << "Setting hook mode to VIRTUAL." << std::endl;
             }
 
             if (hookFt == "void") {
                 type = Type::VOID;
-                // EFLOG(INFO, "自动创建hook", "void类型");
+                std::cout << "Setting return type to VOID." << std::endl;
             } else if (hookFt == "int") {
                 type = Type::INT;
-                // EFLOG(INFO, "自动创建hook", "int类型");
+                std::cout << "Setting return type to INT." << std::endl;
             } else if (hookFt == "bool") {
                 type = Type::BOOL;
-                // EFLOG(INFO, "自动创建hook", "bool类型");
-            }  else if (hookFt == "long") {
+                std::cout << "Setting return type to BOOL." << std::endl;
+            } else if (hookFt == "long") {
                 type = Type::LONG;
-                // EFLOG(INFO, "自动创建hook", "long类型");
+                std::cout << "Setting return type to LONG." << std::endl;
             } else {
+                std::cerr << "Unknown return type: " << hookFt << std::endl;
                 delete method;
                 delete Class;
-                // EFLOG(ERROR, "自动创建hook", "未知类型:", hookFt);
                 continue;
             }
 
@@ -136,11 +165,11 @@ void TEFModLoader::Hook::autoHook() {
                        }.getID(),
                        &EFModAPI::getEFModAPI());
 
+            std::cout << "Hook created successfully for function descriptor." << std::endl;
 
             delete method;
             delete Class;
-
-            // EFLOG(INFO, "自动创建hook", "HOOK创建成功:", funcDesc.getID());
         }
     }
+    std::cout << "Finished autoHook process." << std::endl;
 }

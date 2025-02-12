@@ -38,6 +38,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     ndkVersion = "28.0.12916984 rc3"
+
+
 }
 
 dependencies {

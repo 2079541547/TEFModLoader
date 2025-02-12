@@ -27,44 +27,66 @@
 #include <BNM/UserSettings/GlobalSettings.hpp>
 #include <BNM/Field.hpp>
 #include <BNM/Method.hpp>
+#include <iostream>
 
 void TEFModLoader::Manager::API::autoProcessing() {
     auto ApiDescriptor = EFModAPI::getEFModAPI().getApiDescriptor();
-    // if (ApiDescriptor.empty()) EFLOG(WARNING, "自动创建API", "收集的数组为空");
-    for (const auto& _: ApiDescriptor) {
-        if (!_.File.empty()) {
-            if(_.Type == "Field") {
-                size_t dotPosition = _.Class.find('.');
+
+    if (ApiDescriptor.empty()) {
+        std::cout << "Auto-create API: The collected array is empty" << std::endl;
+        return;
+    }
+
+    std::cout << "Starting autoProcessing with " << ApiDescriptor.size() << " API descriptors." << std::endl;
+
+    for (const auto& descriptor : ApiDescriptor) {
+        if (!descriptor.File.empty()) {
+            std::cout << "Processing API descriptor with File: " << descriptor.File
+                      << ", Namespace: " << descriptor.Namespace
+                      << ", Class: " << descriptor.Class
+                      << ", Name: " << descriptor.Name
+                      << ", Type: " << descriptor.Type << std::endl;
+
+            size_t dotPosition = descriptor.Class.find('.');
+
+            if (descriptor.Type == "Field") {
                 BNM::FieldBase* field;
                 if (dotPosition != std::string::npos) {
-                    // EFLOG(INFO, "自动创建API", "字段于内部类");
-                    field = new BNM::FieldBase(BNM::Class(_.Namespace, _.Class.substr(0, dotPosition), BNM::Image(_.File)).GetInnerClass(_.Class.substr(dotPosition + 1)).GetField(_.Name));
+                    std::cout << "Field is in an inner class. Processing inner class." << std::endl;
+                    field = new BNM::FieldBase(BNM::Class(descriptor.Namespace, descriptor.Class.substr(0, dotPosition), BNM::Image(descriptor.File)).GetInnerClass(descriptor.Class.substr(dotPosition + 1)).GetField(descriptor.Name));
                 } else {
-                    field = new BNM::FieldBase(BNM::Class(_.Namespace, _.Class, BNM::Image(_.File)).GetField(_.Name));
+                    std::cout << "Field is not in an inner class. Processing regular class." << std::endl;
+                    field = new BNM::FieldBase(BNM::Class(descriptor.Namespace, descriptor.Class, BNM::Image(descriptor.File)).GetField(descriptor.Name));
                 }
-                // EFLOG(INFO, "自动创建API", "创建API:", _.getID(), "指针:", (uintptr_t)a);
-                EFModAPI::getEFModAPI().registerAPI(_.getID(), field);
-            } else if (_.Type == "Class") {
-                size_t dotPosition = _.Class.find('.');
+                std::cout << "Field created successfully. Registering API..." << std::endl;
+                EFModAPI::getEFModAPI().registerAPI(descriptor.getID(), field);
+            } else if (descriptor.Type == "Class") {
                 BNM::Class* Class;
                 if (dotPosition != std::string::npos) {
-                    // EFLOG(INFO, "自动创建API", "字段于内部类");
-                    Class = new BNM::Class(BNM::Class(_.Namespace, _.Class.substr(0, dotPosition)));
+                    std::cout << "Class is in an inner class. Processing inner class." << std::endl;
+                    Class = new BNM::Class(BNM::Class(descriptor.Namespace, descriptor.Class.substr(0, dotPosition)));
                 } else {
-                    Class = new BNM::Class(BNM::Class(_.Namespace, _.Class, BNM::Image(_.File)));
+                    std::cout << "Class is not in an inner class. Processing regular class." << std::endl;
+                    Class = new BNM::Class(BNM::Class(descriptor.Namespace, descriptor.Class, BNM::Image(descriptor.File)));
                 }
-                EFModAPI::getEFModAPI().registerAPI(_.getID(), Class);
-            } else if (_.Type == "Method") {
-                size_t dotPosition = _.Class.find('.');
+                std::cout << "Class created successfully. Registering API..." << std::endl;
+                EFModAPI::getEFModAPI().registerAPI(descriptor.getID(), Class);
+            } else if (descriptor.Type == "Method") {
                 BNM::MethodBase* Method;
                 if (dotPosition != std::string::npos) {
-                    // EFLOG(INFO, "自动创建API", "字段于内部类");
-                    Method = new BNM::MethodBase(BNM::Class(_.Namespace, _.Class.substr(0, dotPosition)).GetMethod(_.Name, _.Arg));
+                    std::cout << "Method is in an inner class. Processing inner class." << std::endl;
+                    Method = new BNM::MethodBase(BNM::Class(descriptor.Namespace, descriptor.Class.substr(0, dotPosition)).GetMethod(descriptor.Name, descriptor.Arg));
                 } else {
-                    Method = new BNM::MethodBase(BNM::Class(_.Namespace, _.Class, BNM::Image(_.File)).GetMethod(_.Name, _.Arg));
+                    std::cout << "Method is not in an inner class. Processing regular class." << std::endl;
+                    Method = new BNM::MethodBase(BNM::Class(descriptor.Namespace, descriptor.Class, BNM::Image(descriptor.File)).GetMethod(descriptor.Name, descriptor.Arg));
                 }
-                EFModAPI::getEFModAPI().registerAPI(_.getID(), Method);
+                std::cout << "Method created successfully. Registering API..." << std::endl;
+                EFModAPI::getEFModAPI().registerAPI(descriptor.getID(), Method);
             }
+        } else {
+            std::cerr << "Skipping API descriptor due to empty file path." << std::endl;
         }
     }
+
+    std::cout << "Finished autoProcessing." << std::endl;
 }

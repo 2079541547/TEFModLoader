@@ -1,6 +1,5 @@
 package eternal.future.efmodloader.ui.screen.main
 
-import android.os.Build
 import android.os.Environment
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
@@ -22,9 +21,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Terminal
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,21 +37,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import eternal.future.efmodloader.MainApplication
 import eternal.future.efmodloader.State
-import eternal.future.efmodloader.configuration
 import eternal.future.efmodloader.ui.AppTopBar
 import eternal.future.efmodloader.ui.navigation.BackMode
 import eternal.future.efmodloader.ui.navigation.DefaultScreen
 import eternal.future.efmodloader.ui.navigation.NavigationViewModel
 import eternal.future.efmodloader.ui.navigation.Screen
 import eternal.future.efmodloader.ui.navigation.ScreenRegistry
-import eternal.future.efmodloader.utility.Apk
-import eternal.future.efmodloader.utility.copyApk
-import eternal.future.efmodloader.utility.doesAnyAppContainMetadata
-import eternal.future.efmodloader.utility.encoderAXml
-import eternal.future.efmodloader.utility.extractWithPackageName
+import eternal.future.efmodloader.utility.Locales
 import java.io.File
 
 actual object MainScreen {
@@ -76,6 +66,9 @@ actual object MainScreen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     actual fun MainScreen(mainViewModel: NavigationViewModel) {
+
+        mainScreen.loadLocalization("Screen/MainScreen/MainScreen.toml", Locales.getLanguage(State.language.value))
+
         val selectedItem = remember { mutableStateOf(0) }
         var title by remember { mutableStateOf("home") }
 
@@ -112,11 +105,11 @@ actual object MainScreen {
         Scaffold(
             topBar = {
                 val menuItems = mutableMapOf(
-                    "About" to Pair(Icons.Default.Info) { mainViewModel.navigateTo("about") },
-                    "Help" to Pair(Icons.AutoMirrored.Filled.Help) { mainViewModel.navigateTo("help") },
-                    "Settings" to Pair(Icons.Default.Settings) { mainViewModel.navigateTo("settings") },
-                    "Terminal" to Pair(Icons.Default.Terminal) { mainViewModel.navigateTo("terminal") },
-                    "Exit" to Pair(Icons.AutoMirrored.Filled.ExitToApp) { mainViewModel.navigateBack(BackMode.ONE_BY_ONE) }
+                    mainScreen.getString("about") to Pair(Icons.Default.Info) { mainViewModel.navigateTo("about") },
+                    mainScreen.getString("help") to Pair(Icons.AutoMirrored.Filled.Help) { mainViewModel.navigateTo("help") },
+                    mainScreen.getString("settings") to Pair(Icons.Default.Settings) { mainViewModel.navigateTo("settings") },
+                    mainScreen.getString("terminal") to Pair(Icons.Default.Terminal) { mainViewModel.navigateTo("terminal") },
+                    mainScreen.getString("exit") to Pair(Icons.AutoMirrored.Filled.ExitToApp) { mainViewModel.navigateBack(BackMode.ONE_BY_ONE) }
                 )
                 AppTopBar(
                     title = title,
@@ -141,7 +134,7 @@ actual object MainScreen {
                         IconButton(
                             onClick = {
                                 selectedItem.value = index
-                                title = label
+                                title = mainScreen.getString(label)
                                 viewModel.navigateBack(BackMode.DIRECT, label)
                             },
                             modifier = Modifier

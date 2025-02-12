@@ -67,10 +67,10 @@ object GuideScreen {
 
     val viewModel = NavigationViewModel()
     val locales = Locales()
+    val disposition = Locales()
 
     init {
-        locales.loadLocalization("GuideScreen.toml", Locales.getSystem())
-
+        locales.loadLocalization("Screen/GuideScreen/GuideScreen.toml", Locales.getLanguage(language.value))
         listOf(
             DefaultScreen("personalize"),
             DefaultScreen("disposition"),
@@ -123,6 +123,10 @@ object GuideScreen {
 
     @Composable
     private fun personalize(mainViewModel: NavigationViewModel) {
+
+        val personalize = Locales()
+        personalize.loadLocalization("Screen/GuideScreen/personalize.toml", Locales.getLanguage(language.value))
+
         LaunchedEffect(key1 = Unit) {
             showLast.value = false
         }
@@ -142,25 +146,26 @@ object GuideScreen {
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
+
                 val languageMap = mapOf(
-                    0 to locales.getString("followSystem"),
-                    1 to "简体中文",
-                    2 to "繁體中文",
+                    0 to personalize.getString("followSystem"),
+                    1 to personalize.getString("Chinese"),
+                    2 to personalize.getString("TraditionalChinese"),
                     // 3 to "Русский",
-                    4 to "English"
+                    4 to personalize.getString("English")
                 )
 
                 val themeMap = mapOf(
-                    0 to Pair("沧海明月", Icons.Default.BeachAccess),
-                    1 to Pair("朱雀烈阳", Icons.Default.LocalFireDepartment),
-                    2 to Pair("翠竹幽林", Icons.Default.NaturePeople),
-                    3 to Pair("金秋稻香", Icons.Default.LocalFlorist),
-                    4 to Pair("桃花春水", Icons.Default.Favorite),
-                    5 to Pair("紫气东来", Icons.Default.Star)
+                    0 to Pair(personalize.getString("blue"), Icons.Default.BeachAccess),
+                    1 to Pair(personalize.getString("red"), Icons.Default.LocalFireDepartment),
+                    2 to Pair(personalize.getString("green"), Icons.Default.NaturePeople),
+                    3 to Pair(personalize.getString("yellow"), Icons.Default.LocalFlorist),
+                    4 to Pair(personalize.getString("pink"), Icons.Default.Favorite),
+                    5 to Pair(personalize.getString("purple"), Icons.Default.Star)
                 )
 
                 SettingScreen.Selector(
-                    title = locales.getString("language"),
+                    title = personalize.getString("language"),
                     defaultSelectorId = language.value,
                     languageMap,
                     modifier = Modifier
@@ -175,7 +180,7 @@ object GuideScreen {
                 )
 
                 SettingScreen.selectorWithIcon(
-                    title = locales.getString("theme"),
+                    title = personalize.getString("theme"),
                     defaultSelectorId = State.theme.value,
                     themeMap,
                     modifier = Modifier
@@ -188,8 +193,8 @@ object GuideScreen {
                 )
 
                 SettingScreen.SettingsSwitchItem(
-                    title = locales.getString("followSystem"),
-                    contentDescription = locales.getString("followSystemContent"),
+                    title = personalize.getString("followSystem"),
+                    contentDescription = personalize.getString("followSystemContent"),
                     checked = systemTheme.value,
                     onCheckedChange = { check ->
                         systemTheme.value = check
@@ -205,8 +210,8 @@ object GuideScreen {
                     SettingScreen.SettingsSwitchItem(
                         iconOff = Icons.Default.WbSunny,
                         iconOn = Icons.Default.NightsStay,
-                        title = locales.getString("darkTheme"),
-                        contentDescription = locales.getString("darkThemeContent"),
+                        title = personalize.getString("darkTheme"),
+                        contentDescription = personalize.getString("darkThemeContent"),
                         checked = darkTheme.value,
                         onCheckedChange = { check ->
                             darkTheme.value = check
@@ -242,6 +247,10 @@ object GuideScreen {
 
     @Composable
     private fun agreement() {
+
+        val agreement = Locales()
+        agreement.loadLocalization("Screen/GuideScreen/agreement.toml", Locales.getLanguage(language.value))
+
         val showNext = remember { mutableStateOf(false) }
         val fabXOffset: Dp by animateDpAsState(
             targetValue = 0.dp,
@@ -258,9 +267,9 @@ object GuideScreen {
                     .fillMaxSize()
             ) {
                 GuideScreen.AgreementCard(
-                    title = "User Agreement",
-                    agreementText = "Content of the Agreement",
-                    checkBoxTitle = "I agree to the above agreement",
+                    title = agreement.getString("agreement"),
+                    agreementText = agreement.getString("agreement_content"),
+                    checkBoxTitle = agreement.getString("above_agreement"),
                     onCheckBoxChange = { check ->
                         showNext.value = check
                     }
@@ -293,6 +302,9 @@ object GuideScreen {
     @Composable
     fun agreement_loader(mainViewModel: NavigationViewModel) {
 
+        val agreement = Locales()
+        agreement.loadLocalization("Screen/GuideScreen/agreement_loader.toml", Locales.getLanguage(language.value))
+
         LaunchedEffect(key1 = Unit) {
             showLast.value = false
         }
@@ -313,9 +325,9 @@ object GuideScreen {
                     .fillMaxSize()
             ) {
                 GuideScreen.AgreementCard(
-                    title = "EFModLoader uses the protocol",
-                    agreementText = "Content of the Agreement",
-                    checkBoxTitle = "I agree to the above agreement",
+                    title = agreement.getString("agreement"),
+                    agreementText = agreement.getString("agreement_content"),
+                    checkBoxTitle = agreement.getString("above_agreement"),
                     onCheckBoxChange = { check ->
                         showNext.value = check
                     }
@@ -348,10 +360,13 @@ object GuideScreen {
         }
     }
 
+
+
     @Composable
     fun Disposition(UI: @Composable () -> Unit) {
         LaunchedEffect(key1 = Unit) {
             showLast.value = true
+            disposition.loadLocalization("Screen/GuideScreen/disposition.toml", Locales.getLanguage(language.value))
         }
 
         val fabXOffset: Dp by animateDpAsState(
@@ -375,8 +390,8 @@ object GuideScreen {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    title = "Install the default loader",
-                    contentDescription = "If you're a, tick it",
+                    title = disposition.getString("install_loader"),
+                    contentDescription = disposition.getString("install_loader_content"),
                     isChecked = defaultLoader.value,
                     onCheckedChange = { check ->
                         defaultLoader.value = check
@@ -388,7 +403,7 @@ object GuideScreen {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    title = "Log",
+                    title = disposition.getString("log"),
                     checked = loggingEnabled.value,
                     onCheckedChange = { check ->
                         loggingEnabled.value = check
@@ -396,7 +411,7 @@ object GuideScreen {
                     iconOn = Icons.Default.BugReport
                 )
 
-                if ( /* loggingEnabled.value */ false) {
+                if ( loggingEnabled.value) {
 
                     val logMap = mapOf(
                         0 to "512 kb",
@@ -404,11 +419,11 @@ object GuideScreen {
                         2 to "2048 kb",
                         3 to "4096 kb",
                         4 to "8192 kb",
-                        5 to "Unlimited"
+                        5 to disposition.getString("unlimited")
                     )
 
                     SettingScreen.Selector(
-                        title = "Maximum log cache",
+                        title = disposition.getString("maximum_log_cache"),
                         defaultSelectorId = 5,
                         logMap,
                         modifier = Modifier

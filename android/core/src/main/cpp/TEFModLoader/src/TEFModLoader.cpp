@@ -28,38 +28,71 @@
 #include <TEFModLoader/hook.hpp>
 #include <TEFModLoader/manager.hpp>
 #include <dlfcn.h>
+#include <TEFModLoader/log.hpp>
+#include <iostream>
 
 void *EFModLoader::Loader::efopen(const char *p) { return dlopen(p, RTLD_LAZY); }
 void *EFModLoader::Loader::efsym(void *h, const char *s) { return dlsym(h, s); }
 int EFModLoader::Loader::efclose(void *h) { return dlclose(h); }
 
 void TEFModLoader::initialize(JNIEnv *env) {
+    std::cout << "Starting initialize function." << std::endl;
+
     jclass stateClass = env->FindClass("eternal/future/State");
     if (stateClass == nullptr) {
+        std::cerr << "Failed to find State class: eternal/future/State" << std::endl;
         e_jni = false;
     } else {
+        std::cout << "Successfully found State class: eternal/future/State" << std::endl;
         e_jni = true;
     }
 
     if (e_jni) {
         jfieldID modeFieldID = env->GetStaticFieldID(stateClass, "Mode", "I");
+        if (modeFieldID == nullptr) {
+            std::cerr << "Failed to find static field 'Mode' in State class." << std::endl;
+            return;
+        }
+        std::cout << "Successfully found static field 'Mode' in State class." << std::endl;
+
         jfieldID efmodcFieldID = env->GetStaticFieldID(stateClass, "EFMod_c", "Ljava/lang/String;");
+        if (efmodcFieldID == nullptr) {
+            std::cerr << "Failed to find static field 'EFMod_c' in State class." << std::endl;
+            return;
+        }
+        std::cout << "Successfully found static field 'EFMod_c' in State class." << std::endl;
+
         jint modeValue = env->GetStaticIntField(stateClass, modeFieldID);
         auto efmodcValue = (jstring) env->GetStaticObjectField(stateClass, efmodcFieldID);
+        if (efmodcValue == nullptr) {
+            std::cerr << "Failed to retrieve value for 'EFMod_c'." << std::endl;
+            return;
+        }
+        std::cout << "Successfully retrieved values for Mode and EFMod_c." << std::endl;
+
         Mode = modeValue;
-        modDataPath = env->GetStringUTFChars(efmodcValue, nullptr);
+        const char* modDataPathCStr = env->GetStringUTFChars(efmodcValue, nullptr);
+        modDataPath = std::string(modDataPathCStr);
+        env->ReleaseStringUTFChars(efmodcValue, modDataPathCStr);
+
+        std::cout << "Mode: " << Mode << ", modDataPath: " << modDataPath << std::endl;
+
         auxiliaryPath = Utility::getModDir().parent_path() / "libauxiliary.so";
+        std::cout << "Auxiliary library path: " << auxiliaryPath << std::endl;
     }
 
+    std::cout << "Loading mods from directory: " << Utility::getModDir() << " with data path: " << modDataPath << std::endl;
     EFModLoader::Loader::loadMods(Utility::getModDir(), modDataPath);
+    std::cout << "Finished initialize function." << std::endl;
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
     JNIEnv *env;
     vm->GetEnv((void **) &env, JNI_VERSION_1_6);
 
-    TEFModLoader::initialize(env);
+    TEFModLoader::Log::redirectStdStreams(); //重定向std::cout&std::cerr到安卓日志
 
+    TEFModLoader::initialize(env);
     BNM::Loading::TryLoadByJNI(env);
     BNM::Loading::AddOnLoadedEvent(TEFModLoader::Manager::API::autoProcessing);
     BNM::Loading::AddOnLoadedEvent(EFModLoader::Loader::initiate);

@@ -23,7 +23,7 @@ class Locales {
     }
 
     fun getString(key: String): String {
-        return locales[key].toString()
+        return locales[key] ?: key
     }
 
     companion object {
