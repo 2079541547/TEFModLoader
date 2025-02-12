@@ -15,8 +15,8 @@ apkzlib = "8.8.0"
 compose-multiplatform = "1.7.0"
 json = "20250107"
 junit = "4.13.2"
+kermit = "2.0.5"
 kotlin = "2.1.0"
-kotlinLoggingJvm = "7.0.3"
 kotlinx-coroutines = "1.9.0"
 material3 = "1.7.3"
 material3Android = "1.3.1"
@@ -38,8 +38,8 @@ uiGraphicsAndroid = "1.7.6"
 [libraries]
 apksig = { module = "com.android.tools.build:apksig", version.ref = "apkzlib" }
 json = { module = "org.json:json", version.ref = "json" }
-kotlin-logging-jvm = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlinLoggingJvm" }
 apkzlib = { module = "com.android.tools.build:apkzlib", version.ref = "apkzlib" }
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

@@ -1,0 +1,13 @@
+[zh-cn]
+external = "外部模式"
+share = "共享模式"
+inline = "嵌入模式"
+root = "Root(危险)"
+override = "覆写版本代码"
+override_content = "将版本代码改为1可降级安装"
+coexistence = "共存"
+coexistence_content = "不使用原包名使用管理器提供的包名"
+debug = "调试"
+debug_content = "允许包被调试"
+select_apk = "选择自定义安装包"
+select_apk_content = "选择后将不会自动使用已安装的游戏包否则使用已安装的游戏包"

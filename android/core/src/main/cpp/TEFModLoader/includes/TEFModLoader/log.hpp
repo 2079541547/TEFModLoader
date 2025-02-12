@@ -1,7 +1,7 @@
 /*******************************************************************************
- * 文件名称: utility
+ * 文件名称: log
  * 项目名称: TEFModLoader
- * 创建时间: 2025/2/11
+ * 创建时间: 2025/2/12
  * 作者: EternalFuture゙
  * Github: https://github.com/2079541547
  * 版权声明: Copyright © 2024 EternalFuture. All rights reserved.
@@ -20,13 +20,29 @@
  *
  * 注意事项: 请严格遵守GNU AGPL v3.0协议使用本代码，任何未经授权的商业用途均属侵权行为。
  *******************************************************************************/
+
 #pragma once
 
-#include <filesystem>
-#include <jni.h>
+#include <streambuf>
+#include <string>
 
-namespace TEFModLoader::Utility {
-    std::filesystem::path getFilesDir(JNIEnv *env);
-    std::filesystem::path getModDir();
-    void printMemoryHexView(const void* ptr, size_t range, size_t hex_width);
+namespace TEFModLoader::Log {
+
+    class AndroidLogStreamBuffer : public std::streambuf {
+    public:
+        AndroidLogStreamBuffer(int logLevel) : logLevel(logLevel), buffer("") {}
+        ~AndroidLogStreamBuffer() override;
+
+    protected:
+        int_type overflow(int_type v) override;
+        std::streamsize xsputn(const char *s, std::streamsize n) override;
+
+    private:
+        void flushBuffer();
+        std::string buffer;
+        int logLevel;
+    };
+
+    void redirectStdStreams();
+
 }

@@ -43,7 +43,7 @@ kotlin {
             implementation(libs.tomlkt)
             implementation(libs.skiko)
             implementation(libs.skiko.awt)
-            implementation(libs.kotlin.logging.jvm)
+            implementation(libs.kermit)
             implementation(libs.apkzlib)
             implementation(libs.json)
             implementation(libs.apksig)
@@ -96,6 +96,11 @@ android {
             storePassword = "EternalFuture"
             keyPassword = "TEFModLoader"
         }
+    }
+
+    packagingOptions {
+        exclude("**/libTEFModLoader.so")
+        exclude("**/libauxiliary.so")
     }
 }
 

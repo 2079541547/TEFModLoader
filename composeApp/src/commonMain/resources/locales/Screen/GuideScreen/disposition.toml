@@ -1,0 +1,10 @@
+[zh-cn]
+install_loader = "安装默认加载器"
+install_loader_content = "建议勾选"
+unlimited = "无限制"
+maximum_log_cache = "日志文件最大大小"
+log = "启用日志"
+auto_provisioning = "自动修补已安装的游戏包"
+auto_provisioning_content = "如果你安装了游戏且不会操作就勾选，注意不支持加密包！"
+# choose_game_folder = "选择游戏目录"  #未确定
+# choose_game_folder_content = "" #未确定

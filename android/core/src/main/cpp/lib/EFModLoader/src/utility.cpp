@@ -22,20 +22,41 @@
  *******************************************************************************/
 
 #include <EFModLoader/utility.hpp>
+#include <iostream>
 
 template<typename R, typename ...Args>
 R EFModLoader::Utility::callFunction(void *funcPtr, Args &&...args) {
+    std::cout << "Checking if function pointer is valid." << std::endl;
+
     if (!funcPtr) {
+        std::cerr << "Error: The function pointer cannot be NULL" << std::endl;
         throw std::invalid_argument("The function pointer cannot be NULL");
     }
+
+    std::cout << "Calling function with arguments:" << std::endl;
 
     using FuncPtr = R (*)(Args...);
     auto f = reinterpret_cast<FuncPtr>(funcPtr);
 
-    return f(std::forward<Args>(args)...);
+    R result = f(std::forward<Args>(args)...);
+
+    std::cout << "Function returned value of type " << typeid(result).name() << std::endl;
+    std::cout << "Function pointers " << funcPtr << std::endl;
+
+    return result;
 }
 
 void EFModLoader::Utility::registerAPI(const ModApiDescriptor &api, void *ptr) {
+    std::cout << "Starting to register API with ID: " << api.getID() << std::endl;
+
+    if (ptr == nullptr) {
+        std::cerr << "Error: Attempting to register API with a null pointer." << std::endl;
+        return;
+    }
+
     auto e = &EFModAPI::getEFModAPI();
+    std::cout << "Retrieved EFModAPI instance for registration." << std::endl;
+
     e->registerAPI(api.getID(), ptr);
+    std::cout << "Successfully registered API with ID: " << api.getID() << std::endl;
 }
