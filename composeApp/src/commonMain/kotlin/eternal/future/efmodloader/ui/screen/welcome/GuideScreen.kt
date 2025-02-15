@@ -366,8 +366,9 @@ object GuideScreen {
     fun Disposition(UI: @Composable () -> Unit) {
         LaunchedEffect(key1 = Unit) {
             showLast.value = true
-            disposition.loadLocalization("Screen/GuideScreen/disposition.toml", Locales.getLanguage(language.value))
         }
+
+        disposition.loadLocalization("Screen/GuideScreen/disposition.toml", Locales.getLanguage(language.value))
 
         val fabXOffset: Dp by animateDpAsState(
             targetValue = 0.dp,

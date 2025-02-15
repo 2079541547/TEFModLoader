@@ -2,15 +2,15 @@ package eternal.future.efmodloader.utility
 
 import cn.zaratustra.axmlparser.core.AXMLParser
 import com.android.apksig.ApkSigner
-import com.android.tools.build.apkzlib.sign.SigningExtension
-import com.android.tools.build.apkzlib.sign.SigningOptions
+import com.android.apksig.KeyConfig
+import com.android.apksig.KeyConfig.Jca
 import com.android.tools.build.apkzlib.zip.ZFile
-import org.w3c.dom.*
+import org.w3c.dom.Document
+import org.w3c.dom.Element
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
-import java.io.InputStream
 import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.cert.X509Certificate
@@ -257,6 +257,41 @@ object Apk {
             }
         }
     }
+
+    fun signApk(inputPath: String, outputPath: String) {
+        val keystorePassword = "EternalFuture"
+        val keyAlias = "TEFModLoader"
+        val keyPassword = "TEFModLoader"
+        val input = File(inputPath)
+        val output = File(outputPath)
+
+        val keyStore = KeyStore.getInstance("PKCS12")
+
+        keyStore.load(javaClass.classLoader.getResourceAsStream("TEFModLoader.keystore"), keystorePassword.toCharArray())
+
+        val privateKey = keyStore.getKey(keyAlias, keyPassword.toCharArray()) as PrivateKey
+        val certificateChain = keyStore.getCertificateChain(keyAlias)
+
+        val x509Certificates: MutableList<X509Certificate> = ArrayList()
+        for (cert in certificateChain) {
+            x509Certificates.add(cert as X509Certificate)
+        }
+
+        val keyConfig: KeyConfig = Jca(privateKey)
+
+        val signerConfig = ApkSigner.SignerConfig.Builder("TEFML", keyConfig, x509Certificates).build()
+
+        val apkSigner = ApkSigner.Builder(listOf(signerConfig))
+            .setInputApk(input)
+            .setOutputApk(output)
+            .setV1SigningEnabled(false)
+            .setV2SigningEnabled(true)
+            .setV3SigningEnabled(false)
+            .setOtherSignersSignaturesPreserved(true)
+
+        apkSigner.build().sign()
+    }
+
 
     fun countDexFiles(apkFilePath: String): Int {
         var dexCount = 0

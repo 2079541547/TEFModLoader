@@ -45,8 +45,8 @@ kotlin {
             implementation(libs.skiko.awt)
             implementation(libs.kermit)
             implementation(libs.apkzlib)
-            implementation(libs.json)
             implementation(libs.apksig)
+            implementation(libs.json)
             implementation(fileTree(mapOf("dir" to "src/commonMain/libs", "include" to listOf("*.jar", "*.aar"))))
         }
         desktopMain.dependencies {
@@ -91,7 +91,7 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = file("TEFModLoader.keystore")
+            storeFile = file("src/commonMain/resources/TEFModLoader.keystore")
             keyAlias = "TEFModLoader"
             storePassword = "EternalFuture"
             keyPassword = "TEFModLoader"
@@ -101,6 +101,7 @@ android {
     packagingOptions {
         exclude("**/libTEFModLoader.so")
         exclude("**/libauxiliary.so")
+        pickFirst("META-INF/versions/9/OSGI-INF/MANIFEST.MF")
     }
 }
 

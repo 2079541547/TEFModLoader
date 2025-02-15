@@ -31,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -69,8 +70,8 @@ actual object MainScreen {
 
         mainScreen.loadLocalization("Screen/MainScreen/MainScreen.toml", Locales.getLanguage(State.language.value))
 
-        val selectedItem = remember { mutableStateOf(0) }
-        var title by remember { mutableStateOf("home") }
+        val selectedItem = remember { mutableIntStateOf(0) }
+        var title by remember { mutableStateOf(mainScreen.getString("home")) }
 
         val currentScreenWithAnimation by viewModel.currentScreen.collectAsState()
 

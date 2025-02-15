@@ -406,6 +406,8 @@ private fun patch() {
 
                                 axml_temp.delete()
                                 axml.delete()
+
+                                Apk.signApk(it.path, "")
                             }
                         }
 
