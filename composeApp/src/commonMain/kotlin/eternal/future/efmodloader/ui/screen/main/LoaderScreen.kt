@@ -26,11 +26,13 @@ import androidx.compose.ui.unit.dp
 import eternal.future.efmodloader.State
 import eternal.future.efmodloader.data.EFModLoader
 import eternal.future.efmodloader.ui.widget.main.LoaderScreen
+import eternal.future.efmodloader.utility.Locales
 import kotlin.math.roundToInt
 
 object LoaderScreen {
 
     var loaders = mutableStateOf(listOf<EFModLoader>())
+    val locale = Locales()
 
     @Composable
     fun LoaderScreen_r(
@@ -59,8 +61,8 @@ object LoaderScreen {
                 var offsetY by remember { mutableStateOf(0f) }
 
                 ExtendedFloatingActionButton(
-                    text = { Text("Install EFModLoader") },
-                    icon = { Icon(Icons.Default.InstallDesktop, contentDescription = "Install EFMod") },
+                    text = { Text(locale.getString("install")) },
+                    icon = { Icon(Icons.Default.InstallDesktop, contentDescription = "Install Loader") },
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = installOnBack,
                     modifier = Modifier

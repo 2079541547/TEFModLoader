@@ -10,8 +10,7 @@ actual object Net {
                 else -> throw RuntimeException("Unsupported operating system: $osName")
             }
         } catch (e: Exception) {
-            e.printStackTrace()
-            println("无法打开URL: $url")
+            EFLog.e("无法打开链接: $url, 错误: ", e)
         }
     }
 }

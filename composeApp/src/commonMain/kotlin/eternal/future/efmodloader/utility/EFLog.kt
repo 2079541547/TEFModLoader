@@ -11,7 +11,7 @@ object EFLog {
 
     private var logFilePath = File(App.getPrivate(), "jvm-runtime.log").path
     private var printCallerInfo = true
-    private val TAG = "TEFModLoader"
+    private const val TAG = "TEFModLoader"
 
 
     init {
@@ -23,16 +23,13 @@ object EFLog {
         val file = File(logFilePath)
         if (!file.exists()) {
             file.createNewFile()
-        } else if (file.length() > State.logCache.value) {
-            rotateLogFile(file)
+        } else if (file.length() > State.logCache.value && State.logCache.value != -1) {
+            clearLogFile(file)
         }
     }
 
-    private fun rotateLogFile(file: File) {
-        val sdf = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")
-        val newFileName = "${logFilePath}.${sdf.format(Date())}"
-        file.renameTo(File(newFileName))
-        file.createNewFile()
+    private fun clearLogFile(file: File) {
+        file.writeText("")
     }
 
     private fun writeToFile(message: String) {
@@ -40,7 +37,6 @@ object EFLog {
             File(logFilePath).appendText("$message\n")
         }
     }
-
     private fun formatMessage(severity: Severity, tag: String, message: String, callerInfo: Triple<String, String, Int>): String {
         val callerString = if (callerInfo.third != -1) " (${callerInfo.first}:${callerInfo.second}:${callerInfo.third})" else ""
         return "[${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())}] $severity/$tag$callerString: $message"
@@ -48,17 +44,19 @@ object EFLog {
 
     private fun getCallerInfo(): Triple<String, String, Int> {
         val stackTrace = Thread.currentThread().stackTrace
-        for (element in stackTrace) {
-            if ("$${'$'}logger" !in element.className && EFLog::class.java.name != element.className) {
-                return Triple(element.className, element.fileName ?: "Unknown", element.lineNumber)
+        for (i in 3 until stackTrace.size) {
+            val element = stackTrace[i]
+            if ("EFLog" != element.className && EFLog::class.java.name != element.className) {
+                var methodName = "Unknown"
+                if (i + 1 < stackTrace.size) {
+                    methodName = stackTrace[i + 1].methodName
+                }
+                return Triple("${element.className}.${methodName}", element.fileName ?: "Unknown", element.lineNumber)
             }
         }
-        return Triple("Unknown", "Unknown", -1)
+        return Triple("Unknown.Unknown", "Unknown", -1)
     }
 
-    fun setPrintCallerInfo(enabled: Boolean) {
-        printCallerInfo = enabled
-    }
 
     fun v(throwable: Throwable? = null, tag: String = TAG, message: () -> String) {
         log(Severity.Verbose, tag, message(), throwable)
@@ -101,19 +99,21 @@ object EFLog {
     }
 
     private fun log(severity: Severity, tag: String, message: String, throwable: Throwable?) {
+        val callerInfo = if (printCallerInfo) getCallerInfo() else Triple("", "", -1)
+
         when (severity) {
-            Severity.Verbose -> Logger.v(tag) { message }
-            Severity.Debug -> Logger.d(tag) { message }
-            Severity.Info -> Logger.i(tag) { message }
-            Severity.Warn -> Logger.w(tag) { message }
-            Severity.Error -> Logger.e(tag) { message }
-            else -> Logger.v(tag) { message }
+            Severity.Verbose -> Logger.v(tag) { "[${callerInfo.first}, ${callerInfo.second}:${callerInfo.third}]: $message" }
+            Severity.Debug -> Logger.d(tag) { "[${callerInfo.first}, ${callerInfo.second}:${callerInfo.third}]: $message" }
+            Severity.Info -> Logger.i(tag) { "[${callerInfo.first}, ${callerInfo.second}:${callerInfo.third}]: $message" }
+            Severity.Warn -> Logger.w(tag) { "[${callerInfo.first}, ${callerInfo.second}:${callerInfo.third}]: $message" }
+            Severity.Error -> Logger.e(tag) { "[${callerInfo.first}, ${callerInfo.second}:${callerInfo.third}]: $message" }
+            else -> Logger.v(tag) { "[${callerInfo.first}, ${callerInfo.second}:${callerInfo.third}]: $message" }
         }
+
         throwable?.let {
             Logger.e(tag) { it.stackTraceToString() }
         }
 
-        val callerInfo = if (printCallerInfo) getCallerInfo() else Triple("", "", -1)
         val formattedMessage = formatMessage(severity, tag, message, callerInfo)
         writeToFile(formattedMessage)
 

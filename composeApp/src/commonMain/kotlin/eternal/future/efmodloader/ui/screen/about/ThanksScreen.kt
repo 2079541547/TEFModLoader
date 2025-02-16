@@ -10,11 +10,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import eternal.future.efmodloader.State
 import eternal.future.efmodloader.ui.AppTopBar
 import eternal.future.efmodloader.ui.navigation.BackMode
 import eternal.future.efmodloader.ui.navigation.NavigationViewModel
 import eternal.future.efmodloader.ui.widget.AboutScreen
 import eternal.future.efmodloader.utility.App
+import eternal.future.efmodloader.utility.Locales
 import eternal.future.efmodloader.utility.Net.openUrlInBrowser
 
 object ThanksScreen {
@@ -22,16 +24,19 @@ object ThanksScreen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun ThanksScreen(mainViewModel: NavigationViewModel) {
+
+        val locale = Locales().loadLocalization("Screen/AboutScreen/ThanksScreen.toml", Locales.getLanguage(State.language.value))
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 val menuItems = mapOf(
-                    "Back to default page" to Pair(Icons.AutoMirrored.Filled.ExitToApp) { mainViewModel.navigateBack(
+                    locale.getString("back_to_default_page") to Pair(Icons.AutoMirrored.Filled.ExitToApp) { mainViewModel.navigateBack(
                         BackMode.TO_DEFAULT) },
-                    "Exit" to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() },
+                    locale.getString("exit") to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() },
                 )
                 AppTopBar(
-                    title = "Special thanks",
+                    title = locale.getString("title"),
                     showMenu = true,
                     menuItems = menuItems,
                     showBackButton = true,
@@ -46,15 +51,20 @@ object ThanksScreen {
                 contentPadding = innerPadding
             ) {
                 item {
-                    AboutScreen.projectInfoCard(
-                        modifier = Modifier.padding(10.dp),
-                        titleText = "SilkCasket",
-                        descriptionText = "A compression format that emphasizes flexibility",
-                        additionalInfoText = "Apache-2.0 license",
-                        onClick = {
-                            openUrlInBrowser("https://github.com/2079541547/SilkCasket")
+                    locale.getMap().forEach {
+                        if (it.key != "title" &&
+                            it.key != "exit" &&
+                            it.key != "back_to_default_page") {
+
+                            AboutScreen.projectInfoCard(
+                                modifier = Modifier.padding(10.dp),
+                                titleText = it.key,
+                                descriptionText = it.value,
+                                additionalInfoText = "",
+                                onClick = { }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }

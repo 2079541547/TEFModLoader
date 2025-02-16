@@ -28,6 +28,7 @@ import java.nio.file.StandardCopyOption
 object EFMod {
 
     fun install(modFile: String, targetDirectory: String) {
+        EFLog.d("开始安装MOD文件: $modFile 到目录: $targetDirectory")
         val expectedHeader = byteArrayOf(
             0x53, 0x69, 0x6C, 0x6B, 0x43, 0x61, 0x73, 0x6B, 0x65, 0x74,
             0x00, 0x03, 0xFE.toByte(), 0x34, 0x01
@@ -38,16 +39,21 @@ object EFMod {
                 val header = ByteArray(expectedHeader.size)
                 val bytesRead = fis.read(header)
 
-                if (bytesRead == expectedHeader.size || header.contentEquals(expectedHeader)) {
+                if (bytesRead == expectedHeader.size && header.contentEquals(expectedHeader)) {
+                    EFLog.i("验证通过，开始释放MOD文件: $modFile 到目标目录: $targetDirectory")
                     SilkCasket.release(State.SilkCasket_Temp, modFile, targetDirectory)
+                    EFLog.d("成功安装MOD文件: $modFile 到目录: $targetDirectory")
+                } else {
+                    EFLog.e("文件头验证失败: 文件 '$modFile' 不是有效的MOD文件")
                 }
             }
         } catch (e: IOException) {
-            e.printStackTrace()
+            EFLog.e("安装MOD文件时发生IO异常", e)
         }
     }
 
     fun update(modFile: String, targetDirectory: String) {
+        EFLog.d("开始更新MOD文件: $modFile 到目录: $targetDirectory")
         val expectedHeader = byteArrayOf(
             0x53, 0x69, 0x6C, 0x6B, 0x43, 0x61, 0x73, 0x6B, 0x65, 0x74,
             0x00, 0x03, 0xFE.toByte(), 0x34, 0x01
@@ -58,22 +64,33 @@ object EFMod {
                 val header = ByteArray(expectedHeader.size)
                 val bytesRead = fis.read(header)
 
-                if (bytesRead == expectedHeader.size || header.contentEquals(expectedHeader)) {
+                if (bytesRead == expectedHeader.size && header.contentEquals(expectedHeader)) {
+                    EFLog.i("验证通过，开始更新MOD文件: $modFile 到目标目录: $targetDirectory")
                     SilkCasket.release(State.SilkCasket_Temp, modFile, targetDirectory)
+                    EFLog.d("成功更新MOD文件: $modFile 到目录: $targetDirectory")
+                } else {
+                    EFLog.e("文件头验证失败: 文件 '$modFile' 不是有效的MOD文件")
                 }
             }
         } catch (e: IOException) {
-            e.printStackTrace()
+            EFLog.e("更新MOD文件时发生IO异常", e)
         }
     }
 
     fun remove(targetDirectory: String) {
-        FileUtils.deleteDirectory(File(targetDirectory))
+        EFLog.d("开始删除目录: $targetDirectory")
+        try {
+            FileUtils.deleteDirectory(File(targetDirectory))
+            EFLog.d("成功删除目录: $targetDirectory")
+        } catch (e: IOException) {
+            EFLog.e("删除目录时发生IO异常", e)
+        }
     }
 
     fun initialize(modPath: String, loaderPath: String, targetDirectory: String) {
+        EFLog.d("开始初始化MOD和加载器: MOD路径: $modPath, 加载器路径: $loaderPath, 目标目录: $targetDirectory")
 
-        data class loader(
+        data class Loader(
             val name: String,
             val path: String,
             val libName: String,
@@ -84,8 +101,8 @@ object EFMod {
         val mods = loadModsFromDirectory(modPath)
         val loaders = EFModLoader.loadLoadersFromDirectory(loaderPath)
 
-        val loadersMap = mutableStateListOf<loader>()
-        val initializeMap = mutableMapOf<loader, MutableList<String>>()
+        val loadersMap = mutableStateListOf<Loader>()
+        val initializeMap = mutableMapOf<Loader, MutableList<String>>()
 
         val architecture = when (State.architecture.value) {
             1 -> "arm64-v8a"
@@ -97,65 +114,84 @@ object EFMod {
 
         val platform = if (State.isAndroid) "android" else "windows"
 
-        loaders.forEach {
-            if (it.isEnabled) {
-                val v = mutableStateListOf<String>()
-                v.add(it.info.version)
-                it.compatibility.supportedVersions.forEach { vv -> v.add(vv) }
+        EFLog.i("架构: $architecture, 平台: $platform")
 
-                loadersMap.add(loader(
-                    name = "${it.info.name}-${it.info.author}",
-                    path = it.path,
-                    libName = it.loader.libName,
-                    version = v,
-                    supportedStandards = Pair(it.compatibility.highestStandards, it.compatibility.minimumStandards)
-                ))
+        loaders.forEach { loaderInfo ->
+            if (loaderInfo.isEnabled) {
+                val versions = mutableStateListOf<String>()
+                versions.add(loaderInfo.info.version)
+                loaderInfo.compatibility.supportedVersions.forEach { vv -> versions.add(vv) }
+
+                val loader = Loader(
+                    name = "${loaderInfo.info.name}-${loaderInfo.info.author}",
+                    path = loaderInfo.path,
+                    libName = loaderInfo.loader.libName,
+                    version = versions,
+                    supportedStandards = Pair(loaderInfo.compatibility.highestStandards, loaderInfo.compatibility.minimumStandards)
+                )
+                loadersMap.add(loader)
+                EFLog.v("已添加加载器: ${loader.name}, 路径: ${loader.path}")
             }
         }
 
         mods.forEach { mod ->
             if (mod.isEnabled) {
                 if (!mod.Modx) {
-                    var l = false
+                    var matched = false
                     mod.loaders.forEach { loader ->
                         loadersMap.forEach { ll ->
-                            println(ll)
                             if (ll.name == loader.name &&
-                                ll.version.toSet().intersect(loader.supportedVersions.toSet()).isNotEmpty()) {
-                                if (!l) {
+                                ll.version.toSet().intersect(loader.supportedVersions.toSet()).isNotEmpty() &&
+                                mod.standards <= ll.supportedStandards.first &&
+                                mod.standards >= ll.supportedStandards.second) {
+                                if (!matched) {
                                     if (!initializeMap.containsKey(ll)) {
                                         initializeMap[ll] = mutableListOf()
                                     }
                                     initializeMap[ll]?.add(mod.path)
-                                    l = true
+                                    matched = true
+                                    EFLog.v("匹配到加载器: ${ll.name} 对应MOD: ${mod.path}")
                                 }
                             } else {
-                                println("No match for loader: ${loader.name} with versions: ${loader.supportedVersions}")
+                                EFLog.w("未找到匹配的加载器: ${loader.name} 版本: ${loader.supportedVersions} Mod标准：${mod.standards}")
                             }
                         }
                     }
                 } else {
                     val sourceDir = File(mod.path, "lib/$platform/$architecture")
                     val targetDir = File(targetDirectory, "Modx/${File(mod.path).name}")
+                    EFLog.v("开始复制Modx文件从: ${sourceDir.absolutePath} 到: ${targetDir.absolutePath}")
                     FileUtils.copyRecursivelyEfficient(sourceDir, targetDir)
+                    EFLog.v("完成复制Modx文件从: ${sourceDir.absolutePath} 到: ${targetDir.absolutePath}")
                 }
             }
         }
 
-        initializeMap.forEach { (l, m) ->
-            val loaderDir = File(l.path)
-            val loader = File(targetDirectory, "EFMod/${loaderDir.name}")
-            val loaderLib = if (State.isAndroid) "lib${l.libName}.so" else "${l.libName}.dll"
-            FileUtils.copyRecursivelyEfficient(File(loaderDir, "lib/$platform/$architecture"), loader)
+        initializeMap.forEach { (loader, modPaths) ->
+            val loaderDir = File(loader.path)
+            val loaderTargetDir = File(targetDirectory, "EFMod/${loaderDir.name}")
+            val loaderLib = if (State.isAndroid) "lib${loader.libName}.so" else "${loader.libName}.dll"
 
-            val originalFile = File(loader, loaderLib)
-            val newFile = File(loader, "loader-core")
+            EFLog.v("开始复制加载器库文件从: ${loaderDir.absolutePath}/lib/$platform/$architecture 到: ${loaderTargetDir.absolutePath}")
+            FileUtils.copyRecursivelyEfficient(File(loaderDir, "lib/$platform/$architecture"), loaderTargetDir)
+            EFLog.v("完成复制加载器库文件从: ${loaderDir.absolutePath}/lib/$platform/$architecture 到: ${loaderTargetDir.absolutePath}")
+
+            val originalFile = File(loaderTargetDir, loaderLib)
+            val newFile = File(loaderTargetDir, "loader-core")
+            EFLog.v("重命名加载器库文件: ${originalFile.absolutePath} 到: ${newFile.absolutePath}")
             Files.move(originalFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+            EFLog.v("完成重命名加载器库文件: ${originalFile.absolutePath} 到: ${newFile.absolutePath}")
 
-            m.forEach {
-                FileUtils.copyRecursivelyEfficient(File(it, "lib/$platform/$architecture"), File(targetDirectory, "EFMod/${loaderDir.name}/Mod/${File(it).name}"))
+            modPaths.forEach { modPath ->
+                val sourceDir = File(modPath, "lib/$platform/$architecture")
+                val targetDir = File(loaderTargetDir, "Mod/${File(modPath).name}")
+                EFLog.v("开始复制MOD文件从: ${sourceDir.absolutePath} 到: ${targetDir.absolutePath}")
+                FileUtils.copyRecursivelyEfficient(sourceDir, targetDir)
+                EFLog.v("完成复制MOD文件从: ${sourceDir.absolutePath} 到: ${targetDir.absolutePath}")
             }
         }
+
+        EFLog.d("完成初始化MOD和加载器: MOD路径: $modPath, 加载器路径: $loaderPath, 目标目录: $targetDirectory")
     }
 
     @OptIn(ExperimentalResourceApi::class)

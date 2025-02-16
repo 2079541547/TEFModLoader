@@ -1,6 +1,7 @@
 package eternal.future;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -22,8 +23,6 @@ public class TEFModLoader extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        new File(this.getFilesDir(), "TEFModLoader_jni").mkdirs(); //用于判断是否有java依赖
 
         try {
             String jsonString = AssetManager.readTextOfAsset(this, "config.json");
@@ -113,7 +112,17 @@ public class TEFModLoader extends Activity {
                 }
             }
             if (!allPermissionsGranted) {
-                checkPermission();
+                new AlertDialog.Builder(this)
+                        .setTitle("权限被拒绝")
+                        .setMessage("需要读写存储权限才能继续，请前往设置页面手动授予权限。")
+                        .setPositiveButton("前往设置", (dialog, which) -> {
+                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                            intent.setData(Uri.fromParts("package", getPackageName(), null));
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("取消", (dialog, which) -> finish())
+                        .create()
+                        .show();
             } else {
                 startGame();
             }

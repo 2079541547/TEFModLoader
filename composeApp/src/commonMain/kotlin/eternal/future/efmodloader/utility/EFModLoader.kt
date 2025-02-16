@@ -27,19 +27,19 @@ import java.io.IOException
 
 object EFModLoader {
 
-    fun install(modFile: String, targetDirectory: String) {
+    fun install(loaderFile: String, targetDirectory: String) {
         val expectedHeader = byteArrayOf(
             0x53, 0x69, 0x6C, 0x6B, 0x43, 0x61, 0x73, 0x6B, 0x65, 0x74,
             0x00, 0x03, 0xFE.toByte(), 0x34, 0x01
         )
 
         try {
-            FileInputStream(modFile).use { fis ->
+            FileInputStream(loaderFile).use { fis ->
                 val header = ByteArray(expectedHeader.size)
                 val bytesRead = fis.read(header)
 
                 if (bytesRead == expectedHeader.size || header.contentEquals(expectedHeader)) {
-                    SilkCasket.release(State.SilkCasket_Temp, modFile, targetDirectory)
+                    SilkCasket.release(State.SilkCasket_Temp, loaderFile, targetDirectory)
                 }
             }
         } catch (e: IOException) {
@@ -47,19 +47,19 @@ object EFModLoader {
         }
     }
 
-    fun update(modFile: String, targetDirectory: String) {
+    fun update(loaderFile: String, targetDirectory: String) {
         val expectedHeader = byteArrayOf(
             0x53, 0x69, 0x6C, 0x6B, 0x43, 0x61, 0x73, 0x6B, 0x65, 0x74,
             0x00, 0x03, 0xFE.toByte(), 0x34, 0x01
         )
 
         try {
-            FileInputStream(modFile).use { fis ->
+            FileInputStream(loaderFile).use { fis ->
                 val header = ByteArray(expectedHeader.size)
                 val bytesRead = fis.read(header)
 
                 if (bytesRead == expectedHeader.size || header.contentEquals(expectedHeader)) {
-                    SilkCasket.release(State.SilkCasket_Temp, modFile, targetDirectory)
+                    SilkCasket.release(State.SilkCasket_Temp, loaderFile, targetDirectory)
                 }
             }
         } catch (e: IOException) {

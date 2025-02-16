@@ -25,16 +25,19 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import eternal.future.efmodloader.State
 import eternal.future.efmodloader.data.EFMod
+import eternal.future.efmodloader.utility.Locales
 import kotlin.math.roundToInt
 
 object EFModScreen {
 
     var mods = mutableStateOf(listOf<EFMod>())
+    val locale = Locales()
 
     @Composable
     fun EFModScreen_r(
         onBack: () -> Unit
     ) {
+
 
         mods.value = eternal.future.efmodloader.utility.EFMod.loadModsFromDirectory(State.EFModPath)
 
@@ -59,7 +62,7 @@ object EFModScreen {
                 var offsetY by remember { mutableStateOf(0f) }
 
                 ExtendedFloatingActionButton(
-                    text = { Text("Install EFMod") },
+                    text = { Text(locale.getString("install")) },
                     icon = { Icon(Icons.Default.InstallDesktop, contentDescription = "Install EFMod") },
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = onBack,

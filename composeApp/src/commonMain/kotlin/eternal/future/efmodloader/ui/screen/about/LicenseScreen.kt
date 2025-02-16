@@ -10,56 +10,32 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import eternal.future.efmodloader.State
 import eternal.future.efmodloader.ui.AppTopBar
 import eternal.future.efmodloader.ui.navigation.BackMode
 import eternal.future.efmodloader.ui.navigation.NavigationViewModel
 import eternal.future.efmodloader.ui.widget.AboutScreen
 import eternal.future.efmodloader.utility.App
+import eternal.future.efmodloader.utility.Locales
 import eternal.future.efmodloader.utility.Net.openUrlInBrowser
 
 object LicenseScreen {
-
-    data class aboutCard(
-        val titleText: String,
-        val descriptionText: String,
-        val additionalInfoText: String,
-        val url: String
-    )
-
-    val cards = listOf<aboutCard>(
-        aboutCard(
-            titleText = "EFModLoader",
-            descriptionText = "An invasive high-efficiency mod loader designed for EFMod",
-            additionalInfoText = "AGPL-3.0 license",
-            url = "https://github.com/2079541547/EFModLoader"
-        ),
-        aboutCard(
-            titleText = "BNM-Android",
-            descriptionText = "ByNameModding is a library for modding il2cpp games by classes, methods, field names on Android. This edition is focused on working on Android with il2cpp. It includes everything you need for modding unity games.\nRequires C++20 minimum.",
-            additionalInfoText = "MIT license",
-            url = "https://github.com/ByNameModding/BNM-Android"
-        ),
-        aboutCard(
-            titleText = "SilkCasket",
-            descriptionText = "A compression format that emphasizes flexibility",
-            additionalInfoText = "Apache-2.0 license",
-            url = "https://github.com/2079541547/SilkCasket"
-        )
-    )
-
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun LicenseScreen(mainViewModel: NavigationViewModel) {
+
+        val locale = Locales().loadLocalization("Screen/AboutScreen/LicenseScreen.toml", Locales.getLanguage(State.language.value), true)
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 val menuItems = mapOf(
-                    "Back to default page" to Pair(Icons.AutoMirrored.Filled.ExitToApp) { mainViewModel.navigateBack(
+                    locale.getString("back_to_default_page") to Pair(Icons.AutoMirrored.Filled.ExitToApp) { mainViewModel.navigateBack(
                         BackMode.TO_DEFAULT) },
-                    "Exit" to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() },
+                    locale.getString("exit") to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() },
                 )
                 AppTopBar(
-                    title = "Open Source License",
+                    title = locale.getString("title"),
                     showMenu = true,
                     menuItems = menuItems,
                     showBackButton = true,
@@ -73,18 +49,25 @@ object LicenseScreen {
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = innerPadding
             ) {
+                item {
+                    val map = locale.getMap()
+                    map.forEach {
+                        if (it.key != "title" &&
+                            it.key != "exit" &&
+                            it.key != "back_to_default_page" &&
+                            it.key.split('.').size == 1) {
 
-                items(cards.size) {
-                    val card = cards[it]
-                    AboutScreen.projectInfoCard(
-                        modifier = Modifier.padding(10.dp),
-                        titleText = card.titleText,
-                        descriptionText = card.descriptionText,
-                        additionalInfoText = card.additionalInfoText,
-                        onClick = {
-                            openUrlInBrowser(card.url)
+                            AboutScreen.projectInfoCard(
+                                modifier = Modifier.padding(10.dp),
+                                titleText = it.key,
+                                descriptionText = map[it.key].toString(),
+                                additionalInfoText = map["${it.key}.additionalInfoText"].toString(),
+                                onClick = {
+                                    openUrlInBrowser(map["${it.key}.url"].toString())
+                                }
+                            )
                         }
-                    )
+                    }
                 }
             }
         }

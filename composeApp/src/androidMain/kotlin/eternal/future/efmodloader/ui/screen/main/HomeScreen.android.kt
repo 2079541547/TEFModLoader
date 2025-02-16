@@ -406,8 +406,9 @@ private fun patch() {
 
                                 axml_temp.delete()
                                 axml.delete()
-
-                                Apk.signApk(it.path, "")
+                                Apk.signApk(it.path, File(it.parent, "sign.apk").path)
+                                it.delete()
+                                File(it.parent, "sign.apk").renameTo(it)
                             }
                         }
 

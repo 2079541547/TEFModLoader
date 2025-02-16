@@ -22,6 +22,7 @@ import eternal.future.efmodloader.ui.navigation.BackMode
 import eternal.future.efmodloader.ui.navigation.NavigationViewModel
 import eternal.future.efmodloader.ui.widget.AboutScreen
 import eternal.future.efmodloader.ui.widget.AboutScreen.UserAgreementDialog
+import eternal.future.efmodloader.utility.Locales
 import eternal.future.efmodloader.utility.Net.openUrlInBrowser
 import tefmodloader.composeapp.generated.resources.Res
 import tefmodloader.composeapp.generated.resources.jiangniaht
@@ -33,14 +34,18 @@ object AboutScreen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun AboutScreen(mainViewModel: NavigationViewModel) {
+
+        val locale = Locales()
+        locale.loadLocalization("Screen/AboutScreen/AboutScreen.toml", Locales.getLanguage(State.language.value))
+
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                val menuItems = mapOf("Exit" to Pair(Icons.AutoMirrored.Filled.ExitToApp) {
+                val menuItems = mapOf(locale.getString("exit") to Pair(Icons.AutoMirrored.Filled.ExitToApp) {
                     App.exit()
                 })
                 AppTopBar(
-                    title = "About",
+                    title = locale.getString("title"),
                     showMenu = true,
                     menuItems = menuItems,
                     showBackButton = true,
@@ -59,7 +64,7 @@ object AboutScreen {
                     var physical by remember { mutableStateOf(false) }
                     AboutScreen.AppIconCard(
                         modifier = Modifier.fillMaxWidth().padding(10.dp),
-                        labelText = "Thank you for your company",
+                        labelText = locale.getString("app_content"),
                         onClick = {
                             physical = true
                             n++
@@ -71,13 +76,17 @@ object AboutScreen {
                 }
 
                 item {
+
+                    val user = Locales().loadLocalization("Screen/GuideScreen/agreement.toml", Locales.getLanguage(State.language.value)).getMap()
+                    val loader = Locales().loadLocalization("Screen/GuideScreen/agreement_loader.toml", Locales.getLanguage(State.language.value)).getMap()
+
                     var userDialog by remember { mutableStateOf(false) }
                     var loaderDialog by remember { mutableStateOf(false) }
 
                     if (userDialog) {
                         UserAgreementDialog(
-                            title = "User Agreement",
-                            content = "Content of the Agreement\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+                            title = user["agreement"].toString(),
+                            content = user["agreement_content"].toString(),
                             onDismiss = { userDialog = false },
                             confirmButtonText = "close",
                             modifier = Modifier.padding(10.dp).fillMaxWidth()
@@ -86,8 +95,8 @@ object AboutScreen {
 
                     if (loaderDialog) {
                         UserAgreementDialog(
-                            title = "EFModLoader Agreement",
-                            content = "Content of the Agreement\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n",
+                            title = loader["agreement"].toString(),
+                            content = loader["agreement_content"].toString(),
                             onDismiss = { loaderDialog = false },
                             confirmButtonText = "close",
                             modifier = Modifier.padding(10.dp).fillMaxWidth()
@@ -104,7 +113,7 @@ object AboutScreen {
                     AboutScreen.aboutWidgets(
                         modifier = Modifier.fillMaxWidth(),
                         icon = Icons.Default.Info,
-                        title = "Version",
+                        title = locale.getString("version"),
                         contentDescription = "v1.0.0.0",
                         onClick = {
                             version_n++
@@ -120,7 +129,7 @@ object AboutScreen {
                     AboutScreen.aboutWidgets(
                         modifier = Modifier.fillMaxWidth(),
                         icon = Icons.Default.Info,
-                        title = "User Agreement",
+                        title = user["agreement"].toString(),
                         contentDescription = "",
                         onClick = {
                             userDialog = true
@@ -130,8 +139,8 @@ object AboutScreen {
                     AboutScreen.aboutWidgets(
                         modifier = Modifier.fillMaxWidth(),
                         icon = Icons.Default.Info,
-                        title = "EFModLoader Agreement",
-                        contentDescription = "Mod usage matters",
+                        title = loader["agreement"].toString(),
+                        contentDescription = "",
                         onClick = {
                             loaderDialog = true
                         }
@@ -140,8 +149,8 @@ object AboutScreen {
                     AboutScreen.aboutWidgets(
                         modifier = Modifier.fillMaxWidth(),
                         icon = Icons.Default.AccountBalance,
-                        title = "Open source code",
-                        contentDescription = "Go to the official TEFModLoader repository",
+                        title = locale.getString("open_source_code"),
+                        contentDescription = locale.getString("open_source_code_content"),
                         onClick = {
                             openUrlInBrowser("https://github.com/2079541547/TEFModLoader")
                         }
@@ -149,27 +158,27 @@ object AboutScreen {
                 }
 
                 item {
-                    Text("Development", modifier = Modifier.padding(10.dp))
+                    Text(locale.getString("development"), modifier = Modifier.padding(10.dp))
 
                     AboutScreen.expandableWidget(
                         modifier = Modifier.fillMaxWidth(),
                         icon = painterResource(Res.drawable.eternalfuture),
                         title = "EternalFuture゙",
-                        detailedInfo = "Core code, page code, page design",
+                        detailedInfo = locale.getString("EternalFuture゙"),
                         onClick = {},
                         isCircularIcon = true
                     )
                 }
 
                 item {
-                    Text("Important contributions", modifier = Modifier.padding(10.dp))
+                    Text(locale.getString("important_contributions"), modifier = Modifier.padding(10.dp))
 
                     AboutScreen.expandableWidget(
                         modifier = Modifier.fillMaxWidth(),
                         icon = painterResource(Res.drawable.morenrx),
                         title = "MorenRx",
-                        detailedInfo = "Page design",
-                        onClick = {},
+                        detailedInfo = locale.getString("MorenRx"),
+                        onClick = {  },
                         isCircularIcon = true
                     )
 
@@ -177,36 +186,36 @@ object AboutScreen {
                         modifier = Modifier.fillMaxWidth(),
                         icon = painterResource(Res.drawable.jiangniaht),
                         title = "JiangNight",
-                        detailedInfo = "Program icon design",
-                        onClick = {},
+                        detailedInfo = locale.getString("JiangNight"),
+                        onClick = {  },
                         isCircularIcon = true
                     )
                 }
 
                 item {
-                    Text("More", modifier = Modifier.padding(10.dp))
+                    Text(locale.getString("more"), modifier = Modifier.padding(10.dp))
 
                     AboutScreen.aboutWidgets(
                         modifier = Modifier.fillMaxWidth(),
                         icon = Icons.Default.ThumbUp,
-                        title = "Special thanks",
-                        contentDescription = "Rankings are in chronological order only",
+                        title = locale.getString("special_thanks"),
+                        contentDescription = locale.getString("special_thanks_content"),
                         onClick = { mainViewModel.navigateTo("thanks") }
                     )
 
                     AboutScreen.aboutWidgets(
                         modifier = Modifier.fillMaxWidth(),
                         icon = Icons.Default.Info,
-                        title = "Open Source License",
-                        contentDescription = "Check out the open source projects we use (including libraries)",
+                        title = locale.getString("open_source_license"),
+                        contentDescription = locale.getString("open_source_license_content"),
                         onClick = { mainViewModel.navigateTo("license") }
                     )
 
                     AboutScreen.aboutWidgets(
                         modifier = Modifier.fillMaxWidth(),
                         icon = Icons.Default.BugReport,
-                        title = "Feedback",
-                        contentDescription = "If you have encountered a bug, please click here",
+                        title = locale.getString("feedback"),
+                        contentDescription = locale.getString("feedback_content"),
                         onClick = { openUrlInBrowser("https://github.com/2079541547/TEFModLoader/issues/new/choose") }
                     )
                 }

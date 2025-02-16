@@ -173,7 +173,7 @@ object GuideScreen {
                         .padding(10.dp),
                     onClick = { select ->
                         language.value = select
-                        locales.loadLocalization("GuideScreen.toml", Locales.getLanguage(select))
+                        locales.loadLocalization("Screen/GuideScreen/GuideScreen.toml", Locales.getLanguage(select))
                         configuration.setInt("language", select)
                         mainViewModel.refreshCurrentScreen()
                     }
@@ -415,21 +415,24 @@ object GuideScreen {
                 if ( loggingEnabled.value) {
 
                     val logMap = mapOf(
-                        0 to "512 kb",
-                        1 to "1024 kb",
-                        2 to "2048 kb",
-                        3 to "4096 kb",
-                        4 to "8192 kb",
-                        5 to disposition.getString("unlimited")
+                        512 * 1024 to "512 kb",
+                        1024 * 1024 to "1024 kb",
+                        2048 * 1024 to "2048 kb",
+                        4096 * 1024 to "4096 kb",
+                        8192 * 1024 to "8192 kb",
+                        -1 to disposition.getString("unlimited")
                     )
 
                     SettingScreen.Selector(
                         title = disposition.getString("maximum_log_cache"),
-                        defaultSelectorId = 5,
+                        defaultSelectorId = State.logCache.value,
                         logMap,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp)
+                            .padding(10.dp),
+                        onClick = {
+                            State.logCache.value = it
+                        }
                     )
                 }
             }

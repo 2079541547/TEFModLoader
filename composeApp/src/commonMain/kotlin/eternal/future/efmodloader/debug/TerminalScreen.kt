@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import eternal.future.efmodloader.utility.Apk
+import eternal.future.efmodloader.utility.EFLog
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -217,6 +219,11 @@ fun parseCommand(input: String): Command {
     }
 
     return when (command) {
+        "sig" -> {
+            EFLog.i("input: ${positionalArgs[0]}, outPut: ${positionalArgs[1]}")
+            Apk.signApk(positionalArgs[0], positionalArgs[1])
+            Command(command = input, output = "out: ${positionalArgs[1]}")
+        }
         "hello" -> {
             val message = options["-a"] ?: positionalArgs.getOrNull(0) ?: "World"
             Command(command = input, output = "Hello, $message!")

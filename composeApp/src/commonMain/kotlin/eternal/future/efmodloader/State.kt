@@ -13,7 +13,7 @@ object State {
     val selectedPath = mutableStateOf(configuration.getString("selectedPath"))
 
     val loggingEnabled = mutableStateOf(configuration.getBoolean("loggingEnabled", true))
-    val logCache = mutableStateOf(configuration.getInt("logCache"))
+    val logCache = mutableStateOf(configuration.getInt("logCache", -1))
 
     val loaderNumber = mutableStateOf(configuration.getInt("loaderNumber"))
 

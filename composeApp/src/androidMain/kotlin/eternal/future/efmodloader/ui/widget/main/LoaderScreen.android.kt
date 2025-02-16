@@ -2,7 +2,9 @@ package eternal.future.efmodloader.ui.widget.main
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,7 +53,12 @@ actual fun LoaderScreen.LoaderCard_o(loader: EFModLoader) {
         AlertDialog(
             onDismissRequest = {  },
             title = { Text(EFModScreen.localesText.getString("update_loader")) },
-            text = { Text("${EFModScreen.localesText.getString("update_loader_content")} ${loader.info.name}?") },
+            text = {
+                Column {
+                    Text("${EFModScreen.localesText.getString("update_loader_content")} ${loader.info.name}?")
+                    CircularProgressIndicator()
+                }
+            },
             confirmButton = {},
             dismissButton = {}
         )

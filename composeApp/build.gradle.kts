@@ -45,7 +45,11 @@ kotlin {
             implementation(libs.skiko.awt)
             implementation(libs.kermit)
             implementation(libs.apkzlib)
-            implementation(libs.apksig)
+            implementation("com.android.tools.build:apksig:8.10.0-alpha05") {
+                exclude("org.bouncycastle")
+            }
+            implementation("org.bouncycastle:bcprov-jdk18on:1.79")
+            implementation("org.bouncycastle:bcpkix-jdk18on:1.79")
             implementation(libs.json)
             implementation(fileTree(mapOf("dir" to "src/commonMain/libs", "include" to listOf("*.jar", "*.aar"))))
         }
@@ -91,9 +95,9 @@ android {
 
     signingConfigs {
         getByName("debug") {
-            storeFile = file("src/commonMain/resources/TEFModLoader.keystore")
-            keyAlias = "TEFModLoader"
-            storePassword = "EternalFuture"
+            storeFile = file("TEFModLoader.p12")
+            keyAlias = "EternalFuture"
+            storePassword = "TEFModLoader"
             keyPassword = "TEFModLoader"
         }
     }

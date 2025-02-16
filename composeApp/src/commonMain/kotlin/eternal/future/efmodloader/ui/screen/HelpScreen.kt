@@ -36,10 +36,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import eternal.future.efmodloader.State
 import eternal.future.efmodloader.utility.App
 import eternal.future.efmodloader.ui.AppTopBar
 import eternal.future.efmodloader.ui.navigation.BackMode
 import eternal.future.efmodloader.ui.navigation.NavigationViewModel
+import eternal.future.efmodloader.utility.Locales
 
 object HelpScreen {
 
@@ -52,10 +54,26 @@ object HelpScreen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun HelpScreen(mainViewModel: NavigationViewModel) {
-        val helpItems = listOf(
-            HelpItem(1, "How do I reset my password?", "Go to settings and find the 'Reset Password' option."),
-            HelpItem(2, "What should I do if I forget my username?", "Use the 'Forgot Username' link on the login page."),
-        )
+
+        val locale = Locales().loadLocalization("Screen/HelpScreen.toml", Locales.getLanguage(State.language.value))
+
+        val helpItems = mutableListOf<HelpItem>()
+        var i = 0
+
+        locale.getMap().forEach {
+            if (it.key != "title" &&
+                it.key != "exit" &&
+                it.key != "search") {
+                i++
+                helpItems.add(
+                    HelpItem(
+                        id = i,
+                        question = it.key,
+                        answer = it.value
+                    )
+                )
+            }
+        }
 
         var searchQuery by remember { mutableStateOf("") }
         val filteredItems = if (searchQuery.isEmpty()) {
@@ -72,10 +90,10 @@ object HelpScreen {
             modifier = Modifier.fillMaxSize(),
             topBar = {
                 Column {
-                    val menuItems = mapOf("Exit" to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() })
+                    val menuItems = mapOf(locale.getString("exit") to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() })
 
                     AppTopBar(
-                        title = "Help",
+                        title = locale.getString("title"),
                         showMenu = true,
                         menuItems = menuItems,
                         showBackButton = true,
@@ -87,7 +105,7 @@ object HelpScreen {
                     TextField(
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
-                        placeholder = { Text("Search") },
+                        placeholder = { Text(locale.getString("search")) },
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)

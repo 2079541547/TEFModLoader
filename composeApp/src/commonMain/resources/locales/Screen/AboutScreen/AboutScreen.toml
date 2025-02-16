@@ -1,0 +1,28 @@
+[zh-cn]
+title = "关于"
+exit = "退出"
+app_content = "此项目的意义由大家定义的"
+version = "版本"
+open_source_code = "开源代码"
+open_source_code_content = "跳转到TEFModLoader的开源仓库"
+development = "开发"
+more = "更多"
+special_thanks = "特别鸣谢"
+special_thanks_content = "排名不分前后"
+open_source_license = "开源许可"
+open_source_license_content = "使用的开源项目"
+feedback = "反馈"
+feedback_content = "反馈bug/提出建议"
+important_contributions = "重要贡献"
+"EternalFuture゙" = """
+别看捏，我什么都没做qwq(bushi
+"""
+"MorenRx" = """
+为此项目捐赠50元
+早期提供纯净包
+某些页面的灵感及功能
+早期项目优化
+"""
+"JiangNight" = """
+为项目的 Compose UI 奠定了重要基础
+"""

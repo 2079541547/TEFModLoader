@@ -5,6 +5,7 @@ import com.android.apksig.ApkSigner
 import com.android.apksig.KeyConfig
 import com.android.apksig.KeyConfig.Jca
 import com.android.tools.build.apkzlib.zip.ZFile
+import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
@@ -13,6 +14,7 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.security.KeyStore
 import java.security.PrivateKey
+import java.security.Security
 import java.security.cert.X509Certificate
 import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
@@ -21,7 +23,6 @@ import javax.xml.transform.OutputKeys
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
-
 
 object Apk {
 
@@ -259,15 +260,17 @@ object Apk {
     }
 
     fun signApk(inputPath: String, outputPath: String) {
-        val keystorePassword = "EternalFuture"
-        val keyAlias = "TEFModLoader"
+        val keystorePassword = "TEFModLoader"
+        val keyAlias = "EternalFuture"
         val keyPassword = "TEFModLoader"
         val input = File(inputPath)
         val output = File(outputPath)
 
-        val keyStore = KeyStore.getInstance("PKCS12")
+        Security.addProvider(BouncyCastleProvider())
 
-        keyStore.load(javaClass.classLoader.getResourceAsStream("TEFModLoader.keystore"), keystorePassword.toCharArray())
+        val keyStore = KeyStore.getInstance("BKS", BouncyCastleProvider.PROVIDER_NAME)
+
+        keyStore.load(javaClass.classLoader.getResourceAsStream("patch/TEFModLoader.bks"), keystorePassword.toCharArray())
 
         val privateKey = keyStore.getKey(keyAlias, keyPassword.toCharArray()) as PrivateKey
         val certificateChain = keyStore.getCertificateChain(keyAlias)
@@ -287,7 +290,7 @@ object Apk {
             .setV1SigningEnabled(false)
             .setV2SigningEnabled(true)
             .setV3SigningEnabled(false)
-            .setOtherSignersSignaturesPreserved(true)
+            .setOtherSignersSignaturesPreserved(false)
 
         apkSigner.build().sign()
     }
