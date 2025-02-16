@@ -37,7 +37,6 @@ uiGraphicsAndroid = "1.7.6"
 firebaseCrashlyticsBuildtools = "3.0.3"
 
 [libraries]
-apksig = { module = "com.android.tools.build:apksig", version.ref = "apkzlib" }
 json = { module = "org.json:json", version.ref = "json" }
 apkzlib = { module = "com.android.tools.build:apkzlib", version.ref = "apkzlib" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
