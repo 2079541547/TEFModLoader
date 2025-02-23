@@ -1,0 +1,116 @@
+[zh-cn]
+agreement = "用户协议"
+agreement_content = """
+欢迎使用我们的应用程序（以下简称“本应用”）。请在使用前仔细阅读以下用户协议（以下简称“本协议”），本协议详细说明了您在使用本应用时的权利与义务。
+
+## 一、信息收集
+
+为了优化您的使用体验，本应用仅会收集必要的信息以识别被激活的应用程序列表。我们承诺不会收集用户的个人信息，包括但不限于姓名、联系方式、位置信息等。
+
+## 二、文件管理权限
+
+本应用可能需要请求访问设备上的文件管理权限，以便于管理游戏或其他应用程序的Mod文件。此权限仅用于TEFModLoader默认功能，且该功能不会对您的手机造成威胁。
+
+### 风险提示
+
+- **第三方Mod**：本应用允许用户安装第三方Mod，但请注意，这些Mod可能未经验证，存在安全风险。使用任何未授权或不受信任的第三方Mod可能导致数据丢失、隐私泄露或其他安全问题。
+- **第三方插件页面**：通过本应用访问的第三方插件页面可能存在安全隐患。建议用户避免从不可信来源下载内容。
+- **第三方Loader**：除本应用外，其他第三方提供的Loader也可能存在风险，请谨慎选择并使用。
+
+## 三、免责条款
+
+- **绝对责任限制**：使用本应用即表示您完全理解并同意，因使用本应用或其相关服务所造成的任何后果均由您自行承担。这包括但不限于数据丢失、设备损坏、利润损失、法律纠纷等。无论何种原因导致的损害，本应用的制作者均不承担任何责任。
+- **Root权限**：本应用可能会根据用户需求申请设备的root权限。请注意，获取和使用root权限存在较高风险，可能导致设备安全性降低、系统不稳定等问题。请慎重考虑是否授予此类权限。
+- **第三方内容**：本应用不对第三方Mod、插件或通过本应用访问的其他第三方内容负责。用户应自行承担使用这些内容的风险。
+
+## 四、开源地址
+
+本应用是开源项目，源代码托管于 GitHub： [https://github.com/2079541547/TEFModLoader](https://github.com/2079541547/TEFModLoader)。您可以访问该地址查看项目的源代码、提出问题或贡献代码。
+
+## 五、遵守法规
+
+使用本应用即表示您同意遵守所有适用的国际法、国家法律法规以及地方法规的规定。
+
+## 六、协议变更
+
+我们保留在任何时候修改本协议的权利。任何更新后的协议将在本页面发布，并自发布之日起生效。
+"""
+above_agreement = "我已阅读并同意以上用户协议。"
+
+[zh-hant]
+agreement = "用戶協議"
+agreement_content = """
+歡迎使用我們的應用程序（以下簡稱“本應用”）。請在使用前仔細閱讀以下用戶協議（以下簡稱“本協議”），本協議詳細說明了您在使用本應用時的權利與義務。
+
+## 一、信息收集
+
+為了優化您的使用體驗，本應用僅會收集必要的信息以識別被激活的應用程序列表。我們承諾不會收集用戶的個人信息，包括但不限於姓名、聯繫方式、位置信息等。
+
+## 二、文件管理權限
+
+本應用可能需要請求訪問設備上的文件管理權限，以便於管理遊戲或其他應用程序的Mod文件。此權限僅用於TEFModLoader默認功能，且該功能不會對您的手機造成威脅。
+
+### 風險提示
+
+- **第三方Mod**：本應用允許用戶安裝第三方Mod，但請注意，這些Mod可能未經驗證，存在安全風險。使用任何未授權或不受信任的第三方Mod可能導致數據丟失、隱私洩露或其他安全問題。
+- **第三方插件頁面**：通過本應用訪問的第三方插件頁面可能存在安全隱患。建議用戶避免從不可信來源下載內容。
+- **第三方Loader**：除本應用外，其他第三方提供的Loader也可能存在風險，請謹慎選擇並使用。
+
+## 三、免責條款
+
+- **絕對責任限制**：使用本應用即表示您完全理解並同意，因使用本應用或其相關服務所造成的任何後果均由您自行承擔。這包括但不限於數據丟失、設備損壞、利潤損失、法律糾紛等。無論何種原因導致的損害，本應用的製作者均不承擔任何責任。
+- **Root權限**：本應用可能會根據用戶需求申請設備的root權限。請注意，獲取和使用root權限存在較高風險，可能導致設備安全性降低、系統不穩定等問題。請慎重考慮是否授予此類權限。
+- **第三方內容**：本應用不對第三方Mod、插件或通過本應用訪問的其他第三方內容負責。用戶應自行承擔使用這些內容的風險。
+
+## 四、開源地址
+
+本應用是開源項目，源代碼託管於 GitHub： [https://github.com/2079541547/TEFModLoader](https://github.com/2079541547/TEFModLoader)。您可以訪問該地址查看項目的源代碼、提出問題或貢獻代碼。
+
+## 五、遵守法規
+
+使用本應用即表示您同意遵守所有適用的國際法、國家法律法規以及地方法規的規定。
+
+## 六、協議變更
+
+我們保留在任何時候修改本協議的權利。任何更新後的協議將在本頁面發布，並自發布之日起生效。
+"""
+above_agreement = "我已閱讀並同意以上用戶協議。"
+
+[en]
+agreement = "User Agreement"
+agreement_content = """
+Welcome to our application (hereinafter referred to as "the App"). Please read the following user agreement (hereinafter referred to as "this Agreement") carefully before using it. This Agreement details your rights and obligations when using the App.
+
+## I. Information Collection
+
+To optimize your user experience, the App will only collect necessary information to identify the list of activated applications. We promise not to collect personal information from users, including but not limited to names, contact details, location information, etc.
+
+## II. File Management Permissions
+
+The App may request access to file management permissions on your device to manage Mod files for games or other applications. This permission is only used for the default functionality of TEFModLoader, and this function will not pose a threat to your phone.
+
+### Risk Warning
+
+- **Third-party Mods**: The App allows users to install third-party Mods, but please note that these Mods may be unverified and pose security risks. Using any unauthorized or untrusted third-party Mods can lead to data loss, privacy leaks, or other security issues.
+- **Third-party Plugin Pages**: Third-party plugin pages accessed through the App may have security risks. Users are advised to avoid downloading content from untrusted sources.
+- **Third-party Loaders**: Other third-party provided Loaders, apart from this App, may also carry risks. Please choose and use them cautiously.
+
+## III. Disclaimer
+
+- **Absolute Liability Limitation**: By using the App, you fully understand and agree that any consequences resulting from the use of the App or its related services are borne by you. This includes, but is not limited to, data loss, device damage, profit loss, legal disputes, etc. The creators of the App will not assume any responsibility for damages caused by any reason.
+- **Root Permissions**: The App may request root permissions on your device based on user needs. Please note that obtaining and using root permissions carries significant risks, such as reduced device security and system instability. Please consider carefully whether to grant such permissions.
+- **Third-party Content**: The App does not take responsibility for third-party Mods, plugins, or other third-party content accessed through the App. Users should bear the risks associated with using these contents themselves.
+
+## IV. Open Source Address
+
+This App is an open-source project, with the source code hosted on GitHub: [https://github.com/2079541547/TEFModLoader](https://github.com/2079541547/TEFModLoader). You can visit this address to view the project's source code, raise issues, or contribute code.
+
+## V. Compliance with Laws and Regulations
+
+By using this App, you agree to comply with all applicable international laws, national laws and regulations, and local laws and regulations.
+
+## VI. Agreement Changes
+
+We reserve the right to modify this Agreement at any time. Any updated agreement will be posted on this page and will take effect from the date of posting.
+"""
+above_agreement = "I have read and agree to the above User Agreement."

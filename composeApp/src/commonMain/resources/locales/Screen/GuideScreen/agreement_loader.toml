@@ -1,0 +1,140 @@
+[zh-cn]
+agreement = "EFModLoader使用协议"
+agreement_content = """
+## 1. 使用目的
+
+- **EFModLoader** 是一个旨在为游戏添加扩展功能的工具。虽然其工作原理与某些外挂类似，但作者坚决反对任何游戏作弊行为。作者完全支持社会主义，支持中国共产党的领导，确保本工具的使用符合社会主义核心价值观的要求。
+- 本工具仅供学习和研究使用，与现实中任何真实事件无关，请用户不要代入或联想。EFModLoader 中出现的所有功能、效果均为虚构，与现实中的任何个体、团体或事件无任何关联。
+
+## 2. 禁止作弊
+
+- 请勿使用本工具进行任何形式的游戏作弊行为。任何违反游戏规则的行为都是不道德的，可能导致您的账号被封禁。作者坚决反对一切破坏游戏公平性的行为，维护健康的游戏环境。
+- 使用本工具进行作弊或其他不道德行为的用户，将自行承担所有法律责任。作者不对因用户不当使用本工具而产生的任何后果负责。
+
+## 3. 游戏环境
+
+- 请勿使用本工具破坏游戏平衡或干扰其他玩家的正常游戏体验。尊重其他玩家，共同维护良好的游戏环境。作者倡导公平、公正的游戏环境，反对一切破坏游戏平衡的行为。
+- 用户在使用本工具时，应遵守游戏平台的相关规则和法律法规，确保使用本工具的行为合法合规。
+
+## 4. 内容性质说明
+
+- 本工具仅供学习和研究使用，与现实中任何真实事件无关，请用户不要代入或联想。EFModLoader 中出现的所有功能、效果均为虚构，与现实中的任何个体、团体或事件无任何关联。
+- 本工具中的所有内容均为创意虚构，与任何现实中的事件、人物或组织无任何关联。用户不应将本工具中的任何内容与现实生活中的事件或人物进行对比或联想。
+- 用户在使用本工具时，需自行承担所有法律责任。作者不对因用户不当使用本工具而产生的任何后果负责。用户应遵守当地法律法规，确保使用本工具的行为合法合规。
+
+## 5. 法律责任
+
+- 使用本工具的用户需自行承担所有法律责任。作者不对因不当使用本工具而产生的任何后果负责。用户应遵守当地法律法规，确保使用本工具的行为合法合规。
+- 任何用户在使用本工具时，必须遵守相关法律法规。作者不对用户因不当使用本工具而产生的任何法律责任负责。用户应自行判断并承担所有法律责任。
+- 作者保留对本工具的所有内容进行审查的权利，确保所有内容符合法律法规和社会道德标准。任何违反法律法规或社会道德的内容将被立即删除。
+
+## 6. 用户行为规范
+
+- 用户在使用本工具时，必须遵守以下行为规范：
+  - 不得用于任何非法或不道德的目的。
+  - 不得用于破坏游戏平衡或干扰其他玩家的正常游戏体验。
+  - 不得用于任何可能引起社会不安或争议的行为。
+  - 不得用于任何侵犯他人隐私或权益的行为。
+- 违反上述行为规范的用户，将自行承担所有法律责任。
+- 任何不遵守本协议的使用行为均不属于EFModLoader的范围，作者对此类行为不承担任何责任。
+
+## 7. 最终解释权
+
+- 作者保留对本协议和声明的最终解释权。如有任何争议，作者将依据相关法律法规进行处理。
+- **作者保留随时修改本协议的权利，无需事先通知用户。** 修改后的协议将在作者的官方网站和GitHub页面上公布，用户应定期查看以了解最新版本。一旦继续使用本工具，即表示接受更新后的协议条款。
+"""
+above_agreement = "我已阅读并同意以上EFModLoader使用协议。"
+
+[zh-hant]
+agreement = "EFModLoader使用協議"
+agreement_content = """
+## 1. 使用目的
+
+- **EFModLoader** 是一個旨在為遊戲添加擴展功能的工具。雖然其工作原理與某些外掛類似，但作者堅決反對任何遊戲作弊行為。作者完全支持社會主義，支持中國共產黨的領導，確保本工具的使用符合社會主義核心價值觀的要求。
+- 本工具僅供學習和研究使用，與現實中任何真實事件無關，請用戶不要代入或聯想。EFModLoader 中出現的所有功能、效果均為虛構，與現實中的任何個體、團體或事件無任何關聯。
+
+## 2. 禁止作弊
+
+- 請勿使用本工具進行任何形式的遊戲作弊行為。任何違反遊戲規則的行為都是不道德的，可能導致您的帳號被封禁。作者堅決反對一切破壞遊戲公平性的行為，維護健康的遊戲環境。
+- 使用本工具進行作弊或其他不道德行為的用戶，將自行承擔所有法律責任。作者不對因用戶不當使用本工具而產生的任何後果負責。
+
+## 3. 遊戲環境
+
+- 請勿使用本工具破壞遊戲平衡或干擾其他玩家的正常遊戲體驗。尊重其他玩家，共同維護良好的遊戲環境。作者倡導公平、公正的遊戲環境，反對一切破壞遊戲平衡的行為。
+- 用戶在使用本工具時，應遵守遊戲平台的相關規則和法律法規，確保使用本工具的行為合法合規。
+
+## 4. 內容性質說明
+
+- 本工具僅供學習和研究使用，與現實中任何真實事件無關，請用戶不要代入或聯想。EFModLoader 中出現的所有功能、效果均為虛構，與現實中的任何個體、團體或事件無任何關聯。
+- 本工具中的所有內容均為創意虛構，與任何現實中的事件、人物或組織無任何關聯。用戶不應將本工具中的任何內容與現實生活中的事件或人物進行對比或聯想。
+- 用戶在使用本工具時，需自行承擔所有法律責任。作者不對因用戶不當使用本工具而產生的任何後果負責。用戶應遵守當地法律法規，確保使用本工具的行為合法合規。
+
+## 5. 法律責任
+
+- 使用本工具的用戶需自行承擔所有法律責任。作者不對因不當使用本工具而產生的任何後果負責。用戶應遵守當地法律法規，確保使用本工具的行為合法合規。
+- 任何用戶在使用本工具時，必須遵守相關法律法規。作者不對用戶因不當使用本工具而產生的任何法律責任負責。用戶應自行判斷並承擔所有法律責任。
+- 作者保留對本工具的所有內容進行審查的權利，確保所有內容符合法律法規和社會道德標準。任何違反法律法規或社會道德的內容將被立即刪除。
+
+## 6. 用戶行為規範
+
+- 用戶在使用本工具時，必須遵守以下行為規範：
+  - 不得用於任何非法或不道德的目的。
+  - 不得用於破壞遊戲平衡或干擾其他玩家的正常遊戲體驗。
+  - 不得用於任何可能引起社會不安或爭議的行為。
+  - 不得用於任何侵犯他人隱私或權益的行為。
+- 違反上述行為規範的用戶，將自行承擔所有法律責任。
+- 任何不遵守本協議的使用行為均不屬於EFModLoader的範圍，作者對此類行為不承擔任何責任。
+
+## 7. 最終解釋權
+
+- 作者保留對本協議和聲明的最終解釋權。如有任何爭議，作者將依據相關法律法規進行處理。
+- **作者保留隨時修改本協議的權利，無需事先通知用戶。** 修改後的協議將在作者的官方網站和GitHub頁面上公佈，用戶應定期查看以了解最新版本。一旦繼續使用本工具，即表示接受更新後的協議條款。
+"""
+above_agreement = "我已閱讀並同意以上EFModLoader使用協議。"
+
+[en]
+agreement = "EFModLoader Usage Agreement"
+agreement_content = """
+## 1. Purpose of Use
+
+- **EFModLoader** is a tool designed to add extended functionality to games. Although its working principle is similar to certain cheats, the author firmly opposes any form of game cheating. The author fully supports socialism and the leadership of the Chinese Communist Party, ensuring that the use of this tool complies with the core values of socialism.
+- This tool is for learning and research purposes only and is not related to any real events. Users should not associate or imagine connections between EFModLoader's features and real-world individuals, groups, or events.
+
+## 2. Prohibition of Cheating
+
+- Do not use this tool for any form of game cheating. Any violation of game rules is unethical and may lead to account bans. The author firmly opposes all behaviors that disrupt fair play and promotes a healthy gaming environment.
+- Users who use this tool for cheating or other unethical behaviors will bear all legal responsibilities. The author is not responsible for any consequences arising from improper use of this tool.
+
+## 3. Gaming Environment
+
+- Do not use this tool to disrupt game balance or interfere with other players' normal gaming experiences. Respect other players and jointly maintain a good gaming environment. The author advocates fairness and justice in gaming environments and opposes any actions that disrupt game balance.
+- When using this tool, users must comply with relevant rules and regulations of the gaming platform to ensure their behavior is legal and compliant.
+
+## 4. Nature of Content
+
+- This tool is for learning and research purposes only and is not related to any real events. Users should not associate or imagine connections between EFModLoader's features and real-world individuals, groups, or events.
+- All content within this tool is fictional and has no association with any real-world events, characters, or organizations. Users should not compare or relate any content within this tool to real-life events or people.
+- Users are responsible for all legal liabilities when using this tool. The author is not responsible for any consequences resulting from improper use. Users must comply with local laws and regulations to ensure their use of the tool is legal and compliant.
+
+## 5. Legal Liability
+
+- Users of this tool are responsible for all legal liabilities. The author is not responsible for any consequences arising from improper use. Users must comply with local laws and regulations to ensure their use of the tool is legal and compliant.
+- Any user using this tool must abide by relevant laws and regulations. The author is not responsible for any legal liabilities arising from improper use. Users must judge and assume all legal liabilities on their own.
+- The author reserves the right to review all content within this tool to ensure it meets legal and social moral standards. Any content violating laws or social morals will be immediately deleted.
+
+## 6. User Conduct Guidelines
+
+- Users must adhere to the following conduct guidelines when using this tool:
+  - Not to be used for any illegal or unethical purposes.
+  - Not to be used to disrupt game balance or interfere with other players' normal gaming experiences.
+  - Not to be used for any behavior that may cause social unrest or controversy.
+  - Not to be used for any behavior that violates others' privacy or rights.
+- Users who violate these guidelines will bear all legal responsibilities.
+- Any usage behavior that does not comply with this agreement falls outside the scope of EFModLoader, and the author assumes no responsibility for such behavior.
+
+## 7. Final Interpretation Rights
+
+- The author reserves the final interpretation rights of this agreement and statement. In case of any disputes, the author will handle them according to relevant laws and regulations.
+- **The author reserves the right to modify this agreement at any time without prior notice to users.** Updated agreements will be posted on the author's official website and GitHub page. Users should regularly check for the latest version. Continued use of the tool indicates acceptance of the updated agreement terms.
+"""
+above_agreement = "I have read and agree to the above EFModLoader Usage Agreement."

@@ -1,0 +1,89 @@
+[zh-cn]
+title = "关于"
+exit = "退出"
+app_content = "你的每一缕星光，都是写给世界的温柔诗篇。"
+version = "版本"
+open_source_code = "开源代码"
+open_source_code_content = "跳转到TEFModLoader的开源仓库"
+development = "开发"
+more = "更多"
+special_thanks = "特别鸣谢"
+special_thanks_content = "为此项目作出共享的人"
+open_source_license = "开源许可"
+open_source_license_content = "使用的开源项目"
+feedback = "反馈"
+feedback_content = "反馈bug/提出建议"
+important_contributions = "重要贡献"
+close = "关闭"
+"EternalFuture゙" = """
+别看捏，我什么都没做qwq(bushi
+"""
+"MorenRx" = """
+为此项目捐赠50元
+早期提供纯净包
+某些页面的灵感及功能
+早期项目优化
+"""
+"JiangNight" = """
+为项目的 Compose UI 奠定了重要基础
+"""
+
+[zh-hant]
+title = "關於"
+exit = "退出"
+app_content = "你的每一縷星光，都是寫給世界的溫柔詩篇。"
+version = "版本"
+open_source_code = "開源代碼"
+open_source_code_content = "跳轉到TEFModLoader的開源倉庫"
+development = "開發"
+more = "更多"
+special_thanks = "特別鳴謝"
+special_thanks_content = "為此項目作出貢獻的人"
+open_source_license = "開源許可"
+open_source_license_content = "使用的開源項目"
+feedback = "反饋"
+feedback_content = "反饋bug/提出建議"
+important_contributions = "重要貢獻"
+close = "關閉"
+"EternalFuture゙" = """
+別看捏，我什麼都沒做qwq(bushi
+"""
+"MorenRx" = """
+為此項目捐贈50元
+早期提供純淨包
+某些頁面的靈感及功能
+早期項目優化
+"""
+"JiangNight" = """
+為項目的 Compose UI 奠定了重要基礎
+"""
+
+[en]
+title = "About"
+exit = "Exit"
+app_content = "Every beam of your starlight is a gentle poem written to the world."
+version = "Version"
+open_source_code = "Open Source Code"
+open_source_code_content = "Navigate to the open-source repository of TEFModLoader"
+development = "Development"
+more = "More"
+special_thanks = "Special Thanks"
+special_thanks_content = "People who have contributed to this project"
+open_source_license = "Open Source License"
+open_source_license_content = "Open-source projects used"
+feedback = "Feedback"
+feedback_content = "Report bugs / Suggest improvements"
+important_contributions = "Important Contributions"
+close = "Close"
+"EternalFuture゙" = """
+Don't look, I didn't do anything qwq (hehe
+"""
+"MorenRx" = """
+Donated 50 RMB to the project
+Provided clean packages early on
+Inspiration and functionality for certain pages
+Early project optimization
+"""
+"JiangNight" = """
+Laid the foundation for the project's Compose UI
+"""

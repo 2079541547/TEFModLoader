@@ -1,0 +1,14 @@
+[zh-cn]
+install = "安装Loader"
+installing = "安装中..."
+installing_content = "少女祈祷中..."
+
+[zh-hant]
+install = "安裝Loader"
+installing = "安裝中..."
+installing_content = "少女祈禱中..."
+
+[en]
+install = "Install Loader"
+installing = "Installing..."
+installing_content = "The maiden is praying..."
