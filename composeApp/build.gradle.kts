@@ -48,8 +48,8 @@ kotlin {
             implementation("com.android.tools.build:apksig:8.10.0-alpha05") {
                 exclude("org.bouncycastle")
             }
-            implementation("org.bouncycastle:bcprov-jdk18on:1.79")
-            implementation("org.bouncycastle:bcpkix-jdk18on:1.79")
+            implementation(libs.bcprov.jdk18on)
+            implementation(libs.bcpkix.jdk18on)
             implementation(libs.json)
             implementation(fileTree(mapOf("dir" to "src/commonMain/libs", "include" to listOf("*.jar", "*.aar"))))
         }
@@ -69,8 +69,8 @@ android {
         applicationId = "eternal.future.efmodloader"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 1000
+        versionName = "10.0.0 Beta"
     }
     packaging {
         resources {
@@ -118,9 +118,9 @@ compose.desktop {
         mainClass = "eternal.future.efmodloader.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Msi, TargetFormat.AppImage)
             packageName = "eternal.future.efmodloader"
-            packageVersion = "1.0.0"
+            packageVersion = "10.0.0"
         }
     }
 }

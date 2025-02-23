@@ -21,3 +21,19 @@ Requires C++20 minimum.
 """
 "SilkCasket.url" = "https://github.com/2079541547/SilkCasket"
 "SilkCasket.additionalInfoText" = "Apache-2.0"
+
+"Axml2xml" = """
+An advance and enhanced axml compiler
+"""
+"Axml2xml.url" = "https://github.com/developer-krushna/Axml2xml"
+"Axml2xml.additionalInfoText" = ""
+
+[zh-hant]
+title = "開源許可"
+back_to_default_page = "返回預設頁面"
+exit = "退出"
+
+[en]
+title = "Open Source License"
+back_to_default_page = "Back to Default Page"
+exit = "Exit"

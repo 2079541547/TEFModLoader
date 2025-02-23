@@ -9,11 +9,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.net.Uri;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Objects;
 
 import eternal.future.utility.AssetManager;
 import eternal.future.utility.FileUtils;
@@ -41,7 +43,18 @@ public class TEFModLoader extends Activity {
         if (State.Mode == 0) {
             checkPermission();
         } else {
-            State.EFMod_c = new File(Environment.getExternalStorageDirectory(), "Android/" + State.ManagerPackName + "/files/EFMod").getAbsolutePath();
+            State.EFMod_c = new File(Objects.requireNonNull(Objects.requireNonNull(getExternalFilesDir(null)).getParentFile()).getParent(), State.ManagerPackName + "/files/EFMod").getAbsolutePath();
+            File Modx_x = new File(Objects.requireNonNull(getFilesDir().getParentFile()).getParent(), State.ManagerPackName + "/cache/TEFModLoader/Modx");
+            File EFMod = new File(Objects.requireNonNull(getFilesDir().getParentFile()).getParent(), State.ManagerPackName +"/cache/TEFModLoader/EFMod");
+
+            if (Modx_x.exists()) {
+                FileUtils.moveContent(Modx_x, State.Modx);
+            }
+
+            if (EFMod.exists()) {
+                FileUtils.moveContent(EFMod, State.EFMod);
+            }
+
             startGame();
         }
     }
@@ -61,7 +74,7 @@ public class TEFModLoader extends Activity {
 
             State.Modx_external = new File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader/Modx");
             State.EFMod_external = new File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader/EFMod");
-            State.EFMod_c = new File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader/Data/EFMod").getAbsolutePath();
+            State.EFMod_c = new File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader/Data").getAbsolutePath();
 
             if (State.EFMod_external.exists()) {
                 FileUtils.moveContent(State.EFMod_external, State.EFMod);
@@ -112,18 +125,6 @@ public class TEFModLoader extends Activity {
                 }
             }
             if (!allPermissionsGranted) {
-                new AlertDialog.Builder(this)
-                        .setTitle("权限被拒绝")
-                        .setMessage("需要读写存储权限才能继续，请前往设置页面手动授予权限。")
-                        .setPositiveButton("前往设置", (dialog, which) -> {
-                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                            intent.setData(Uri.fromParts("package", getPackageName(), null));
-                            startActivity(intent);
-                        })
-                        .setNegativeButton("取消", (dialog, which) -> finish())
-                        .create()
-                        .show();
-            } else {
                 startGame();
             }
         }

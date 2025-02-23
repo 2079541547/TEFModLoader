@@ -4,6 +4,7 @@ import static eternal.future.State.EFMod;
 import static eternal.future.State.Modx;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
 import java.io.File;
 
@@ -15,10 +16,20 @@ public class Loader {
     }
 
     private static void loadModx() {
+
+        Log.d("Path", "EFMod_c Path: " + State.EFMod_c);
+        Log.d("Path", "Modx Path: " + State.Modx.getAbsolutePath());
+        Log.d("Path", "EFMod Path: " + State.EFMod.getAbsolutePath());
+
         loadSoFilesFromDirectory(Modx);
     }
 
     private static void loadEFModLoader() {
+
+        Log.d("Path", "EFMod_c Path: " + State.EFMod_c);
+        Log.d("Path", "Modx Path: " + State.Modx.getAbsolutePath());
+        Log.d("Path", "EFMod Path: " + State.EFMod.getAbsolutePath());
+
         loadSpecificSoFiles(EFMod, "loader-core");
     }
 

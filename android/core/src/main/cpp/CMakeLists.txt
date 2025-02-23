@@ -17,6 +17,7 @@ add_library(TEFModLoader SHARED
         TEFModLoader/src/utility.cpp
         TEFModLoader/src/log.cpp
         TEFModLoader/src/manager.cpp
+        TEFModLoader/src/API/utility.cpp
 )
 
 target_include_directories(TEFModLoader

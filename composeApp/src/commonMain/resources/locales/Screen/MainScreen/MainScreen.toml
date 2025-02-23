@@ -7,3 +7,23 @@ terminal = "终端"
 exit = "退出"
 efmod = "Mod管理"
 loader = "Loader管理"
+
+[zh-hant]
+home = "主頁"
+settings = "設置"
+about = "關於"
+help = "幫助"
+terminal = "終端"
+exit = "退出"
+efmod = "Mod管理"
+loader = "Loader管理"
+
+[en]
+home = "Home"
+settings = "Settings"
+about = "About"
+help = "Help"
+terminal = "Terminal"
+exit = "Exit"
+efmod = "Mod Management"
+loader = "Loader Management"
