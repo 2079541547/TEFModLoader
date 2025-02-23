@@ -1,0 +1,39 @@
+[zh-cn]
+title = "开源许可"
+back_to_default_page = "返回默认页面"
+exit = "退出"
+
+"EFModLoader" = """
+一种为EFMod设计的高效侵入式模组加载器
+"""
+"EFModLoader.url" = "https://github.com/2079541547/EFModLoader"
+"EFModLoader.additionalInfoText" = "AGPL-3.0"
+
+"ByNameModding" = """
+ByNameModding is a library for modding il2cpp games by classes, methods, field names on Android. This edition is focused on working on Android with il2cpp. It includes everything you need for modding unity games.
+Requires C++20 minimum.
+"""
+"ByNameModding.url" = "https://github.com/ByNameModding/BNM-Android/"
+"ByNameModding.additionalInfoText" = "MIT"
+
+"SilkCasket" = """
+一个注重灵活性的压缩包格式
+"""
+"SilkCasket.url" = "https://github.com/2079541547/SilkCasket"
+"SilkCasket.additionalInfoText" = "Apache-2.0"
+
+"Axml2xml" = """
+An advance and enhanced axml compiler
+"""
+"Axml2xml.url" = "https://github.com/developer-krushna/Axml2xml"
+"Axml2xml.additionalInfoText" = ""
+
+[zh-hant]
+title = "開源許可"
+back_to_default_page = "返回預設頁面"
+exit = "退出"
+
+[en]
+title = "Open Source License"
+back_to_default_page = "Back to Default Page"
+exit = "Exit"

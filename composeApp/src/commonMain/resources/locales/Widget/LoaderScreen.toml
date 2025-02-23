@@ -1,0 +1,19 @@
+[zh-cn]
+delete_the_loader = "删除加载器"
+delete_the_loader_content = "你确定要删除"
+windows_support = "Windows平台支持"
+android_support = "Android平台支持"
+confirm = "确定"
+cancel = "取消"
+update_loader = "更新中..."
+update_loader_content = "少女祈祷中..."
+
+[en]
+delete_the_loader = "Delete the loader"
+delete_the_loader_content = "Are you sure you want to remove"
+windows_support = "Windows Support"
+android_support = "Android Support"
+confirm = "Confirm"
+cancel = "Cancel"
+update_loader = "Updating..."
+update_loader_content = "Please be patient"

@@ -1,0 +1,56 @@
+[zh-cn]
+back_to_default_page = "返回默认页面"
+exit = "退出"
+title = "特别鸣谢"
+
+"雨鹜" = """
+参与软件早期重写，优化设置页面
+Logo设计
+英语翻译
+"""
+
+"QwQ3094" = """
+早期的部分UI改进
+"""
+
+"aaa1115910" = """
+指导文件如何才能以TR Save Editor方式打开
+"""
+
+[zh-hant]
+back_to_default_page = "返回預設頁面"
+exit = "退出"
+title = "特別鳴謝"
+
+"雨鹜" = """
+參與軟體早期重寫，優化設定頁面
+Logo設計
+英語翻譯
+"""
+
+"QwQ3094" = """
+早期的部分UI改進
+"""
+
+"aaa1115910" = """
+指導文件如何才能以TR Save Editor方式打開
+"""
+
+[en]
+back_to_default_page = "Back to Default Page"
+exit = "Exit"
+title = "Special Thanks"
+
+"雨鹜" = """
+Contributed to early software rewrites, optimized settings pages
+Logo design
+English translation
+"""
+
+"QwQ3094" = """
+Early UI improvements
+"""
+
+"aaa1115910" = """
+Guidance on how to open files with TR Save Editor
+"""

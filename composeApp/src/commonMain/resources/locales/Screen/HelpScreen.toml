@@ -1,0 +1,38 @@
+[zh-cn]
+title = "帮助"
+exit = "退出"
+search = "搜索"
+
+"修补的游戏安装包无效？" = """
+如果出现这种情况请使用MT管理器查看是否签名以及APK是否正常
+"""
+
+"修补的游戏安装包无法安装？" = """
+请确保签名与管理器是完全一致的
+"""
+
+[zh-hant]
+title = "幫助"
+exit = "退出"
+search = "搜索"
+
+"修補的遊戲安裝包無效？" = """
+如果出現這種情況請使用MT管理器查看是否簽名以及APK是否正常
+"""
+
+"修補的遊戲安裝包無法安裝？" = """
+請確保簽名與管理器是完全一致的
+"""
+
+[en]
+title = "Help"
+exit = "Exit"
+search = "Search"
+
+"Invalid patched game installation package?" = """
+If this happens, please use the MT Manager to check if it is signed and whether the APK is normal.
+"""
+
+"Patched game installation package cannot be installed?" = """
+Please ensure that the signature is exactly the same as in the manager.
+"""
