@@ -37,8 +37,6 @@ object EFModScreen {
     fun EFModScreen_r(
         onBack: () -> Unit
     ) {
-
-
         mods.value = eternal.future.efmodloader.utility.EFMod.loadModsFromDirectory(State.EFModPath)
 
         Scaffold(

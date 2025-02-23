@@ -2,3 +2,13 @@
 install = "安装Mod"
 installing = "安装中..."
 installing_content = "少女祈祷中..."
+
+[zh-hant]
+install = "安裝Mod"
+installing = "安裝中..."
+installing_content = "少女祈禱中..."
+
+[en]
+install = "Install Mod"
+installing = "Installing..."
+installing_content = "The maiden is praying..."

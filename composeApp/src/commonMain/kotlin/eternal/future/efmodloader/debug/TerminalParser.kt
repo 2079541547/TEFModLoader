@@ -1,42 +1,100 @@
 package eternal.future.efmodloader.debug
 
-import androidx.compose.ui.graphics.Color
-import kotlinx.coroutines.delay
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import eternal.future.efmodloader.State
+import eternal.future.efmodloader.utility.Apk
+import eternal.future.efmodloader.utility.EFLog
+import eternal.future.efmodloader.utility.EFMod
+import eternal.future.efmodloader.utility.EFModLoader
+import java.io.File
+import java.util.UUID
 
 
-data class LogEntry(
-    val timestamp: String,
-    val source: Source,
-    val type: LogType,
-    val message: String
-)
+data class Command(val command: String, val output: String)
 
-enum class Source { KOTLIN, OTHER }
-enum class LogType(val color: Color) {
-    INFO(Color.Green),
-    WARNING(Color.Yellow),
-    ERROR(Color.Red),
-    DEBUG(Color.Gray)
-}
-
-class TerminalParser {
-
-    private val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-    private val logEntries = mutableListOf<LogEntry>()
-
-    fun addLogEntry(source: Source, type: LogType, message: String) {
-        val timestamp = LocalDateTime.now().format(dateTimeFormatter)
-        logEntries.add(LogEntry(timestamp, source, LogType.INFO, message))
+fun parseCommand(input: String): Command {
+    val parts = input.split(" ")
+    if (parts.isEmpty()) {
+        return Command(command = input, output = "Error: No command provided.")
     }
 
-    suspend fun parse(command: String): String {
-        delay(500)
-        return "Command '$command' executed"
+    val command = parts[0].lowercase().trim()
+    val args = parts.drop(1)
+
+    val options = mutableMapOf<String, String>()
+    val positionalArgs = mutableListOf<String>()
+
+    for (arg in args) {
+        if (arg.startsWith("-")) {
+            val optionParts = arg.split("=")
+            if (optionParts.size == 2) {
+                options[optionParts[0]] = optionParts[1]
+            } else {
+                options[arg] = ""
+            }
+        } else {
+            positionalArgs.add(arg)
+        }
     }
 
-    fun getLogEntries(): List<LogEntry> {
-        return logEntries.toList()
+    return when (command) {
+        "patch" -> {
+            if (positionalArgs.size < 2) {
+                return Command(command = input, output = "Error: 'patch' requires two arguments: mode and apkPath.")
+            }
+            try {
+                Apk.patchGame(mode = positionalArgs[0].toInt(), apkPath = File(positionalArgs[1]))
+                Command(command = input, output = "out: ${positionalArgs[1]}")
+            } catch (e: NumberFormatException) {
+                Command(command = input, output = "Error: Invalid mode argument for 'patch'. - ${e.message}")
+            } catch (e: Exception) {
+                Command(command = input, output = "Error: Failed to patch APK - ${e.message}")
+            }
+        }
+
+        "sign" -> {
+            if (positionalArgs.size < 2) {
+                return Command(command = input, output = "Error: 'sign' requires two arguments: inputApk and outputApk.")
+            }
+            EFLog.i("input: ${positionalArgs[0]}, outPut: ${positionalArgs[1]}")
+            try {
+                Apk.signApk(positionalArgs[0], positionalArgs[1])
+                Command(command = input, output = "out: ${positionalArgs[1]}")
+            } catch (e: Exception) {
+                Command(command = input, output = "Error: Failed to sign APK - ${e.message}")
+            }
+        }
+
+        "install" -> {
+            if (positionalArgs.isEmpty()) {
+                return Command(command = input, output = "Error: 'install' requires at least one argument: path.")
+            }
+
+            val installType = options["-type"] ?: "mod"
+            val installPath = File(positionalArgs[0])
+
+            return when (installType.lowercase()) {
+                "mod" -> {
+                    try {
+                        EFMod.install(installPath.absolutePath, File(State.EFModPath, UUID.randomUUID().toString()).path)
+                        Command(command = input, output = "installed: ${installPath.absolutePath}")
+                    } catch (e: Exception) {
+                        Command(command = input, output = "Error: Failed to install MOD - ${e.message}")
+                    }
+                }
+
+                "loader" -> {
+                    try {
+                        EFModLoader.install(installPath.absolutePath, File(State.EFModLoaderPath, UUID.randomUUID().toString()).path)
+                        Command(command = input, output = "installed: ${installPath.absolutePath}")
+                    } catch (e: Exception) {
+                        Command(command = input, output = "Error: Failed to install MOD Loader - ${e.message}")
+                    }
+                }
+
+                else -> Command(command = input, output = "Error: Unknown install type '$installType'. Supported types are 'mod' and 'loader'.")
+            }
+        }
+
+        else -> Command(command = input, output = "Unknown command: $input")
     }
 }

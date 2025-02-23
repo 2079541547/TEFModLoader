@@ -4,6 +4,12 @@ exit = "退出"
 last = "上一步"
 next = "下一步"
 
+[zh-hant]
+title = "引導"
+exit = "退出"
+last = "上一步"
+next = "下一步"
+
 [en]
 title = "Guide"
 exit = "Exit"

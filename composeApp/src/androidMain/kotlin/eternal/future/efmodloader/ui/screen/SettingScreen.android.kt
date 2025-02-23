@@ -1,5 +1,8 @@
 package eternal.future.efmodloader.ui.screen
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts.CreateDocument
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +16,7 @@ import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.LocalFlorist
 import androidx.compose.material.icons.filled.NaturePeople
 import androidx.compose.material.icons.filled.NightsStay
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.SettingsSystemDaydream
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.WbSunny
@@ -22,6 +26,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import eternal.future.efmodloader.MainApplication
 import eternal.future.efmodloader.State
 import eternal.future.efmodloader.State.darkTheme
 import eternal.future.efmodloader.State.language
@@ -33,7 +38,13 @@ import eternal.future.efmodloader.ui.navigation.BackMode
 import eternal.future.efmodloader.ui.navigation.NavigationViewModel
 import eternal.future.efmodloader.ui.widget.main.SettingScreen
 import eternal.future.efmodloader.utility.App
+import eternal.future.efmodloader.utility.EFLog
 import eternal.future.efmodloader.utility.Locales
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 
 actual object SettingScreen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +52,16 @@ actual object SettingScreen {
     actual fun SettingScreen(mainViewModel: NavigationViewModel) {
 
         val setting = Locales()
-        setting.loadLocalization("Screen/MainScreen/SettingScreen.toml", Locales.getLanguage(State.language.value))
+        setting.loadLocalization("Screen/MainScreen/SettingScreen.toml", Locales.getLanguage(language.value))
+
+        val exportFileLauncher = rememberLauncherForActivityResult(CreateDocument("*/*")) { uri: Uri? ->
+            uri?.let {
+                MainApplication.getContext().contentResolver.openOutputStream(it).use { outputStream ->
+                    val file = File(EFLog.logFilePath)
+                    if (file.exists()) outputStream?.write(file.readBytes())
+                }
+            }
+        }
 
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -118,6 +138,17 @@ actual object SettingScreen {
                                 .padding(10.dp),
                             onClick = {
                                 State.logCache.value = it
+                            }
+                        )
+
+                        SettingScreen.ActionButton(
+                            icon = Icons.Default.Save,
+                            title = setting.getString("export_logs"),
+                            description = setting.getString("export_logs_content"),
+                            onClick = {
+                                val formatter = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault())
+                                val fileName = "runtime-jvm-${formatter.format(Date())}.log"
+                                exportFileLauncher.launch(fileName)
                             }
                         )
                     }

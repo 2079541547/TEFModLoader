@@ -46,7 +46,7 @@ import androidx.compose.ui.window.DialogProperties
 import org.jetbrains.compose.resources.painterResource
 import eternal.future.efmodloader.easteregg.GravityAffectedContent
 import tefmodloader.composeapp.generated.resources.Res
-import tefmodloader.composeapp.generated.resources.compose_multiplatform
+import tefmodloader.composeapp.generated.resources.tefmodloader
 
 object AboutScreen {
     @Composable
@@ -78,8 +78,6 @@ object AboutScreen {
                 onClick()
             }
         ) {
-
-
                 Column(
                     modifier = Modifier.Companion
                         .fillMaxWidth()
@@ -90,7 +88,7 @@ object AboutScreen {
 
                     if (!physical) {
                         Image(
-                            painter = painterResource(Res.drawable.compose_multiplatform),
+                            painter = painterResource(Res.drawable.tefmodloader),
                             contentDescription = "App Icon",
                             modifier = Modifier.Companion.size(128.dp)
                         )
@@ -103,7 +101,7 @@ object AboutScreen {
                             containerWidth = 208.dp.value
                         ) {
                             Image(
-                                painter = painterResource(Res.drawable.compose_multiplatform),
+                                painter = painterResource(Res.drawable.tefmodloader),
                                 contentDescription = "App Icon",
                                 modifier = Modifier.Companion.size(128.dp)
                             )

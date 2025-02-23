@@ -2,6 +2,7 @@ package eternal.future.efmodloader.ui.widget.main
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -127,23 +128,27 @@ object SettingScreen {
     }
 
     @Composable
-    fun PathInputWithFilePicker(
+    fun GeneralTextInput(
         title: String,
-        path: String,
-        onPathChange: (String) -> Unit,
-        onFolderSelect: () -> Unit,
-        modifier: Modifier
+        value: String,
+        onValueChange: (String) -> Unit,
+        leadingIcon: (@Composable () -> Unit)? = null,
+        trailingIcon: (@Composable () -> Unit)? = null,
+        modifier: Modifier = Modifier,
+        placeholder: String? = null,
+        singleLine: Boolean = true
     ) {
         OutlinedTextField(
-            value = path,
-            onValueChange = onPathChange,
+            value = value,
+            onValueChange = onValueChange,
             label = { Text(title) },
-            trailingIcon = {
-                IconButton(onClick = onFolderSelect) {
-                    Icon(Icons.Default.Folder, contentDescription = "Select Folder")
-                }
-            },
-            modifier = modifier
+            leadingIcon = leadingIcon?.let { { it() } },
+            trailingIcon = trailingIcon?.let { { it() } },
+            modifier = modifier,
+            placeholder = if (!placeholder.isNullOrBlank()) {
+                { Text(placeholder) }
+            } else null,
+            singleLine = singleLine
         )
     }
 
@@ -242,6 +247,51 @@ object SettingScreen {
                 ),
                 modifier = Modifier.padding(start = 16.dp)
             )
+        }
+    }
+
+    @Composable
+    fun ActionButton(
+        modifier: Modifier = Modifier,
+        icon: ImageVector? = null,
+        title: String,
+        description: String? = null,
+        onClick: () -> Unit
+    ) {
+        Surface(
+            onClick = onClick,
+            shape = RoundedCornerShape(8.dp),
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+            contentColor = MaterialTheme.colorScheme.primary,
+            modifier = modifier
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+                .fillMaxWidth()
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp)
+            ) {
+                if (icon != null) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
+                Column {
+                    Text(text = title, style = MaterialTheme.typography.titleMedium)
+                    if (!description.isNullOrBlank()) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = description,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    }
+                }
+            }
         }
     }
 }

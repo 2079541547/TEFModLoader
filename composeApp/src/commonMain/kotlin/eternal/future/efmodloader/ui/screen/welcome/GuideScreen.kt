@@ -1,7 +1,6 @@
 package eternal.future.efmodloader.ui.screen.welcome
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -11,9 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.LastPage
+import androidx.compose.material.icons.automirrored.filled.NavigateNext
 import androidx.compose.material.icons.filled.BeachAccess
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Favorite
@@ -40,10 +39,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import eternal.future.efmodloader.State
 import eternal.future.efmodloader.State.autoPatch
@@ -61,7 +58,14 @@ import eternal.future.efmodloader.ui.navigation.ScreenRegistry
 import eternal.future.efmodloader.ui.widget.main.SettingScreen
 import eternal.future.efmodloader.ui.widget.welcome.GuideScreen
 import eternal.future.efmodloader.utility.App
+import eternal.future.efmodloader.utility.EFLog
+import eternal.future.efmodloader.utility.EFModLoader
 import eternal.future.efmodloader.utility.Locales
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import kotlin.math.roundToInt
+
 
 object GuideScreen {
 
@@ -130,12 +134,6 @@ object GuideScreen {
         LaunchedEffect(key1 = Unit) {
             showLast.value = false
         }
-
-        val fabXOffset: Dp by animateDpAsState(
-            targetValue = 0.dp ,
-            animationSpec = tween(durationMillis = 300)
-        )
-        var dragOffset by remember { mutableStateOf(0f) }
 
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -223,25 +221,31 @@ object GuideScreen {
                     )
                 }
             }
+
+            var offsetX by remember { mutableStateOf(0f) }
+            var offsetY by remember { mutableStateOf(0f) }
             ExtendedFloatingActionButton(
                 text = { Text(locales.getString("next")) },
-                icon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next") },
+                icon = { Icon(Icons.AutoMirrored.Filled.NavigateNext, contentDescription = "Next") },
                 containerColor = MaterialTheme.colorScheme.primary,
                 onClick = { viewModel.navigateTo("disposition") },
                 modifier = Modifier
-                    .offset(x = with(LocalDensity.current) { (fabXOffset.value + dragOffset).toDp() })
+                    .offset {
+                        IntOffset(
+                            offsetX.roundToInt(),
+                            offsetY.roundToInt()
+                        )
+                    }
                     .align(Alignment.BottomEnd)
                     .pointerInput(Unit) {
-                        detectDragGestures { change, dragAmount ->
-                            dragOffset += dragAmount.x
-                            change.consume()
+                        detectDragGestures { _, dragAmount ->
+                            offsetX += dragAmount.x
+                            offsetY += dragAmount.y
                         }
                     }
-                    .graphicsLayer(
-                        translationX = dragOffset
-                    )
                     .padding(20.dp)
             )
+
         }
     }
 
@@ -252,11 +256,6 @@ object GuideScreen {
         agreement.loadLocalization("Screen/GuideScreen/agreement.toml", Locales.getLanguage(language.value))
 
         val showNext = remember { mutableStateOf(false) }
-        val fabXOffset: Dp by animateDpAsState(
-            targetValue = 0.dp,
-            animationSpec = tween(durationMillis = 300)
-        )
-        var dragOffset by remember { mutableStateOf(0f) }
 
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -276,23 +275,27 @@ object GuideScreen {
                 )
             }
             if (showNext.value) {
+                var offsetX by remember { mutableStateOf(0f) }
+                var offsetY by remember { mutableStateOf(0f) }
                 ExtendedFloatingActionButton(
                     text = { Text(locales.getString("next")) },
-                    icon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next") },
+                    icon = { Icon(Icons.AutoMirrored.Filled.NavigateNext, contentDescription = "Next") },
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = { viewModel.navigateTo("agreement_loader") },
                     modifier = Modifier
-                        .offset(x = with(LocalDensity.current) { (fabXOffset.value + dragOffset).toDp() })
+                        .offset {
+                            IntOffset(
+                                offsetX.roundToInt(),
+                                offsetY.roundToInt()
+                            )
+                        }
                         .align(Alignment.BottomEnd)
                         .pointerInput(Unit) {
-                            detectDragGestures { change, dragAmount ->
-                                dragOffset += dragAmount.x
-                                change.consume()
+                            detectDragGestures { _, dragAmount ->
+                                offsetX += dragAmount.x
+                                offsetY += dragAmount.y
                             }
                         }
-                        .graphicsLayer(
-                            translationX = dragOffset
-                        )
                         .padding(20.dp)
                 )
             }
@@ -310,11 +313,6 @@ object GuideScreen {
         }
 
         val showNext = remember { mutableStateOf(false) }
-        val fabXOffset: Dp by animateDpAsState(
-            targetValue = 0.dp,
-            animationSpec = tween(durationMillis = 300)
-        )
-        var dragOffset by remember { mutableStateOf(0f) }
 
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -334,26 +332,54 @@ object GuideScreen {
                 )
             }
             if (showNext.value) {
+
+                var offsetX by remember { mutableStateOf(0f) }
+                var offsetY by remember { mutableStateOf(0f) }
                 ExtendedFloatingActionButton(
                     text = { Text(locales.getString("next")) },
-                    icon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next") },
+                    icon = { Icon(Icons.AutoMirrored.Filled.NavigateNext, contentDescription = "Next") },
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = {
+
+                        if (defaultLoader.value) {
+                            try {
+                                val tempFile = File.createTempFile("TEFModLoader", ".efml")
+                                val target = File(State.EFModLoaderPath, "default")
+
+                                FileOutputStream(tempFile).use { fileOutputStream ->
+                                    javaClass.classLoader?.getResourceAsStream("TEFModLoader.efml")?.copyTo(fileOutputStream)
+                                }
+
+                                EFModLoader.install(
+                                    tempFile.path,
+                                    target.path
+                                )
+
+                                File(target, "enabled").mkdirs()
+
+                                tempFile.delete()
+                            } catch (e: IOException) {
+                                EFLog.e("安装默认加载器时出现错误：", e)
+                            }
+                        }
+
                         mainViewModel.setInitialScreen("main")
                         mainViewModel.navigateTo("main")
                     },
                     modifier = Modifier
-                        .offset(x = with(LocalDensity.current) { (fabXOffset.value + dragOffset).toDp() })
+                        .offset {
+                            IntOffset(
+                                offsetX.roundToInt(),
+                                offsetY.roundToInt()
+                            )
+                        }
                         .align(Alignment.BottomEnd)
                         .pointerInput(Unit) {
-                            detectDragGestures { change, dragAmount ->
-                                dragOffset += dragAmount.x
-                                change.consume()
+                            detectDragGestures { _, dragAmount ->
+                                offsetX += dragAmount.x
+                                offsetY += dragAmount.y
                             }
                         }
-                        .graphicsLayer(
-                            translationX = dragOffset
-                        )
                         .padding(20.dp)
                 )
             }
@@ -369,12 +395,6 @@ object GuideScreen {
         }
 
         disposition.loadLocalization("Screen/GuideScreen/disposition.toml", Locales.getLanguage(language.value))
-
-        val fabXOffset: Dp by animateDpAsState(
-            targetValue = 0.dp,
-            animationSpec = tween(durationMillis = 300)
-        )
-        var dragOffset by remember { mutableStateOf(0f) }
 
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -413,7 +433,6 @@ object GuideScreen {
                 )
 
                 if ( loggingEnabled.value) {
-
                     val logMap = mapOf(
                         512 * 1024 to "512 kb",
                         1024 * 1024 to "1024 kb",
@@ -438,14 +457,11 @@ object GuideScreen {
             }
 
             if (showNext_disposition.value) {
+                var offsetX by remember { mutableStateOf(0f) }
+                var offsetY by remember { mutableStateOf(0f) }
                 ExtendedFloatingActionButton(
                     text = { Text(locales.getString("next")) },
-                    icon = {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowForward,
-                            contentDescription = "Next"
-                        )
-                    },
+                    icon = { Icon(Icons.AutoMirrored.Filled.NavigateNext, contentDescription = "Next") },
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = {
                         if (!autoPatch.value) {
@@ -455,17 +471,19 @@ object GuideScreen {
                         }
                     },
                     modifier = Modifier
-                        .offset(x = with(LocalDensity.current) { (fabXOffset.value + dragOffset).toDp() })
+                        .offset {
+                            IntOffset(
+                                offsetX.roundToInt(),
+                                offsetY.roundToInt()
+                            )
+                        }
                         .align(Alignment.BottomEnd)
                         .pointerInput(Unit) {
-                            detectDragGestures { change, dragAmount ->
-                                dragOffset += dragAmount.x
-                                change.consume()
+                            detectDragGestures { _, dragAmount ->
+                                offsetX += dragAmount.x
+                                offsetY += dragAmount.y
                             }
                         }
-                        .graphicsLayer(
-                            translationX = dragOffset
-                        )
                         .padding(20.dp)
                 )
             }

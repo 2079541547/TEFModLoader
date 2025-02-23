@@ -5,7 +5,10 @@ import com.android.apksig.ApkSigner
 import com.android.apksig.KeyConfig
 import com.android.apksig.KeyConfig.Jca
 import com.android.tools.build.apkzlib.zip.ZFile
+import eternal.future.efmodloader.State.Debugging
+import eternal.future.efmodloader.State.OverrideVersion
 import org.bouncycastle.jce.provider.BouncyCastleProvider
+import org.json.JSONObject
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import java.io.File
@@ -16,7 +19,6 @@ import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.Security
 import java.security.cert.X509Certificate
-import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.transform.OutputKeys
@@ -25,37 +27,7 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 
 object Apk {
-
-    fun getSupportedAbis(apkPath: String): List<String> {
-        val apkFile = File(apkPath)
-        if (!apkFile.exists()) {
-            println("APK file does not exist.")
-            return emptyList()
-        }
-
-        val abis = HashSet<String>()
-
-        try {
-            ZipFile(apkFile).use { zip ->
-                val entries = zip.entries()
-                while (entries.hasMoreElements()) {
-                    val entry = entries.nextElement()
-                    val entryName = entry.name
-                    if (entryName.startsWith("lib/") && !entryName.endsWith("/")) {
-                        val abi = entryName.substringAfter("lib/").substringBefore('/')
-                        abis.add(abi)
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return abis.toList()
-    }
-
-    fun modifyManifest(filePath: String,
-                       addDebuggable: Boolean, updateVersionCode: Boolean, packName: String = "") {
+    fun modifyManifest(filePath: String, mode: Int = 0, addDebuggable: Boolean, updateVersionCode: Boolean, packName: String = "") {
         val manifestFile = File(filePath)
         if (!manifestFile.exists()) {
             println("Manifest file does not exist: $filePath")
@@ -73,6 +45,8 @@ object Apk {
         if (packName != "") {
             manifestNode.setAttributeNS("", "package", packName)
         }
+
+        manifestNode.setAttributeNS("http://schemas.android.com/apk/res/android", "android:sharedUserId", "future.tefmodloader")
 
         fun addPermission(permissionName: String) {
             val permissionElement = document.createElement("uses-permission").apply {
@@ -110,7 +84,7 @@ object Apk {
 
         val metaDataNode = document.createElement("meta-data").apply {
             setAttributeNS("http://schemas.android.com/apk/res/android", "android:name", "TEFModLoader")
-            setAttributeNS("http://schemas.android.com/apk/res/android", "android:value", "true")
+            setAttributeNS("http://schemas.android.com/apk/res/android", "android:value", mode.toString())
         }
         applicationNode.appendChild(metaDataNode)
         println("Meta-data node added.")
@@ -174,24 +148,6 @@ object Apk {
                 }
             }
         }
-    }
-
-    private fun createServiceElement(document: Document, serviceName: String): Element {
-        val serviceElement = document.createElement("service")
-        serviceElement.setAttributeNS("http://schemas.android.com/apk/res/android", "android:name", serviceName)
-        serviceElement.setAttributeNS("http://schemas.android.com/apk/res/android", "android:exported", "true")
-
-        /*
-        val intentFilterElement = document.createElement("intent-filter")
-        val actionElement = document.createElement("action").apply {
-            setAttributeNS("http://schemas.android.com/apk/res/android", "android:name", "com.example.SERVICE_ACTION")
-        }
-        intentFilterElement.appendChild(actionElement)
-        serviceElement.appendChild(intentFilterElement)
-        */
-
-        println("Service element created.")
-        return serviceElement
     }
 
     private fun saveDocument(document: Document, file: File) {
@@ -321,6 +277,61 @@ object Apk {
     fun decodeAXml(inputPath: String, outputPath: String) {
         val axmlParser = AXMLParser()
         axmlParser.parseToXML(inputPath, outputPath)
+    }
+
+    fun patchGame(mode: Int,
+                  apkPath: File,
+                  newPackName: String = "",
+                  debug: Boolean = false,
+                  overrideVersion: Boolean = false
+                  ) {
+        apkPath.let {
+            if (!it.exists()) return
+
+            if (mode != 2 && mode != 3) {
+                val axml = File(it.parent, "AndroidManifest.xml")
+                val axml_temp = File(it.parent, "AndroidManifest_temp.xml")
+
+                extractFileFromApk(it.path, "AndroidManifest.xml", axml.path)
+
+                decodeAXml(axml.path, axml_temp.path)
+                modifyManifest(axml_temp.path, mode, debug, overrideVersion, newPackName)
+                axml.delete()
+                Apk.encoderAXml(axml_temp.path, axml.path)
+                replaceFileInApk(it.path, "AndroidManifest.xml", axml.path)
+
+                val dexc = countDexFiles(it.path) + 1
+                javaClass.classLoader?.getResourceAsStream("patch/classes.dex")
+                javaClass.classLoader?.getResourceAsStream("patch/config.json")
+
+                val cj = File(it.parent, "config.json")
+                val d = File(it.parent, "classes$dexc.dex")
+
+                FileOutputStream(cj).use { fileOutputStream ->
+                    javaClass.classLoader?.getResourceAsStream("patch/config.json")?.copyTo(fileOutputStream)
+                }
+
+                cj.writeText(JSONObject(cj.readText()).put("mode", mode).toString(4))
+
+                FileOutputStream(d).use { fileOutputStream ->
+                    javaClass.classLoader?.getResourceAsStream("patch/classes.dex")?.copyTo(fileOutputStream)
+                }
+
+                replaceFileInApk(it.path, d.name, d.path)
+                replaceFileInApk(it.path, "assets/config.json", cj.path)
+
+                cj.delete()
+                d.delete()
+
+                axml_temp.delete()
+                axml.delete()
+                signApk(it.path, File(it.parent, "sign.apk").path)
+                it.delete()
+                File(it.parent, "sign.apk").renameTo(it)
+            } else {
+
+            }
+        }
     }
 }
 

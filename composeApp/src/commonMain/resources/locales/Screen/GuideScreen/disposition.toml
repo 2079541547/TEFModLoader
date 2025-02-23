@@ -8,3 +8,25 @@ auto_provisioning = "自动修补已安装的游戏包"
 auto_provisioning_content = "如果你安装了游戏且不会操作就勾选，注意不支持加密包！"
 # choose_game_folder = "选择游戏目录"  #未确定
 # choose_game_folder_content = "" #未确定
+
+[zh-hant]
+install_loader = "安裝預設加載器"
+install_loader_content = "建議勾選"
+unlimited = "無限制"
+maximum_log_cache = "日誌文件最大大小"
+log = "啟用日誌"
+auto_provisioning = "自動修補已安裝的遊戲包"
+auto_provisioning_content = "如果你安裝了遊戲且不會操作就勾選，注意不支援加密包！"
+# choose_game_folder = "選擇遊戲目錄"  #未確定
+# choose_game_folder_content = "" #未確定
+
+[en]
+install_loader = "Install Default Loader"
+install_loader_content = "Recommended to check"
+unlimited = "Unlimited"
+maximum_log_cache = "Maximum Log Cache Size"
+log = "Enable Logging"
+auto_provisioning = "Auto-Patch Installed Game Packages"
+auto_provisioning_content = "Check this if you have installed games and are unsure how to operate. Note: does not support encrypted packages!"
+# choose_game_folder = "Choose Game Directory"  #Undetermined
+# choose_game_folder_content = "" #Undetermined

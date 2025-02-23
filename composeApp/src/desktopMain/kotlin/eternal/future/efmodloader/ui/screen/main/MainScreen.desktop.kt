@@ -80,17 +80,21 @@ actual object MainScreen {
         var title by remember { mutableStateOf("home") }
 
         val currentScreenWithAnimation by viewModel.currentScreen.collectAsState()
-        Scaffold(topBar = {
-            val menuItems = mutableMapOf(
-                mainScreen.getString("about") to Pair(Icons.Default.Info) { mainViewModel.navigateTo("about") },
-                mainScreen.getString("help") to Pair(Icons.AutoMirrored.Filled.Help) { mainViewModel.navigateTo("help") },
-                mainScreen.getString("exit") to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() }
-            )
-            AppTopBar(
-                title = title,
-                menuItems = menuItems
-            )
-        }) { innerPadding ->
+
+        Scaffold(
+            topBar = {
+                val menuItems = mutableMapOf(
+                    mainScreen.getString("about") to Pair(Icons.Default.Info) { mainViewModel.navigateTo("about") },
+                    mainScreen.getString("help") to Pair(Icons.AutoMirrored.Filled.Help) { mainViewModel.navigateTo("help") },
+                    mainScreen.getString("exit") to Pair(Icons.AutoMirrored.Filled.ExitToApp) { App.exit() }
+                )
+                AppTopBar(
+                    title = title,
+                    menuItems = menuItems
+                )
+            },
+
+            ) { innerPadding ->
             Row(
                 modifier = Modifier
                     .fillMaxSize()

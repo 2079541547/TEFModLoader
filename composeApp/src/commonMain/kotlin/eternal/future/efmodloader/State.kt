@@ -26,8 +26,8 @@ object State {
     var SignatureKiller = mutableStateOf(0)
     var ApkPath = mutableStateOf("")
     var OverrideVersion = mutableStateOf(false)
-    var Mode = mutableStateOf(configuration.getInt("Mode"))
-    var gamePack = mutableStateOf(true)
+    var Mode = mutableStateOf(0)
+    var gamePack = mutableStateOf(false)
 
     var SilkCasket_Temp = File(App.getPrivate(), "SilkCasket_Temp").path
 
@@ -39,5 +39,6 @@ object State {
     var screen_revolve = mutableStateOf(false)
 
     val architecture = mutableStateOf(configuration.getInt("architecture"))
-    val patched = mutableStateOf(configuration.getBoolean("patched", false))
+
+    var initialBoot = configuration.getBoolean("initialBoot", true)
 }

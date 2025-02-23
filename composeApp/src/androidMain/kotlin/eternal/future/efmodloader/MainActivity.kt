@@ -47,6 +47,7 @@ import eternal.future.efmodloader.ui.screen.welcome.GuideScreen
 import eternal.future.efmodloader.ui.screen.welcome.welcomeScreen
 import eternal.future.efmodloader.ui.theme.TEFModLoaderComposeTheme
 import eternal.future.efmodloader.utility.App
+import eternal.future.efmodloader.utility.EFMod
 import eternal.future.efmodloader.utility.Zip
 import java.io.File
 
@@ -63,7 +64,6 @@ class MainActivity : ComponentActivity() {
         fun exit() {
             instance.finishAffinity()
         }
-
     }
 
 
@@ -79,7 +79,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val mainViewModel = remember { NavigationViewModel() }
-
             TEFModLoaderComposeTheme {
                 initializeScreens(mainViewModel)
                 NavigationHost(mainViewModel)
@@ -138,7 +137,16 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun WelcomeScreen(viewModel: NavigationViewModel) {
-        val isFirst = true
+        val isFirst = State.initialBoot
+
+        if (configuration.getBoolean("externalMode", false)) {
+            EFMod.update_data(
+                File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader/Data").path,
+                State.EFModPath
+            )
+            configuration.setBoolean("externalMode", false)
+        }
+
         welcomeScreen {
             viewModel.removeCurrentScreen()
             if (isFirst) viewModel.setInitialScreen("guide") else viewModel.setInitialScreen("main")

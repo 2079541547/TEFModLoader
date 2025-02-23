@@ -101,8 +101,6 @@ var Window: Window? = null
 @Suppress("UnsafeDynamicallyLoadedCode")
 fun main() = application {
 
-
-
     State.EFModPath = File(App.getPrivate(), "EFMod").path
     State.EFModLoaderPath = File(App.getPrivate(), "EFModLoader").path
 

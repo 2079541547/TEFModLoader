@@ -88,7 +88,7 @@ object AboutScreen {
                             title = user["agreement"].toString(),
                             content = user["agreement_content"].toString(),
                             onDismiss = { userDialog = false },
-                            confirmButtonText = "close",
+                            confirmButtonText = locale.getString("close"),
                             modifier = Modifier.padding(10.dp).fillMaxWidth()
                         )
                     }
@@ -98,7 +98,7 @@ object AboutScreen {
                             title = loader["agreement"].toString(),
                             content = loader["agreement_content"].toString(),
                             onDismiss = { loaderDialog = false },
-                            confirmButtonText = "close",
+                            confirmButtonText = locale.getString("close"),
                             modifier = Modifier.padding(10.dp).fillMaxWidth()
                         )
                     }
@@ -114,7 +114,7 @@ object AboutScreen {
                         modifier = Modifier.fillMaxWidth(),
                         icon = Icons.Default.Info,
                         title = locale.getString("version"),
-                        contentDescription = "v1.0.0.0",
+                        contentDescription = "v10.0.0",
                         onClick = {
                             version_n++
                             if (version_n >= 30) {

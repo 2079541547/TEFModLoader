@@ -1,24 +1,28 @@
 package eternal.future.efmodloader.utility
 
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import androidx.core.net.toUri
-import mt.modder.hub.axml.AXMLCompiler
 import eternal.future.efmodloader.MainApplication
+import mt.modder.hub.axml.AXMLCompiler
 import java.io.File
 import java.io.FileOutputStream
-import kotlin.random.Random
 
 fun Apk.extractWithPackageName(packageName: String, targetPath: String) {
     try {
         val pm = MainApplication.getContext().packageManager
         val packageInfo = pm.getPackageInfo(packageName, PackageManager.GET_META_DATA)
-        packageInfo.applicationInfo?.sourceDir?.let {
-            File(it).let {
-                if (!File(targetPath).exists()) it.copyTo(File(targetPath))
+
+        packageInfo.applicationInfo?.sourceDir?.let { sourceDir ->
+            val sourceFile = File(sourceDir)
+            val targetFile = File(targetPath)
+
+            if (!targetFile.exists()) {
+                sourceFile.copyTo(targetFile, overwrite = false)
             }
         }
-    } catch (e: ExceptionInInitializerError) {
+    } catch (e: PackageManager.NameNotFoundException) {
+        e.printStackTrace()
+    } catch (e: Exception) {
         e.printStackTrace()
     }
 }
@@ -49,27 +53,37 @@ fun Apk.doesAnyAppContainMetadata(metadataKey: String): Boolean {
     return false
 }
 
-fun Apk.launchRandomAppWithMetadata(metadataKey: String) {
+fun Apk.getPackageNamesWithMetadata(metadataKey: String): Map<String, Int> {
     val context = MainApplication.getContext()
     val packageManager = context.packageManager
     val packages = packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-    val candidates = mutableListOf<ApplicationInfo>()
 
-    for (packageInfo in packages) {
+    return packages.mapNotNull { appInfo ->
         try {
-            if (packageInfo.metaData?.containsKey(metadataKey) == true) {
-                candidates.add(packageInfo)
+            appInfo.metaData?.get(metadataKey)?.let { value ->
+                val intValue = value as? Int ?: 0
+                appInfo.packageName to intValue
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            null
         }
-    }
+    }.toMap()
+}
 
-    val randomCandidate = candidates[Random.nextInt(candidates.size)]
-
-    val launchIntent = packageManager.getLaunchIntentForPackage(randomCandidate.packageName)
-    if (launchIntent != null) {
-        context.startActivity(launchIntent)
+fun Apk.launchAppByPackageName(packageName: String): Boolean {
+    return try {
+        val context = MainApplication.getContext()
+        val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName)
+        if (launchIntent != null) {
+            context.startActivity(launchIntent)
+            true
+        } else {
+            false
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        false
     }
 }
 

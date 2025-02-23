@@ -87,6 +87,63 @@ object EFMod {
         }
     }
 
+    fun initialize_data(modPath: String, targetDirectory: String) {
+        try {
+            val targetDir = File(targetDirectory)
+            if (!targetDir.exists() && !targetDir.mkdirs()) {
+                EFLog.e("无法创建目标目录：$targetDirectory")
+                return
+            }
+
+            val mods = loadModsFromDirectory(modPath)
+            mods.forEach { mod ->
+                val f = File(mod.path)
+                File(f, "private").let { privateDir ->
+                    if (privateDir.exists()) {
+                        EFLog.d("开始从 ${privateDir.absolutePath} 复制到 $targetDirectory")
+                        FileUtils.copyRecursivelyEfficient(privateDir, File(targetDirectory, "${privateDir.name}/private"))
+                        EFLog.d("完成复制 ${privateDir.name} 到 $targetDirectory")
+                    } else {
+                        EFLog.w("未找到私有目录：${privateDir.absolutePath}")
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            EFLog.e("初始化数据时发生异常", e)
+        }
+    }
+
+    fun update_data(externallyPrivate: String, modPath: String) {
+        try {
+            val mods = loadModsFromDirectory(modPath)
+            mods.forEach { mod ->
+                val f = File(mod.path)
+                File(f, "private").let { privateDir ->
+                    if (privateDir.exists()) {
+                        File(externallyPrivate, "${privateDir.name}/private").let { externalDir ->
+                            if (externalDir.exists() && externalDir.isDirectory) {
+                                if (!privateDir.exists() && !privateDir.mkdirs()) {
+                                    EFLog.e("无法创建私有目录：${privateDir.absolutePath}")
+                                    return@let
+                                }
+
+                                EFLog.d("开始从 ${externalDir.absolutePath} 更新到 ${privateDir.absolutePath}")
+                                FileUtils.copyRecursivelyEfficient(externalDir, privateDir)
+                                EFLog.d("完成更新 ${privateDir.name} 从 $externallyPrivate")
+                            } else {
+                                EFLog.w("外部私有目录不存在或不是目录：${externalDir.absolutePath}")
+                            }
+                        }
+                    } else {
+                        EFLog.w("未找到私有目录：${privateDir.absolutePath}")
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            EFLog.e("更新数据时发生异常", e)
+        }
+    }
+
     fun initialize(modPath: String, loaderPath: String, targetDirectory: String) {
         EFLog.d("开始初始化MOD和加载器: MOD路径: $modPath, 加载器路径: $loaderPath, 目标目录: $targetDirectory")
 
@@ -273,8 +330,8 @@ object EFMod {
                         path = modDir.absolutePath,
                         icon = ModIcon,
                         isEnabled = File(modDir, "enabled").exists(),
-                        standards = toml.getTable("info").getInteger("standards").toInt(),
-                        Modx = toml.getTable("info").getBoolean("modx")
+                        standards = toml.getTable("mod").getInteger("standards").toInt(),
+                        Modx = toml.getTable("mod").getBoolean("modx")
                     )
 
                     mods.add(mod)

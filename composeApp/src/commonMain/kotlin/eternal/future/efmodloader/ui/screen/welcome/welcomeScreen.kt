@@ -26,7 +26,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import eternal.future.efmodloader.easteregg.GravityAffectedContent
 import tefmodloader.composeapp.generated.resources.Res
-import tefmodloader.composeapp.generated.resources.compose_multiplatform
+import tefmodloader.composeapp.generated.resources.tefmodloader
 
 
 @Composable
@@ -72,7 +72,7 @@ fun welcomeScreen(onAnimationEnd: () -> Unit) {
                             containerHeight= 220f
                         ) {
                             Image(
-                                painter = painterResource(Res.drawable.compose_multiplatform),
+                                painter = painterResource(Res.drawable.tefmodloader),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(200.dp)
@@ -92,7 +92,7 @@ fun welcomeScreen(onAnimationEnd: () -> Unit) {
                         verticalArrangement = Arrangement.Center
                     ) {
                         Image(
-                            painter = painterResource(Res.drawable.compose_multiplatform),
+                            painter = painterResource(Res.drawable.tefmodloader),
                             contentDescription = null,
                             modifier = Modifier
                                 .size(200.dp)

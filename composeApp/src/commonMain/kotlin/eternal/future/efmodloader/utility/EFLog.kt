@@ -9,7 +9,7 @@ import java.util.Date
 
 object EFLog {
 
-    private var logFilePath = File(App.getPrivate(), "jvm-runtime.log").path
+    val logFilePath = File(App.getPrivate(), "jvm-runtime.log").path
     private var printCallerInfo = true
     private const val TAG = "TEFModLoader"
 
