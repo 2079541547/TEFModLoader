@@ -30,7 +30,6 @@
 #include <dlfcn.h>
 #include <TEFModLoader/log.hpp>
 #include <iostream>
-#include <TEFModLoader/API/registration.hpp>
 
 void *EFModLoader::Loader::efopen(const char *p) { return dlopen(p, RTLD_LAZY); }
 void *EFModLoader::Loader::efsym(void *h, const char *s) { return dlsym(h, s); }
@@ -114,8 +113,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
                     3
             }.getID(),
             &TEFModLoader::Mode);
-
-    TEFModLoader::API::Registration::registration();
 
     TEFModLoader::initialize(env);
     BNM::Loading::TryLoadByJNI(env);
