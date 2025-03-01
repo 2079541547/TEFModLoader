@@ -53,7 +53,7 @@ T hooked(BNM::UnityEngine::Object * i, ...) {
     va_start(args, i);
     va_copy(args_copy, args);
 
-    return callFunction<T>(func.at(randomIndex), i, args_copy);
+    return callFunction<T>(func.at(randomIndex), (void*)i, args_copy);
 
     va_end(args_copy);
     va_end(args);
@@ -66,7 +66,7 @@ void hooked_void(BNM::UnityEngine::Object * i, ...) {
 
     old_fun<void>(i, args_copy);
     for (auto _: func) {
-        callFunction<void>(_, i, args_copy);
+        callFunction<void>(_, (void*)i, args_copy);
     }
 
     va_end(args_copy);
