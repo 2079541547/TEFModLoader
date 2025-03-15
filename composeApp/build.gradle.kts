@@ -70,7 +70,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1000
-        versionName = "10.0.0 Beta"
+        versionName = "10.0.0 Beta1"
     }
     packaging {
         resources {
