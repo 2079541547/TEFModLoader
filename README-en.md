@@ -5,12 +5,16 @@
 ## 📚 Open Source Components
 
 | Project Name | Purpose | License |
-|-------------|---------|---------|
+|--------------|---------|---------|
 | [Jetpack Compose](https://developer.android.com/jetpack/compose) | Android UI framework | Apache 2.0 |
-| [EFModLoader](https://github.com/2079541547/EFModLoader) | TEFModLoader core | AGPL v3.0 |
+| [EFModLoader](https://github.com/2079541547/EFModLoader) | Core loader for TEFModLoader | AGPL v3.0 |
 | [EFMod](https://github.com/2079541547/EFMod) | Mod design standard for TEFModLoader | Apache 2.0 |
-| [BNM-Android](https://github.com/ByNameModding/BNM-Android) | Library for modifying il2cpp games via class/method/field names on Android | MIT |
-| [Dobby](https://github.com/jmpews/Dobby) | Lightweight multi-platform, multi-architecture hook framework | Apache 2.0 |
+| [BNM-Android](https://github.com/ByNameModding/BNM-Android) | Library for modifying il2cpp games on Android via class/method/field names | MIT |
+| [Dobby](https://github.com/jmpews/Dobby) | Lightweight, cross-platform, multi-architecture hooking framework | Apache 2.0 |
+| [SilkCasket](https://github.com/2079541547/SilkCasket) | TEFMod file format | Apache 2.0 |
+| [Axml2xml](https://github.com/developer-krushna/Axml2xml) | Advanced and enhanced axml compiler | - |
+| [axml-parser](https://github.com/ZaratustraN/axml-parser) | Converts axml to xml format | - |
+| [xml2axml](https://github.com/hzw1199/xml2axml) | Converts xml to axml format | - |
 
 ## ✨ Core Advantages
 

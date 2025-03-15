@@ -6,11 +6,15 @@
 
 | Название проекта | Назначение | Лицензия |
 |------------------|------------|----------|
-| [Jetpack Compose](https://developer.android.com/jetpack/compose) | Android UI фреймворк | Apache 2.0 |
-| [EFModLoader](https://github.com/2079541547/EFModLoader) | Ядро TEFModLoader | AGPL v3.0 |
-| [EFMod](https://github.com/2079541547/EFMod) | Стандарт разработки модов | Apache 2.0 |
-| [BNM-Android](https://github.com/ByNameModding/BNM-Android) | Библиотека для модификации il2cpp игр через имена классов/методов/полей на Android | MIT |
-| [Dobby](https://github.com/jmpews/Dobby) | Легковесный мультиплатформенный фреймворк для хуков | Apache 2.0 |
+| [Jetpack Compose](https://developer.android.com/jetpack/compose) | UI-фреймворк для Android | Apache 2.0 |
+| [EFModLoader](https://github.com/2079541547/EFModLoader) | Ядро загрузчика TEFModLoader | AGPL v3.0 |
+| [EFMod](https://github.com/2079541547/EFMod) | Стандарт разработки модов для TEFModLoader | Apache 2.0 |
+| [BNM-Android](https://github.com/ByNameModding/BNM-Android) | Библиотека для модификации il2cpp-игр на Android через имена классов/методов/полей | MIT |
+| [Dobby](https://github.com/jmpews/Dobby) | Легковесный кроссплатформенный фреймворк для хак-хуков | Apache 2.0 |
+| [SilkCasket](https://github.com/2079541547/SilkCasket) | Формат файлов TEFMod | Apache 2.0 |
+| [Axml2xml](https://github.com/developer-krushna/Axml2xml) | Усовершенствованный компилятор axml | - |
+| [axml-parser](https://github.com/ZaratustraN/axml-parser) | Конвертер axml в xml | - |
+| [xml2axml](https://github.com/hzw1199/xml2axml) | Конвертер xml в axml | - |  
 
 ## ✨ Ключевые преимущества
 

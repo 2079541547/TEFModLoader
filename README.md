@@ -4,13 +4,19 @@
 
 ## 📚 开源组件
 
-| 项目名称                                                         | 用途                                                    | 协议       |
-| ---------------------------------------------------------------- | ------------------------------------------------------- | ---------- |
-| [Jetpack Compose](https://developer.android.com/jetpack/compose) | Android UI框架                                          | Apache 2.0 |
-| [EFModLoader](https://github.com/2079541547/EFModLoader)         | TEFModLoader加载器核心                                  | AGPL v3.0  |
-| [EFMod](https://github.com/2079541547/EFMod)                     | TEFModLoader的Mod设计标准                               | Apache 2.0 |
+| 项目名称                                                             | 用途                                  | 协议         |
+|------------------------------------------------------------------|-------------------------------------|------------|
+| [Jetpack Compose](https://developer.android.com/jetpack/compose) | Android UI框架                        | Apache 2.0 |
+| [EFModLoader](https://github.com/2079541547/EFModLoader)         | TEFModLoader加载器核心                   | AGPL v3.0  |
+| [EFMod](https://github.com/2079541547/EFMod)                     | TEFModLoader的Mod设计标准                | Apache 2.0 |
 | [BNM-Android](https://github.com/ByNameModding/BNM-Android)      | 在 Android 上通过类、方法、字段名称修改 il2cpp 游戏的库 | MIT        |
-| [Dobby](https://github.com/jmpews/Dobby)                         | 一个轻量级、多平台、多架构的漏洞利用钩子框架。          | Apache 2.0 |
+| [Dobby](https://github.com/jmpews/Dobby)                         | 一个轻量级、多平台、多架构的漏洞利用钩子框架。             | Apache 2.0 |
+| [SilkCasket](https://github.com/2079541547/SilkCasket)           | TEFMod文件格式                          | Apache 2.0 |
+| [Axml2xml](https://github.com/developer-krushna/Axml2xml)        | 高级和增强的 axml 编译器                     | -           |
+| [axml-parser](https://github.com/ZaratustraN/axml-parser)        | 将axml转换为xml格式                       | -          |
+| [xml2axml](https://github.com/hzw1199/xml2axml)                   | 将xml转换为axml格式                       | -          |
+
+
 
 ## ✨ 核心优势
 
