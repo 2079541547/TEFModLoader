@@ -12,6 +12,8 @@ confirm = "确定"
 cancel = "取消"
 update_mod = "更新中..."
 update_mod_content = "少女祈祷中..."
+update_mod_error = "更新失败"
+update_mod_error_content = "非标准Mod文件头"
 
 [zh-hant]
 delete_the_mod = "刪除Mod"
@@ -27,6 +29,8 @@ confirm = "確定"
 cancel = "取消"
 update_mod = "更新中..."
 update_mod_content = "少女祈禱中..."
+update_mod_error = "更新失敗"
+update_mod_error_content = "非標準Mod檔頭"
 
 [en]
 delete_the_mod = "Delete the mod"
@@ -42,3 +46,5 @@ confirm = "Confirm"
 cancel = "Cancel"
 update_mod = "Updating..."
 update_mod_content = "Please be patient"
+update_mod_error = "The update failed"
+update_mod_error_content = "Non-standard mod file headers"

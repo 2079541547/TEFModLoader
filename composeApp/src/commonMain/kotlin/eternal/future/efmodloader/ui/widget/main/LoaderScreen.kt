@@ -96,6 +96,11 @@ object LoaderScreen {
                                 fontSize = 14.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+                            Text(
+                                text = "v${loader.info.version}",
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                         Checkbox(checked = enabled, onCheckedChange = { check ->
                             val file = File(loader.path, "enabled")

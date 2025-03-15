@@ -2,13 +2,19 @@
 install = "安装Loader"
 installing = "安装中..."
 installing_content = "少女祈祷中..."
+install_error = "安装失败"
+install_error_content = "非标准Loader文件头"
 
 [zh-hant]
 install = "安裝Loader"
 installing = "安裝中..."
 installing_content = "少女祈禱中..."
+install_error = "安裝失敗"
+install_error_content = "非標準Loader文件頭"
 
 [en]
 install = "Install Loader"
 installing = "Installing..."
 installing_content = "The maiden is praying..."
+install_error = "Installation Failed"
+install_error_content = "Non-standard Loader File Header"

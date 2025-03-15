@@ -3,6 +3,7 @@ package eternal.future.efmodloader.ui.screen.main
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -25,6 +26,10 @@ actual fun EFModScreen.EFModScreen() {
 
     locale.loadLocalization("Screen/MainScreen/EFModScreen.toml", Locales.getLanguage(State.language.value))
 
+
+    var showError by remember { mutableStateOf(false) }
+    var errorMsg by remember { mutableStateOf("") }
+
     var showInstall by remember { mutableStateOf(false) }
 
     val tempFile = File(MainApplication.getContext().externalCacheDir, "install.temp")
@@ -42,9 +47,13 @@ actual fun EFModScreen.EFModScreen() {
 
     if (showInstall) {
         LaunchedEffect(key1 = showInstall) {
-            EFMod.install(tempFile.path, File(State.EFModPath, UUID.randomUUID().toString()).path)
+            val r = EFMod.install(tempFile.path, File(State.EFModPath, UUID.randomUUID().toString()).path)
             tempFile.delete()
             mods.value = EFMod.loadModsFromDirectory(State.EFModPath)
+            if (!r.first) {
+                errorMsg = if (r.second != "error") r.second else locale.getString("install_error_content")
+                showError = true
+            }
             showInstall = false
         }
     }
@@ -61,6 +70,22 @@ actual fun EFModScreen.EFModScreen() {
                 Column {
                     Text(locale.getString("installing_content"))
                     CircularProgressIndicator()
+                }
+            },
+            confirmButton = {},
+            dismissButton = {}
+        )
+    }
+
+    if (showError) {
+        AlertDialog(
+            onDismissRequest = { showError = false },
+            title = { Text(locale.getString("install_error")) },
+            text = {
+                LazyColumn {
+                    item {
+                        Text(errorMsg)
+                    }
                 }
             },
             confirmButton = {},

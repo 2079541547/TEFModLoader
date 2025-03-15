@@ -3,6 +3,7 @@ package eternal.future.efmodloader.ui.widget.main
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -22,6 +23,9 @@ import java.io.FileOutputStream
 @Composable
 actual fun EFModScreen.EFModCard_o(mod: EFMod) {
 
+    var showError by remember { mutableStateOf(false) }
+    var errorMsg by remember { mutableStateOf("") }
+
     var showUpdate by remember { mutableStateOf(false) }
     val tempFile = File(MainApplication.getContext().externalCacheDir, "update.temp")
     val selectFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { url ->
@@ -37,8 +41,12 @@ actual fun EFModScreen.EFModCard_o(mod: EFMod) {
 
     if (showUpdate) {
         LaunchedEffect(key1 = showUpdate) {
-            eternal.future.efmodloader.utility.EFMod.update(tempFile.path, mod.path)
+            val r = eternal.future.efmodloader.utility.EFMod.update(tempFile.path, mod.path)
             mods.value = eternal.future.efmodloader.utility.EFMod.loadModsFromDirectory(State.EFModPath)
+            if (!r.first) {
+                errorMsg = if (r.second != "error") r.second else localesText.getString("update_mod_error_content")
+                showError = true
+            }
             showUpdate = false
         }
     }
@@ -54,11 +62,27 @@ actual fun EFModScreen.EFModCard_o(mod: EFMod) {
             title = { Text(localesText.getString("update_mod")) },
             text = {
                 Column {
-                    CircularProgressIndicator()
                     Text("${localesText.getString("update_mod_content")} ${mod.info.name}?")
                 } },
             confirmButton = {},
             dismissButton = {}
         )
     }
+
+    if (showError) {
+        AlertDialog(
+            onDismissRequest = { showError = false },
+            title = { Text(localesText.getString("update_mod_error")) },
+            text = {
+                LazyColumn {
+                   item {
+                       Text(errorMsg)
+                   }
+                } },
+            confirmButton = {},
+            dismissButton = {}
+        )
+    }
+
+
 }

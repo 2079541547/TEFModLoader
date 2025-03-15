@@ -27,7 +27,8 @@ import java.io.IOException
 
 object EFModLoader {
 
-    fun install(loaderFile: String, targetDirectory: String) {
+    fun install(loaderFile: String, targetDirectory: String): Pair<Boolean, String> {
+        EFLog.d("开始安装MOD文件: $loaderFile 到目录: $targetDirectory")
         val expectedHeader = byteArrayOf(
             0x53, 0x69, 0x6C, 0x6B, 0x43, 0x61, 0x73, 0x6B, 0x65, 0x74,
             0x00, 0x03, 0xFE.toByte(), 0x34, 0x01
@@ -38,16 +39,23 @@ object EFModLoader {
                 val header = ByteArray(expectedHeader.size)
                 val bytesRead = fis.read(header)
 
-                if (bytesRead == expectedHeader.size || header.contentEquals(expectedHeader)) {
+                if (bytesRead == expectedHeader.size && header.contentEquals(expectedHeader)) {
+                    EFLog.i("验证通过，开始释放LOADER文件: $loaderFile 到目标目录: $targetDirectory")
                     SilkCasket.release(State.SilkCasket_Temp, loaderFile, targetDirectory)
+                    EFLog.d("成功安装LOADER文件: $loaderFile 到目录: $targetDirectory")
+                } else {
+                    EFLog.e("文件头验证失败: 文件 '$loaderFile' 不是有效的LOADER文件")
+                    return Pair(false, "error")
                 }
             }
         } catch (e: IOException) {
-            e.printStackTrace()
+            EFLog.e("安装LOADERv文件时发生IO异常", e)
+            return Pair(false, e.toString())
         }
+        return Pair(true, "succeed")
     }
 
-    fun update(loaderFile: String, targetDirectory: String) {
+    fun update(loaderFile: String, targetDirectory: String): Pair<Boolean, String> {
         val expectedHeader = byteArrayOf(
             0x53, 0x69, 0x6C, 0x6B, 0x43, 0x61, 0x73, 0x6B, 0x65, 0x74,
             0x00, 0x03, 0xFE.toByte(), 0x34, 0x01
@@ -60,11 +68,16 @@ object EFModLoader {
 
                 if (bytesRead == expectedHeader.size || header.contentEquals(expectedHeader)) {
                     SilkCasket.release(State.SilkCasket_Temp, loaderFile, targetDirectory)
+                } else {
+                    return Pair(false, "error")
                 }
             }
         } catch (e: IOException) {
             e.printStackTrace()
+            return Pair(false, e.toString())
         }
+
+        return Pair(true, "")
     }
 
     fun remove(targetDirectory: String) {

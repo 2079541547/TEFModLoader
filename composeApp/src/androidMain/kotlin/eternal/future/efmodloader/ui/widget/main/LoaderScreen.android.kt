@@ -3,6 +3,7 @@ package eternal.future.efmodloader.ui.widget.main
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -22,6 +23,10 @@ import java.io.FileOutputStream
 
 @Composable
 actual fun LoaderScreen.LoaderCard_o(loader: EFModLoader) {
+
+    var showError by remember { mutableStateOf(false) }
+    var errorMsg by remember { mutableStateOf("") }
+
     var showUpdate by remember { mutableStateOf(false) }
     val tempFile = File(MainApplication.getContext().externalCacheDir, "update.temp")
     val selectFileLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { url ->
@@ -37,9 +42,12 @@ actual fun LoaderScreen.LoaderCard_o(loader: EFModLoader) {
 
     if (showUpdate) {
         LaunchedEffect(key1 = showUpdate) {
-            eternal.future.efmodloader.utility.EFModLoader.update(tempFile.path, loader.path)
+            val r = eternal.future.efmodloader.utility.EFModLoader.update(tempFile.path, loader.path)
+            if (!r.first) {
+                errorMsg = if (r.second != "error") r.second else EFModScreen.localesText.getString("update_loader_error_content")
+                showError = true
+            }
             showUpdate = false
-            mods.value = eternal.future.efmodloader.utility.EFMod.loadModsFromDirectory(State.EFModPath)
             loaders.value = eternal.future.efmodloader.utility.EFModLoader.loadLoadersFromDirectory(State.EFModLoaderPath)
         }
     }
@@ -59,6 +67,21 @@ actual fun LoaderScreen.LoaderCard_o(loader: EFModLoader) {
                     CircularProgressIndicator()
                 }
             },
+            confirmButton = {},
+            dismissButton = {}
+        )
+    }
+
+    if (showError) {
+        AlertDialog(
+            onDismissRequest = { showError = false },
+            title = { Text(EFModScreen.localesText.getString("update_loader_error")) },
+            text = {
+                LazyColumn {
+                    item {
+                        Text(errorMsg)
+                    }
+                } },
             confirmButton = {},
             dismissButton = {}
         )

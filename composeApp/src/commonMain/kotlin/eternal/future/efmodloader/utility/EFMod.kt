@@ -27,7 +27,7 @@ import java.nio.file.StandardCopyOption
 
 object EFMod {
 
-    fun install(modFile: String, targetDirectory: String) {
+    fun install(modFile: String, targetDirectory: String): Pair<Boolean, String> {
         EFLog.d("开始安装MOD文件: $modFile 到目录: $targetDirectory")
         val expectedHeader = byteArrayOf(
             0x53, 0x69, 0x6C, 0x6B, 0x43, 0x61, 0x73, 0x6B, 0x65, 0x74,
@@ -45,14 +45,17 @@ object EFMod {
                     EFLog.d("成功安装MOD文件: $modFile 到目录: $targetDirectory")
                 } else {
                     EFLog.e("文件头验证失败: 文件 '$modFile' 不是有效的MOD文件")
+                    return Pair(false, "error")
                 }
             }
         } catch (e: IOException) {
             EFLog.e("安装MOD文件时发生IO异常", e)
+            return Pair(false, e.toString())
         }
+        return Pair(true, "succeed")
     }
 
-    fun update(modFile: String, targetDirectory: String) {
+    fun update(modFile: String, targetDirectory: String): Pair<Boolean, String> {
         EFLog.d("开始更新MOD文件: $modFile 到目录: $targetDirectory")
         val expectedHeader = byteArrayOf(
             0x53, 0x69, 0x6C, 0x6B, 0x43, 0x61, 0x73, 0x6B, 0x65, 0x74,
@@ -70,11 +73,14 @@ object EFMod {
                     EFLog.d("成功更新MOD文件: $modFile 到目录: $targetDirectory")
                 } else {
                     EFLog.e("文件头验证失败: 文件 '$modFile' 不是有效的MOD文件")
+                    return Pair(false, "error")
                 }
             }
         } catch (e: IOException) {
             EFLog.e("更新MOD文件时发生IO异常", e)
+            return Pair(false, e.toString())
         }
+        return Pair(true, "succeed")
     }
 
     fun remove(targetDirectory: String) {
