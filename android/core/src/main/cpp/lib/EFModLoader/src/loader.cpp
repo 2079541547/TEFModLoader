@@ -60,7 +60,7 @@ void EFModLoader::Loader::loadAMod(const std::filesystem::path& filePath, std::f
 
         std::cout << "Mod standard version: " << modStandard << std::endl;
 
-        if (modStandard == 20250211) {
+        if (modStandard == 20250316) {
             auto modInfo = CreateMod()->getInfo();
             auto ModID = std::hash<std::string>{}(modInfo.name + modInfo.author);
 
@@ -128,7 +128,7 @@ void EFModLoader::Loader::loadMod(const std::filesystem::path &path, const std::
 
                 std::cout << "Mod standard version: " << modStandard << std::endl;
 
-                if (modStandard == 20250211) {
+                if (modStandard == 20250316) {
                     auto modInfo = CreateMod()->getInfo();
                     auto ModID = std::hash<std::string>{}(modInfo.name + modInfo.author);
 
@@ -197,7 +197,7 @@ void EFModLoader::Loader::loadSingleMod(const std::filesystem::path &path, const
 
             std::cout << "Mod standard version: " << modStandard << std::endl;
 
-            if (modStandard == 20250211) {
+            if (modStandard == 20250316) {
                 auto modInfo = modInstance->getInfo();
                 auto ModID = std::hash<std::string>{}(modInfo.name + modInfo.author);
 

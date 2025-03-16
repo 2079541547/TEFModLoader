@@ -112,13 +112,13 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
                     "function",
                     3
             }.getID(),
-            &TEFModLoader::Mode);
+            (void*)TEFModLoader::Utility::printMemoryHexView);
 
     TEFModLoader::initialize(env);
     BNM::Loading::TryLoadByJNI(env);
     BNM::Loading::AddOnLoadedEvent(TEFModLoader::Manager::API::autoProcessing);
-    BNM::Loading::AddOnLoadedEvent(EFModLoader::Loader::initiate);
     BNM::Loading::AddOnLoadedEvent(TEFModLoader::Hook::autoHook);
+    BNM::Loading::AddOnLoadedEvent(EFModLoader::Loader::initiate);
 
     return JNI_VERSION_1_6;
 }
