@@ -14,7 +14,7 @@ class Locales {
     fun loadLocalization(file: String, lang: String, loadzh: Boolean = false): Locales {
         EFLog.d("开始加载本地化文件: $file, 语言: $lang")
         locales.clear()
-        val stream = javaClass.classLoader.getResourceAsStream("locales/$file")
+        val stream = javaClass.classLoader?.getResourceAsStream("locales/$file")
         if (stream == null) {
             EFLog.e("无法找到资源文件: locales/$file")
             return this

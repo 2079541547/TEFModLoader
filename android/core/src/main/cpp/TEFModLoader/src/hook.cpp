@@ -71,7 +71,6 @@ void *TEFModLoader::Hook::SharedLibraryManager::loadUniqueCopy(const std::string
     return handle;
 }
 
-typedef void (*createHookFunc)(int mode, int type, std::vector<void*> funPtrs, BNM::Class& c, BNM::MethodBase& method, size_t id, EFModAPI* efmodapi);
 void TEFModLoader::Hook::autoHook() {
     std::cout << "Starting autoHook process." << std::endl;
 
@@ -82,93 +81,82 @@ void TEFModLoader::Hook::autoHook() {
                       << ", Class: " << funcDesc.Class
                       << ", Name: " << funcDesc.Name << std::endl;
 
+            if (funcDesc.FunPtr.empty()) {
+                std::cerr << "Warning: Function pointer is empty for descriptor. Skipping." << std::endl;
+                continue;
+            }
+
+            funcDesc.Template->Set(funcDesc.FunPtr);
+
             size_t dotPosition = funcDesc.Class.find('.');
-            BNM::MethodBase* method;
-            BNM::Class* Class;
+            BNM::MethodBase method;
+            BNM::Class Class;
             if (dotPosition != std::string::npos) {
                 std::cout << "Class name contains '.', processing inner class." << std::endl;
-                Class = new BNM::Class(BNM::Class(funcDesc.Namespace, funcDesc.Class.substr(0, dotPosition), BNM::Image(funcDesc.File)).GetInnerClass(funcDesc.Class.substr(dotPosition + 1)));
+                Class = BNM::Class(funcDesc.Namespace, funcDesc.Class.substr(0, dotPosition), BNM::Image(funcDesc.File)).GetInnerClass(funcDesc.Class.substr(dotPosition + 1));
             } else {
                 std::cout << "Class name does not contain '.', processing regular class." << std::endl;
-                Class = new BNM::Class(BNM::Class(funcDesc.Namespace, funcDesc.Class, BNM::Image(funcDesc.File)));
+                Class = BNM::Class(funcDesc.Namespace, funcDesc.Class, BNM::Image(funcDesc.File));
             }
 
-            method = new BNM::MethodBase(Class->GetMethod(funcDesc.Name, funcDesc.Arg));
+            method = Class.GetMethod(funcDesc.Name, funcDesc.Arg);
             std::cout << "Method retrieved successfully." << std::endl;
 
-            void* handle = SharedLibraryManager::getInstance().loadUniqueCopy(TEFModLoader::auxiliaryPath);
-            if (!handle) {
-                std::cerr << "Failed to load shared library." << std::endl;
-                delete method;
-                delete Class;
-                continue;
-            }
-            std::cout << "Shared library loaded successfully." << std::endl;
-
-            auto createHook = (createHookFunc)dlsym(handle, "createHook");
-            if (!createHook) {
-                std::cerr << "Failed to resolve symbol 'createHook'." << std::endl;
-                delete method;
-                delete Class;
-                continue;
-            }
-            std::cout << "Symbol 'createHook' resolved successfully." << std::endl;
-
             std::vector<void*> funPtrs{funcDesc.FunPtr};
-            Type type;
-            Mode hookMode;
 
             auto hookT = funcDesc.Type.substr(0, funcDesc.Type.find(">>"));
-            auto hookFt = funcDesc.Type.substr(funcDesc.Type.find(">>") + 2);
+            void **old_fun = nullptr;
+            void* hooked_fun = nullptr;
 
-            if (hookT == "hook") {
-                hookMode = Mode::INLINE;
-                std::cout << "Setting hook mode to INLINE." << std::endl;
-            } else if (hookT == "ihook") {
-                hookMode = Mode::INVOKE;
-                std::cout << "Setting hook mode to INVOKE." << std::endl;
-            } else if (hookT == "vhook"){
-                hookMode = Mode::VIRTUAL;
-                std::cout << "Setting hook mode to VIRTUAL." << std::endl;
+            if (!funcDesc.Template->Trampoline) {
+                std::cerr << "Trampoline does not exist!" << std::endl;
+                continue;
             }
+            hooked_fun = funcDesc.Template->Trampoline;
+            std::cout << "Using trampoline function for hooking: " << hooked_fun << std::endl;
 
-            if (hookFt == "void") {
-                type = Type::VOID;
-                std::cout << "Setting return type to VOID." << std::endl;
-            } else if (hookFt == "int") {
-                type = Type::INT;
-                std::cout << "Setting return type to INT." << std::endl;
-            } else if (hookFt == "bool") {
-                type = Type::BOOL;
-                std::cout << "Setting return type to BOOL." << std::endl;
-            } else if (hookFt == "long") {
-                type = Type::LONG;
-                std::cout << "Setting return type to LONG." << std::endl;
+            bool hookSuccess = false;
+            if (hookT == "hook") {
+                std::cout << "Setting hook mode to INLINE." << std::endl;
+                HOOK(method, hooked_fun, old_fun);
+                std::cout << "Inline hook created. Original function address: " << old_fun << std::endl;
+                hookSuccess = true;
+            } else if (hookT == "ihook") {
+                std::cout << "Setting hook mode to INVOKE." << std::endl;
+                hookSuccess = BNM::InvokeHook(method, hooked_fun, old_fun);
+                if (hookSuccess) {
+                    std::cout << "Invoke hook created. Original function address: " << old_fun << std::endl;
+                } else {
+                    std::cerr << "Error: Failed to create invoke hook." << std::endl;
+                }
+            } else if (hookT == "vhook") {
+                std::cout << "Setting hook mode to VIRTUAL." << std::endl;
+                hookSuccess = BNM::VirtualHook(Class, method, hooked_fun, old_fun);
+                if (hookSuccess) {
+                    std::cout << "Virtual hook created. Original function address: " << old_fun << std::endl;
+                } else {
+                    std::cerr << "Error: Failed to create virtual hook." << std::endl;
+                }
             } else {
-                std::cerr << "Unknown return type: " << hookFt << std::endl;
-                delete method;
-                delete Class;
+                std::cerr << "Error: Unknown hook type '" << hookT << "'. Skipping." << std::endl;
                 continue;
             }
 
-            createHook(static_cast<int>(hookMode),
-                       static_cast<int>(type),
-                       funPtrs,
-                       *Class,
-                       *method,
-                       ModApiDescriptor{
-                               funcDesc.File,
-                               funcDesc.Namespace,
-                               funcDesc.Class,
-                               funcDesc.Name,
-                               "old_fun"
-                       }.getID(),
-                       &EFModAPI::getEFModAPI());
+            if (hookSuccess) {
+                EFModAPI::getEFModAPI().registerAPI(
+                        ModApiDescriptor {
+                                funcDesc.File,
+                                funcDesc.Namespace,
+                                funcDesc.Class,
+                                funcDesc.Name,
+                                "old_fun",
+                                funcDesc.Arg
+                        }.getID(), (void*)old_fun);
 
-            std::cout << "Hook created successfully for function descriptor." << std::endl;
-
-            delete method;
-            delete Class;
+                std::cout << "Hook created successfully for function descriptor." << std::endl;
+            } else {
+                std::cerr << "Error: Hook creation failed for function descriptor." << std::endl;
+            }
         }
     }
     std::cout << "Finished autoHook process." << std::endl;

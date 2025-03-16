@@ -263,7 +263,7 @@ object EFMod {
         val mods = mutableListOf<EFMod>()
 
         if (directory.exists() && directory.isDirectory) {
-            for (modDir in directory.listFiles { file -> file.isDirectory }) {
+            for (modDir in directory.listFiles { file -> file.isDirectory }!!) {
                 if (modDir != null && File(modDir, "efmod.toml").exists()) {
                     var ModIcon: ImageBitmap? = null
                     val iconFile = File(modDir, "efmod.icon")

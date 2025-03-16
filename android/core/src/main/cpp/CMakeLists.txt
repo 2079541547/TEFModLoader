@@ -32,15 +32,6 @@ target_link_libraries(TEFModLoader
         BNM
 )
 
-add_library(auxiliary
-        SHARED
-        TEFModLoader/auxiliary.cpp
-)
-
-target_link_libraries(auxiliary
-        BNM
-)
-
 add_library(TEFLoader SHARED
         TEFLoader/src/TEFLoader.cpp)
 

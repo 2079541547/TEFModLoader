@@ -44,11 +44,18 @@ struct ModApiDescriptor {
     std::string Name;
     std::string Type;
     int Arg;
-    
+
     inline size_t getID() const {
-            std::string combined = File + Namespace + Class + Name + Type;
-            return std::hash<std::string>{}(combined);
+        std::string combined = File + Namespace + Class + Name + Type;
+        return std::hash<std::string>{}(combined);
     }
+};
+
+struct HookTemplate {
+    void* Trampoline;
+    std::vector<void*> FunArray;
+
+    void Set(std::vector<void*> f) { FunArray = std::move(f); }
 };
 
 struct ModFuncDescriptor {
@@ -58,11 +65,12 @@ struct ModFuncDescriptor {
     std::string Name;
     std::string Type;
     int Arg;
+    HookTemplate* Template;
     std::vector<void *> FunPtr;
 
     inline size_t getID() const {
-            std::string combined = File + Namespace + Class + Name + Type + std::to_string(Arg);
-            return std::hash<std::string>{}(combined);
+        std::string combined = File + Namespace + Class + Name + Type + std::to_string(Arg);
+        return std::hash<std::string>{}(combined);
     }
 };
 
@@ -81,7 +89,7 @@ class EFModAPI final {
 private:
     std::vector<api> API;
     std::mutex APIMutex;
-    
+
     std::vector<ModFuncDescriptor> FuncDescriptor;
     std::mutex FuncDescriptorMutex;
 
@@ -89,42 +97,42 @@ private:
     std::mutex ApiDescriptorMutex;
 public:
     inline auto getApiDescriptor() {
-            return ApiDescriptor;
+        return ApiDescriptor;
     }
-    
+
     inline auto getFuncDescriptor() {
-            return FuncDescriptor;
+        return FuncDescriptor;
     }
-    
+
     inline void* getAPI(const ModApiDescriptor& api) {
-            std::lock_guard<std::mutex> lock(APIMutex);
-            for (auto a: API) {
-                    if (a.id == api.getID()) {
-                            return a.apiPtr;
-                    }
+        std::lock_guard<std::mutex> lock(APIMutex);
+        for (auto a: API) {
+            if (a.id == api.getID()) {
+                return a.apiPtr;
             }
-            return nullptr;
+        }
+        return nullptr;
     }
 
     inline void registerModApiDescriptor(const ModApiDescriptor& api) {
-            std::lock_guard<std::mutex> lock(ApiDescriptorMutex);
+        std::lock_guard<std::mutex> lock(ApiDescriptorMutex);
 
-            if (ApiDescriptor.empty()) {
-                    ApiDescriptor.push_back(api);
-                    return;
-            }
+        if (ApiDescriptor.empty()) {
+            ApiDescriptor.push_back(api);
+            return;
+        }
 
-            bool exists = false;
-            for (const auto& existingApi : ApiDescriptor) {
-                    if (existingApi.getID() == api.getID()) {
-                            exists = true;
-                            break;
-                    }
+        bool exists = false;
+        for (const auto& existingApi : ApiDescriptor) {
+            if (existingApi.getID() == api.getID()) {
+                exists = true;
+                break;
             }
+        }
 
-            if (!exists) {
-                    ApiDescriptor.push_back(api);
-            }
+        if (!exists) {
+            ApiDescriptor.push_back(api);
+        }
     }
 
     inline void registerModFuncDescriptor(const ModFuncDescriptor& Extend) {
@@ -145,20 +153,20 @@ public:
     }
 
     inline void registerAPI(size_t api_id, void *ptr) {
-            API.push_back({api_id, ptr});
+        API.push_back({api_id, ptr});
     }
-    
+
     inline static EFModAPI& getEFModAPI() {
-            static EFModAPI instance;
-            return instance;
+        static EFModAPI instance;
+        return instance;
     }
 };
 
 class EFMod {
 public:
     virtual ~EFMod() {}
-    
-    int standard = 20250211; //请不要乱修改，这是Mod标准，可能会导致某些错误因素
+
+    int standard = 20250316; //请不要乱修改，这是Mod标准，可能会导致某些错误因素
 
     virtual int initialize(EFModAPI *mod, std::filesystem::path path) = 0;
     virtual void Register(EFModAPI *mod, std::filesystem::path path) = 0;
