@@ -22,6 +22,7 @@ kotlin {
     sourceSets {
         val desktopMain by getting
         
+        //noinspection WrongGradleMethod
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -29,6 +30,7 @@ kotlin {
             implementation(project(":android:axml"))
             implementation(fileTree(mapOf("dir" to "src/androidMain/libs", "include" to listOf("*.jar", "*.aar"))))
         }
+        //noinspection WrongGradleMethod
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -62,15 +64,16 @@ kotlin {
 }
 
 android {
-    namespace = "eternal.future.efmodloader"
+    namespace = "eternal.future.tefmodloader"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "eternal.future.efmodloader"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
+        applicationId = "eternal.future.tefmodloader"
+        minSdkVersion(libs.versions.android.minSdk.get().toInt())
+        //noinspection OldTargetApi
+        targetSdkVersion(libs.versions.android.targetSdk.get().toInt())
         versionCode = 1000
-        versionName = "10.0.0 Beta1"
+        versionName = "10.0.0 Beta2"
     }
     packaging {
         resources {
@@ -105,7 +108,9 @@ android {
     packagingOptions {
         exclude("**/libTEFModLoader.so")
         exclude("**/libauxiliary.so")
+        exclude("**/libTEFLoader.so")
         pickFirst("META-INF/versions/9/OSGI-INF/MANIFEST.MF")
+        exclude("META-INF/services/org.xmlpull.v1.XmlPullParserFactory")
     }
 }
 
@@ -115,11 +120,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "eternal.future.efmodloader.MainKt"
+        mainClass = "eternal.future.tefmodloader.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Msi, TargetFormat.AppImage)
-            packageName = "eternal.future.efmodloader"
+            packageName = "eternal.future.tefmodloader"
             packageVersion = "10.0.0"
         }
     }
