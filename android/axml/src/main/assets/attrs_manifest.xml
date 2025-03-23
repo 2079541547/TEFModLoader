@@ -1,0 +1,936 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <!-- Last Update 17 Oct 2024 -->
+<resources>
+    <eat-comment />
+    <attr name="theme" format="reference" />
+    <attr name="label" format="reference|string" />
+    <attr name="icon" format="reference" />
+    <attr name="roundIcon" format="reference" />
+    <attr name="banner" format="reference" />
+    <attr name="logo" format="reference" />
+    <attr name="manageSpaceActivity" format="string" />
+    <attr name="allowClearUserData" format="boolean" />
+    <attr name="testOnly" format="boolean" />
+    <attr name="name" format="string" />
+    <attr name="permission" format="string" />
+    <attr name="readPermission" format="string" />
+    <attr name="writePermission" format="string" />
+    <attr name="grantUriPermissions" format="boolean" />
+    <attr name="forceUriPermissions" format="boolean" />
+    <attr name="protectionLevel">
+        <flag name="normal" value="0" />
+        <flag name="dangerous" value="1" />
+        <flag name="signature" value="2" />
+        <flag name="signatureOrSystem" value="3" />
+        <flag name="internal" value="4" />
+        <flag name="privileged" value="0x10" />
+        <flag name="system" value="0x10" />
+        <flag name="development" value="0x20" />
+        <flag name="appop" value="0x40" />
+        <flag name="pre23" value="0x80" />
+        <flag name="installer" value="0x100" />
+        <flag name="verifier" value="0x200" />
+        <flag name="preinstalled" value="0x400" />
+        <flag name="setup" value="0x800" />
+        <flag name="instant" value="0x1000" />
+        <flag name="runtime" value="0x2000" />
+        <flag name="oem" value="0x4000" />
+        <flag name="vendorPrivileged" value="0x8000" />
+        <flag name="textClassifier" value="0x10000" />
+        <flag name="configurator" value="0x80000" />
+        <flag name="incidentReportApprover" value="0x100000" />
+        <flag name="appPredictor" value="0x200000" />
+        <flag name="module" value="0x400000" />
+        <flag name="companion" value="0x800000" />
+        <flag name="retailDemo" value="0x1000000" />
+        <flag name="recents" value="0x2000000" />
+        <flag name="role" value="0x4000000" />
+        <flag name="knownSigner" value="0x8000000" />
+    </attr>
+    <attr name="permissionGroupFlags">
+        <flag name="personalInfo" value="0x0001" />
+    </attr>
+    <attr name="permissionFlags">
+        <flag name="costsMoney" value="0x1" />
+        <flag name="removed" value="0x2" />
+        <flag name="hardRestricted" value="0x4" />
+        <flag name="softRestricted" value="0x8" />
+        <flag name="immutablyRestricted" value="0x10" />
+        <flag name="installerExemptIgnored" value="0x20" />
+    </attr>
+    <attr name="permissionGroup" format="string" />
+    <attr name="knownCerts" format="reference|string" />
+    <attr name="sharedUserId" format="string" />
+    <attr name="sharedUserLabel" format="reference" />
+    <attr name="sharedUserMaxSdkVersion" format="integer" />
+    <attr name="versionCode" format="integer" />
+    <attr name="versionCodeMajor" format="integer" />
+    <attr name="revisionCode" format="integer" />
+    <attr name="versionName" format="string" />
+    <attr name="persistent" format="boolean" />
+    <attr name="persistentWhenFeatureAvailable" format="string" />
+    <attr name="requiredForAllUsers" format="boolean" />
+    <attr name="debuggable" format="boolean" />
+    <attr name="vmSafeMode" format="boolean" />
+    <attr name="hardwareAccelerated" format="boolean" />
+    <attr name="exported" format="boolean" />
+    <attr name="isGame" format="boolean" />
+    <attr name="singleUser" format="boolean" />
+    <attr name="systemUserOnly" format="boolean" />
+    <attr name="process" format="string" />
+    <attr name="taskAffinity" format="string" />
+    <attr name="allowTaskReparenting" format="boolean" />
+    <attr name="usesCleartextTraffic" format="boolean" />
+    <attr name="multiArch" format ="boolean" />
+    <attr name="use32bitAbi" />
+    <attr name="multiprocess" format="boolean" />
+    <attr name="finishOnTaskLaunch" format="boolean" />
+    <attr name="finishOnCloseSystemDialogs" format="boolean" />
+    <attr name="clearTaskOnLaunch" format="boolean" />
+    <attr name="noHistory" format="boolean" />
+    <attr name="alwaysRetainTaskState" format="boolean" />
+    <attr name="stateNotNeeded" format="boolean" />
+    <attr name="excludeFromRecents" format="boolean" />
+    <attr name="showOnLockScreen" format="boolean" />
+    <attr name="showForAllUsers" format="boolean" />
+    <attr name="showWhenLocked" format="boolean" />
+    <attr name="turnScreenOn" format="boolean" />
+    <attr name="authorities" format="string" />
+    <attr name="syncable" format="boolean" />
+    <attr name="immersive" format="boolean" />
+    <attr name="enableVrMode" format="string" />
+    <attr name="rotationAnimation">
+      <flag name="rotate" value= "0" />
+      <flag name="crossfade" value = "1" />
+      <flag name="jumpcut" value = "2" />
+      <flag name="seamless" value = "3" />
+    </attr>
+    <attr name="initOrder" format="integer" />
+    <attr name="priority" format="integer" />
+    <attr name="directBootAware" format="boolean" />
+    <attr name="launchMode">
+        <enum name="standard" value="0" />
+        <enum name="singleTop" value="1" />
+        <enum name="singleTask" value="2" />
+        <enum name="singleInstance" value="3" />
+        <enum name="singleInstancePerTask" value="4" />
+    </attr>
+    <attr name="screenOrientation">
+        <enum name="unspecified" value="-1" />
+        <enum name="landscape" value="0" />
+        <enum name="portrait" value="1" />
+        <enum name="user" value="2" />
+        <enum name="behind" value="3" />
+        <enum name="sensor" value="4" />
+        <enum name="nosensor" value="5" />
+        <enum name="sensorLandscape" value="6" />
+        <enum name="sensorPortrait" value="7" />
+        <enum name="reverseLandscape" value="8" />
+        <enum name="reversePortrait" value="9" />
+        <enum name="fullSensor" value="10" />
+        <enum name="userLandscape" value="11" />
+        <enum name="userPortrait" value="12" />
+        <enum name="fullUser" value="13" />
+        <enum name="locked" value="14" />
+    </attr>
+    <attr name="recreateOnConfigChanges">
+        <flag name="mcc" value="0x0001" />
+        <flag name="mnc" value="0x0002" />
+    </attr>
+    <attr name="configChanges">
+        <flag name="mcc" value="0x0001" />
+        <flag name="mnc" value="0x0002" />
+        <flag name="locale" value="0x0004" />
+        <flag name="touchscreen" value="0x0008" />
+        <flag name="keyboard" value="0x0010" />
+        <flag name="keyboardHidden" value="0x0020" />
+        <flag name="navigation" value="0x0040" />
+        <flag name="orientation" value="0x0080" />
+        <flag name="screenLayout" value="0x0100" />
+        <flag name="uiMode" value="0x0200" />
+        <flag name="screenSize" value="0x0400" />
+        <flag name="smallestScreenSize" value="0x0800" />
+        <flag name="density" value="0x1000" />
+        <flag name="layoutDirection" value="0x2000" />
+        <flag name="colorMode" value="0x4000" />
+        <flag name="grammaticalGender" value="0x8000" />
+        <flag name="fontScale" value="0x40000000" />
+        <flag name="fontWeightAdjustment" value="0x10000000" />
+    </attr>
+    <attr name="allowEmbedded" format="boolean" />
+    <attr name="knownActivityEmbeddingCerts" format="reference|string" />
+    <attr name="allowUntrustedActivityEmbedding" format="boolean" />
+    <attr name="inheritShowWhenLocked" format="boolean" />
+    <attr name="description" format="reference" />
+    <attr name="targetPackage" format="string" />
+    <attr name="targetProcesses" format="string" />
+    <attr name="handleProfiling" format="boolean" />
+    <attr name="functionalTest" format="boolean" />
+    <attr name="reqTouchScreen">
+        <enum name="undefined" value="0" />
+        <enum name="notouch" value="1" />
+        <enum name="stylus" value="2" />
+        <enum name="finger" value="3" />
+    </attr>
+    <attr name="reqKeyboardType">
+        <enum name="undefined" value="0" />
+        <enum name="nokeys" value="1" />
+        <enum name="qwerty" value="2" />
+        <enum name="twelvekey" value="3" />
+    </attr>
+    <attr name="reqHardKeyboard" format="boolean" />
+    <attr name="reqNavigation">
+        <enum name="undefined" value="0" />
+        <enum name="nonav" value="1" />
+        <enum name="dpad" value="2" />
+        <enum name="trackball" value="3" />
+        <enum name="wheel" value="4" />
+    </attr>
+    <attr name="reqFiveWayNav" format="boolean" />
+    <attr name="backupAgent" format="string" />
+    <attr name="allowBackup" format="boolean" />
+    <attr name="fullBackupContent" format="reference|boolean" />
+    <attr name="fullBackupOnly" format="boolean" />
+    <attr name="killAfterRestore" format="boolean" />
+    <attr name="restoreNeedsApplication" format="boolean" />
+    <attr name="restoreAnyVersion" format="boolean" />
+    <attr name="backupInForeground" format="boolean" />
+    <attr name="installLocation">
+        <enum name="auto" value="0" />
+        <enum name="internalOnly" value="1" />
+        <enum name="preferExternal" value="2" />
+    </attr>
+    <attr name="isolatedSplits" format="boolean" />
+    <attr name="classLoader" format="string" />
+    <attr name="zygotePreloadName" format="string"/>
+    <attr name="isFeatureSplit" format="boolean" />
+    <attr name="isSplitRequired" format="boolean" />
+    <attr name="requiredSplitTypes" format="string" />
+    <attr name="splitTypes" format="string" />
+    <attr name="useEmbeddedDex" format="boolean" />
+    <attr name="uiOptions">
+        <flag name="none" value="0" />
+        <flag name="splitActionBarWhenNarrow" value="1" />
+    </attr>
+    <attr name="parentActivityName" format="string" />
+    <attr name="persistableMode">
+        <enum name="persistRootOnly" value="0" />
+        <enum name="persistNever" value="1" />
+        <enum name="persistAcrossReboots" value="2" />
+    </attr>
+    <attr name="documentLaunchMode">
+        <enum name="none" value="0" />
+        <enum name="intoExisting" value="1" />
+        <enum name="always" value="2" />
+        <enum name="never" value="3" />
+    </attr>
+    <attr name="maxRecents" format="integer" />
+    <attr name="autoRemoveFromRecents" format="boolean" />
+    <attr name="relinquishTaskIdentity" format="boolean" />
+    <attr name="resumeWhilePausing" format="boolean" />
+    <attr name="resizeableActivity" format="boolean" />
+    <attr name="supportsPictureInPicture" format="boolean" />
+    <attr name="maxAspectRatio" format="float" />
+    <attr name="minAspectRatio" format="float" />
+    <attr name="lockTaskMode">
+        <enum name="normal" value="0"/>
+        <enum name="never" value="1"/>
+        <enum name="always" value="2"/>
+        <enum name="if_whitelisted" value="3"/>
+    </attr>
+    <attr name="extractNativeLibs" format="boolean"/>
+    <attr name="autoVerify" format="boolean" />
+    <attr name="visibleToInstantApps" format="boolean" />
+    <attr name="networkSecurityConfig" format="reference" />
+    <attr name="localeConfig" format="reference" />
+    <attr name="splitName" format="string" />
+    <attr name="targetSandboxVersion" format="integer" />
+    <attr name="compileSdkVersion" format="integer" />
+    <attr name="compileSdkVersionCodename" format="string" />
+    <attr name="appComponentFactory" format="string" />
+
+    <attr name="usesNonSdkApi" format="boolean" />
+    <attr name="attributionsAreUserVisible" format="boolean" />
+    <attr name="updatableSystem" format="boolean" />
+    <attr name="emergencyInstaller" format="string" />
+    <attr name="foregroundServiceType">
+        <flag name="dataSync" value="0x01" />
+        <flag name="mediaPlayback" value="0x02" />
+        <flag name="phoneCall" value="0x04" />
+        <flag name="location" value="0x08" />
+        <flag name="connectedDevice" value="0x10" />
+        <flag name="mediaProjection" value="0x20" />
+        <flag name="camera" value="0x40" />
+        <flag name="microphone" value="0x80" />
+        <flag name="health" value="0x100" />
+        <flag name="remoteMessaging" value="0x200" />
+        <flag name="systemExempted" value="0x400" />
+        <flag name="shortService" value="0x800" />
+        <flag name="mediaProcessing" value="0x2000" />
+        <flag name="specialUse" value="0x40000000" />
+    </attr>
+    <attr name="gwpAsanMode">
+        <enum name="default" value="-1" />
+        <enum name="never" value="0" />
+       <enum name="always" value="1" />
+    </attr>
+    <attr name="memtagMode">
+       <enum name="default" value="-1" />
+       <enum name="off" value="0" />
+       <enum name="async" value="1" />
+       <enum name="sync" value="2" />
+    </attr>
+    <attr name="attributionTags" format="string" />
+
+    <attr name="allowUpdateOwnership" format="boolean" />
+    <attr name="featureFlag" format="string" />
+    <declare-styleable name="AndroidManifest">
+        <attr name="versionCode" />
+        <attr name="versionCodeMajor" />
+        <attr name="versionName" />
+        <attr name="revisionCode" />
+        <attr name="sharedUserId" />
+        <attr name="sharedUserLabel" />
+        <attr name="sharedUserMaxSdkVersion" />
+        <attr name="installLocation" />
+        <attr name="isolatedSplits" />
+        <attr name="isFeatureSplit" />
+        <attr name="targetSandboxVersion" />
+        <attr name="compileSdkVersion" />
+        <attr name="compileSdkVersionCodename" />
+        <attr name="isSplitRequired" />
+        <attr name="requiredSplitTypes" />
+        <attr name="splitTypes" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestApplication" parent="AndroidManifest">
+        <attr name="name" />
+        <attr name="theme" />
+        <attr name="label" />
+        <attr name="icon" />
+        <attr name="roundIcon" />
+        <attr name="banner" />
+        <attr name="logo" />
+        <attr name="description" />
+        <attr name="permission" />
+        <attr name="process" />
+        <attr name="taskAffinity" />
+        <attr name="allowTaskReparenting" />
+        <attr name="hasCode" format="boolean" />
+        <attr name="allowCrossUidActivitySwitchFromBelow" format="boolean" />
+        <attr name="persistent" />
+        <attr name="persistentWhenFeatureAvailable" />
+        <attr name="requiredForAllUsers" />
+        <attr name="enabled" />
+        <attr name="debuggable" />
+        <attr name="vmSafeMode" />
+        <attr name="hardwareAccelerated" />
+        <attr name="manageSpaceActivity" />
+        <attr name="allowClearUserData" />
+        <attr name="testOnly" />
+        <attr name="backupAgent" />
+        <attr name="allowBackup" />
+        <attr name="fullBackupOnly" />
+        <attr name="fullBackupContent" />
+        <attr name="killAfterRestore" />
+        <attr name="restoreNeedsApplication" />
+        <attr name="restoreAnyVersion" />
+        <attr name="backupInForeground" />
+        <attr name="largeHeap" format="boolean" />
+        <attr name="cantSaveState" format="boolean" />
+        <attr name="uiOptions" />
+        <attr name="supportsRtl" format="boolean" />
+        <attr name="restrictedAccountType" format="string"/>
+        <attr name="requiredAccountType" format="string"/>
+        <attr name="isGame" />
+        <attr name="usesCleartextTraffic" />
+        <attr name="multiArch" />
+        <attr name="useEmbeddedDex" />
+        <attr name="extractNativeLibs" />
+        <attr name="defaultToDeviceProtectedStorage" format="boolean" />
+        <attr name="directBootAware" />
+        <attr name="resizeableActivity" />
+        <attr name="maxAspectRatio" />
+        <attr name="minAspectRatio" />
+        <attr name="networkSecurityConfig" />
+        <attr name="localeConfig" />
+        <attr name="appCategory">
+            <enum name="game" value="0" />
+            <enum name="audio" value="1" />
+            <enum name="video" value="2" />
+            <enum name="image" value="3" />
+            <enum name="social" value="4" />
+            <enum name="news" value="5" />
+            <enum name="maps" value="6" />
+            <enum name="productivity" value="7" />
+            <enum name="accessibility" value="8" />
+        </attr>
+
+        <attr name="classLoader" />
+        <attr name="appComponentFactory" />
+        <attr name="usesNonSdkApi" />
+        <attr name="hasFragileUserData" format="boolean"/>
+        <attr name="zygotePreloadName" />
+        <attr name="allowClearUserDataOnFailedRestore" format="boolean"/>
+        <attr name="allowAudioPlaybackCapture" format="boolean" />
+        <attr name="requestLegacyExternalStorage" format="boolean" />
+        <attr name="preserveLegacyExternalStorage" format="boolean" />
+        <attr name="requestRawExternalStorageAccess" format="boolean" />
+        <attr name="forceQueryable" format="boolean" />
+        <attr name="crossProfile" format="boolean" />
+        <attr name="allowNativeHeapPointerTagging" format="boolean" />
+        <attr name="gwpAsanMode" />
+        <attr name="memtagMode" />
+        <attr name="nativeHeapZeroInitialized" format="boolean" />
+        <attr name="allowAutoRevokePermissionsExemption" format="boolean" />
+        <attr name="autoRevokePermissions">
+            <enum name="allowed" value="0" />
+            <enum name="discouraged" value="1" />
+            <enum name="disallowed" value="2" />
+        </attr>
+        <attr name="rollbackDataPolicy">
+            <enum name="restore" value="0" />
+            <enum name="wipe" value="1" />
+            <enum name="retain" value="2" />
+        </attr>
+        <attr name="dataExtractionRules" format="reference"/>
+        <attr name="requestForegroundServiceExemption" format="boolean" />
+        <attr name="attributionsAreUserVisible" format="boolean" />
+        <attr name="resetEnabledSettingsOnAppDataCleared" format="boolean" />
+        <attr name="knownActivityEmbeddingCerts" />
+        <attr name="enableOnBackInvokedCallback" format="boolean"/>
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestAttribution" parent="AndroidManifest">
+        <attr name="tag" format="string" />
+        <attr name="label" format="string" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestAttributionInheritFrom"
+                       parent="AndroidManifestAttribution">
+        <attr name="tag" format="string" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestPermission" parent="AndroidManifest">
+        <attr name="name" />
+        <attr name="label" />
+        <attr name="icon" />
+        <attr name="roundIcon" />
+        <attr name="banner" />
+        <attr name="logo" />
+        <attr name="permissionGroup" />
+        <attr name="backgroundPermission" format="string"/>
+        <attr name="description" />
+        <attr name="request" />
+        <attr name="protectionLevel" />
+        <attr name="permissionFlags" />
+        <attr name="knownCerts" />
+        <attr name="maxSdkVersion" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestPermissionGroup" parent="AndroidManifest">
+        <attr name="name" />
+        <attr name="label" />
+        <attr name="icon" />
+        <attr name="roundIcon" />
+        <attr name="banner" />
+        <attr name="logo" />
+        <attr name="description" />
+        <attr name="request" format="string"/>
+        <attr name="requestDetail" format="string"/>
+        <attr name="backgroundRequest" format="string"/>
+        <attr name="backgroundRequestDetail" format="string"/>
+        <attr name="permissionGroupFlags" />
+        <attr name="priority" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestPermissionTree" parent="AndroidManifest">
+        <attr name="name" />
+        <attr name="label" />
+        <attr name="icon" />
+        <attr name="roundIcon" />
+        <attr name="banner" />
+        <attr name="logo" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestUsesPermission" parent="AndroidManifest">
+        <attr name="name" />
+        <attr name="minSdkVersion" format="integer|string" />
+        <attr name="maxSdkVersion" format="integer" />
+        <attr name="requiredFeature" format="string" />
+        <attr name="requiredNotFeature" format="string" />
+        <attr name="usesPermissionFlags">
+            <flag name="neverForLocation" value="0x00010000" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestRequiredFeature">
+        <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestRequiredNotFeature">
+        <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestUsesConfiguration" parent="AndroidManifest">
+        <attr name="reqTouchScreen" />
+        <attr name="reqKeyboardType" />
+        <attr name="reqHardKeyboard" />
+        <attr name="reqNavigation" />
+        <attr name="reqFiveWayNav" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestUsesFeature" parent="AndroidManifest">
+        <attr name="name" />
+        <attr name="version" format="integer" />
+        <attr name="glEsVersion" format="integer" />
+        <attr name="required" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestFeatureGroup">
+        <attr name="label" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestUsesSdk" parent="AndroidManifest">
+        <attr name="minSdkVersion" format="integer|string" />
+        <attr name="targetSdkVersion" format="integer|string" />
+        <attr name="maxSdkVersion" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestExtensionSdk">
+        <attr name="sdkVersion" format="integer" />
+        <attr name="minExtensionVersion" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestLibrary" parent="AndroidManifest">
+        <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestQueries" parent="AndroidManifest" />
+    <declare-styleable name="AndroidManifestQueriesPackage" parent="AndroidManifestQueries">
+        <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestQueriesIntent" parent="AndroidManifestQueries" />
+    <declare-styleable name="AndroidManifestQueriesProvider" parent="AndroidManifestQueries" >
+        <attr name="authorities" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestSdkLibrary" parent="AndroidManifestApplication">
+        <attr name="name" />
+        <attr name="versionMajor" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestUsesSdkLibrary" parent="AndroidManifestApplication">
+        <attr name="name" />
+        <attr name="versionMajor" format="integer" />
+        <attr name="certDigest" format="string" />
+        <attr name="optional" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestStaticLibrary" parent="AndroidManifestApplication">
+        <attr name="name" />
+        <attr name="version" />
+        <attr name="versionMajor" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestUsesLibrary" parent="AndroidManifestApplication">
+        <attr name="name" />
+        <attr name="required" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestUsesNativeLibrary" parent="AndroidManifestApplication">
+        <attr name="name" />
+        <attr name="required" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestUsesStaticLibrary" parent="AndroidManifestApplication">
+        <attr name="name" />
+        <attr name="version" />
+        <attr name="certDigest" format="string" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestAdditionalCertificate" parent="AndroidManifestUsesStaticLibrary">
+        <attr name="certDigest" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestUsesPackage" parent="AndroidManifestApplication">
+        <attr name="packageType" format="string" />
+        <attr name="name" />
+        <attr name="version" />
+        <attr name="versionMajor" format="integer" />
+        <attr name="certDigest" format="string" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestSupportsScreens" parent="AndroidManifest">
+        <attr name="requiresSmallestWidthDp" format="integer" />
+        <attr name="compatibleWidthLimitDp" format="integer" />
+        <attr name="largestWidthLimitDp" format="integer" />
+        <attr name="smallScreens" format="boolean" />
+        <attr name="normalScreens" format="boolean" />
+        <attr name="largeScreens" format="boolean" />
+        <attr name="xlargeScreens" format="boolean" />
+        <attr name="resizeable" format="boolean" />
+        <attr name="anyDensity" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestProtectedBroadcast" parent="AndroidManifest">
+        <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestOriginalPackage" parent="AndroidManifest">
+        <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestProcesses" parent="AndroidManifestApplication">
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestProcess" parent="AndroidManifestProcesses">
+        <attr name="process" />
+        <attr name="name" />
+        <attr name="gwpAsanMode" />
+        <attr name="memtagMode" />
+        <attr name="nativeHeapZeroInitialized" />
+        <attr name="useEmbeddedDex" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestDenyPermission"
+            parent="AndroidManifestProcesses">
+        <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestAllowPermission"
+            parent="AndroidManifestProcesses">
+        <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestProvider" parent="AndroidManifestApplication">
+        <attr name="name" />
+        <attr name="label" />
+        <attr name="description" />
+        <attr name="icon" />
+        <attr name="roundIcon" />
+        <attr name="banner" />
+        <attr name="logo" />
+        <attr name="process" />
+        <attr name="authorities" />
+        <attr name="syncable" />
+        <attr name="readPermission" />
+        <attr name="writePermission" />
+        <attr name="grantUriPermissions" />
+        <attr name="forceUriPermissions" />
+        <attr name="permission" />
+        <attr name="multiprocess" />
+        <attr name="initOrder" />
+        <attr name="enabled" />
+        <attr name="exported" />
+        <attr name="singleUser" />
+        <attr name="directBootAware" />
+        <attr name="visibleToInstantApps" />
+        <attr name="splitName" />
+        <attr name="attributionTags" />
+        <attr name="systemUserOnly" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestGrantUriPermission"  parent="AndroidManifestProvider">
+        <attr name="path" format="string" />
+        <attr name="pathPrefix" format="string" />
+        <attr name="pathPattern" format="string" />
+        <attr name="pathAdvancedPattern" format="string"/>
+        <attr name="pathSuffix" format="string" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestPathPermission"  parent="AndroidManifestProvider">
+        <attr name="path" />
+        <attr name="pathPrefix" />
+        <attr name="pathPattern" />
+        <attr name="pathAdvancedPattern" format="string"/>
+        <attr name="pathSuffix" />
+        <attr name="permission" />
+        <attr name="readPermission" />
+        <attr name="writePermission" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestService" parent="AndroidManifestApplication">
+        <attr name="name" />
+        <attr name="label" />
+        <attr name="description" />
+        <attr name="icon" />
+        <attr name="roundIcon" />
+        <attr name="banner" />
+        <attr name="logo" />
+        <attr name="permission" />
+        <attr name="process" />
+        <attr name="enabled" />
+        <attr name="exported" />
+        <attr name="stopWithTask" format="boolean" />
+        <attr name="isolatedProcess" format="boolean" />
+        <attr name="singleUser" />
+        <attr name="directBootAware" />
+        <attr name="externalService" format="boolean" />
+        <attr name="visibleToInstantApps" />
+        <attr name="splitName" />
+        <attr name="useAppZygote" format="boolean" />
+        <attr name="foregroundServiceType" />
+        <attr name="attributionTags" />
+        <attr name="allowSharedIsolatedProcess" format="boolean" />
+        <attr name="systemUserOnly" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestApexSystemService"
+                       parent="AndroidManifestApplication">
+        <attr name="name" />
+        <attr name="path" />
+        <attr name="minSdkVersion" />
+        <attr name="maxSdkVersion" />
+        <attr name="initOrder" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestReceiver" parent="AndroidManifestApplication">
+        <attr name="name" />
+        <attr name="label" />
+        <attr name="description" />
+        <attr name="icon" />
+        <attr name="roundIcon" />
+        <attr name="banner" />
+        <attr name="logo" />
+        <attr name="permission" />
+        <attr name="process" />
+        <attr name="enabled" />
+        <attr name="exported" />
+        <attr name="singleUser" />
+        <attr name="directBootAware" />
+        <attr name="attributionTags" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestActivity" parent="AndroidManifestApplication">
+        <attr name="name" />
+        <attr name="theme" />
+        <attr name="label" />
+        <attr name="description" />
+        <attr name="icon" />
+        <attr name="roundIcon" />
+        <attr name="banner" />
+        <attr name="logo" />
+        <attr name="launchMode" />
+        <attr name="screenOrientation" />
+        <attr name="configChanges" />
+        <attr name="recreateOnConfigChanges" />
+        <attr name="permission" />
+        <attr name="multiprocess" />
+        <attr name="process" />
+        <attr name="taskAffinity" />
+        <attr name="allowTaskReparenting" />
+        <attr name="finishOnTaskLaunch" />
+        <attr name="finishOnCloseSystemDialogs" />
+        <attr name="clearTaskOnLaunch" />
+        <attr name="noHistory" />
+        <attr name="alwaysRetainTaskState" />
+        <attr name="stateNotNeeded" />
+        <attr name="excludeFromRecents" />
+        <attr name="showOnLockScreen" />
+        <attr name="enabled" />
+        <attr name="exported" />
+        <attr name="windowSoftInputMode" />
+        <attr name="immersive" />
+        <attr name="hardwareAccelerated" />
+        <attr name="uiOptions" />
+        <attr name="parentActivityName" />
+        <attr name="singleUser" />
+        <attr name="systemUserOnly" format="boolean" />
+        <attr name="persistableMode" />
+        <attr name="allowEmbedded" />
+        <attr name="documentLaunchMode" />
+        <attr name="maxRecents" />
+        <attr name="autoRemoveFromRecents" />
+        <attr name="relinquishTaskIdentity" />
+        <attr name="resumeWhilePausing" />
+        <attr name="resizeableActivity" />
+        <attr name="supportsPictureInPicture" />
+        <attr name="maxAspectRatio" />
+        <attr name="minAspectRatio" />
+        <attr name="lockTaskMode" />
+        <attr name="showForAllUsers" />
+
+        <attr name="showWhenLocked" />
+        <attr name="inheritShowWhenLocked" />
+        <attr name="turnScreenOn" />
+
+        <attr name="directBootAware" />
+        <attr name="alwaysFocusable" format="boolean" />
+        <attr name="enableVrMode" />
+        <attr name="rotationAnimation" />
+        <attr name="visibleToInstantApps" />
+        <attr name="splitName" />
+        <attr name="colorMode">
+            <enum name="default" value="0" />
+            <enum name="wideColorGamut" value="1" />
+            <enum name="hdr" value="2" />
+        </attr>
+        <attr name="forceQueryable" format="boolean" />
+        <attr name="preferMinimalPostProcessing" format="boolean"/>
+        <attr name="attributionTags" />
+        <attr name="playHomeTransitionSound" format="boolean"/>
+        <attr name="canDisplayOnRemoteDevices" format="boolean"/>
+        <attr name="allowUntrustedActivityEmbedding" />
+        <attr name="knownActivityEmbeddingCerts" />
+        <attr name="requiredDisplayCategory" format="string"/>
+        <attr name="enableOnBackInvokedCallback" format="boolean"/>
+        <attr name="requireContentUriPermissionFromCaller" format="string">
+            <enum name="none" value="0" />
+            <enum name="read" value="1" />
+            <enum name="write" value="2" />
+            <enum name="readOrWrite" value="3" />
+            <enum name="readAndWrite" value="4" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestActivityAlias" parent="AndroidManifestApplication">
+        <attr name="name" />
+        <attr name="targetActivity" format="string" />
+        <attr name="label" />
+        <attr name="description" />
+        <attr name="icon" />
+        <attr name="roundIcon" />
+        <attr name="banner" />
+        <attr name="logo" />
+        <attr name="permission" />
+        <attr name="enabled" />
+        <attr name="exported" />
+        <attr name="parentActivityName" />
+        <attr name="attributionTags" />
+        <attr name="allowUntrustedActivityEmbedding" />
+        <attr name="knownActivityEmbeddingCerts" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestMetaData"
+         parent="AndroidManifestApplication
+                 AndroidManifestActivity
+                 AndroidManifestReceiver
+                 AndroidManifestProvider
+                 AndroidManifestService
+                 AndroidManifestPermission
+                 AndroidManifestPermissionGroup
+                 AndroidManifestInstrumentation">
+        <attr name="name" />
+        <attr name="value" format="string|integer|color|float|boolean" />
+        <attr name="resource" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestProperty"
+         parent="AndroidManifestApplication
+                 AndroidManifestActivity
+                 AndroidManifestReceiver
+                 AndroidManifestProvider
+                 AndroidManifestService">
+        <attr name="name" />
+        <attr name="value" />
+        <attr name="resource" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestIntentFilter"
+         parent="AndroidManifestActivity AndroidManifestReceiver AndroidManifestService">
+        <attr name="label" />
+        <attr name="icon" />
+        <attr name="roundIcon" />
+        <attr name="banner" />
+        <attr name="logo" />
+        <attr name="priority" />
+        <attr name="autoVerify" />
+        <attr name="order" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestAction" parent="AndroidManifestIntentFilter">
+        <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestUriRelativeFilterGroup"
+        parent="AndroidManifestIntentFilter">
+        <attr name="allow" format="boolean"/>
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestData"
+        parent="AndroidManifestIntentFilter AndroidManifestUriRelativeFilterGroup">
+        <attr name="mimeType" format="string" />
+        <attr name="mimeGroup" format="string" />
+        <attr name="scheme" format="string" />
+        <attr name="ssp" format="string" />
+        <attr name="sspPrefix" format="string" />
+        <attr name="sspPattern" format="string" />
+        <attr name="sspAdvancedPattern" format="string" />
+        <attr name="sspSuffix" format="string" />
+        <attr name="host" format="string" />
+        <attr name="port" format="string" />
+        <attr name="path" />
+        <attr name="pathPrefix" />
+        <attr name="pathPattern" />
+        <attr name="pathAdvancedPattern" />
+        <attr name="pathSuffix" />
+        <attr name="query" format="string" />
+        <attr name="queryPrefix" format="string" />
+        <attr name="queryPattern" format="string" />
+        <attr name="queryAdvancedPattern" format="string" />
+        <attr name="querySuffix" format="string" />
+        <attr name="fragment" format="string" />
+        <attr name="fragmentPrefix" format="string" />
+        <attr name="fragmentPattern" format="string" />
+        <attr name="fragmentAdvancedPattern" format="string" />
+        <attr name="fragmentSuffix" format="string" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestCategory" parent="AndroidManifestIntentFilter">
+        <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestInstrumentation" parent="AndroidManifest">
+        <attr name="name" />
+        <attr name="targetPackage" />
+        <attr name="targetProcesses" />
+        <attr name="label" />
+        <attr name="icon" />
+        <attr name="roundIcon" />
+        <attr name="banner" />
+        <attr name="logo" />
+        <attr name="handleProfiling" />
+        <attr name="functionalTest" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestCompatibleScreensScreen"
+                       parent="AndroidManifest.AndroidManifestCompatibleScreens">
+        <attr name="screenSize">
+            <enum name="small" value="200" />
+            <enum name="normal" value="300" />
+            <enum name="large" value="400" />
+            <enum name="xlarge" value="500" />
+        </attr>
+        <attr name="screenDensity" format="integer">
+            <enum name="ldpi" value="120" />
+            <enum name="mdpi" value="160" />
+            <enum name="hdpi" value="240" />
+            <enum name="xhdpi" value="320" />
+            <enum name="xxhdpi" value="480" />
+            <enum name="xxxhdpi" value="640" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestSupportsInputInputType"
+                       parent="AndroidManifest.AndroidManifestSupportsInput">
+        <attr name="name" />
+    </declare-styleable>
+    <attr name="publicKey" format="string" />
+    <declare-styleable name="AndroidManifestPackageVerifier" parent="AndroidManifest">
+        <attr name="name" />
+
+        <attr name="publicKey" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestResourceOverlay" parent="AndroidManifest">
+        <attr name="targetPackage" />
+        <attr name="category" format="string"/>
+        <attr name="priority" />
+        <attr name="isStatic" format="boolean" />
+        <attr name="requiredSystemPropertyName" format="string" />
+        <attr name="requiredSystemPropertyValue" format="string" />
+        <attr name="targetName" />
+        <attr name="resourcesMap" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="Intent">
+        <attr name="action" format="string" />
+        <attr name="data" format="string" />
+        <attr name="mimeType" />
+        <attr name="identifier" format="string" />
+        <attr name="targetPackage" />
+        <attr name="targetClass" format="string" />
+    </declare-styleable>
+    <declare-styleable name="IntentCategory" parent="Intent">
+        <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="Extra" parent="Intent">
+        <attr name="name" />
+        <attr name="value" />
+    </declare-styleable>
+    <attr name="keySet" />
+    <declare-styleable name="AndroidManifestPublicKey">
+        <attr name="name" />
+        <attr name="value" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestKeySet">
+        <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestUpgradeKeySet" parent="AndroidManifest">
+      <attr name="name" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestLayout" parent="AndroidManifestActivity">
+        <attr name="defaultWidth" format="dimension|fraction" />
+        <attr name="defaultHeight" format="dimension|fraction" />
+        <attr name="gravity" />
+        <attr name="minWidth" />
+        <attr name="minHeight" />
+        <attr name="windowLayoutAffinity" format="string" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestRestrictUpdate" parent="AndroidManifest">
+        <attr name="hash" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="AndroidManifestUsesSplit" parent="AndroidManifest">
+        <attr name="name" format="string" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestProfileable" parent="AndroidManifestApplication">
+        <attr name="shell" format="boolean" />
+        <attr name="enabled" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="AndroidManifestInstallConstraints" parent="AndroidManifest" />
+    <declare-styleable name="AndroidManifestInstallConstraintsFingerprintPrefix"
+                       parent="AndroidManifestInstallConstraints">
+        <attr name="value" />
+    </declare-styleable>
+</resources>

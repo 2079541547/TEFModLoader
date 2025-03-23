@@ -29,6 +29,7 @@ android {
 }
 
 dependencies {
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.material)
     testImplementation(libs.junit)
