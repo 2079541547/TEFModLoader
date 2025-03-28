@@ -36,6 +36,9 @@
 package mt.modder.hub.axml;
 
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,8 +47,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
-import java.util.Collections;
-import java.util.Comparator;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
@@ -79,6 +80,7 @@ public class AttributesExtractor {
 			return values;
 		}
 
+		@NonNull
 		@Override
 		public String toString() {
 			return "[" + type + ", " + values + ']';
@@ -96,7 +98,7 @@ public class AttributesExtractor {
 			try {
 				instance = new AttributesExtractor();
 			} catch (Exception e) {
-
+				e.printStackTrace();
 			}
 		}
 		return instance;
@@ -217,12 +219,9 @@ public class AttributesExtractor {
 		} else if (attr.getType() == MAttrType.FLAG) {
 			List<String> flagList = new ArrayList<>();
 			List<Long> attrKeys = new ArrayList<>(attr.getValues().keySet());
-			Collections.sort(attrKeys, new Comparator<Long>() {
-					@Override
-					public int compare(Long a, Long b) {
-						return Long.compare(b, a); // for descending order
-					}
-				});
+			attrKeys.sort((a, b) -> {
+                return Long.compare(b, a); // for descending order
+            });
 			for (Long key : attrKeys) {
 				String attrValue = attr.getValues().get(key);
 				if (value == key) {
