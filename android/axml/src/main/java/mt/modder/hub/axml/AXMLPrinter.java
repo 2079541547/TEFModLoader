@@ -38,7 +38,7 @@ package mt.modder.hub.axml;
 import java.io.*;
 import java.util.*;
 import mt.modder.hub.axmlTools.*;
-import mt.modder.hub.axmlTools.utils.*;
+
 import org.xmlpull.v1.*;
 import java.util.regex.*;
 import mt.modder.hub.axmlTools.arsc.*;
@@ -61,7 +61,7 @@ public final class AXMLPrinter {
 	1.0f / (1 << TypedValue.COMPLEX_MANTISSA_SHIFT);
 
     private static final float[] RADIX_MULTS = new float[]{
-		1.0f * MANTISSA_MULT /* 0.00390625f */, 
+            MANTISSA_MULT /* 0.00390625f */,
 		1.0f / (1 << 7) * MANTISSA_MULT /* 3.051758E-5f */,
 		1.0f / (1 << 15) * MANTISSA_MULT /* 1.192093E-7f */, 
 		1.0f / (1 << 23) * MANTISSA_MULT /* 4.656613E-10f */
@@ -78,7 +78,7 @@ public final class AXMLPrinter {
 	private boolean enableAttributeConversion = false; // Enable attribute value conversion
 
 	private ResourceIdExtractor systemResourceFile = new ResourceIdExtractor(); // Handles system resource IDs
-	private ResourceIdExtractor customResourceFile = new ResourceIdExtractor();// Handles custom resource IDs
+	private final ResourceIdExtractor customResourceFile = new ResourceIdExtractor();// Handles custom resource IDs
 	public String CUSTOM_ATTRIBUTE_TAG = "_Custom";
 	public String SYSTEM_ATTRIBUTE_TAG = "_Systumm"; //😂
 	public boolean isCustomResourceFileExist = false; // Indicates if a custom resource file exists
@@ -96,8 +96,7 @@ public final class AXMLPrinter {
 
 	private Map<String, String> permissionInfoMap;
 	private boolean isPermissionInfoLoaded = false;
-	private String PERMISSION_TAG = "uses-permission";
-	private boolean isExtractPermissionDescription = false;
+    private boolean isExtractPermissionDescription = false;
 	
 
 
@@ -134,7 +133,7 @@ public final class AXMLPrinter {
 	/**
      * Enables or disables permission description extraction from XML.
      *
-     * @param enable Flag to enable or disable this feature.
+     * @param isExtract Flag to enable or disable this feature.
      */
 	public void setExtractPermissionDescription(boolean isExtract) {
 		isExtractPermissionDescription = isExtract;
@@ -231,7 +230,8 @@ public final class AXMLPrinter {
 					xmlParser.close();
 					return result;
 				}
-				switch (eventType) {
+                String PERMISSION_TAG = "uses-permission";
+                switch (eventType) {
 					case XmlPullParser.START_DOCUMENT:
 						// Append XML declaration at the start of the document
 						xmlContent.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
@@ -896,8 +896,7 @@ public final class AXMLPrinter {
         // Check if the regex pattern matches the given input text
         if (matcher.find()) {
             // If a match is found, extract the captured text which is the text after the last slash
-            String textAfterSlash = matcher.group(1);
-            return textAfterSlash;
+            return matcher.group(1);
         }
 		// If no match is found return the original text
         return text;
@@ -905,7 +904,7 @@ public final class AXMLPrinter {
 	/**
      * Generates the next sequential hexadecimal ID.
      *
-     * @param inputHex The input hexadecimal string (without "0x" prefix).
+     * @param inputHexID The input hexadecimal string (without "0x" prefix).
      * @return The next sequential hexadecimal ID as a string. Returns inputHex if parsing fails.
      */
     public String generateNextHexId(String inputHexID) {

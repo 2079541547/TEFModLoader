@@ -4,7 +4,6 @@ import android.content.Context;
 
 import mt.modder.hub.axmlTools.Chunk;
 import mt.modder.hub.axmlTools.IntWriter;
-import mt.modder.hub.axmlTools.StringPoolChunk;
 import mt.modder.hub.axmlTools.TagChunk;
 import mt.modder.hub.axmlTools.XmlChunk;
 
@@ -61,6 +60,7 @@ public class AXMLCompiler {
                     break;
                 case XmlPullParser.END_TAG:
 					// When an end tag is encountered, update the reference to the parent.
+                    assert currentTag != null;
                     Chunk parentChunk = currentTag.getParent();
                     currentTag = parentChunk instanceof TagChunk ? (TagChunk) parentChunk : null;
                     break;
