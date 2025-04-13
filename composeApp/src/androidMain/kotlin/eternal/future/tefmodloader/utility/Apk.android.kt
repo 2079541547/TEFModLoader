@@ -93,6 +93,7 @@ actual fun Apk.encoderAXml(
     inputPath: String,
     outputPath: String
 ) {
+
     File(outputPath).writeBytes(AXMLCompiler().axml2Xml(MainApplication.getContext(), File(inputPath).readText()))
 }
 

@@ -73,16 +73,28 @@ android {
         //noinspection OldTargetApi
         targetSdkVersion(libs.versions.android.targetSdk.get().toInt())
         versionCode = 1000
-        versionName = "10.0.0 Beta2"
+        versionName = "10.0.0 Beta3"
+        multiDexEnabled = true
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    dexOptions {
+        keepRuntimeAnnotatedClasses = false
+        jumboMode = true
+        preDexLibraries = true
+    }
+
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
+            isShrinkResources = true
+            isZipAlignEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -114,7 +126,7 @@ android {
         exclude("**/libauxiliary.so")
         exclude("**/libTEFLoader.so")
         pickFirst("META-INF/versions/9/OSGI-INF/MANIFEST.MF")
-        exclude("META-INF/services/org.xmlpull.v1.XmlPullParserFactory")
+        exclude("**/libdobby.so")
     }
 }
 

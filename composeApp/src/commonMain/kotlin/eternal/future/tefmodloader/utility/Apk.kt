@@ -3,15 +3,16 @@ package eternal.future.tefmodloader.utility
 import com.android.apksig.ApkSigner
 import com.android.apksig.KeyConfig
 import com.android.apksig.KeyConfig.Jca
+import com.android.tools.build.apkzlib.zip.AlignmentRules
 import com.android.tools.build.apkzlib.zip.ZFile
+import com.android.tools.build.apkzlib.zip.ZFileOptions
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.json.JSONObject
 import org.w3c.dom.Document
 import org.w3c.dom.Element
+import java.io.ByteArrayInputStream
 import java.io.File
-import java.io.FileInputStream
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
+import java.io.InputStream
 import java.security.KeyStore
 import java.security.PrivateKey
 import java.security.Security
@@ -24,7 +25,103 @@ import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.stream.StreamResult
 
 object Apk {
-    fun modifyManifest(filePath: String, mode: Int = 0, addDebuggable: Boolean, updateVersionCode: Boolean, packName: String = "") {
+    private var Bypass = true
+    private var Mode = 0
+    private var Debug = false
+    private var OverrideVersion = false
+
+    private val Z_FILE_OPTIONS: ZFileOptions? = ZFileOptions().setAlignmentRule(
+        AlignmentRules.compose(
+            AlignmentRules.constantForSuffix(".so", 4096),
+            AlignmentRules.constantForSuffix("assets/silkrift/original.apk", 4096)
+        )
+    )
+
+    private fun parseJsonFromStream(inputStream: InputStream): JSONObject {
+        return inputStream.bufferedReader().use { reader ->
+            JSONObject(reader.readText())
+        }
+    }
+
+    private fun modifyJsonAndReturnStream(json: JSONObject, modifications: (JSONObject) -> Unit): InputStream {
+        modifications(json)
+        return ByteArrayInputStream(json.toString().toByteArray())
+    }
+
+    fun patch(apkPath: String, outPath: String,
+              mode: Int, bypass: Boolean = true,
+              debug: Boolean = false, overrideVersion: Boolean = false) {
+
+        Bypass = bypass
+        Mode = mode
+        Debug = debug
+        OverrideVersion = overrideVersion
+
+        val srcApkFile = File(apkPath)
+        val tempFile = File.createTempFile("patch", ".apk")
+
+        srcApkFile.copyTo(tempFile, true)
+
+        val json = parseJsonFromStream(javaClass.classLoader.getResourceAsStream("patch/config.json")!!)
+        val json_input = modifyJsonAndReturnStream(json) {
+            it.put("mode", Mode)
+            it.put("bypass", Bypass)
+        }
+
+        ZFile.openReadWrite(tempFile, Z_FILE_OPTIONS).use { dstZFile ->
+            if (Bypass) {
+                dstZFile.add("assets/silkrift/original.apk", srcApkFile.inputStream())
+
+                listOf(
+                    "arm64-v8a",
+                    "armeabi-v7a",
+                    "x86",
+                    "x86_64"
+                ).forEach { architecture ->
+                    dstZFile.add("assets/silkrift/so/$architecture/libsilkrift.so",
+                        getZipEntryStream("assets/silkrift/so/$architecture/libsilkrift.so"))
+                }
+            }
+            val dexCount = getDexCount(dstZFile)
+            dstZFile.add("classes$dexCount.dex", getZipEntryStream("classes.dex"))
+            val manifest_org = File.createTempFile("Manifest_org", ".xml")
+            val manifest_new = File.createTempFile("Manifest_new", ".xml")
+
+            manifest_new.delete()
+            manifest_org.writeBytes(dstZFile.get("AndroidManifest.xml")?.read()!!)
+            decodeAXml(manifest_org.path, manifest_new.path)
+
+            modifyManifest(manifest_new.path)
+            manifest_org.delete()
+            encoderAXml(manifest_new.path, manifest_org.path)
+
+            manifest_new.delete()
+            dstZFile.add("AndroidManifest.xml", manifest_org.inputStream())
+
+            dstZFile.add("assets/config.json", json_input)
+        }
+
+        signApk(tempFile.path, outPath)
+        tempFile.delete()
+    }
+
+    private fun getZipEntryStream(entry: String): InputStream? {
+        val fileInput = javaClass.classLoader.getResourceAsStream("patch/Bypass.zip") ?: return null
+        val zipInput = ZipInputStream(fileInput)
+        return generateSequence { zipInput.nextEntry }
+            .firstOrNull { it.name == entry }
+            ?.let { zipInput }
+    }
+
+    private fun getDexCount(zFile: ZFile): Int {
+        return zFile.entries()
+            .count { entry ->
+                val name = entry.centralDirectoryHeader.name
+                name.startsWith("classes") && name.endsWith(".dex")
+            } + 1
+    }
+
+    fun modifyManifest(filePath: String) {
         val manifestFile = File(filePath)
         if (!manifestFile.exists()) {
             println("Manifest file does not exist: $filePath")
@@ -39,11 +136,14 @@ object Apk {
 
         val manifestNode = document.documentElement
 
-        if (packName != "") {
-            manifestNode.setAttributeNS("", "package", packName)
-        }
 
-        manifestNode.setAttributeNS("http://schemas.android.com/apk/res/android", "android:sharedUserId", "future.tefmodloader")
+        if (Mode == 1) {
+            manifestNode.setAttributeNS(
+                "http://schemas.android.com/apk/res/android",
+                "android:sharedUserId",
+                "future.tefmodloader"
+            )
+        }
 
         fun addPermission(permissionName: String) {
             val permissionElement = document.createElement("uses-permission").apply {
@@ -53,9 +153,11 @@ object Apk {
             println("Added permission: $permissionName")
         }
 
-        addPermission("android.permission.READ_EXTERNAL_STORAGE")
-        addPermission("android.permission.WRITE_EXTERNAL_STORAGE")
-        addPermission("android.permission.MANAGE_EXTERNAL_STORAGE")
+        if (Mode == 0) {
+            addPermission("android.permission.READ_EXTERNAL_STORAGE")
+            addPermission("android.permission.WRITE_EXTERNAL_STORAGE")
+            addPermission("android.permission.MANAGE_EXTERNAL_STORAGE")
+        }
 
         val applicationNodeList = manifestNode.getElementsByTagName("application")
         if (applicationNodeList.length == 0) {
@@ -63,30 +165,44 @@ object Apk {
             return
         }
         val applicationNode = applicationNodeList.item(0) as Element
-
         removeOldIntentFilters(applicationNode)
 
         val newActivityNode = createActivityElement(document, "eternal.future.TEFModLoader")
         applicationNode.appendChild(newActivityNode)
 
-        if (addDebuggable) {
+        if (Debug) {
             applicationNode.setAttributeNS("http://schemas.android.com/apk/res/android", "android:debuggable", "true")
             println("Debuggable attribute set.")
         }
 
-        if (updateVersionCode) {
+        if (OverrideVersion) {
             manifestNode.setAttributeNS("http://schemas.android.com/apk/res/android", "android:versionCode", "1")
             println("Version code updated.")
         }
 
-        val metaDataNode = document.createElement("meta-data").apply {
+        val metaData_ID = document.createElement("meta-data").apply {
             setAttributeNS("http://schemas.android.com/apk/res/android", "android:name", "TEFModLoader")
-            setAttributeNS("http://schemas.android.com/apk/res/android", "android:value", mode.toString())
+            setAttributeNS("http://schemas.android.com/apk/res/android", "android:value", Mode.toString())
         }
-        applicationNode.appendChild(metaDataNode)
+
+        val metaData_Bypass = document.createElement("meta-data").apply {
+            setAttributeNS("http://schemas.android.com/apk/res/android", "android:name", "Bypass")
+            setAttributeNS("http://schemas.android.com/apk/res/android", "android:value",  if (Bypass) "true" else "false")
+        }
+
+        applicationNode.appendChild(metaData_Bypass)
+        applicationNode.appendChild(metaData_ID)
         println("Meta-data node added.")
 
-        saveDocument(document, manifestFile)
+        val transformerFactory = TransformerFactory.newInstance()
+        val transformer = transformerFactory.newTransformer().apply {
+            setOutputProperty(OutputKeys.INDENT, "yes")
+            setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
+        }
+        val source = DOMSource(document)
+        val result = StreamResult(filePath)
+        transformer.transform(source, result)
+        println("Manifest file has been successfully modified and saved.")
     }
 
     private fun createActivityElement(document: Document, activityName: String): Element {
@@ -147,70 +263,6 @@ object Apk {
         }
     }
 
-    private fun saveDocument(document: Document, file: File) {
-        val transformerFactory = TransformerFactory.newInstance()
-        val transformer = transformerFactory.newTransformer().apply {
-            setOutputProperty(OutputKeys.INDENT, "yes")
-            setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
-        }
-        val source = DOMSource(document)
-        val result = StreamResult(file)
-        transformer.transform(source, result)
-        println("Manifest file has been successfully modified and saved.")
-    }
-
-    fun extractFileFromApk(apkPath: String, entryName: String, outputPath: String) {
-        ZFile.openReadOnly(File(apkPath)).use { zFile ->
-            println("APK: " + zFile.entries())
-            val entry = zFile.get(entryName)
-            if (entry != null) {
-                entry.open().use { input ->
-                    FileOutputStream(outputPath).use { output ->
-                        input.copyTo(output)
-                    }
-                }
-            } else {
-                println("No entries found: $entryName")
-            }
-        }
-    }
-
-    fun replaceFileInApk(apkPath: String, entryName: String, newFilePath: String) {
-        ZFile.openReadWrite(File(apkPath)).use { zFile ->
-            val entry = zFile.get(entryName)
-            if (entry != null) {
-                entry.delete()
-                val newFile = File(newFilePath)
-                if (!newFile.exists()) {
-                    throw FileNotFoundException("New file does not exist: $newFilePath")
-                }
-                zFile.add(entryName, newFile.inputStream())
-            } else {
-                val newFile = File(newFilePath)
-                if (!newFile.exists()) {
-                    throw FileNotFoundException("New file does not exist: $newFilePath")
-                }
-                zFile.add(entryName, newFile.inputStream())
-            }
-        }
-    }
-
-    fun addFolderToApk(apkPath: String, entryPath: String, folderPath: String) {
-        ZFile.openReadWrite(File(apkPath)).use { zFile ->
-            val folder = File(folderPath)
-            if (folder.isDirectory) {
-                folder.walk().forEach { file ->
-                    if (file.isFile) {
-                        val relativePath = folder.toURI().relativize(file.toURI()).path
-                        val entryName = "$entryPath/$relativePath"
-                        zFile.add(entryName, file.inputStream())
-                    }
-                }
-            } else {
-                println("$folderPath Not a valid directory")
-            }
-        }
-    }
 
     fun signApk(inputPath: String, outputPath: String) {
         val keystorePassword = "TEFModLoader"
@@ -240,90 +292,12 @@ object Apk {
         val apkSigner = ApkSigner.Builder(listOf(signerConfig))
             .setInputApk(input)
             .setOutputApk(output)
+            .setMinSdkVersion(24)
             .setV1SigningEnabled(false)
             .setV2SigningEnabled(true)
             .setV3SigningEnabled(false)
             .setOtherSignersSignaturesPreserved(false)
-
         apkSigner.build().sign()
-    }
-
-
-    fun countDexFiles(apkFilePath: String): Int {
-        var dexCount = 0
-
-        try {
-            FileInputStream(apkFilePath).use { fis ->
-                ZipInputStream(fis).use { zis ->
-                    var entry = zis.nextEntry
-                    while (entry != null) {
-                        if (!entry.isDirectory && entry.name.endsWith(".dex")) {
-                            dexCount++
-                        }
-                        entry = zis.nextEntry
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return dexCount
-    }
-
-    fun patchGame(mode: Int,
-                  apkPath: File,
-                  newPackName: String = "",
-                  debug: Boolean = false,
-                  overrideVersion: Boolean = false
-                  ) {
-        apkPath.let {
-            if (!it.exists()) return
-
-            if (mode != 2 && mode != 3) {
-                val axml = File(it.parent, "AndroidManifest.xml")
-                val axml_temp = File(it.parent, "AndroidManifest_temp.xml")
-
-                extractFileFromApk(it.path, "AndroidManifest.xml", axml.path)
-
-                decodeAXml(axml.path, axml_temp.path)
-                modifyManifest(axml_temp.path, mode, debug, overrideVersion, newPackName)
-                axml.delete()
-                Apk.encoderAXml(axml_temp.path, axml.path)
-                replaceFileInApk(it.path, "AndroidManifest.xml", axml.path)
-
-                val dexc = countDexFiles(it.path) + 1
-                javaClass.classLoader?.getResourceAsStream("patch/classes.dex")
-                javaClass.classLoader?.getResourceAsStream("patch/config.json")
-
-                val cj = File(it.parent, "config.json")
-                val d = File(it.parent, "classes$dexc.dex")
-
-                FileOutputStream(cj).use { fileOutputStream ->
-                    javaClass.classLoader?.getResourceAsStream("patch/config.json")?.copyTo(fileOutputStream)
-                }
-
-                cj.writeText(JSONObject(cj.readText()).put("mode", mode).toString(4))
-
-                FileOutputStream(d).use { fileOutputStream ->
-                    javaClass.classLoader?.getResourceAsStream("patch/classes.dex")?.copyTo(fileOutputStream)
-                }
-
-                replaceFileInApk(it.path, d.name, d.path)
-                replaceFileInApk(it.path, "assets/config.json", cj.path)
-
-                cj.delete()
-                d.delete()
-
-                axml_temp.delete()
-                axml.delete()
-                signApk(it.path, File(it.parent, "sign.apk").path)
-                it.delete()
-                File(it.parent, "sign.apk").renameTo(it)
-            } else {
-
-            }
-        }
     }
 }
 

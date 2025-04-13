@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import eternal.future.tefmodloader.MainActivity
 import eternal.future.tefmodloader.MainApplication
 import eternal.future.tefmodloader.State
 import eternal.future.tefmodloader.data.EFMod
@@ -50,10 +51,26 @@ actual fun EFModScreen.EFModCard_o(mod: EFMod) {
         }
     }
 
-    EFModCard_Reuse(mod) {
-        selectFileLauncher.launch("*/*")
-        showUpdate = true
-    }
+    val modAPI = mapOf(
+        "private-path" to File(mod.path, "private").absolutePath,
+        "data-path" to mod.path
+    )
+
+    EFModCard_Reuse(
+        mod,
+        onUpdateModClick = {
+            selectFileLauncher.launch("*/*")
+            showUpdate = true
+        },
+        onModPageClick = {
+            MainActivity.mainViewModel.navigateTo("modpage", mapOf(
+                "title" to mod.info.name,
+                "page-class" to mod.pageClass,
+                "page-path" to File(mod.path,  "page/android.jar").absolutePath,
+                "page-extraData" to modAPI
+            ))
+        }
+    )
 
     if (showUpdate) {
         AlertDialog(

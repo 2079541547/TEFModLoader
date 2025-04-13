@@ -15,12 +15,12 @@ import kotlinx.coroutines.launch
 
 interface Screen {
     val id: String
-    val extraData: List<Map<String, Any?>>
+    val extraData: Map<String, Any?>
 }
 
 data class DefaultScreen(
     override val id: String,
-    override val extraData: List<Map<String, Any?>> = emptyList()
+    override val extraData: Map<String, Any?> = emptyMap()
 ) : Screen
 
 
@@ -54,7 +54,7 @@ class NavigationViewModel : ViewModel() {
 
     fun navigateTo(
         screenId: String,
-        extraData: List<Map<String, Any?>> = emptyList(),
+        extraData: Map<String, Any?> = emptyMap(),
         animationSpecs: AnimationSpecs = defaultAnimation()
     ) {
         viewModelScope.launch {
@@ -128,7 +128,7 @@ class NavigationViewModel : ViewModel() {
             if (current != null) {
                 val refreshedScreen = DefaultScreen(
                     id = current.id,
-                    extraData = listOf(mapOf("refreshTimestamp" to System.currentTimeMillis()))
+                    extraData = current.extraData + mapOf("refreshTimestamp" to System.currentTimeMillis()) // 合并到现有Map
                 )
                 _currentScreen.emit(Pair(refreshedScreen, animationSpecs))
             }
@@ -162,11 +162,11 @@ class NavigationViewModel : ViewModel() {
         }
     }
 
-    fun addExtraData(extraData: Map<String, Any?>) {
+    fun updateExtraData(newData: Map<String, Any?>) {
         viewModelScope.launch {
             val current = _navigationStack.lastOrNull() as? DefaultScreen ?: return@launch
             val updatedScreen = current.copy(
-                extraData = current.extraData + listOf(extraData)
+                extraData = current.extraData + newData
             )
             val index = _navigationStack.indexOfLast { it.id == current.id }
             if (index != -1) {
@@ -176,9 +176,11 @@ class NavigationViewModel : ViewModel() {
         }
     }
 
-    fun getExtraData(key: String? = null): List<Map<String, Any?>> {
-        return _currentScreen.value.first?.extraData.orEmpty().let { data ->
-            if (key == null) data else data.filter { it.containsKey(key) }
+    fun getExtraData(key: String? = null): Any? {
+        return if (key == null) {
+            _currentScreen.value.first?.extraData
+        } else {
+            _currentScreen.value.first?.extraData?.get(key)
         }
     }
 

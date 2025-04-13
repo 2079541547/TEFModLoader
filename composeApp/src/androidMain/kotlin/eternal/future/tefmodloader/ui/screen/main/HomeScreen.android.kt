@@ -74,6 +74,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.FileInputStream
 import kotlin.math.roundToInt
 
 actual object HomeScreen{
@@ -92,12 +93,20 @@ actual object HomeScreen{
         var showLaunchDialog by remember { mutableStateOf(false) }
 
         val exportFileLauncher = rememberLauncherForActivityResult(CreateDocument("application/vnd.android.package-archive")) { uri: Uri? ->
-            uri?.let {
-                MainApplication.getContext().contentResolver.openOutputStream(it).use { outputStream ->
-                    val file = File(MainApplication.getContext().getExternalFilesDir(null), "patch/Game.apk")
-                    outputStream?.write(file.readBytes())
-                    file.delete()
-                    configuration.setBoolean("patched", File(MainApplication.getContext().getExternalFilesDir(null), "patch/Game.apk").exists())
+            uri?.let { documentUri ->
+                try {
+                    val context = MainApplication.getContext()
+                    val apkFile = File(context.getExternalFilesDir(null), "patch/Game.apk")
+
+                    context.contentResolver.openOutputStream(documentUri)?.use { outputStream ->
+                        FileInputStream(apkFile).use { inputStream ->
+                            inputStream.copyTo(outputStream)
+                        }
+                    }
+                    apkFile.delete()
+                    configuration.setBoolean("patched", false)
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }
@@ -254,16 +263,20 @@ actual object HomeScreen{
                                     snackbarHostState.showSnackbar(locale.getString("patch_error_0"))
                                 }
                             } else {
-                                val p = if (gamePack.value) "tefmodloader.terraria" else ""
-                                Apk.patchGame(
-                                    mode = Mode.value,
+
+                                Apk.patch(
                                     apkPath = File(
                                         MainApplication.getContext().getExternalFilesDir(null),
                                         "patch/game.apk"
-                                    ),
-                                    newPackName = p,
+                                    ).path,
+                                    outPath = File(
+                                        MainApplication.getContext().getExternalFilesDir(null),
+                                        "patch/game.apk"
+                                    ).path,
+                                    mode = Mode.value,
+                                    bypass = State.isBypass.value,
                                     debug = Debugging.value,
-                                    overrideVersion = OverrideVersion.value
+                                    overrideVersion = OverrideVersion.value,
                                 )
                             }
 
@@ -296,7 +309,7 @@ actual object HomeScreen{
 
                                     val modeString = when (mode) {
                                         0 -> locale.getString("external")
-                                        1 -> locale.getString("share")
+                                        // 1 -> locale.getString("share")
                                         else -> locale.getString("inline")
                                     }
 
@@ -312,12 +325,6 @@ actual object HomeScreen{
                                                     )
                                                     EFMod.initialize_data(State.EFModPath, File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader/Data").path)
                                                     configuration.setBoolean("externalMode", true)
-                                                }
-                                                else -> {
-                                                    EFMod.initialize(
-                                                        State.EFModPath, State.EFModLoaderPath,
-                                                        File(MainApplication.getContext().cacheDir, "TEFModLoader").path
-                                                    )
                                                 }
                                             }
 

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/android/core/src/main/cpp/lib/Dobby" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/silkcasket/SilkCasket" vcs="Git" />
   </component>
 </project>

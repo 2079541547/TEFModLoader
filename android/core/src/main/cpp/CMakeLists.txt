@@ -8,7 +8,7 @@ add_subdirectory(lib/EFModLoader)
 
 target_link_libraries(BNM
         PUBLIC
-        Dobby
+        dobby_static
 )
 
 add_library(TEFModLoader SHARED
@@ -31,16 +31,3 @@ target_link_libraries(TEFModLoader
         EFModLoader
         BNM
 )
-
-add_library(TEFLoader SHARED
-        TEFLoader/src/TEFLoader.cpp)
-
-target_include_directories(TEFLoader
-        PUBLIC
-        TEFLoader/includes
-)
-
-target_link_libraries(TEFLoader
-        android
-        Dobby
-        log)

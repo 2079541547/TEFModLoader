@@ -2,6 +2,14 @@ package eternal.future.tefmodloader.utility
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.graphics.ImageBitmap
+import eternal.future.tefmodloader.State
+import eternal.future.tefmodloader.data.EFMod
+import eternal.future.tefmodloader.data.Github
+import eternal.future.tefmodloader.data.Info
+import eternal.future.tefmodloader.data.Introduction
+import eternal.future.tefmodloader.data.LoaderSupport
+import eternal.future.tefmodloader.data.PlatformSupport
+import eternal.future.tefmodloader.data.Platforms
 import net.peanuuutz.tomlkt.Toml
 import net.peanuuutz.tomlkt.asTomlTable
 import net.peanuuutz.tomlkt.getArray
@@ -11,19 +19,9 @@ import net.peanuuutz.tomlkt.getString
 import net.peanuuutz.tomlkt.getTable
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.decodeToImageBitmap
-import eternal.future.tefmodloader.State
-import eternal.future.tefmodloader.data.EFMod
-import eternal.future.tefmodloader.data.Github
-import eternal.future.tefmodloader.data.Info
-import eternal.future.tefmodloader.data.Introduction
-import eternal.future.tefmodloader.data.LoaderSupport
-import eternal.future.tefmodloader.data.PlatformSupport
-import eternal.future.tefmodloader.data.Platforms
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 
 object EFMod {
 
@@ -242,7 +240,9 @@ object EFMod {
             val originalFile = File(loaderTargetDir, loaderLib)
             val newFile = File(loaderTargetDir, "loader-core")
             EFLog.v("重命名加载器库文件: ${originalFile.absolutePath} 到: ${newFile.absolutePath}")
-            Files.move(originalFile.toPath(), newFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
+            if (originalFile.exists()) {
+                originalFile.renameTo(newFile)
+            }
             EFLog.v("完成重命名加载器库文件: ${originalFile.absolutePath} 到: ${newFile.absolutePath}")
 
             modPaths.forEach { modPath ->
@@ -291,14 +291,15 @@ object EFMod {
                         )
                     }
 
+
                     val mod = EFMod(
                         info = Info(
                             name = toml.getTable("info").getString("name"),
                             author = toml.getTable("info").getString("author"),
                             version = toml.getTable("info").getString("version"),
-                            page = File(modDir, "Page/android").exists() && File(
+                            page = if (State.isAndroid) File(modDir, "page/android.jar").exists() else File(modDir, "Page/android").exists() && File(
                                 modDir,
-                                "Page/desktop"
+                                "page/desktop.jar"
                             ).exists()
                         ),
                         github = Github(
@@ -337,7 +338,12 @@ object EFMod {
                         icon = ModIcon,
                         isEnabled = File(modDir, "enabled").exists(),
                         standards = toml.getTable("mod").getInteger("standards").toInt(),
-                        Modx = toml.getTable("mod").getBoolean("modx")
+                        Modx = toml.getTable("mod").getBoolean("modx"),
+                        pageClass = try {
+                            toml.getTable("mod").getString("pageClass")
+                        } catch (e: Exception) {
+                            "default.PageClass"
+                        }
                     )
 
                     mods.add(mod)

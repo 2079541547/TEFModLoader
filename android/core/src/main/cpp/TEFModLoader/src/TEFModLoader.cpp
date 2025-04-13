@@ -76,9 +76,6 @@ void TEFModLoader::initialize(JNIEnv *env) {
         env->ReleaseStringUTFChars(efmodcValue, modDataPathCStr);
 
         std::cout << "Mode: " << Mode << ", modDataPath: " << modDataPath << std::endl;
-
-        auxiliaryPath = Utility::getModDir().parent_path() / "libauxiliary.so";
-        std::cout << "Auxiliary library path: " << auxiliaryPath << std::endl;
     }
 
     std::cout << "Loading mods from directory: " << Utility::getModDir() << " with data path: " << modDataPath << std::endl;

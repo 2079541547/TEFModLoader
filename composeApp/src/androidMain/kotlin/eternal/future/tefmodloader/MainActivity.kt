@@ -22,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -37,6 +38,7 @@ import eternal.future.tefmodloader.ui.navigation.DefaultScreen
 import eternal.future.tefmodloader.ui.navigation.NavigationViewModel
 import eternal.future.tefmodloader.ui.navigation.ScreenRegistry
 import eternal.future.tefmodloader.ui.screen.HelpScreen
+import eternal.future.tefmodloader.ui.screen.ModPageScreen
 import eternal.future.tefmodloader.ui.screen.SettingScreen
 import eternal.future.tefmodloader.ui.screen.TerminalScreen
 import eternal.future.tefmodloader.ui.screen.about.AboutScreen
@@ -62,8 +64,9 @@ class MainActivity : ComponentActivity() {
         fun exit() {
             instance.finishAffinity()
         }
-    }
 
+        val mainViewModel = NavigationViewModel()
+    }
 
 
     @SuppressLint("UnsafeDynamicallyLoadedCode")
@@ -76,7 +79,6 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            val mainViewModel = remember { NavigationViewModel() }
             TEFModLoaderComposeTheme {
                 initializeScreens(mainViewModel)
                 NavigationHost(mainViewModel)
@@ -107,6 +109,7 @@ class MainActivity : ComponentActivity() {
                                     "license" -> LicenseScreen.LicenseScreen(viewModel)
                                     "thanks" -> ThanksScreen.ThanksScreen(viewModel)
                                     "settings" -> SettingScreen.SettingScreen(viewModel)
+                                    "modpage" -> ModPageScreen.ModPageScreen(viewModel)
                                     else -> {}
                                 }
                             }
@@ -161,7 +164,8 @@ class MainActivity : ComponentActivity() {
             DefaultScreen("license"),
             DefaultScreen("thanks"),
             DefaultScreen("settings"),
-            DefaultScreen("terminal")
+            DefaultScreen("terminal"),
+            DefaultScreen("modpage")
         ).forEach {
             ScreenRegistry.register(it)
         }

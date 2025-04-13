@@ -12,6 +12,8 @@ debug_content = "允许包被调试"
 select_apk = "选择自定义安装包"
 select_apk_content = "选择后将不会自动使用已安装的游戏包否则使用已安装的游戏包"
 select_mode = "选择模式"
+bypass = "绕过检测"
+bypass_content = "使用SilkRift尝试绕过安装包中的某些检测"
 
 [zh-hant]
 external = "外部模式"
@@ -27,6 +29,8 @@ debug_content = "允許包被調試"
 select_apk = "選擇自定義安裝包"
 select_apk_content = "選擇後將不會自動使用已安裝的遊戲包否則使用已安裝的遊戲包"
 select_mode = "選擇模式"
+bypass = "繞過檢測"
+bypass_content = "使用SilkRift嘗試繞過安裝包中的某些檢測"
 
 [en]
 external = "External Mode"
@@ -42,3 +46,5 @@ debug_content = "Allow the package to be debugged"
 select_apk = "Select Custom APK"
 select_apk_content = "After selection, it will not automatically use the installed game package; otherwise, it will use the installed game package"
 select_mode = "Select Mode"
+bypass = "Bypass detection"
+bypass_content = "Use SilkRift to attempt to bypass certain detections in the installation package"

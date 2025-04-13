@@ -73,7 +73,8 @@ object EFModScreen {
     @Composable
     fun EFModCard_Reuse(
         mod: EFMod,
-        onUpdateModClick: () -> Unit
+        onUpdateModClick: () -> Unit,
+        onModPageClick: () -> Unit
     ) {
         var expanded by remember { mutableStateOf(false) }
         var showDeleteDialog by remember { mutableStateOf(false) }
@@ -150,7 +151,7 @@ object EFModScreen {
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 if (mod.info.page) {
-                                    IconButton(onClick = { /* TODO() */ }) {
+                                    IconButton(onClick = onModPageClick) {
                                         Icon(
                                             Icons.Default.Animation,
                                             contentDescription = "Animation Mod"

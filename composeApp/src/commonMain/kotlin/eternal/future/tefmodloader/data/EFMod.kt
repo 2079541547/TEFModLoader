@@ -12,7 +12,10 @@ data class EFMod(
     var icon: ImageBitmap? = null,
     val standards: Int,
     var isEnabled: Boolean,
-    var Modx: Boolean
+    var Modx: Boolean,
+
+    val pageClass: String?
+
 )
 
 data class Info(

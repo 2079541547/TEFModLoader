@@ -1,3 +1,7 @@
 [submodule "silkcasket/SilkCasket"]
 	path = silkcasket/SilkCasket
 	url = https://github.com/2079541547/SilkCasket.git
+
+[submodule "android/core/src/main/cpp/lib/Dobby"]
+	path = android/core/src/main/cpp/lib/Dobby
+	url = https://github.com/2079541547/DobbyHook.git

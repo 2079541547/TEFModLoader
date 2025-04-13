@@ -42,7 +42,7 @@ fun parseCommand(input: String): Command {
                 return Command(command = input, output = "Error: 'patch' requires two arguments: mode and apkPath.")
             }
             try {
-                Apk.patchGame(mode = positionalArgs[0].toInt(), apkPath = File(positionalArgs[1]))
+                // Apk.patchGame(mode = positionalArgs[0].toInt(), apkPath = File(positionalArgs[1]))
                 Command(command = input, output = "out: ${positionalArgs[1]}")
             } catch (e: NumberFormatException) {
                 Command(command = input, output = "Error: Invalid mode argument for 'patch'. - ${e.message}")

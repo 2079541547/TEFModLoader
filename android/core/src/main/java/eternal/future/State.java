@@ -14,4 +14,6 @@ public class State {
 
     public static String ManagerPackName;
     public static String EFMod_c;
+
+    public static boolean Bypass;
 }

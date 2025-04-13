@@ -36,6 +36,7 @@ import eternal.future.tefmodloader.State.Debugging
 import eternal.future.tefmodloader.State.Mode
 import eternal.future.tefmodloader.State.OverrideVersion
 import eternal.future.tefmodloader.State.autoPatch
+import eternal.future.tefmodloader.State.isBypass
 import eternal.future.tefmodloader.ui.widget.main.SettingScreen
 import eternal.future.tefmodloader.utility.Locales
 import kotlin.math.roundToInt
@@ -75,15 +76,9 @@ fun GuideScreen.Patch() {
 
     val ModeMap = mapOf(
         0 to disposition.getString("external"),
-        1 to disposition.getString("share"),
+        // 1 to disposition.getString("share"),
         // 2 to disposition.getString("inline"),
         // 3 to disposition.getString("root"),
-    )
-
-    val killerMap = mapOf(
-        0 to "None",
-        1 to "MT Manager",
-        2 to "LSPatch"
     )
 
     LazyColumn {
@@ -115,20 +110,18 @@ fun GuideScreen.Patch() {
                 )
 
 
-                /*
-                // 这个存在问题，不开放
+
                 SettingScreen.ModernCheckBox(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    title = disposition.getString("coexistence"),
-                    contentDescription = disposition.getString("coexistence_content"),
-                    isChecked = gamePack.value,
+                    title = disposition.getString("bypass"),
+                    contentDescription = disposition.getString("bypass_content"),
+                    isChecked = isBypass.value,
                     onCheckedChange = { select ->
-                        gamePack.value = select
+                        isBypass.value = select
                     }
                 )
-                */
 
                 SettingScreen.ModernCheckBox(
                     modifier = Modifier

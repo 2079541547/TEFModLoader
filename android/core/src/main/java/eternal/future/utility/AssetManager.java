@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 public class AssetManager {
 
     public static String readTextOfAsset(Context context, String filename) {
-        String json = null;
+        String json;
         try {
             InputStream is = context.getAssets().open(filename);
             int size = is.available();

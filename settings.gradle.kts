@@ -31,3 +31,4 @@ dependencyResolutionManagement {
 include(":composeApp")
 include(":android:axml")
 include(":android:core")
+include(":example:example-page")

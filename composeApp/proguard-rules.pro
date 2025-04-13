@@ -33,3 +33,19 @@
 
 -keep class mt.modder.hub.axml.** { *; }
 -keep class mt.modder.hub.axmlTools.** { *; }
+
+-keepclassmembers class * {
+    @androidx.compose.runtime.Composable *;
+}
+
+-keep class kotlin.** { *; }
+-keep class kotlinx.** { *; }
+
+-keep class androidx.compose.** { *; }
+-keep interface androidx.compose.** { *; }
+-keep @androidx.compose.runtime.Composable class * { *; }
+-keepclassmembers class * {
+    @androidx.compose.runtime.Composable *;
+}
+
+-keep class eternal.future.tefmodloader.utility.LoadPage_androidKt
