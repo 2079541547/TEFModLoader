@@ -136,15 +136,6 @@ object Apk {
 
         val manifestNode = document.documentElement
 
-
-        if (Mode == 1) {
-            manifestNode.setAttributeNS(
-                "http://schemas.android.com/apk/res/android",
-                "android:sharedUserId",
-                "future.tefmodloader"
-            )
-        }
-
         fun addPermission(permissionName: String) {
             val permissionElement = document.createElement("uses-permission").apply {
                 setAttributeNS("http://schemas.android.com/apk/res/android", "android:name", permissionName)
