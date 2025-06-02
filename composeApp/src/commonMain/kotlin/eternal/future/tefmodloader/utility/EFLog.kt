@@ -9,34 +9,11 @@ import java.util.Date
 
 object EFLog {
 
-    val logFilePath = File(App.getPrivate(), "jvm-runtime.log").path
     private var printCallerInfo = true
     private const val TAG = "TEFModLoader"
 
 
-    init {
-        ensureLogFile()
-    }
-
-    private fun ensureLogFile() {
-        if (!State.loggingEnabled.value) return
-        val file = File(logFilePath)
-        if (!file.exists()) {
-            file.createNewFile()
-        } else if (file.length() > State.logCache.value && State.logCache.value != -1) {
-            clearLogFile(file)
-        }
-    }
-
-    private fun clearLogFile(file: File) {
-        file.writeText("")
-    }
-
-    private fun writeToFile(message: String) {
-        if (State.loggingEnabled.value) {
-            File(logFilePath).appendText("$message\n")
-        }
-    }
+    @Suppress("SimpleDateFormat")
     private fun formatMessage(severity: Severity, tag: String, message: String, callerInfo: Triple<String, String, Int>): String {
         val callerString = if (callerInfo.third != -1) " (${callerInfo.first}:${callerInfo.second}:${callerInfo.third})" else ""
         return "[${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())}] $severity/$tag$callerString: $message"
@@ -112,13 +89,6 @@ object EFLog {
 
         throwable?.let {
             Logger.e(tag) { it.stackTraceToString() }
-        }
-
-        val formattedMessage = formatMessage(severity, tag, message, callerInfo)
-        writeToFile(formattedMessage)
-
-        throwable?.let {
-            writeToFile(it.stackTraceToString())
         }
     }
 }

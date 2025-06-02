@@ -3,9 +3,11 @@ cmake_minimum_required(VERSION 3.8...3.26)
 
 project(BNM)
 
+# Build BNM examples
 set(BNM_BUILD_EXAMPLES OFF)
 
-set(BNM_LINK_LOG ON)
+# Add dependents to liblog.so
+set(BNM_LINK_LOG OFF)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

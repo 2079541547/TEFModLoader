@@ -2,13 +2,14 @@
 
 > Next-generation high-performance cross-platform Terraria mod loader
 
+## [💝 Donation List](Document/donation.md)
+
 ## 📚 Open Source Components
 
 | Project Name | Purpose | License |
 |--------------|---------|---------|
 | [Jetpack Compose](https://developer.android.com/jetpack/compose) | Android UI framework | Apache 2.0 |
-| [EFModLoader](https://github.com/2079541547/EFModLoader) | Core loader for TEFModLoader | AGPL v3.0 |
-| [EFMod](https://github.com/2079541547/EFMod) | Mod design standard for TEFModLoader | Apache 2.0 |
+| [EFMod](https://gitlab.com/2079541547/efmod) | Mod design standard for TEFModLoader | MIT |
 | [BNM-Android](https://github.com/ByNameModding/BNM-Android) | Library for modifying il2cpp games on Android via class/method/field names | MIT |
 | [Dobby](https://github.com/jmpews/Dobby) | Lightweight, cross-platform, multi-architecture hooking framework | Apache 2.0 |
 | [SilkCasket](https://github.com/2079541547/SilkCasket) | TEFMod file format | Apache 2.0 |
@@ -119,6 +120,33 @@ Comparison with JavaScript (V8) solution:
    - Mingw
   ```
 
-### Mod Development
-- [API](#)
-- [Core Features](#)
+## Mod Development
+
+### Path Spelling Error Fix
+**Affected Versions**: All Beta versions below 10.0.0 Beta3.4  
+**Error Manifestation**: Incorrectly spelled `TEFModLoader` as `TEFModLoaLoader` in paths  
+**Automatic Fix Solution**:
+
+```cpp
+/**
+ * Automatically fixes path spelling errors
+ * @param path Original path
+ * @return Corrected path
+ */
+std::string FixPathTypo(const std::string& path) {
+    std::string corrected = path;
+    const std::string WRONG_STR = "TEFModLoaLoader";
+    const std::string CORRECT_STR = "TEFModLoader";
+    
+    size_t typoPos = corrected.find(WRONG_STR);
+    while (typoPos != std::string::npos) {
+        corrected.replace(typoPos, WRONG_STR.length(), CORRECT_STR);
+        typoPos = corrected.find(WRONG_STR, typoPos + CORRECT_STR.length());
+    }
+    
+    return corrected;
+}
+```
+
+- [EFMod Documentation](https://gitlab.com/2079541547/efmod)
+- [Basic API](Document/Development/BasicAPI.md)

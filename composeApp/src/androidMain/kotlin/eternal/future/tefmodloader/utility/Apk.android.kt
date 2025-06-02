@@ -7,6 +7,7 @@ import mt.modder.hub.axml.AXMLCompiler
 import mt.modder.hub.axml.AXMLPrinter
 import java.io.File
 import java.io.FileOutputStream
+import java.util.zip.ZipFile
 
 
 fun Apk.extractWithPackageName(packageName: String, targetPath: String) {
@@ -86,6 +87,38 @@ fun Apk.launchAppByPackageName(packageName: String): Boolean {
     } catch (e: Exception) {
         e.printStackTrace()
         false
+    }
+}
+
+fun Apk.getSupportedAbi(packageName: String): String? {
+    return try {
+        val appInfo = MainApplication.getContext().packageManager
+            .getApplicationInfo(packageName, 0)
+        val apkPath = appInfo.sourceDir
+
+        val abis = mutableSetOf<String>()
+
+        ZipFile(apkPath).use { zip ->
+
+            zip.entries().iterator().forEach { entry ->
+                if (entry.name.startsWith("lib/")) {
+                    entry.name.split('/').getOrNull(1)?.let { abi ->
+                        abis.add(abi)
+                    }
+                }
+            }
+
+            abis.firstOrNull { it.contains("arm64") } ?:
+            abis.firstOrNull { it.contains("armeabi") } ?:
+            abis.firstOrNull { it.contains("x86_64") } ?:
+            abis.firstOrNull { it.contains("x86") } ?:
+            abis.firstOrNull()
+        }.also { abi ->
+            EFLog.i("解析APK获取到支持ABI: ${abis.joinToString()}, 最终选择: $abi")
+        }
+    } catch (e: Exception) {
+        EFLog.e("获取游戏ABI失败: ${e.message}")
+        null
     }
 }
 

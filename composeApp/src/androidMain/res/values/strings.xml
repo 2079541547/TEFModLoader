@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="FreeformWindowOrientation_landscape" />
+    <string name="FreeformWindowOrientation_portrait" />
+    <string name="FreeformWindowSize_maximize" />
+    <string name="FreeformWindowSize_phone" />
+    <string name="FreeformWindowSize_tablet" />
+    <string name="app_name">Terraria</string>
+    <string name="game_view_content_description">Game view</string>
+</resources>

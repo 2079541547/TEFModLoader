@@ -19,14 +19,16 @@ close = "关闭"
 别看捏，我什么都没做qwq(bushi
 """
 "MorenRx" = """
-为此项目捐赠50元
 早期提供纯净包
 某些页面的灵感及功能
 早期项目优化
 """
 "JiangNight" = """
 为项目的 Compose UI 奠定了重要基础
+Terraria图标设计
 """
+ListOfDonors = "捐赠名单"
+ListOfDonors_Content = "衷心感谢所有支持者的慷慨捐赠"
 
 [zh-hant]
 title = "關於"
@@ -49,14 +51,16 @@ close = "關閉"
 別看捏，我什麼都沒做qwq(bushi
 """
 "MorenRx" = """
-為此項目捐贈50元
 早期提供純淨包
 某些頁面的靈感及功能
 早期項目優化
 """
 "JiangNight" = """
 為項目的 Compose UI 奠定了重要基礎
+Terraria圖標設計
 """
+ListOfDonors = "捐贈名單"
+ListOfDonors_Content = "衷心感謝所有支持者的慷慨捐贈"
 
 [en]
 title = "About"
@@ -79,11 +83,13 @@ close = "Close"
 Don't look, I didn't do anything qwq (hehe
 """
 "MorenRx" = """
-Donated 50 RMB to the project
 Provided clean packages early on
 Inspiration and functionality for certain pages
 Early project optimization
 """
 "JiangNight" = """
 Laid the foundation for the project's Compose UI
+Terraria icon design
 """
+ListOfDonors = "Donor List"
+ListOfDonors_Content = "We sincerely appreciate all generous donations"

@@ -44,9 +44,57 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import android.os.Process
+import android.util.Log
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.io.OutputStream
+import java.util.concurrent.TimeUnit
 
 
 actual object SettingScreen {
+
+    private fun captureLogcatAndWriteTo(outputStream: OutputStream) {
+        val tempFile = createTempFile("logcat_", ".log").apply {
+            deleteOnExit()
+        }
+
+        try {
+            val pid = Process.myPid()
+            val command = arrayOf(
+                "logcat",
+                "--pid=$pid",
+                "-v", "threadtime",
+                "-b", "all",
+                "-d"
+            )
+
+            Runtime.getRuntime().exec(command).run {
+                tempFile.outputStream().buffered().use { fileStream ->
+                    inputStream.copyTo(fileStream)
+                }
+
+                errorStream.bufferedReader().use { errorReader ->
+                    errorReader.forEachLine { line ->
+                        Log.e("LogcatError", line)
+                    }
+                }
+            }
+
+            tempFile.inputStream().buffered().use { fileInput ->
+                fileInput.copyTo(outputStream)
+            }
+
+        } catch (e: Exception) {
+            Log.e("LogcatCapture", "Failed to capture logcat", e)
+            throw e
+        } finally {
+            outputStream.flush()
+            outputStream.close()
+            tempFile.delete()
+        }
+    }
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     actual fun SettingScreen(mainViewModel: NavigationViewModel) {
@@ -57,8 +105,9 @@ actual object SettingScreen {
         val exportFileLauncher = rememberLauncherForActivityResult(CreateDocument("*/*")) { uri: Uri? ->
             uri?.let {
                 MainApplication.getContext().contentResolver.openOutputStream(it).use { outputStream ->
-                    val file = File(EFLog.logFilePath)
-                    if (file.exists()) outputStream?.write(file.readBytes())
+                    if (outputStream != null) {
+                        captureLogcatAndWriteTo(outputStream)
+                    }
                 }
             }
         }
@@ -100,62 +149,34 @@ actual object SettingScreen {
                         title = setting.getString("architecture"),
                         defaultSelectorId = State.architecture.value,
                         selectorMap = advancedMap,
-                        modifier = Modifier.fillMaxWidth().padding(4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp),
                         onClick = {
+                            configuration.setInt("architecture", it)
                             State.architecture.value = it
                         }
                     )
 
-                    SettingScreen.SettingsSwitchItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(4.dp),
-                        title = setting.getString("log"),
-                        checked = loggingEnabled.value,
-                        onCheckedChange = { check ->
-                            loggingEnabled.value = check
-                        },
-                        iconOn = Icons.Default.BugReport
+
+
+                    SettingScreen.ActionButton(
+                        icon = Icons.Default.Save,
+                        title = setting.getString("export_logs"),
+                        description = setting.getString("export_logs_content"),
+                        onClick = {
+                            val formatter = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault())
+                            val fileName = "runtime-jvm-${formatter.format(Date())}.log"
+                            exportFileLauncher.launch(fileName)
+                        }
                     )
 
-                    if (loggingEnabled.value) {
-
-                        val logMap = mapOf(
-                            512 * 1024 to "512 kb",
-                            1024 * 1024 to "1024 kb",
-                            2048 * 1024 to "2048 kb",
-                            4096 * 1024 to "4096 kb",
-                            8192 * 1024 to "8192 kb",
-                            -1 to setting.getString("unlimited")
-                        )
-
-                        SettingScreen.Selector(
-                            title = setting.getString("maximum_log_cache"),
-                            defaultSelectorId = State.logCache.value,
-                            logMap,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp),
-                            onClick = {
-                                State.logCache.value = it
-                            }
-                        )
-
-                        SettingScreen.ActionButton(
-                            icon = Icons.Default.Save,
-                            title = setting.getString("export_logs"),
-                            description = setting.getString("export_logs_content"),
-                            onClick = {
-                                val formatter = SimpleDateFormat("yyyy-MM-dd_HH-mm-ss", Locale.getDefault())
-                                val fileName = "runtime-jvm-${formatter.format(Date())}.log"
-                                exportFileLauncher.launch(fileName)
-                            }
-                        )
-                    }
                 }
 
                 item {
-                    Text(setting.getString("general"), modifier = Modifier.fillMaxWidth().padding(4.dp))
+                    Text(setting.getString("general"), modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(4.dp))
 
                     val languageMap = mapOf(
                         0 to setting.getString("follow_system"),

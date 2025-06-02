@@ -30,6 +30,7 @@ public class TEFModLoader extends Activity {
 
         try {
             String jsonString = AssetManager.readTextOfAsset(this, "config.json");
+            assert jsonString != null;
             JSONObject obj = new JSONObject(jsonString);
             State.Mode = obj.getInt("mode");
             State.gameActivity = Class.forName(obj.getString("activity"));
@@ -90,7 +91,7 @@ public class TEFModLoader extends Activity {
 
             State.Modx_external = new File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader/Modx");
             State.EFMod_external = new File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader/EFMod");
-            State.EFMod_c = new File(Environment.getExternalStorageDirectory(), "Documents/TEFModTEFModLoaLoader/Data").getAbsolutePath();
+            State.EFMod_c = new File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader/Data").getAbsolutePath();
 
             if (State.EFMod_external.exists()) {
                 FileUtils.moveContent(State.EFMod_external, State.EFMod);

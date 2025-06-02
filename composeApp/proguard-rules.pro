@@ -49,3 +49,6 @@
 }
 
 -keep class eternal.future.tefmodloader.utility.LoadPage_androidKt
+
+-keep class com.and.games505.TerrariaPaid.R { *; }
+-dontwarn com.and.games505.TerrariaPaid.R

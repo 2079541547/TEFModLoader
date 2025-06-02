@@ -93,6 +93,52 @@ object FileUtils {
         }
         EFLog.d("完成递归复制: ${source.absolutePath} 到 ${target.absolutePath}")
     }
+
+    fun moveRecursivelyEfficient(source: File, target: File) {
+        try {
+            if (source.isDirectory) {
+                EFLog.v("源是目录: ${source.name}")
+
+                if (source.renameTo(target)) {
+                    EFLog.v("成功通过重命名移动目录: ${source.absolutePath} 到 ${target.absolutePath}")
+                    return
+                }
+
+                EFLog.v("直接重命名目录失败，改用递归方式")
+                if (!target.exists()) {
+                    target.mkdirs()
+                    EFLog.v("创建目标目录: ${target.absolutePath}")
+                }
+
+                source.listFiles()?.forEach { file ->
+                    val targetFile = File(target, file.name)
+                    moveRecursivelyEfficient(file, targetFile)
+                }
+
+                if (source.delete()) {
+                    EFLog.v("成功删除空目录: ${source.absolutePath}")
+                } else {
+                    EFLog.e("无法删除目录: ${source.absolutePath}")
+                }
+
+            } else {
+                EFLog.v("源是文件: ${source.name}")
+                if (source.renameTo(target)) {
+                    EFLog.v("成功通过重命名移动文件: ${source.absolutePath} 到 ${target.absolutePath}")
+                } else {
+                    EFLog.v("重命名失败，尝试复制+删除方式")
+                    source.copyTo(target, overwrite = true)
+                    if (source.delete()) {
+                        EFLog.v("成功删除源文件: ${source.absolutePath}")
+                    } else {
+                        EFLog.e("无法删除源文件: ${source.absolutePath}")
+                    }
+                }
+            }
+        } catch (e: IOException) {
+            EFLog.e("移动过程中发生IO异常", e)
+        }
+    }
 }
 
 

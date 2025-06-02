@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:sharedUserId="future.tefmodloader"
     tools:ignore="SelectedPhotoAccess">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -11,6 +10,30 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" tools:ignore="SelectedPhotoAccess"/>
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" tools:ignore="ScopedStorage"/>
 
+    <supports-screens
+        android:anyDensity="true"
+        android:smallScreens="true"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"/>
+    <uses-permission android:name="com.android.vending.CHECK_LICENSE"/>
+    <uses-feature
+        android:glEsVersion="0x30000"
+        android:required="true"/>
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.type.pc"
+        android:required="false"/>
+    <uses-feature android:name="android.hardware.gamepad"/>
+    <uses-feature
+        android:name="android.hardware.touchscreen.multitouch"
+        android:required="false"/>
+    <uses-feature
+        android:name="android.hardware.touchscreen.multitouch.distinct"
+        android:required="false"/>
+
     <application
         android:name=".MainApplication"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -19,6 +42,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:allowBackup="true"
         android:label="TEFModLoader"
+        android:isGame="true"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
@@ -32,6 +56,54 @@
             </intent-filter>
         </activity>
 
-    </application>
+        <activity
+            android:theme="@style/UnityThemeSelector"
+            android:label="Terraria"
+            android:name="com.unity3d.player.UnityPlayerActivity"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="userLandscape"
+            android:configChanges="fontScale|layoutDirection|density|smallestScreenSize|screenSize|uiMode|screenLayout|orientation|navigation|keyboardHidden|keyboard|touchscreen|locale|mnc|mcc"
+            android:hardwareAccelerated="false"
+            android:resizeableActivity="true"
+            tools:ignore="MissingClass">
+            <meta-data
+                android:name="unityplayer.UnityActivity"
+                android:value="true"/>
+            <meta-data
+                android:name="android.notch_support"
+                android:value="true"/>
+        </activity>
 
+        <meta-data
+            android:name="unity.splash-mode"
+            android:value="1"/>
+        <meta-data
+            android:name="unity.splash-enable"
+            android:value="true"/>
+        <meta-data
+            android:name="unity.launch-fullscreen"
+            android:value="true"/>
+        <meta-data
+            android:name="notch.config"
+            android:value="portrait|landscape"/>
+        <meta-data
+            android:name="unity.auto-report-fully-drawn"
+            android:value="true"/>
+        <meta-data
+            android:name="com.android.dynamic.apk.fused.modules"
+            android:value="base"/>
+        <meta-data
+            android:name="com.android.stamp.source"
+            android:value="https://play.google.com/store"/>
+        <meta-data
+            android:name="com.android.stamp.type"
+            android:value="STAMP_TYPE_STANDALONE_APK"/>
+        <meta-data
+            android:name="com.android.vending.splits"
+            android:resource="@xml/splits0"/>
+        <meta-data
+            android:name="com.android.vending.derived.apk.id"
+            android:value="2"/>
+    </application>
 </manifest>

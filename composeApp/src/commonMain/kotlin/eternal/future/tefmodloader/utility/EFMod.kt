@@ -104,9 +104,9 @@ object EFMod {
                 val f = File(mod.path)
                 File(f, "private").let { privateDir ->
                     if (privateDir.exists()) {
-                        EFLog.d("开始从 ${privateDir.absolutePath} 复制到 $targetDirectory")
-                        FileUtils.copyRecursivelyEfficient(privateDir, File(targetDirectory, "${privateDir.name}/private"))
-                        EFLog.d("完成复制 ${privateDir.name} 到 $targetDirectory")
+                        EFLog.d("开始从 ${privateDir.absolutePath} 移动到 $targetDirectory")
+                        FileUtils.moveRecursivelyEfficient(privateDir, File(targetDirectory, "${privateDir.parentFile.name}/private"))
+                        EFLog.d("完成移动 ${privateDir.name} 到 $targetDirectory")
                     } else {
                         EFLog.w("未找到私有目录：${privateDir.absolutePath}")
                     }
@@ -123,23 +123,19 @@ object EFMod {
             mods.forEach { mod ->
                 val f = File(mod.path)
                 File(f, "private").let { privateDir ->
-                    if (privateDir.exists()) {
-                        File(externallyPrivate, "${privateDir.name}/private").let { externalDir ->
-                            if (externalDir.exists() && externalDir.isDirectory) {
-                                if (!privateDir.exists() && !privateDir.mkdirs()) {
-                                    EFLog.e("无法创建私有目录：${privateDir.absolutePath}")
-                                    return@let
-                                }
-
-                                EFLog.d("开始从 ${externalDir.absolutePath} 更新到 ${privateDir.absolutePath}")
-                                FileUtils.copyRecursivelyEfficient(externalDir, privateDir)
-                                EFLog.d("完成更新 ${privateDir.name} 从 $externallyPrivate")
-                            } else {
-                                EFLog.w("外部私有目录不存在或不是目录：${externalDir.absolutePath}")
+                    File(externallyPrivate, "${privateDir.parentFile.name}/private").let { externalDir ->
+                        if (externalDir.exists() && externalDir.isDirectory) {
+                            if (!privateDir.exists() && !privateDir.mkdirs()) {
+                                EFLog.e("无法创建私有目录：${privateDir.absolutePath}")
+                                return@let
                             }
+
+                            EFLog.d("开始从 ${externalDir.absolutePath} 更新到 ${privateDir.absolutePath}")
+                            FileUtils.moveRecursivelyEfficient(externalDir, privateDir)
+                            EFLog.d("完成更新 ${privateDir.name} 从 $externallyPrivate")
+                        } else {
+                            EFLog.w("外部私有目录不存在或不是目录：${externalDir.absolutePath}")
                         }
-                    } else {
-                        EFLog.w("未找到私有目录：${privateDir.absolutePath}")
                     }
                 }
             }
@@ -148,7 +144,7 @@ object EFMod {
         }
     }
 
-    fun initialize(modPath: String, loaderPath: String, targetDirectory: String) {
+    fun initialize(modPath: String, loaderPath: String, targetDirectory: String, Architecture: String? = null) {
         EFLog.d("开始初始化MOD和加载器: MOD路径: $modPath, 加载器路径: $loaderPath, 目标目录: $targetDirectory")
 
         data class Loader(
@@ -165,12 +161,16 @@ object EFMod {
         val loadersMap = mutableStateListOf<Loader>()
         val initializeMap = mutableMapOf<Loader, MutableList<String>>()
 
-        val architecture = when (State.architecture.value) {
+        var architecture = when (State.architecture.value) {
             1 -> "arm64-v8a"
             2 -> "armeabi-v7a"
             3 -> "x64"
             4 -> "x86"
             else -> App.getCurrentArchitecture()
+        }
+
+        Architecture?.let {
+            architecture = it
         }
 
         val platform = if (State.isAndroid) "android" else "windows"

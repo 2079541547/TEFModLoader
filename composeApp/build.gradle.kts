@@ -28,6 +28,8 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(project(":android:core"))
             implementation(project(":android:axml"))
+            implementation(project(":android:axml"))
+            // implementation(project(":game-assets"))
             implementation(fileTree(mapOf("dir" to "src/androidMain/libs", "include" to listOf("*.jar", "*.aar"))))
         }
         //noinspection WrongGradleMethod
@@ -73,8 +75,21 @@ android {
         //noinspection OldTargetApi
         targetSdkVersion(libs.versions.android.targetSdk.get().toInt())
         versionCode = 1000
-        versionName = "10.0.0 Beta3"
+        versionName = "10.0.0 Beta3.5"
         multiDexEnabled = true
+
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            // abiFilters += "arm64-v8a"
+        }
+    }
+
+    aaptOptions {
+       noCompress += mutableListOf(
+            "assets/bin/Data/data.unity3d",
+            "assets/bin/Data/resources.resource",
+            "assets/bin/Data/unity default resources"
+        )
     }
 
     packaging {
@@ -92,8 +107,8 @@ android {
 
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
+            isMinifyEnabled = false
+            isShrinkResources = false
             isZipAlignEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -127,6 +142,8 @@ android {
         exclude("**/libTEFLoader.so")
         pickFirst("META-INF/versions/9/OSGI-INF/MANIFEST.MF")
         exclude("**/libdobby.so")
+        exclude("**/libexample1.so")
+        exclude("**/libexample2.so")
     }
 }
 

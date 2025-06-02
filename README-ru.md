@@ -2,13 +2,14 @@
 
 > Высокопроизводительный кроссплатформенный загрузчик модов для Terraria нового поколения
 
+## [💝 Список пожертвований](Document/donation.md)
+
 ## 📚 Используемые компоненты с открытым исходным кодом
 
 | Название проекта | Назначение | Лицензия |
 |------------------|------------|----------|
 | [Jetpack Compose](https://developer.android.com/jetpack/compose) | UI-фреймворк для Android | Apache 2.0 |
-| [EFModLoader](https://github.com/2079541547/EFModLoader) | Ядро загрузчика TEFModLoader | AGPL v3.0 |
-| [EFMod](https://github.com/2079541547/EFMod) | Стандарт разработки модов для TEFModLoader | Apache 2.0 |
+| [EFMod](https://gitlab.com/2079541547/efmod) | Стандарт разработки модов для TEFModLoader | MIT |
 | [BNM-Android](https://github.com/ByNameModding/BNM-Android) | Библиотека для модификации il2cpp-игр на Android через имена классов/методов/полей | MIT |
 | [Dobby](https://github.com/jmpews/Dobby) | Легковесный кроссплатформенный фреймворк для хак-хуков | Apache 2.0 |
 | [SilkCasket](https://github.com/2079541547/SilkCasket) | Формат файлов TEFMod | Apache 2.0 |
@@ -118,6 +119,33 @@
    - Mingw
   ```
 
-### Разработка модов
-- [API](#)
-- [Базовые функции](#)
+## Разработка модов
+
+### Исправление опечатки в путях
+**Затронутые версии**: Все бета-версии ниже 10.0.0 Beta3.4  
+**Проявление ошибки**: Ошибочное написание `TEFModLoader` как `TEFModLoaLoader` в путях  
+**Решение для автоматического исправления**:
+
+```cpp
+/**
+ * Автоматически исправляет опечатки в путях
+ * @param path Исходный путь
+ * @return Исправленный путь
+ */
+std::string FixPathTypo(const std::string& path) {
+    std::string corrected = path;
+    const std::string WRONG_STR = "TEFModLoaLoader";
+    const std::string CORRECT_STR = "TEFModLoader";
+    
+    size_t typoPos = corrected.find(WRONG_STR);
+    while (typoPos != std::string::npos) {
+        corrected.replace(typoPos, WRONG_STR.length(), CORRECT_STR);
+        typoPos = corrected.find(WRONG_STR, typoPos + CORRECT_STR.length());
+    }
+    
+    return corrected;
+}
+```
+
+- [Документация EFMod](https://gitlab.com/2079541547/efmod)
+- [Базовое API](Document/Development/BasicAPI.md)

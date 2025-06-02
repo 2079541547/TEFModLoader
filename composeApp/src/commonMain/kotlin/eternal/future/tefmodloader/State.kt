@@ -22,7 +22,7 @@ object State {
     var autoPatch = mutableStateOf(true)
     var defaultLoader = mutableStateOf(true)
 
-    var isBypass = mutableStateOf(true)
+    var isBypass = mutableStateOf(false)
     var Debugging  = mutableStateOf(false)
     var ApkPath = mutableStateOf("")
     var OverrideVersion = mutableStateOf(false)

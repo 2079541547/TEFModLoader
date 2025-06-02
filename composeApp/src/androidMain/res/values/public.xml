@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <public type="drawable" name="app_banner" id="0x7f010000" />
+    <public type="drawable" name="unity_static_splash" id="0x7f010001" />
+    <public type="id" name="unitySurfaceView" id="0x7f020000" />
+    <public type="mipmap" name="app_icon" id="0x7f030000" />
+    <public type="mipmap" name="app_icon_round" id="0x7f030001" />
+    <public type="mipmap" name="ic_launcher_background" id="0x7f030002" />
+    <public type="mipmap" name="ic_launcher_foreground" id="0x7f030003" />
+    <public type="string" name="FreeformWindowOrientation_landscape" id="0x7f040000" />
+    <public type="string" name="FreeformWindowOrientation_portrait" id="0x7f040001" />
+    <public type="string" name="FreeformWindowSize_maximize" id="0x7f040002" />
+    <public type="string" name="FreeformWindowSize_phone" id="0x7f040003" />
+    <public type="string" name="FreeformWindowSize_tablet" id="0x7f040004" />
+    <public type="string" name="app_name" id="0x7f040005" />
+    <public type="string" name="game_view_content_description" id="0x7f040006" />
+    <public type="style" name="BaseUnityTheme" id="0x7f050000" />
+    <public type="style" name="UnityThemeSelector" id="0x7f050001" />
+    <public type="style" name="UnityThemeSelector.Translucent" id="0x7f050002" />
+    <public type="xml" name="splits0" id="0x7f060000" />
+</resources>

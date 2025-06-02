@@ -34,8 +34,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,6 +63,9 @@ import eternal.future.tefmodloader.utility.App
 import eternal.future.tefmodloader.utility.EFLog
 import eternal.future.tefmodloader.utility.EFModLoader
 import eternal.future.tefmodloader.utility.Locales
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -332,39 +337,60 @@ object GuideScreen {
                 )
             }
             if (showNext.value) {
+                var offsetX by remember { mutableFloatStateOf(0f) }
+                var offsetY by remember { mutableFloatStateOf(0f) }
+                val scope = rememberCoroutineScope()
 
-                var offsetX by remember { mutableStateOf(0f) }
-                var offsetY by remember { mutableStateOf(0f) }
                 ExtendedFloatingActionButton(
                     text = { Text(locales.getString("next")) },
                     icon = { Icon(Icons.AutoMirrored.Filled.NavigateNext, contentDescription = "Next") },
                     containerColor = MaterialTheme.colorScheme.primary,
                     onClick = {
+                        scope.launch {
+                            if (defaultLoader.value) {
+                                // 第一个加载器安装
+                                try {
+                                    withContext(Dispatchers.IO) {
+                                        val tempFile = File.createTempFile("TEFModLoader", ".efml")
+                                        val target = File(State.EFModLoaderPath, "default")
 
-                        if (defaultLoader.value) {
-                            try {
-                                val tempFile = File.createTempFile("TEFModLoader", ".efml")
-                                val target = File(State.EFModLoaderPath, "default")
+                                        FileOutputStream(tempFile).use { fileOutputStream ->
+                                            javaClass.classLoader?.getResourceAsStream("TEFModLoader.efml")?.copyTo(fileOutputStream)
+                                        }
 
-                                FileOutputStream(tempFile).use { fileOutputStream ->
-                                    javaClass.classLoader?.getResourceAsStream("TEFModLoader.efml")?.copyTo(fileOutputStream)
+                                        EFModLoader.install(tempFile.path, target.path)
+                                        File(target, "enabled").mkdirs()
+                                        tempFile.delete()
+                                    }
+                                } catch (e: IOException) {
+                                    EFLog.e("安装默认加载器时出现错误：", e)
                                 }
 
-                                EFModLoader.install(
-                                    tempFile.path,
-                                    target.path
-                                )
+                                // 第二个加载器安装
+                                try {
+                                    withContext(Dispatchers.IO) {
+                                        val tempFile = File.createTempFile("TEFModLoader", ".efml")
+                                        val target = File(State.EFModLoaderPath, "default1")
 
-                                File(target, "enabled").mkdirs()
+                                        FileOutputStream(tempFile).use { fileOutputStream ->
+                                            javaClass.classLoader?.getResourceAsStream("tefmodloader.efml")?.copyTo(fileOutputStream)
+                                        }
 
-                                tempFile.delete()
-                            } catch (e: IOException) {
-                                EFLog.e("安装默认加载器时出现错误：", e)
+                                        EFModLoader.install(tempFile.path, target.path)
+                                        File(target, "enabled").mkdirs()
+                                        tempFile.delete()
+                                    }
+                                } catch (e: IOException) {
+                                    EFLog.e("安装默认加载器时出现错误：", e)
+                                }
+                            }
+
+                            // 导航操作回到主线程
+                            withContext(Dispatchers.Main) {
+                                mainViewModel.setInitialScreen("main")
+                                mainViewModel.navigateTo("main")
                             }
                         }
-
-                        mainViewModel.setInitialScreen("main")
-                        mainViewModel.navigateTo("main")
                     },
                     modifier = Modifier
                         .offset {

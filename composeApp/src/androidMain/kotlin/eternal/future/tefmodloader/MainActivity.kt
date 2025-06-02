@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
 import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.Crossfade
@@ -18,11 +19,10 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -34,6 +34,7 @@ import eternal.future.tefmodloader.State.systemTheme
 import eternal.future.tefmodloader.easteregg.GravityAffectedContent
 import eternal.future.tefmodloader.easteregg.Screen.ClockwiseRotatingContent
 import eternal.future.tefmodloader.easteregg.Screen.Rotation
+import eternal.future.tefmodloader.ui.navigation.BackMode
 import eternal.future.tefmodloader.ui.navigation.DefaultScreen
 import eternal.future.tefmodloader.ui.navigation.NavigationViewModel
 import eternal.future.tefmodloader.ui.navigation.ScreenRegistry
@@ -46,7 +47,6 @@ import eternal.future.tefmodloader.ui.screen.about.LicenseScreen
 import eternal.future.tefmodloader.ui.screen.about.ThanksScreen
 import eternal.future.tefmodloader.ui.screen.main.MainScreen
 import eternal.future.tefmodloader.ui.screen.welcome.GuideScreen
-import eternal.future.tefmodloader.ui.screen.welcome.welcomeScreen
 import eternal.future.tefmodloader.ui.theme.TEFModLoaderComposeTheme
 import eternal.future.tefmodloader.utility.EFMod
 import java.io.File
@@ -69,6 +69,11 @@ class MainActivity : ComponentActivity() {
     }
 
 
+    private var bottom = false
+    private var backPressedTime = 0L
+    private val backPressThreshold = 1000
+    private lateinit var backCallback: OnBackPressedCallback
+
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +89,18 @@ class MainActivity : ComponentActivity() {
                 NavigationHost(mainViewModel)
             }
         }
+
+        backCallback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (!bottom) mainViewModel.navigateBack(BackMode.ONE_BY_ONE)
+                if (backPressedTime + backPressThreshold > System.currentTimeMillis()) {
+                    finishAffinity()
+                } else {
+                    backPressedTime = System.currentTimeMillis()
+                }
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, backCallback)
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -99,12 +116,16 @@ class MainActivity : ComponentActivity() {
                     ) { state ->
                         state.let { (screen, _) ->
                             if (screen != null) {
+                                bottom = false
                                 when (screen.id) {
                                     "welcome" -> WelcomeScreen(viewModel)
                                     "guide" -> GuideScreen.GuideScreen(viewModel)
-                                    "main" -> MainScreen.MainScreen(viewModel)
+                                    "main" -> {
+                                        bottom = true
+                                        MainScreen.MainScreen(viewModel)
+                                    }
                                     "terminal" -> TerminalScreen.TerminalScreen(viewModel)
-                                    "about" -> AboutScreen.AboutScreen(viewModel)
+                                    "about" -> AboutScreen(viewModel)
                                     "help" -> HelpScreen.HelpScreen(viewModel)
                                     "license" -> LicenseScreen.LicenseScreen(viewModel)
                                     "thanks" -> ThanksScreen.ThanksScreen(viewModel)
@@ -140,18 +161,19 @@ class MainActivity : ComponentActivity() {
     fun WelcomeScreen(viewModel: NavigationViewModel) {
         val isFirst = State.initialBoot
 
-        if (configuration.getBoolean("externalMode", false)) {
-            EFMod.update_data(
-                File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader/Data").path,
-                State.EFModPath
-            )
-            configuration.setBoolean("externalMode", false)
+        LaunchedEffect(Unit) {
+            if (configuration.getBoolean("externalMode", false)) {
+                EFMod.update_data(
+                    File(Environment.getExternalStorageDirectory(), "Documents/TEFModLoader/Data").path,
+                    State.EFModPath
+                )
+                configuration.setBoolean("externalMode", false)
+            }
         }
 
-        welcomeScreen {
-            viewModel.removeCurrentScreen()
-            if (isFirst) viewModel.setInitialScreen("guide") else viewModel.setInitialScreen("main")
-        }
+        viewModel.removeCurrentScreen()
+        if (isFirst) viewModel.setInitialScreen("guide")
+        else viewModel.setInitialScreen("main")
     }
 
     fun initializeScreens(viewModel: NavigationViewModel) {
