@@ -144,8 +144,8 @@ inline void Unhook(PTR_T ptr) {
 
 // Dummy
 /*
-#include <cassert>
 
+#include <cassert>
 template<typename PTR_T, typename NEW_T, typename T_OLD>
 inline void *BasicHook(PTR_T ptr, NEW_T newMethod, T_OLD &oldBytes) {
     assert("Нет ПО для подмены! (No hooking software!)");
@@ -234,4 +234,4 @@ namespace BNM {
 #endif
 }
 
-#define BNM_VER "2.3.0"
+#define BNM_VER "2.4.0"

@@ -60,9 +60,10 @@ void TEFModLoader::Initialize_AlmostEverything::init(TEFMod::TEFModAPI *api) {
 }
 
 void TEFModLoader::Initialize_AlmostEverything::Initialize_AlmostEverything_T(void *Instance) {
+    Initialize_AlmostEverything_Hook(Instance);
     old_Initialize_AlmostEverything_Hook(Instance);
     for (auto fun : Initialize_AlmostEverything_HookTemplate.FunctionArray) {
-        if (fun) reinterpret_cast<decltype(old_Initialize_AlmostEverything_Hook)>(fun)(Instance);
+        if (fun && fun != reinterpret_cast<void*>(Initialize_AlmostEverything_Hook)) reinterpret_cast<decltype(old_Initialize_AlmostEverything_Hook)>(fun)(Instance);
     }
 }
 
@@ -105,6 +106,8 @@ void TEFModLoader::Initialize_AlmostEverything::init_item() {
             it->init_static();
         }
     }
+
+
 
     item_manager::need_flush_localized = true;
 }

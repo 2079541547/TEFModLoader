@@ -30,37 +30,40 @@
 
 namespace TEFModLoader {
 
-    inline bool operator==(const TEFMod::item_name& a, const TEFMod::item_name& b) {
+    inline bool operator==(const TEFMod::identifier& a, const TEFMod::identifier& b) {
         return a.Namespace == b.Namespace && a.Name == b.Name;
     }
 
-    inline bool operator<(const TEFMod::item_name& a, const TEFMod::item_name& b) {
+    inline bool operator<(const TEFMod::identifier& a, const TEFMod::identifier& b) {
         if (a.Namespace != b.Namespace) return a.Namespace < b.Namespace;
         return a.Name < b.Name;
     }
 
     class ItemManager: public TEFMod::ItemManager {
     private:
-        std::vector<std::pair<TEFMod::item_name, TEFMod::Item*>> m_items;
+        std::vector<std::pair<TEFMod::identifier, TEFMod::Item*>> m_items;
         std::unordered_map<std::string, int> m_name_to_id;
-        std::unordered_map<int, TEFMod::item_name> m_id_to_name;
+        std::unordered_map<int, TEFMod::identifier> m_id_to_name;
         std::unordered_set<std::string> m_registered_names;
         std::map<int, TEFMod::Item*> m_items_instance;
         inline static bool m_needs_sorting = true;
 
         std::unordered_map<std::string, TEFMod::item_localized> m_localized_data;
         std::unordered_map<int, std::pair<TEFMod::TerrariaInstance, TEFMod::TerrariaInstance>> m_localized_instance;
+
+        std::vector<TEFMod::recipe> m_recipe;
     public:
-        void registered(const TEFMod::item_name &name, TEFMod::Item *item) override;
-        int get_id(const TEFMod::item_name &name) override;
-        TEFMod::item_name get_name(int id) override;
+        void registered(const TEFMod::identifier &name, TEFMod::Item *item) override;
+        int get_id(const TEFMod::identifier &name) override;
+        TEFMod::identifier get_name(int id) override;
         int get_id_from_str(const std::string& name) override;
 
         void add_recipe(const TEFMod::recipe& item) override;
+        inline std::vector<TEFMod::recipe> get_all_recipe() { return m_recipe; }
 
-        TEFMod::item_localized * get_localized(const TEFMod::item_name &name) override;
+        TEFMod::item_localized * get_localized(const TEFMod::identifier &name) override;
         std::unordered_map<std::string, TEFMod::item_localized> get_all_localized() override;
-        void set_localized(TEFMod::item_name name, const TEFMod::item_localized &localized) override;
+        void set_localized(TEFMod::identifier name, const TEFMod::item_localized &localized) override;
         void flushed_localized() override;
 
         void assignment(int startID);
@@ -69,6 +72,7 @@ namespace TEFModLoader {
         void init_localized();
         std::pair<TEFMod::TerrariaInstance, TEFMod::TerrariaInstance>& get_localized_instance(int id);
         void registered_unknown(const std::string &name);
+        inline std::map<int, TEFMod::Item*> get_m_items_instance() const& { return m_items_instance; }
 
         inline static ItemManager* GetInstance() {
             static ItemManager item_manager;
@@ -80,19 +84,17 @@ namespace TEFModLoader {
     class UnKnown_Item: public TEFMod::Item {
     private:
         inline static auto manager = ItemManager::GetInstance();
-        TEFMod::item_name itemName;
+        TEFMod::identifier itemName;
     public:
-        inline explicit UnKnown_Item(const TEFMod::item_name& i): itemName(i) {}
-
-
+        inline explicit UnKnown_Item(const TEFMod::identifier& i): itemName(i) {}
 
         inline void init_static() override {};
 
-        inline void apply_equip_effects(TEFMod::TerrariaInstance instance) override {};
+        inline void apply_equip_effects(TEFMod::TerrariaInstance, TEFMod::TerrariaInstance) override {};
 
-        inline void update_armor_sets(TEFMod::TerrariaInstance instance) override {};
+        inline void update_armor_sets(TEFMod::TerrariaInstance) override {};
 
-        inline bool can_use(TEFMod::TerrariaInstance instance) override { return true;};
+        inline bool can_use(TEFMod::TerrariaInstance, TEFMod::TerrariaInstance) override { return true;};
 
         inline void set_defaults(TEFMod::TerrariaInstance instance) override {};
         inline TEFMod::ImageData get_image() override { return  {}; }
@@ -100,22 +102,22 @@ namespace TEFModLoader {
             std::string all_langs_desc =
                     "[EN] ID: " + itemName.GetID() +
                     " | Name: " + itemName.Name +
-                    " | Unloaded from: " + itemName.Namespace + "\n" +
+                    " | Unloaded from: " + itemName.Namespace + " Namespace\n" +
 
                     // 中文简体
                     "[中文简体] ID: " + itemName.GetID() +
                     " | 名称: " + itemName.Name +
-                    " | 来源: " + itemName.Namespace + "命名空间\n" +
+                    " | 来源: " + itemName.Namespace + " 命名空间\n" +
 
                     // 中文繁體
                     "[中文繁體] ID: " + itemName.GetID() +
                     " | 名稱: " + itemName.Name +
-                    " | 來源: " + itemName.Namespace + "命名空間\n" +
+                    " | 來源: " + itemName.Namespace + " 命名空間\n" +
 
                     // 日本語
                     "[日本語] ID: " + itemName.GetID() +
                     " | 名前: " + itemName.Name +
-                    " | ソース: " + itemName.Namespace + "ネームスペース\n" +
+                    " | ソース: " + itemName.Namespace + " ネームスペース\n" +
 
                     // Русский
                     "[Русский] ID: " + itemName.GetID() +

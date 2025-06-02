@@ -90,6 +90,7 @@ namespace TEFModLoader::SavePlayer {
         bool _favorited;               // 是否收藏
         int _flag;                     // 占位 (用于表示处于哪个栏目)
         bool _is_no_mod;               // 是否为原版物品
+        int _sacrifice;                // 已研究数量
 
         void serialize(std::vector<uint8_t>& buffer) const;
 
@@ -152,6 +153,8 @@ namespace TEFModLoader::SavePlayer {
                       size_t chunk_size = 4096 * 1024);
 
     void save_tefmlp_file(const std::string& path, const player& p, const inventory& i, const bank& b);
+    void load_disabled_items(const std::string& path);
+    bool process_single_save_file(const std::string& path);
 
     void init(TEFMod::TEFModAPI* api);
 

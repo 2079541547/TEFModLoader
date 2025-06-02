@@ -201,6 +201,43 @@ void send_api_to_mod() {
     EFModLoader::LoaderMultiChannel::GetInstance()->send("TEFMod::ItemManager", TEFModLoader::ItemManager::GetInstance());
 }
 
+#include "recipe.hpp"
+
+jobject getGlobalContext(JNIEnv* env) {
+    jclass atClass = env->FindClass("android/app/ActivityThread");
+    jobject at = atClass ? env->CallStaticObjectMethod(atClass,
+                                                       env->GetStaticMethodID(atClass, "currentActivityThread", "()Landroid/app/ActivityThread;")) : nullptr;
+    jobject ctx = at ? env->CallObjectMethod(at,
+                                             env->GetMethodID(atClass, "getApplication", "()Landroid/app/Application;")) : nullptr;
+    if (atClass) env->DeleteLocalRef(atClass);
+    if (at) env->DeleteLocalRef(at);
+    return ctx ? env->NewGlobalRef(ctx) : nullptr;
+}
+
+std::string getExternalStoragePath(JNIEnv* env) {
+    jobject ctx = getGlobalContext(env);
+    if (!ctx) return "";
+
+    jclass ctxClass = env->GetObjectClass(ctx);
+    jobject file = ctxClass ? env->CallObjectMethod(ctx,
+                                                    env->GetMethodID(ctxClass, "getExternalFilesDir", "(Ljava/lang/String;)Ljava/io/File;"), nullptr) : nullptr;
+    env->DeleteGlobalRef(ctx);
+    if (ctxClass) env->DeleteLocalRef(ctxClass);
+
+    jclass fileClass = file ? env->FindClass("java/io/File") : nullptr;
+    jstring path = fileClass ? (jstring)env->CallObjectMethod(file,
+                                                              env->GetMethodID(fileClass, "getAbsolutePath", "()Ljava/lang/String;")) : nullptr;
+    if (file) env->DeleteLocalRef(file);
+    if (fileClass) env->DeleteLocalRef(fileClass);
+
+    if (!path) return "";
+    const char* str = env->GetStringUTFChars(path, nullptr);
+    std::string result(str);
+    env->ReleaseStringUTFChars(path, str);
+    env->DeleteLocalRef(path);
+    return result;
+}
+
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
     JNIEnv *env;
     vm->GetEnv((void **) &env, JNI_VERSION_1_6);
@@ -211,22 +248,30 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
 
     send_api_to_mod();
 
-    TEFModLoader::ItemManager::GetInstance()->registered_unknown("MyMod-EternalFuture::MyItem");
+    TEFModLoader::ItemManager::GetInstance()->registered_unknown("TEFModLoader::default");
 
-    loader.loadAll();
     TEFModLoader::item_manager::init(TEFModLoader::TEFModAPI::GetInstance());
     TEFModLoader::Initialize_AlmostEverything::init(TEFModLoader::TEFModAPI::GetInstance());
     TEFModLoader::SavePlayer::init(TEFModLoader::TEFModAPI::GetInstance());
+    Recipe::init(TEFModLoader::TEFModAPI::GetInstance());
+
+    loader.loadAll();
     loader.sendAll();
+
+    auto app_path = std::filesystem::path(getExternalStoragePath(env)).parent_path();
+    LOGF_INFO("获取到的APP私有目录: {}", app_path.string());
+    TEFModLoader::SavePlayer::load_disabled_items(app_path / "Players");
 
     BNM::Loading::AddOnLoadedEvent(TEFModLoader::APIManager::auto_processing);
     BNM::Loading::AddOnLoadedEvent(TEFModLoader::HookManager::auto_hook);
     BNM::Loading::AddOnLoadedEvent([]() -> void {
+        TEFModLoader::item_manager::init();
         loader.receiveAll();
         TEFModLoader::SetFactory::init();
         TEFModLoader::item_manager::init(TEFModLoader::TEFModAPI::GetInstance());
         TEFModLoader::Initialize_AlmostEverything::init(TEFModLoader::TEFModAPI::GetInstance());
         TEFModLoader::SavePlayer::init(TEFModLoader::TEFModAPI::GetInstance());
+        Recipe::init(TEFModLoader::TEFModAPI::GetInstance());
     });
 
     loader.initializeAll();

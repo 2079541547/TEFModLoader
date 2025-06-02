@@ -34,6 +34,7 @@ add_library(TEFModLoader SHARED
         TEFModLoader/src/set_factory.cpp
         TEFModLoader/src/initialize_almost_everything.cpp
         TEFModLoader/src/save_player.cpp
+        TEFModLoader/src/recipe.cpp
 )
 
 target_include_directories(TEFModLoader

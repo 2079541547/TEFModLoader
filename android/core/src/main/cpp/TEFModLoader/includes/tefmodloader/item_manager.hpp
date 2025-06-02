@@ -37,6 +37,26 @@ namespace TEFModLoader::item_manager {
             {}
     };
 
-    void init(TEFMod::TEFModAPI* api);
+    inline void (*old_GrantArmorBenefits)(void*, void*);
+    void GrantArmorBenefits(void* instance, void* armorPiece);
+    void GrantArmorBenefits_T(void* instance, void* armorPiece);
+    inline TEFMod::HookTemplate GrantArmorBenefits_HookTemplate = {
+            reinterpret_cast<void*>(GrantArmorBenefits_T),
+            {}
+    };
 
+    inline bool (*old_ItemCheck_CheckCanUse)(void*, void*);
+    bool ItemCheck_CheckCanUse(void* instance, void* item);
+
+
+    void SetupRecipeGroups();
+    inline void (*old_SetupRecipeGroups)();
+    void SetupRecipeGroups_T();
+    inline TEFMod::HookTemplate SetupRecipeGroups_HookTemplate = {
+            reinterpret_cast<void*>(SetupRecipeGroups_T),
+            {}
+    };
+
+    void init(TEFMod::TEFModAPI* api);
+    void init();
 }

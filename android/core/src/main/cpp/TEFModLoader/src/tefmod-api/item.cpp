@@ -75,7 +75,7 @@ int TEFModLoader::ItemManager::get_count() {
     return count;
 }
 
-void TEFModLoader::ItemManager::registered(const TEFMod::item_name& name, TEFMod::Item* item) {
+void TEFModLoader::ItemManager::registered(const TEFMod::identifier& name, TEFMod::Item* item) {
     const auto& nameID = name.GetID();
     LOGF_DEBUG("正在注册物品 '{}'，实例地址: {}", nameID, (void*)item);
 
@@ -89,7 +89,7 @@ void TEFModLoader::ItemManager::registered(const TEFMod::item_name& name, TEFMod
     }
 }
 
-void TEFModLoader::ItemManager::set_localized(TEFMod::item_name name,
+void TEFModLoader::ItemManager::set_localized(TEFMod::identifier name,
                                               const TEFMod::item_localized& localized) {
     const auto& nameID = name.GetID();
     LOGF_DEBUG("为物品 '{}' 设置本地化数据", nameID);
@@ -99,7 +99,7 @@ void TEFModLoader::ItemManager::set_localized(TEFMod::item_name name,
     m_localized_data[nameID] = localized;
 }
 
-TEFMod::item_localized* TEFModLoader::ItemManager::get_localized(const TEFMod::item_name& name) {
+TEFMod::item_localized* TEFModLoader::ItemManager::get_localized(const TEFMod::identifier& name) {
     const auto& nameID = name.GetID();
     LOGF_DEBUG("获取物品 '{}' 的本地化数据", nameID);
 
@@ -132,6 +132,7 @@ void TEFModLoader::ItemManager::flushed_localized() {
     for (auto& localized : m_localized_data) {
         LOGF_TRACE("正在处理物品 '{}' 的本地化数据", localized.first);
 
+        /*
         auto ItemTooltip = ItemTooltipClass.CreateNewObjectParameters();
         auto localizedText = LocalizedTextClass
                 .CreateNewObjectParameters(
@@ -140,12 +141,18 @@ void TEFModLoader::ItemManager::flushed_localized() {
                 );
 
         _text[ItemTooltip].Set(localizedText);
+        */
         int itemID = m_name_to_id[localized.first];
-
         LOGF_TRACE("为物品ID {} 创建本地化实例", itemID);
-        m_localized_instance[itemID] = {
+        /*m_localized_instance[itemID] = {
                 BNM::CreateMonoString(localized.second.name),
                 ItemTooltip
+        };
+        */
+
+        m_localized_instance[itemID] = {
+                BNM::CreateMonoString(localized.second.name),
+                BNM::CreateMonoString(localized.second.tool_tip)
         };
     }
     LOGF_DEBUG("已完成 {} 个物品的本地化刷新", m_localized_data.size());
@@ -177,7 +184,7 @@ void TEFModLoader::ItemManager::init_localized() {
     LOGF_DEBUG("本地化系统初始化完成");
 }
 
-int TEFModLoader::ItemManager::get_id(const TEFMod::item_name& name) {
+int TEFModLoader::ItemManager::get_id(const TEFMod::identifier& name) {
     const auto& nameID = name.GetID();
     int id = m_name_to_id[nameID] ?: 0;
     LOGF_DEBUG("获取物品 '{}' 的ID: {}", nameID, id);
@@ -190,7 +197,7 @@ int TEFModLoader::ItemManager::get_id_from_str(const std::string &name) {
     return id;
 }
 
-TEFMod::item_name TEFModLoader::ItemManager::get_name(int id) {
+TEFMod::identifier TEFModLoader::ItemManager::get_name(int id) {
     LOGF_DEBUG("▷▷▷ 开始查询ID [{}] 对应的物品名称", id);
 
     if (auto it = m_id_to_name.find(id); it != m_id_to_name.end()) {
@@ -206,14 +213,14 @@ TEFMod::item_name TEFModLoader::ItemManager::get_name(int id) {
         LOGF_TRACE("在实例表中找到ID [{}] 对应的实例指针: {}", id, (void*)target_instance);
 
         LOGF_TRACE("开始反向查找注册表...");
-        for (const auto& [item_name, item_ptr] : m_items) {
+        for (const auto& [identifier, item_ptr] : m_items) {
             if (item_ptr == target_instance) {
-                m_id_to_name[id] = item_name;
+                m_id_to_name[id] = identifier;
 
                 LOGF_DEBUG("✔ 通过实例反向查找到ID [{}] 的注册名称: {}/{} (遍历匹配)",
-                           id, item_name.Namespace, item_name.Name);
+                           id, identifier.Namespace, identifier.Name);
                 LOGF_TRACE("已更新ID->名称缓存");
-                return item_name;
+                return identifier;
             }
         }
 
@@ -223,13 +230,13 @@ TEFMod::item_name TEFModLoader::ItemManager::get_name(int id) {
     }
 
     LOGF_TRACE("检查原始物品列表...");
-    for (const auto& [item_name, item_id] : m_name_to_id) {
+    for (const auto& [identifier, item_id] : m_name_to_id) {
         if (item_id == id) {
-            TEFMod::item_name name;
-            size_t split_pos = item_name.find(':');
+            TEFMod::identifier name;
+            size_t split_pos = identifier.find(':');
             if (split_pos != std::string::npos) {
-                name.Namespace = item_name.substr(0, split_pos);
-                name.Name = item_name.substr(split_pos + 1);
+                name.Namespace = identifier.substr(0, split_pos);
+                name.Name = identifier.substr(split_pos + 1);
                 m_id_to_name[id] = name;
 
                 LOGF_DEBUG("✔ 通过名称映射找到ID [{}] 的名称: {}/{} (兼容模式)",
@@ -255,10 +262,13 @@ TEFModLoader::ItemManager::get_localized_instance(int id) {
     return instance;
 }
 
-void TEFModLoader::ItemManager::add_recipe(const TEFMod::recipe &item) {}
+void TEFModLoader::ItemManager::add_recipe(const TEFMod::recipe &item) {
+    LOGF_INFO("为 {} 添加配方", item.result_item_id);
+    m_recipe.push_back(item);
+}
 
 void TEFModLoader::ItemManager::registered_unknown(const std::string &name) {
-    static auto parse = [](const std::string& input) -> TEFMod::item_name {
+    static auto parse = [](const std::string& input) -> TEFMod::identifier {
         if (input.empty()) {
             throw std::invalid_argument("Empty input string");
         }
@@ -276,5 +286,6 @@ void TEFModLoader::ItemManager::registered_unknown(const std::string &name) {
     };
 
     auto i = parse(name);
+    LOGF_INFO("注册了一个未知物品: {}", name);
     registered(i, new UnKnown_Item(i));
 }

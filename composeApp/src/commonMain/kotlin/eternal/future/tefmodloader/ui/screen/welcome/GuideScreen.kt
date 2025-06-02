@@ -348,29 +348,10 @@ object GuideScreen {
                     onClick = {
                         scope.launch {
                             if (defaultLoader.value) {
-                                // 第一个加载器安装
                                 try {
                                     withContext(Dispatchers.IO) {
                                         val tempFile = File.createTempFile("TEFModLoader", ".efml")
                                         val target = File(State.EFModLoaderPath, "default")
-
-                                        FileOutputStream(tempFile).use { fileOutputStream ->
-                                            javaClass.classLoader?.getResourceAsStream("TEFModLoader.efml")?.copyTo(fileOutputStream)
-                                        }
-
-                                        EFModLoader.install(tempFile.path, target.path)
-                                        File(target, "enabled").mkdirs()
-                                        tempFile.delete()
-                                    }
-                                } catch (e: IOException) {
-                                    EFLog.e("安装默认加载器时出现错误：", e)
-                                }
-
-                                // 第二个加载器安装
-                                try {
-                                    withContext(Dispatchers.IO) {
-                                        val tempFile = File.createTempFile("TEFModLoader", ".efml")
-                                        val target = File(State.EFModLoaderPath, "default1")
 
                                         FileOutputStream(tempFile).use { fileOutputStream ->
                                             javaClass.classLoader?.getResourceAsStream("tefmodloader.efml")?.copyTo(fileOutputStream)

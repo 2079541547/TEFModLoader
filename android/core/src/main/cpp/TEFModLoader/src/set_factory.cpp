@@ -28,6 +28,7 @@
 #include <BNM/Class.hpp>
 #include <BNM/Field.hpp>
 #include <BNM/Method.hpp>
+#include <BNM/ComplexMonoStructures.hpp>
 #include <tefmod-api/IL2CppArray.hpp>
 
 void TEFModLoader::SetFactory::init() {
@@ -47,6 +48,7 @@ void TEFModLoader::SetFactory::_ctor(void* instance, int i) {
             LOGF_INFO("获取到原版Item总数: {}", count.item);
             manager->assignment(count.item);
             new_count.item = manager->get_count() + 1;
+
         } break;
 
         case 2: {
@@ -92,7 +94,6 @@ void TEFModLoader::SetFactory::_ctor(void* instance, int i) {
         default:
             break;
     }
-
     call_count++;
 
     if (i == count.item) {

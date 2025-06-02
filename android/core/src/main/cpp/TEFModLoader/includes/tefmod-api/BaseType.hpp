@@ -30,6 +30,15 @@ namespace TEFMod {
 
     typedef void* TerrariaInstance;
 
+    struct identifier {
+        std::string Namespace;
+        std::string Name;
+
+        [[nodiscard]] std::string GetID() const {
+            return Namespace + "::" + Name;
+        }
+    };
+
     template <typename T>
     constexpr bool IsAllowedType() {
         return std::is_same_v<T, bool> ||

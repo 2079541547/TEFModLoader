@@ -26,14 +26,6 @@
 
 namespace TEFMod {
 
-    struct item_name {
-        std::string Namespace;
-        std::string Name;
-
-        [[nodiscard]] std::string GetID() const {
-            return Namespace + "::" + Name;
-        }
-    };
 
     struct item_localized {
         std::string name;
@@ -57,17 +49,17 @@ namespace TEFMod {
         /*
          * 被装备时的加成
          * */
-        virtual void apply_equip_effects(TerrariaInstance instance) = 0;
+        virtual void apply_equip_effects(TerrariaInstance player, TerrariaInstance armorPiece) = 0;
 
         /*
          * 套装奖励
          * */
-        virtual void update_armor_sets(TerrariaInstance instance) = 0;
+        virtual void update_armor_sets(TerrariaInstance player) = 0;
 
         /*
          *  使用条件
          **/
-        virtual bool can_use(TerrariaInstance instance) = 0;
+        virtual bool can_use(TerrariaInstance player, TerrariaInstance instance) = 0;
 
         /*
          * 属性设置
@@ -80,15 +72,15 @@ namespace TEFMod {
 
     class ItemManager {
     public:
-        virtual void registered(const item_name& name, Item* item) = 0;
+        virtual void registered(const identifier& name, Item* item) = 0;
         virtual void add_recipe(const recipe& item) = 0;
-        virtual int get_id(const item_name& name) = 0;
+        virtual int get_id(const identifier& name) = 0;
         virtual int get_id_from_str(const std::string& name) = 0;
-        virtual TEFMod::item_name get_name(int id) = 0;
+        virtual identifier get_name(int id) = 0;
 
         virtual std::unordered_map<std::string, item_localized> get_all_localized() = 0;
-        virtual item_localized* get_localized(const item_name& name) = 0;
-        virtual void set_localized(item_name name, const item_localized& localized) = 0;
+        virtual item_localized* get_localized(const identifier& name) = 0;
+        virtual void set_localized(identifier name, const item_localized& localized) = 0;
         virtual void flushed_localized() = 0;
     };
 

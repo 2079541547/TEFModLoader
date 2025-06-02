@@ -94,6 +94,7 @@ void TEFModLoader::SavePlayer::item_entry::serialize(std::vector<uint8_t>& buffe
     serialize_base<uint8_t>(buffer, _favorited);
     serialize_base<int>(buffer, _flag);
     serialize_base<uint8_t>(buffer, _is_no_mod);
+    serialize_base<int>(buffer, _sacrifice);
 }
 
 TEFModLoader::SavePlayer::item_entry TEFModLoader::SavePlayer::item_entry::deserialize(const uint8_t*& ptr) {
@@ -103,7 +104,8 @@ TEFModLoader::SavePlayer::item_entry TEFModLoader::SavePlayer::item_entry::deser
             deserialize_base<int>(ptr),
             static_cast<bool>(deserialize_base<uint8_t>(ptr)),
             deserialize_base<int>(ptr),
-            static_cast<bool>(deserialize_base<uint8_t>(ptr))
+            static_cast<bool>(deserialize_base<uint8_t>(ptr)),
+            deserialize_base<int>(ptr)
     };
 }
 
@@ -270,6 +272,133 @@ void TEFModLoader::SavePlayer::save_tefmlp_file(const std::string& path,
     }
 
     LOGF_INFO("====== TEFMLP文件保存完成 ======");
+}
+
+void TEFModLoader::SavePlayer::load_disabled_items(const std::string &path) {
+    LOGF_INFO("🔍 开始收集无Mod认领的物品列表，路径: {}", path);
+
+    try {
+        if (!std::filesystem::exists(path)) {
+            LOGF_ERROR("路径不存在: {}", path);
+            return;
+        }
+
+        size_t processed_files = 0;
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(path)) {
+            auto filename = entry.path().filename().string();
+            if (filename.find(".tefmlp") != std::string::npos && !filename.ends_with(".bak")) {
+                if (process_single_save_file(entry.path())) {
+                    processed_files++;
+                }
+            }
+        }
+
+        LOGF_INFO("🎉 所有文件处理完成 (共处理 {} 个文件)", processed_files);
+    } catch (const std::exception& e) {
+        LOGF_ERROR("加载禁用物品时发生异常: {}", e.what());
+    }
+}
+
+bool TEFModLoader::SavePlayer::process_single_save_file(const std::string &path) {
+    // 自动获取管理器实例
+    auto* manager = TEFModLoader::ItemManager::GetInstance();
+    if (!manager) {
+        LOGF_ERROR("无法获取ItemManager实例");
+        return false;
+    }
+
+    std::filesystem::path file_path(path);
+
+    try {
+        // 基础检查
+        if (!std::filesystem::exists(file_path)) {
+            LOGF_ERROR("文件不存在: {}", file_path.string());
+            return false;
+        }
+
+        if (file_path.extension() != ".tefmlp") {
+            LOGF_ERROR("无效文件扩展名: {}", file_path.string());
+            return false;
+        }
+
+        if (is_directory(file_path)) {
+            LOGF_ERROR("不是文件: {}", file_path.string());
+            return false;
+        }
+
+        LOGF_INFO("📄 开始处理存档文件: {}", file_path.filename().string());
+
+        // === 文件头解析 ===
+        LOGF_DEBUG("解析文件头...");
+        const size_t file_header_size = sizeof(file_header::_magic_number) +
+                                        sizeof(file_header::_version) +
+                                        3 * sizeof(address);
+
+        auto header_data = read_file_address(file_path, 0, file_header_size);
+        if (header_data.empty()) {
+            LOGF_ERROR("文件头读取失败");
+            return false;
+        }
+
+        auto info = file_header::deserialize(header_data.data());
+        LOGF_DEBUG("文件头解析完成 | 玩家数据偏移: {}, 大小: {}",
+                   info._player_data._offset, info._player_data._size);
+
+        // === 玩家数据 ===
+        auto player_data = read_file_address(file_path, info._player_data._offset, info._player_data._size);
+        if (player_data.empty()) {
+            LOGF_ERROR("玩家数据读取失败");
+            return false;
+        }
+
+        auto i_player = player::deserialize(player_data.data());
+        LOGF_DEBUG("发现 {} 套装备", i_player._equipments.size());
+
+        // 处理装备数据
+        for (const auto& equipment : i_player._equipments) {
+            for (const auto& armor : equipment._armor)
+                manager->registered_unknown(armor._id);
+            for (const auto& dye : equipment._dye)
+                manager->registered_unknown(dye._id);
+            for (const auto& misc : equipment._miscEquips)
+                manager->registered_unknown(misc._id);
+        }
+
+        // === 物品栏数据 ===
+        auto inv_data = read_file_address(file_path, info._inventory_data._offset, info._inventory_data._size);
+        if (inv_data.empty()) {
+            LOGF_ERROR("物品栏数据读取失败");
+            return false;
+        }
+
+        auto i_inventory = inventory::deserialize(inv_data.data());
+        LOGF_DEBUG("物品栏物品数: {}", i_inventory._data.size());
+        for (const auto& item : i_inventory._data) {
+            manager->registered_unknown(item._id);
+        }
+
+        // === 银行数据 ===
+        auto bank_data = read_file_address(file_path, info._bank_data._offset, info._bank_data._size);
+        if (bank_data.empty()) {
+            LOGF_ERROR("银行数据读取失败");
+            return false;
+        }
+
+        auto i_bank = bank::deserialize(bank_data.data());
+        const auto& banks = {i_bank._bank1, i_bank._bank2, i_bank._bank3, i_bank._bank4};
+        for (size_t i = 0; i < banks.size(); ++i) {
+            for (const auto& item : *(banks.begin() + i)) {
+                manager->registered_unknown(item._id);
+            }
+        }
+
+        LOGF_INFO("✅ 文件处理完成: {}", file_path.filename().string());
+        return true;
+
+    } catch (const std::exception& e) {
+        LOGF_ERROR("处理文件时发生异常: {} | 错误: {}", file_path.string(), e.what());
+        return false;
+    }
 }
 
 void TEFModLoader::SavePlayer::init(TEFMod::TEFModAPI* api) {
@@ -608,6 +737,9 @@ void TEFModLoader::SavePlayer::LoadPlayer(void* playerFileData, void* playerPath
                 for (const auto& c_miscEquips : c_equipment._miscEquips) {
                     LOGF_TRACE("加载miscEquip[{}]: ID={}, Stack={}",
                                c_miscEquips._flag, c_miscEquips._id, c_miscEquips._stack);
+                    if (manager->get_id_from_str(c_miscEquips._id)) {
+
+                    }
                     auto item = miscEquips.At(c_miscEquips._flag);
                     Item_netDefaults[item].Call(manager->get_id_from_str(c_miscEquips._id));
                     Item_Stack[item].Set(c_miscEquips._stack);

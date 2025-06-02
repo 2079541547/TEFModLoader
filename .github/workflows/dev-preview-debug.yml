@@ -60,21 +60,36 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 必须传递token
         with:
-          tag_name: "dev-preview"       # 固定标签名称
-          name: "开发预览版 (${{ steps.build-info.outputs.commit_short }})"
+          tag_name: "dev-preview"
+          name: "开发预览版 (${{ steps.build-info.outputs.commit_short }}) | Dev Preview (${{ steps.build-info.outputs.commit_short }}) | Превью (${{ steps.build-info.outputs.commit_short }})"
           body: |
-            ## 📱 最新开发预览版
-            | 项目 | 值 |
+            ## ⚠️ 重要说明 | Important Notice | Важное примечание
+            
+            **中文**  
+            此为最新开发预览版，仅用于测试目的。  
+            可能存在不稳定问题，**不适合日常使用**。  
+            请勿作为主力版本长期使用。  
+            
+            **English**  
+            This is the latest development preview for **TESTING PURPOSES ONLY**.  
+            May contain unstable features, **NOT SUITABLE for daily use**.  
+            Do not use as your primary version.  
+            
+            **Русский**  
+            Это последняя превью-версия **ТОЛЬКО ДЛЯ ТЕСТИРОВАНИЯ**.  
+            Может содержать нестабильные функции, **НЕ ПОДХОДИТ для повседневного использования**.  
+            Не рекомендуется как основная версия.  
+            
+            ## 📊 构建信息 | Build Info | Информация о сборке
+            
+            | 项目/Item/Параметр | 值/Value/Значение |
             |------|----|
-            | 分支 | ${{ github.ref_name }} |
-            | 提交 | [${{ steps.build-info.outputs.commit_short }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) |
-            | 构建时间 | ${{ steps.build-info.outputs.time }} |
-            | 构建编号 | ${{ github.run_number }} |
+            | 分支/Branch/Ветка | ${{ github.ref_name }} |
+            | 提交/Commit/Коммит | [${{ steps.build-info.outputs.commit_short }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) |
+            | 构建时间/Build Time/Время сборки | ${{ steps.build-info.outputs.time }} |
+            | 构建编号/Build Number/Номер сборки | ${{ github.run_number }} |
 
-            ## 📦 安装说明
-            1. 下载下方APK文件
-            2. 允许安装未知来源应用
           files: composeApp/build/outputs/apk/debug/*.apk
-          prerelease: true   # 标记为预发布
-          overwrite: true    # 覆盖旧Release
-          generate_release_notes: true  # 自动生成基础说明
+          prerelease: true
+          overwrite: true
+          generate_release_notes: true
