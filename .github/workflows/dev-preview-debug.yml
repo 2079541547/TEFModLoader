@@ -1,4 +1,4 @@
-name: Dev-Preview Debug Build
+name: Dev-Preview Release
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-debug:
+  build-and-release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -23,23 +23,29 @@ jobs:
 
       - name: Configure Debug Signing
         run: |
-          # 复制签名文件到指定位置（与本地配置一致）
           mkdir -p composeApp
           echo "${{ secrets.DEBUG_KEYSTORE }}" > composeApp/TEFModLoader.p12
-
-          # 验证文件是否存在
-          ls -la composeApp/
+          base64 -d composeApp/TEFModLoader.p12 > composeApp/TEFModLoader.p12.bin
+          mv composeApp/TEFModLoader.p12.bin composeApp/TEFModLoader.p12
 
       - name: Build Debug APK
         run: ./gradlew :composeApp:assembleDebug
         env:
-          # 传递签名密码（与 local.properties 或 signingConfigs 配置一致）
           KEYSTORE_PASSWORD: ${{ secrets.DEBUG_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.DEBUG_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.DEBUG_KEY_PASSWORD }}
 
-      - name: Upload Debug APK
-        uses: actions/upload-artifact@v4
+      - name: Upload to Releases (Overwrite)
+        uses: softprops/action-gh-release@v1
         with:
-          name: app-debug
-          path: composeApp/build/outputs/apk/debug/*.apk
+          files: composeApp/build/outputs/apk/debug/*.apk
+          tag_name: "dev-preview"  # 固定标签名称
+          name: "Dev-Preview Build (${{ github.sha }})"
+          body: |
+            ### 🔄 自动构建的调试 APK
+            - 分支: ${{ github.ref }}
+            - 提交: [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+            - 构建时间: ${{ github.run_number }} (Run ID: ${{ github.run_id }})
+          prerelease: true
+          overwrite: true  # 关键：覆盖旧版本
+          draft: false
