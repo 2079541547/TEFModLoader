@@ -5,27 +5,27 @@ on:
     branches: [ "dev-preview" ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  releases: write
+
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    environment: dev-preview  # 使用环境变量（可选）
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # 获取完整提交历史（可选）
 
       - name: Setup Java (JDK 17)
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'  # 启用Gradle缓存
+          cache: 'gradle'
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-        # 不再需要手动接受许可证
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
@@ -37,31 +37,28 @@ jobs:
           KEY_ALIAS: ${{ secrets.DEBUG_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.DEBUG_KEY_PASSWORD }}
 
-      - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+      - name: Create Release
+        uses: actions/create-release@v2
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: dev-preview-apk
-          path: composeApp/build/outputs/apk/debug/*.apk
-          retention-days: 1  # 临时存储
-
-      - name: Create/Update Release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: composeApp/build/outputs/apk/debug/*.apk
-          tag_name: "dev-preview"
-          name: "Dev-Preview Build (${GITHUB_SHA:0:7})"  # 短提交哈希
+          tag_name: dev-preview
+          release_name: "Dev-Preview Build (${GITHUB_SHA:0:7})"
           body: |
             ### 📱 自动构建预览版
             | 信息 | 值 |
             |------|-----|
             | 分支 | ${{ github.ref_name }} |
             | 提交 | [${GITHUB_SHA:0:7}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) |
-            | 构建时间 | ${{ format('{0}', github.event.head_commit.timestamp) }} |
-
-            ### 📥 下载
-            APK 已自动签名（Debug证书）
+            | 构建时间 | ${{ steps.get_timestamp.outputs.time }} |
+          draft: false
           prerelease: true
-          overwrite: true
-          generate_release_notes: true  # 自动生成基础Release Notes
+          overwrite_assets: true
+
+      - name: Upload APK
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_re
