@@ -1,0 +1,45 @@
+name: Dev-Preview Debug Build
+
+on:
+  push:
+    branches: [ "dev-preview" ]
+  workflow_dispatch:
+
+jobs:
+  build-debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Configure Debug Signing
+        run: |
+          # 复制签名文件到指定位置（与本地配置一致）
+          mkdir -p composeApp
+          echo "${{ secrets.DEBUG_KEYSTORE }}" > composeApp/TEFModLoader.p12
+
+          # 验证文件是否存在
+          ls -la composeApp/
+
+      - name: Build Debug APK
+        run: ./gradlew :composeApp:assembleDebug
+        env:
+          # 传递签名密码（与 local.properties 或 signingConfigs 配置一致）
+          KEYSTORE_PASSWORD: ${{ secrets.DEBUG_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.DEBUG_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.DEBUG_KEY_PASSWORD }}
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: composeApp/build/outputs/apk/debug/*.apk
