@@ -5,52 +5,56 @@ on:
     branches: [ "dev-preview" ]
   workflow_dispatch:
 
-# 权限配置（必须）
 permissions:
-  contents: write  # 写入代码权限
-  packages: write  # 发布Release权限
-  actions: read    # 读取工作流状态
+  contents: write
+  packages: write
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
-    environment: dev-preview  # 使用环境变量
 
     steps:
-      # 1. 代码检出（带缓存优化）
+      # 1. 检出代码（关键修复：保留文件权限）
       - name: 检出代码
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # 获取完整提交历史
+          fetch-depth: 0
+          persist-credentials: false  # 避免权限冲突
 
-      # 2. JDK配置（带Gradle缓存）
+      # 2. 修复gradlew权限（必须步骤！）
+      - name: 设置文件权限
+        run: |
+          chmod +x gradlew
+          ls -la gradlew  # 验证权限（调试用）
+
+      # 3. 配置JDK（带缓存）
       - name: 配置JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'  # 启用Gradle依赖缓存
+          cache: 'gradle'
 
-      # 3. Android环境配置（带NDK缓存）
-      - name: 配置Android环境
+      # 4. 配置Android环境
+      - name: 配置Android SDK
         uses: android-actions/setup-android@v3
 
-      # 4. 构建APK
-      - name: 构建Debug版APK
-        run: ./gradlew :composeApp:assembleDebug --no-daemon
+      # 5. 构建APK（优化版）
+      - name: 构建Debug APK
+        run: ./gradlew :composeApp:assembleDebug --no-daemon --stacktrace
         env:
           KEYSTORE_PASSWORD: ${{ secrets.DEBUG_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.DEBUG_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.DEBUG_KEY_PASSWORD }}
 
-      # 5. 获取构建信息（用于Release说明）
+      # 6. 获取构建信息（用于Release说明）
       - name: 收集构建信息
         id: build-info
         run: |
           echo "time=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
           echo "commit_short=${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
 
-      # 6. 创建/更新Release（核心！）
+      # 7. 创建/更新Release（核心！）
       - name: 发布到GitHub Release
         uses: softprops/action-gh-release@v2
         env:
@@ -74,12 +78,3 @@ jobs:
           prerelease: true   # 标记为预发布
           overwrite: true    # 覆盖旧Release
           generate_release_notes: true  # 自动生成基础说明
-
-      # 7. 上传到临时存储（备用）
-      - name: 备份APK到工作流
-        if: ${{ always() }}  # 即使前面失败也执行
-        uses: actions/upload-artifact@v4
-        with:
-          name: dev-preview-apk
-          path: composeApp/build/outputs/apk/debug/*.apk
-          retention-days: 3  # 保留3天
