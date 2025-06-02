@@ -40,6 +40,15 @@ inline TEFMod::Field<void*>* ShimmerTransformToItem = nullptr;
 
 class MyItem: public TEFMod::Item {
 public:
+
+    inline void init_static() override {};
+
+    inline void apply_equip_effects(TEFMod::TerrariaInstance instance) override {};
+
+    inline void update_armor_sets(TEFMod::TerrariaInstance instance) override {};
+
+    inline bool can_use(TEFMod::TerrariaInstance instance) override { return true;};
+
     void set_defaults(TEFMod::TerrariaInstance instance) override {
     }
     void set_text(const std::string &lang) override {
@@ -69,6 +78,15 @@ public:
 
 class MyItem2: public TEFMod::Item {
 public:
+
+    inline void init_static() override {};
+
+    inline void apply_equip_effects(TEFMod::TerrariaInstance instance) override {};
+
+    inline void update_armor_sets(TEFMod::TerrariaInstance instance) override {};
+
+    inline bool can_use(TEFMod::TerrariaInstance instance) override { return true;};
+
     void set_defaults(TEFMod::TerrariaInstance instance) override {
     }
     void set_text(const std::string &lang) override {

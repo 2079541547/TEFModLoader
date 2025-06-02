@@ -84,6 +84,16 @@ namespace TEFModLoader {
     public:
         inline explicit UnKnown_Item(const TEFMod::item_name& i): itemName(i) {}
 
+
+
+        inline void init_static() override {};
+
+        inline void apply_equip_effects(TEFMod::TerrariaInstance instance) override {};
+
+        inline void update_armor_sets(TEFMod::TerrariaInstance instance) override {};
+
+        inline bool can_use(TEFMod::TerrariaInstance instance) override { return true;};
+
         inline void set_defaults(TEFMod::TerrariaInstance instance) override {};
         inline TEFMod::ImageData get_image() override { return  {}; }
         inline void set_text(const std::string &lang) override {
