@@ -128,4 +128,11 @@ namespace TEFMod {
         virtual TerrariaInstance CreateNewObjectParameters(int expectedArgCount, ...) = 0;
         virtual bool Alive() = 0;
     };
+
+    struct ImageData {
+        std::vector<uint8_t> pixels;
+        unsigned width{};
+        unsigned height{};
+    };
+
 }

@@ -28,53 +28,157 @@
 #include "Logger.hpp"
 #include "DebugTool.hpp"
 #include "TEFMod.hpp"
-#include "BaseType.hpp"
+#include "Item.hpp"
+#include <random>
+
 
 static EFMod* mod;
+static TEFMod::ItemManager* ItemManager;
+inline TEFMod::Field<void*>* (*ParseOtherField)(void*) = nullptr;
+inline TEFMod::Array<int>* (*ParseIntArray)(void*) = nullptr;
+inline TEFMod::Field<void*>* ShimmerTransformToItem = nullptr;
 
-/*
+class MyItem: public TEFMod::Item {
+public:
+    void set_defaults(TEFMod::TerrariaInstance instance) override {
+    }
+    void set_text(const std::string &lang) override {
+        if (lang == "en-US") {
+            ItemManager->set_localized({ "MyMod-EternalFuture", "MyItem" }, { "Test Item", "The Item is from mod" });
+        } else ItemManager->set_localized({ "MyMod-EternalFuture", "MyItem" }, { "测试物品", "此为Mod添加的测试物品，非原版" });
+    }
+    TEFMod::ImageData get_image() override {
+        TEFMod::ImageData image;
+        image.width = 100;
+        image.height = 100;
+        image.pixels.resize(100 * 100 * 4);
 
-TEFMod::Logger* g_log;
-TEFMod::DebugTool* g_debug_tool;
-TEFMod::TEFModAPI* g_api;
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> dis(0, 255);
 
-TEFMod::Field<int>*(*ParseFromPointer_Field_Int)(void*);
-TEFMod::Field<int>* damage;
+        for (size_t i = 0; i < image.pixels.size(); i += 4) {
+            image.pixels[i] = dis(gen);     // R (随机)
+            image.pixels[i+1] = dis(gen);   // G (随机)
+            image.pixels[i+2] = dis(gen);   // B (随机)
+            image.pixels[i+3] = 255;        // A
+        }
+        return image;
+    }
+};
 
-TEFMod::Method<int>*(*ParseFromPointer_Method_Int)(void*);
-TEFMod::Method<int>* buyPrice;
+class MyItem2: public TEFMod::Item {
+public:
+    void set_defaults(TEFMod::TerrariaInstance instance) override {
+    }
+    void set_text(const std::string &lang) override {
+        ItemManager->set_localized({ "MyMod-EternalFuture", "MyItem2" }, { "测试物品2", "此为Mod添加的测试物品2，非原版" });
+    }
+    TEFMod::ImageData get_image() override {
+        TEFMod::ImageData image;
+        image.width = 128;  // 使用128x128分辨率更常见
+        image.height = 128;
+        image.pixels.resize(image.width * image.height * 4);
 
-int count = 0;
-void SetDefaults(TEFMod::TerrariaInstance i, int t, bool n, TEFMod::TerrariaInstance* v) {
-    static std::random_device rd;
-    static std::mt19937 gen(rd());
-    static std::uniform_int_distribution<int> dist(1, 1021);
-    int random_num = dist(gen);
+        // 基础颜色 - 木质或金属色
+        uint8_t baseR = 160; // 木质棕色或金属灰色
+        uint8_t baseG = 120;
+        uint8_t baseB = 80;
 
-    g_log->i("价值: ", buyPrice->Call(nullptr, 4, 1, 5, 6, 7));
+        // 木板/金属板条纹参数
+        int plankWidth = 16;
+        int plankVariation = 4;
 
-    damage->Set(random_num, i);
-    g_log->i("已设置弹幕为: ", damage->Get(i));
+        // 边缘边框
+        int borderWidth = 4;
+        uint8_t borderR = 80;
+        uint8_t borderG = 60;
+        uint8_t borderB = 40;
 
+        // 金属铆钉或木钉
+        int rivetSpacing = 32;
+        int rivetRadius = 3;
 
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> colorVariation(-20, 20);
+        std::uniform_int_distribution<> plankVariator(-plankVariation, plankVariation);
+
+        for (int y = 0; y < image.height; ++y) {
+            for (int x = 0; x < image.width; ++x) {
+                int idx = (y * image.width + x) * 4;
+
+                // 判断是否在边框内
+                bool isBorder = x < borderWidth || x >= image.width - borderWidth ||
+                                y < borderWidth || y >= image.height - borderWidth;
+
+                // 边框颜色
+                if (isBorder) {
+                    image.pixels[idx] = borderR;
+                    image.pixels[idx+1] = borderG;
+                    image.pixels[idx+2] = borderB;
+                    image.pixels[idx+3] = 255;
+                    continue;
+                }
+
+                // 木板/金属板条纹效果
+                int plankPos = (x + plankVariator(gen)) / plankWidth;
+                int colorVar = colorVariation(gen);
+
+                // 基础颜色加上变化
+                image.pixels[idx] = static_cast<uint8_t>(baseR + colorVar);
+                image.pixels[idx+1] = static_cast<uint8_t>(baseG + colorVar);
+                image.pixels[idx+2] = static_cast<uint8_t>(baseB + colorVar);
+
+                // 添加木板之间的缝隙
+                if ((x % plankWidth) < 1) {
+                    image.pixels[idx] /= 2;
+                    image.pixels[idx+1] /= 2;
+                    image.pixels[idx+2] /= 2;
+                }
+
+                // 添加铆钉/钉子
+                int rivetX = x % rivetSpacing;
+                int rivetY = y % rivetSpacing;
+                if (rivetX > rivetSpacing/2 - rivetRadius && rivetX < rivetSpacing/2 + rivetRadius &&
+                    rivetY > rivetSpacing/2 - rivetRadius && rivetY < rivetSpacing/2 + rivetRadius) {
+                    image.pixels[idx] = 220;   // 铆钉颜色
+                    image.pixels[idx+1] = 220;
+                    image.pixels[idx+2] = 220;
+                }
+
+                // Alpha通道
+                image.pixels[idx+3] = 255;
+            }
+        }
+
+        return image;
+    }
+};
+
+static MyItem my_item;
+static MyItem2 my_item2;
+
+inline void (*original_cctor)(TEFMod::TerrariaInstance);
+void cctor_HookT(TEFMod::TerrariaInstance i);
+void hook_cctor(TEFMod::TerrariaInstance i) {
+    if (auto *it = ParseIntArray(ShimmerTransformToItem->Get())) {
+        it->set(9, ItemManager->get_id({ "MyMod-EternalFuture", "MyItem" }));
+        it->set(ItemManager->get_id({ "MyMod-EternalFuture", "MyItem" }), ItemManager->get_id({ "MyMod-EternalFuture", "MyItem2" }));
+    }
 }
 
-void (*old_SetDefaults)(TEFMod::TerrariaInstance, int, bool, TEFMod::TerrariaInstance);
-void SetDefaults_T(TEFMod::TerrariaInstance i, int t, bool n, TEFMod::TerrariaInstance v);
-
-inline TEFMod::HookTemplate T_SetDefaults {
-        (void*) SetDefaults_T,
+inline TEFMod::HookTemplate HookTemplate_cctor {
+        reinterpret_cast<void*>(cctor_HookT),
         {  }
 };
 
-void SetDefaults_T(TEFMod::TerrariaInstance i, int t, bool n, TEFMod::TerrariaInstance v) {
-    old_SetDefaults(i, t, n, v);
-    for (auto fun: T_SetDefaults.FunctionArray) {
-        if(fun) ((void(*)(void*, int, bool, TEFMod::TerrariaInstance))fun)(i, t, n, v);
+void cctor_HookT(TEFMod::TerrariaInstance i) {
+    original_cctor(i);
+    for (const auto fun : HookTemplate_cctor.FunctionArray) {
+        reinterpret_cast<void(*)(TEFMod::TerrariaInstance)>(fun)(i);
     }
 }
-*/
-
 
 class MyMod: public EFMod {
 public:
@@ -84,76 +188,51 @@ public:
     }
 
     void Send(const std::string &path, MultiChannel *multiChannel) override {
-/*        g_api->registerFunctionDescriptor({
-            "Terraria",
-            "Item",
-            "SetDefaults",
+        auto api = multiChannel->receive<TEFMod::TEFModAPI*>("TEFMod::TEFModAPI");
+        api->registerFunctionDescriptor({
+            "Terraria.ID",
+            "ItemID.Sets",
+            ".cctor",
             "hook>>void",
-            3,
-            &T_SetDefaults,
-            { (void*)SetDefaults }
+            0,
+            &HookTemplate_cctor,
+            { reinterpret_cast<void*>(hook_cctor) }
         });
-
-        g_api->registerApiDescriptor({
-                                             "Terraria",
-                                             "Item",
-                                             "damage",
-                                             "Field"
+        api->registerApiDescriptor({
+            "Terraria.ID",
+            "ItemID.Sets",
+            "ShimmerTransformToItem",
+            "Field"
         });
-
-        g_api->registerApiDescriptor({
-                                             "Terraria",
-                                             "Item",
-                                             "buyPrice",
-                                             "Method",
-                                             4
-        });*/
     }
 
     void Receive(const std::string &path, MultiChannel *multiChannel) override {
-/*
-
-        old_SetDefaults = g_api->GetAPI<void(*)(TEFMod::TerrariaInstance, int, bool, TEFMod::TerrariaInstance)>({
-            "Terraria",
-                    "Item",
-                    "SetDefaults",
-                    "old_fun",
-                    3
-        });
-
-        buyPrice = ParseFromPointer_Method_Int(g_api->GetAPI<void*>({
-            "Terraria",
-            "Item",
-            "buyPrice",
-            "Method",
-            4
-        }));
-
-        damage = ParseFromPointer_Field_Int(g_api->GetAPI<void*>({
-            "Terraria",
-            "Item",
-            "damage",
+        auto api = multiChannel->receive<TEFMod::TEFModAPI*>("TEFMod::TEFModAPI");
+        ShimmerTransformToItem = ParseOtherField(api->GetAPI<void*>({
+            "Terraria.ID",
+            "ItemID.Sets",
+            "ShimmerTransformToItem",
             "Field"
         }));
-*/
-
+        original_cctor = api->GetAPI<void(*)(TEFMod::TerrariaInstance)>({
+            "Terraria.ID",
+                    "ItemID.Sets",
+                    ".cctor",
+                    "old_fun",
+                    0,
+        });
     }
 
     int Load(const std::string &path, MultiChannel *multiChannel) override {
-        // multiChannel->receive<void*>("TEFMod::DebugTool");
+        ItemManager = multiChannel->receive<TEFMod::ItemManager*>("TEFMod::ItemManager");
+        ParseOtherField = multiChannel->receive<decltype(ParseOtherField)>("TEFMod::Field<Other>::ParseFromPointer");
+        ParseIntArray = multiChannel->receive<decltype(ParseIntArray)>("TEFMod::Array<Int>::ParseFromPointer");
+        ItemManager->registered({ "MyMod-EternalFuture", "MyItem" }, &my_item);
+        ItemManager->registered({ "MyMod-EternalFuture", "MyItem2" }, &my_item2);
+        // ItemManager->registered({ "MyMod-EternalFuture", "MyItem3" }, nullptr);
         // g_debug_tool = multiChannel->receive<TEFMod::DebugTool*>("TEFMod::DebugTool");
         // g_log = multiChannel->receive<TEFMod::Logger*(*)(const std::string& Tag, const std::string& filePath, const std::size_t maxCache)>("TEFMod::CreateLogger")("MyMod-EternalFuture", "", 114514);
-        /*g_api = multiChannel->receive<TEFMod::TEFModAPI*>("TEFMod::TEFModAPI");
-        ParseFromPointer_Field_Int = multiChannel->receive<TEFMod::Field<int>*(*)(void*)>("TEFMod::Field<Int>::ParseFromPointer");
-        ParseFromPointer_Method_Int = multiChannel->receive<TEFMod::Method<int>*(*)(void*)>("TEFMod::Method<Int>::ParseFromPointer");
-
-
-        g_log->init();
-        g_log->i("已获取ParseFromPointer_Field_Int: ", (void*)ParseFromPointer_Field_Int);
-        g_log->i("Hello, ", mod, "!");
-        // g_debug_tool->printSystemInfo(g_log);
-        */
-         return 0;
+        return 0;
     }
 
     int UnLoad(const std::string &path, MultiChannel *multiChannel) override {

@@ -43,8 +43,16 @@ bool TEFModLoader::IL2CPP_String::null_or_empty() const {
     return reinterpret_cast<BNM::Structures::Mono::String*>(this->_ptr)->IsNullOrEmpty();
 }
 
+char TEFModLoader::IL2CPP_String::operator[](size_t index) const {
+    return reinterpret_cast<BNM::Structures::Mono::String*>(this->_ptr)->str()[index];
+}
+
 void *TEFModLoader::IL2CPP_String::Create(const std::string &str) {
     return BNM::CreateMonoString(str);
+}
+
+TEFMod::String *TEFModLoader::IL2CPP_String::ParseFromPointer(void *ptr) {
+    return new IL2CPP_String(ptr);
 }
 
 template<typename T>

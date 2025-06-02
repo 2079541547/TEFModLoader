@@ -34,10 +34,17 @@
 #include "hook_manager.hpp"
 #include "logger.hpp"
 
+#include "item_manager.hpp"
+#include "set_factory.hpp"
+#include "texture_assets.hpp"
+#include "initialize_almost_everything.hpp"
+#include "save_player.hpp"
+
 #include "tefmod-api/base_type.hpp"
 #include "tefmod-api/debug_tool.hpp"
 #include "tefmod-api/mod_logger.hpp"
 #include "tefmod-api/tefmod.hpp"
+#include "tefmod-api/item.hpp"
 
 static EFModLoader::Loader loader(
         [](const std::string& path) -> void* {
@@ -151,6 +158,7 @@ void RegisterBaseTypeFunctions(const std::string& typeName) {
 
 void send_api_to_mod() {
     EFModLoader::LoaderMultiChannel::GetInstance()->send("TEFMod::CreateString", reinterpret_cast<void*>(TEFModLoader::IL2CPP_String::Create));
+    EFModLoader::LoaderMultiChannel::GetInstance()->send("TEFMod::ParseStringFromPointer", reinterpret_cast<void*>(TEFModLoader::IL2CPP_String::ParseFromPointer));
 
     RegisterBaseTypeFunctions<bool>("Bool");
     RegisterBaseTypeFunctions<int8_t>("Byte");
@@ -190,11 +198,7 @@ void send_api_to_mod() {
     EFModLoader::LoaderMultiChannel::GetInstance()->send("TEFMod::Method<Void>::ParseFromPointer",
             reinterpret_cast<void*>(TEFModLoader::IL2CPP_Method<void>::ParseFromPointer));
 
-}
-
-void receive_and_init() {
-    loader.receiveAll();
-    loader.initializeAll();
+    EFModLoader::LoaderMultiChannel::GetInstance()->send("TEFMod::ItemManager", TEFModLoader::ItemManager::GetInstance());
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
@@ -207,12 +211,25 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
 
     send_api_to_mod();
 
+    TEFModLoader::ItemManager::GetInstance()->registered_unknown("MyMod-EternalFuture::MyItem");
+
     loader.loadAll();
+    TEFModLoader::item_manager::init(TEFModLoader::TEFModAPI::GetInstance());
+    TEFModLoader::Initialize_AlmostEverything::init(TEFModLoader::TEFModAPI::GetInstance());
+    TEFModLoader::SavePlayer::init(TEFModLoader::TEFModAPI::GetInstance());
     loader.sendAll();
 
     BNM::Loading::AddOnLoadedEvent(TEFModLoader::APIManager::auto_processing);
     BNM::Loading::AddOnLoadedEvent(TEFModLoader::HookManager::auto_hook);
-    BNM::Loading::AddOnLoadedEvent(receive_and_init);
+    BNM::Loading::AddOnLoadedEvent([]() -> void {
+        loader.receiveAll();
+        TEFModLoader::SetFactory::init();
+        TEFModLoader::item_manager::init(TEFModLoader::TEFModAPI::GetInstance());
+        TEFModLoader::Initialize_AlmostEverything::init(TEFModLoader::TEFModAPI::GetInstance());
+        TEFModLoader::SavePlayer::init(TEFModLoader::TEFModAPI::GetInstance());
+    });
+
+    loader.initializeAll();
 
     return JNI_VERSION_1_6;
 }

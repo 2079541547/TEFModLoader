@@ -25,6 +25,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "BaseType.hpp"
+
 namespace TEFMod {
 
     struct HookTemplate {
@@ -68,5 +70,4 @@ namespace TEFMod {
         virtual void registerApiDescriptor(const ModApiDescriptor& apiDesc) = 0;
         virtual void registerFunctionDescriptor(const ModFuncDescriptor& funcDesc) = 0;
     };
-
 }

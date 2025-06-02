@@ -149,7 +149,11 @@ struct IL2CppArray {
 
     // Modify the array size directly (note: this may require an external guarantee of memory validity)
     void Resize(size_t newSize) {
-        // If there's not enough memory space, it may lead to undefined behavior.
+        if (!obj) {
+            throw std::runtime_error("Cannot resize uninitialized array");
+        }
+        const size_t sizeOffset = offsetof(IL2CppArray<T>, size);
+        *reinterpret_cast<size_t*>(reinterpret_cast<char*>(obj) + sizeOffset) = newSize;
         size = newSize;
     }
 
@@ -241,14 +245,25 @@ struct IL2CppArray {
         }
     }
 
+    // 在 IL2CppArray 类中添加这个函数
+    void Delete() {
+        // 检查是否是工厂方法创建的对象（通过 malloc 分配）
+        if (m_Items != nullptr &&
+            reinterpret_cast<char*>(m_Items) == reinterpret_cast<char*>(this) + (sizeof(*this) - sizeof(T*))) {
+            // 这是工厂方法创建的对象，需要整体释放
+            free(this);
+        } else {
+            // 这是从现有指针解析的对象，只重置指针
+            obj = nullptr;
+            bounds = nullptr;
+            unknown = nullptr;
+            m_Items = nullptr;
+            size = 0;
+        }
+    }
+
     ~IL2CppArray() {
-        // Only necessary if created with static factory functions
-        // The actual buffer should be freed by the caller
-        obj = nullptr;
-        bounds = nullptr;
-        unknown = nullptr;
-        m_Items = nullptr;
-        size = 0;
+        Delete();
     }
 };
 

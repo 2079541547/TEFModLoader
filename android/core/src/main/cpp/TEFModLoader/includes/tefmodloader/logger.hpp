@@ -54,7 +54,7 @@ namespace TEFModLoader {
         };
 
         static void Init(const std::string& logger_name = "TEFModLoader",
-                         Level level = Level::INFO,
+                         Level level = Level::TRACE,
                          const std::string& filename = "",
                          bool console_output = true);
 

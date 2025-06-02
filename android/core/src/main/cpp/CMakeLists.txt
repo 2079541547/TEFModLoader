@@ -10,6 +10,7 @@ set(TEFMOD_API_SRC
         TEFModLoader/src/tefmod-api/mod_logger.cpp
         TEFModLoader/src/tefmod-api/debug_tool.cpp
         TEFModLoader/src/tefmod-api/tefmod.cpp
+        TEFModLoader/src/tefmod-api/item.cpp
 )
 
 add_subdirectory(lib/BNM-Android-master)
@@ -28,6 +29,11 @@ add_library(TEFModLoader SHARED
         TEFModLoader/src/hook_manager.cpp
         TEFModLoader/src/api_manager.cpp
         TEFModLoader/src/tefmodloader.cpp
+        TEFModLoader/src/item_manager.cpp
+        TEFModLoader/src/texture_assets.cpp
+        TEFModLoader/src/set_factory.cpp
+        TEFModLoader/src/initialize_almost_everything.cpp
+        TEFModLoader/src/save_player.cpp
 )
 
 target_include_directories(TEFModLoader

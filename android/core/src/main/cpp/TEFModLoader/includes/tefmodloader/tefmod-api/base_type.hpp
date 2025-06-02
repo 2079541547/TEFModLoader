@@ -40,7 +40,10 @@ namespace TEFModLoader {
         [[nodiscard]] std::string str() const override;
         [[nodiscard]] bool null_or_empty() const override;
 
+        virtual char operator[](size_t index) const override;
+
         static void* Create(const std::string& str);
+        static TEFMod::String* ParseFromPointer(void* ptr);
     };
 
 
