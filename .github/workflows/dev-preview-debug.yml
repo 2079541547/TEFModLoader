@@ -1,64 +1,85 @@
-name: Dev-Preview Release
+name: 开发预览版发布
 
 on:
   push:
     branches: [ "dev-preview" ]
   workflow_dispatch:
 
+# 权限配置（必须）
 permissions:
-  contents: write
-  releases: write
+  contents: write  # 写入代码权限
+  packages: write  # 发布Release权限
+  actions: read    # 读取工作流状态
 
 jobs:
   build-and-release:
     runs-on: ubuntu-latest
+    environment: dev-preview  # 使用环境变量
 
     steps:
-      - name: Checkout code
+      # 1. 代码检出（带缓存优化）
+      - name: 检出代码
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # 获取完整提交历史
 
-      - name: Setup Java (JDK 17)
+      # 2. JDK配置（带Gradle缓存）
+      - name: 配置JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'
+          cache: 'gradle'  # 启用Gradle依赖缓存
 
-      - name: Setup Android SDK
+      # 3. Android环境配置（带NDK缓存）
+      - name: 配置Android环境
         uses: android-actions/setup-android@v3
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Build Debug APK
-        run: ./gradlew :composeApp:assembleDebug
+      # 4. 构建APK
+      - name: 构建Debug版APK
+        run: ./gradlew :composeApp:assembleDebug --no-daemon
         env:
           KEYSTORE_PASSWORD: ${{ secrets.DEBUG_KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.DEBUG_KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.DEBUG_KEY_PASSWORD }}
 
-      - name: Create Release
-        uses: actions/create-release@v2
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: dev-preview
-          release_name: "Dev-Preview Build (${GITHUB_SHA:0:7})"
-          body: |
-            ### 📱 自动构建预览版
-            | 信息 | 值 |
-            |------|-----|
-            | 分支 | ${{ github.ref_name }} |
-            | 提交 | [${GITHUB_SHA:0:7}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) |
-            | 构建时间 | ${{ steps.get_timestamp.outputs.time }} |
-          draft: false
-          prerelease: true
-          overwrite_assets: true
+      # 5. 获取构建信息（用于Release说明）
+      - name: 收集构建信息
+        id: build-info
+        run: |
+          echo "time=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT
+          echo "commit_short=${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
 
-      - name: Upload APK
-        uses: actions/upload-release-asset@v1
+      # 6. 创建/更新Release（核心！）
+      - name: 发布到GitHub Release
+        uses: softprops/action-gh-release@v2
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # 必须传递token
         with:
-          upload_url: ${{ steps.create_re
+          tag_name: "dev-preview"       # 固定标签名称
+          name: "开发预览版 (${{ steps.build-info.outputs.commit_short }})"
+          body: |
+            ## 📱 最新开发预览版
+            | 项目 | 值 |
+            |------|----|
+            | 分支 | ${{ github.ref_name }} |
+            | 提交 | [${{ steps.build-info.outputs.commit_short }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) |
+            | 构建时间 | ${{ steps.build-info.outputs.time }} |
+            | 构建编号 | ${{ github.run_number }} |
+
+            ## 📦 安装说明
+            1. 下载下方APK文件
+            2. 允许安装未知来源应用
+          files: composeApp/build/outputs/apk/debug/*.apk
+          prerelease: true   # 标记为预发布
+          overwrite: true    # 覆盖旧Release
+          generate_release_notes: true  # 自动生成基础说明
+
+      # 7. 上传到临时存储（备用）
+      - name: 备份APK到工作流
+        if: ${{ always() }}  # 即使前面失败也执行
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-preview-apk
+          path: composeApp/build/outputs/apk/debug/*.apk
+          retention-days: 3  # 保留3天
