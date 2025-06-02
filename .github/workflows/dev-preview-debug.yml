@@ -26,13 +26,6 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Configure Debug Signing
-        run: |
-          mkdir -p composeApp
-          echo "${{ secrets.DEBUG_KEYSTORE }}" > composeApp/TEFModLoader.p12
-          base64 -d composeApp/TEFModLoader.p12 > composeApp/TEFModLoader.p12.bin
-          mv composeApp/TEFModLoader.p12.bin composeApp/TEFModLoader.p12
-
       - name: Build Debug APK
         run: ./gradlew :composeApp:assembleDebug
         env:
