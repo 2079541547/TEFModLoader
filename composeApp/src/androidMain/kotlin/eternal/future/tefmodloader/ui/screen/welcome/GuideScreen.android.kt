@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +38,7 @@ import eternal.future.tefmodloader.State.Mode
 import eternal.future.tefmodloader.State.OverrideVersion
 import eternal.future.tefmodloader.State.autoPatch
 import eternal.future.tefmodloader.State.isBypass
+import eternal.future.tefmodloader.ui.navigation.NavigationViewModel
 import eternal.future.tefmodloader.ui.widget.main.SettingScreen
 import eternal.future.tefmodloader.utility.Locales
 import kotlin.math.roundToInt
@@ -161,7 +163,7 @@ fun GuideScreen.Patch() {
 }
 
 @Composable
-actual fun GuideScreen.disposition_2() {
+actual fun GuideScreen.disposition_2(mainViewModel: NavigationViewModel) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopStart
@@ -171,12 +173,13 @@ actual fun GuideScreen.disposition_2() {
         }
         var offsetX by remember { mutableFloatStateOf(0f) }
         var offsetY by remember { mutableFloatStateOf(0f) }
+        val scope = rememberCoroutineScope()
         ExtendedFloatingActionButton(
             text = { Text(locales.getString("next")) },
             icon = { Icon(Icons.AutoMirrored.Filled.NavigateNext, contentDescription = "Next") },
             containerColor = MaterialTheme.colorScheme.primary,
             onClick = {
-                viewModel.navigateTo("agreement")
+                start(scope, mainViewModel)
             },
             modifier = Modifier
                 .offset {
