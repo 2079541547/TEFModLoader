@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.LastPage
@@ -20,10 +21,8 @@ import androidx.compose.material.icons.filled.InstallDesktop
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.LocalFlorist
 import androidx.compose.material.icons.filled.NaturePeople
-import androidx.compose.material.icons.filled.NightsStay
-import androidx.compose.material.icons.filled.SettingsSystemDaydream
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
@@ -46,11 +45,10 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import eternal.future.tefmodloader.State
 import eternal.future.tefmodloader.State.autoPatch
-import eternal.future.tefmodloader.State.darkTheme
+import eternal.future.tefmodloader.State.darkMode
 import eternal.future.tefmodloader.State.defaultLoader
 import eternal.future.tefmodloader.State.language
 import eternal.future.tefmodloader.State.loggingEnabled
-import eternal.future.tefmodloader.State.systemTheme
 import eternal.future.tefmodloader.configuration
 import eternal.future.tefmodloader.ui.AppTopBar
 import eternal.future.tefmodloader.ui.navigation.BackMode
@@ -167,6 +165,12 @@ object GuideScreen {
                     5 to Pair(personalize.getString("purple"), Icons.Default.Star)
                 )
 
+                val darkModeMap = mapOf(
+                    0 to personalize.getString("followSystem"),
+                    1 to personalize.getString("darkMode_enable"),
+                    2 to personalize.getString("darkMode_disable"),
+                )
+
                 SettingScreen.Selector(
                     title = personalize.getString("language"),
                     defaultSelectorId = language.value,
@@ -195,62 +199,29 @@ object GuideScreen {
                     }
                 )
 
-                SettingScreen.SettingsSwitchItem(
-                    title = personalize.getString("followSystem"),
-                    contentDescription = personalize.getString("followSystemContent"),
-                    checked = systemTheme.value,
-                    onCheckedChange = { check ->
-                        systemTheme.value = check
-                        configuration.setBoolean("systemTheme", check)
-                    },
+                SettingScreen.Selector(
+                    title = personalize.getString("darkMode"),
+                    defaultSelectorId = darkMode.value,
+                    darkModeMap,
                     modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth(),
-                    iconOn = Icons.Default.SettingsSystemDaydream
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    onClick = { select ->
+                        darkMode.value = select
+                        locales.loadLocalization("Screen/GuideScreen/GuideScreen.toml", Locales.getLanguage(select))
+                        configuration.setInt("darkMode", select)
+                    }
                 )
 
-                if (!systemTheme.value) {
-                    SettingScreen.SettingsSwitchItem(
-                        iconOff = Icons.Default.WbSunny,
-                        iconOn = Icons.Default.NightsStay,
-                        title = personalize.getString("darkTheme"),
-                        contentDescription = personalize.getString("darkThemeContent"),
-                        checked = darkTheme.value,
-                        onCheckedChange = { check ->
-                            darkTheme.value = check
-                            configuration.setBoolean("darkTheme", check)
-                        },
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .fillMaxWidth()
-                    )
-                }
             }
 
-            var offsetX by remember { mutableStateOf(0f) }
-            var offsetY by remember { mutableStateOf(0f) }
-            ExtendedFloatingActionButton(
-                text = { Text(locales.getString("next")) },
-                icon = { Icon(Icons.AutoMirrored.Filled.NavigateNext, contentDescription = "Next") },
-                containerColor = MaterialTheme.colorScheme.primary,
+            Button(
                 onClick = { viewModel.navigateTo("disposition") },
+                content = { Text(locales.getString("next")) },
                 modifier = Modifier
-                    .offset {
-                        IntOffset(
-                            offsetX.roundToInt(),
-                            offsetY.roundToInt()
-                        )
-                    }
                     .align(Alignment.BottomEnd)
-                    .pointerInput(Unit) {
-                        detectDragGestures { _, dragAmount ->
-                            offsetX += dragAmount.x
-                            offsetY += dragAmount.y
-                        }
-                    }
                     .padding(20.dp)
             )
-
         }
     }
 

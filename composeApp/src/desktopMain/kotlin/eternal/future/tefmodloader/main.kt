@@ -2,7 +2,6 @@ package eternal.future.tefmodloader
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,8 +21,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPosition
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.application
-import eternal.future.tefmodloader.State.darkTheme
-import eternal.future.tefmodloader.State.systemTheme
+import eternal.future.tefmodloader.State.darkMode
 import eternal.future.tefmodloader.debug.TerminalScreen
 import eternal.future.tefmodloader.ui.navigation.BackMode
 import eternal.future.tefmodloader.ui.navigation.DefaultScreen
@@ -45,7 +43,7 @@ import kotlin.reflect.KFunction0
 
 @Composable
 fun NavigationHost(viewModel: NavigationViewModel) {
-    TEFModLoaderComposeTheme(darkTheme = (if(systemTheme.value) isSystemInDarkTheme() else darkTheme.value), theme = State.theme.value) {
+    TEFModLoaderComposeTheme(darkMode = darkMode.value, theme = State.theme.value) {
         val currentScreenWithAnimation by viewModel.currentScreen.collectAsState()
         Scaffold {
             Crossfade(targetState = currentScreenWithAnimation, animationSpec = tween(durationMillis = 500)) { state ->
@@ -172,7 +170,7 @@ fun TerminalWindow(onClose: () -> Unit) {
         state = WindowState(position = WindowPosition(Alignment.Center),
             size = DpSize(800.dp, 600.dp))
     ) {
-        TEFModLoaderComposeTheme(true) {
+        TEFModLoaderComposeTheme(1) {
             TerminalScreen()
         }
     }
