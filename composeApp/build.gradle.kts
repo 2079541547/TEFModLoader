@@ -71,9 +71,8 @@ android {
 
     defaultConfig {
         applicationId = "eternal.future.tefmodloader"
-        minSdkVersion(libs.versions.android.minSdk.get().toInt())
-        //noinspection OldTargetApi
-        targetSdkVersion(libs.versions.android.targetSdk.get().toInt())
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1000
         versionName = "10.0.0 Beta3.5"
         multiDexEnabled = true
@@ -84,38 +83,46 @@ android {
         }
     }
 
-    aaptOptions {
-       noCompress += mutableListOf(
-            "assets/bin/Data/data.unity3d",
-            "assets/bin/Data/resources.resource",
-            "assets/bin/Data/unity default resources"
+    androidResources {
+        noCompress.addAll(
+            listOf(
+                "assets/bin/Data/data.unity3d",
+                "assets/bin/Data/resources.resource",
+                "assets/bin/Data/unity default resources"
+            )
         )
     }
 
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes.add("/META-INF/{AL2.0,LGPL2.1}")
+            pickFirsts.add("META-INF/versions/9/OSGI-INF/MANIFEST.MF")
+        }
+        jniLibs {
+            excludes.addAll(
+                listOf(
+                    "**/libTEFModLoader.so",
+                    "**/libauxiliary.so",
+                    "**/libTEFLoader.so",
+                    "**/libdobby.so",
+                    "**/libexample1.so",
+                    "**/libexample2.so"
+                )
+            )
         }
     }
 
-    dexOptions {
-        keepRuntimeAnnotatedClasses = false
-        jumboMode = true
-        preDexLibraries = true
-    }
-
-
     buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-            isShrinkResources = false
-            isZipAlignEnabled = true
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -134,16 +141,6 @@ android {
             storePassword = "TEFModLoader"
             keyPassword = "TEFModLoader"
         }
-    }
-
-    packagingOptions {
-        exclude("**/libTEFModLoader.so")
-        exclude("**/libauxiliary.so")
-        exclude("**/libTEFLoader.so")
-        pickFirst("META-INF/versions/9/OSGI-INF/MANIFEST.MF")
-        exclude("**/libdobby.so")
-        exclude("**/libexample1.so")
-        exclude("**/libexample2.so")
     }
 }
 

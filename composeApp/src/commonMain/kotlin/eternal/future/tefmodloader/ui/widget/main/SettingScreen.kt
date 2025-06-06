@@ -294,4 +294,16 @@ object SettingScreen {
             }
         }
     }
+
+    @Composable
+    fun PathInputWithFilePicker(
+        title: String,
+        path: String,
+        onPathChange: (String) -> Unit,
+        onFolderSelect: () -> Unit,
+        modifier: Modifier
+    ) {
+        TODO("Not yet implemented")
+    }
+
 }

@@ -55,7 +55,7 @@ fun NavigationHost(viewModel: NavigationViewModel) {
                             "welcome" -> WelcomeScreen(viewModel)
                             "guide" -> GuideScreen.GuideScreen(viewModel)
                             "main" -> MainScreen.MainScreen(viewModel)
-                            "about" -> AboutScreen.AboutScreen(viewModel)
+                            "about" -> AboutScreen(viewModel)
                             "help" -> HelpScreen.HelpScreen(viewModel)
                             "license" -> LicenseScreen.LicenseScreen(viewModel)
                             "thanks" -> ThanksScreen.ThanksScreen(viewModel)
