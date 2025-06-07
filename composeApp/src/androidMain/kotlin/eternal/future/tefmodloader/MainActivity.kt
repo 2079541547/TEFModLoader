@@ -15,7 +15,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -26,11 +25,10 @@ import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
-import eternal.future.tefmodloader.State.darkTheme
+import eternal.future.tefmodloader.State.darkMode
 import eternal.future.tefmodloader.State.screen_physical
 import eternal.future.tefmodloader.State.screen_revolve
 import eternal.future.tefmodloader.State.screen_rollback
-import eternal.future.tefmodloader.State.systemTheme
 import eternal.future.tefmodloader.easteregg.GravityAffectedContent
 import eternal.future.tefmodloader.easteregg.Screen.ClockwiseRotatingContent
 import eternal.future.tefmodloader.easteregg.Screen.Rotation
@@ -106,7 +104,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @Composable
     fun NavigationHost(viewModel: NavigationViewModel) {
-        TEFModLoaderComposeTheme(darkTheme = (if(systemTheme.value) isSystemInDarkTheme() else darkTheme.value), theme = State.theme.value) {
+        TEFModLoaderComposeTheme(darkMode = darkMode.value, theme = State.theme.value) {
             val currentScreenWithAnimation by viewModel.currentScreen.collectAsState()
             val content = @Composable {
                 Scaffold {

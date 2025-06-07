@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.NightsStay
-import androidx.compose.material.icons.filled.SettingsSystemDaydream
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -15,11 +14,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import eternal.future.tefmodloader.State.darkTheme
+import eternal.future.tefmodloader.State.darkMode
 import eternal.future.tefmodloader.State.language
 import eternal.future.tefmodloader.State.loggingEnabled
 import eternal.future.tefmodloader.State.selectedPath
-import eternal.future.tefmodloader.State.systemTheme
 import eternal.future.tefmodloader.State.theme
 import eternal.future.tefmodloader.ui.navigation.NavigationViewModel
 import eternal.future.tefmodloader.ui.widget.main.SettingScreen
@@ -53,6 +51,13 @@ actual object SettingScreen {
         0 to Pair("pink", Icons.Default.WbSunny),
         1 to Pair("blue", Icons.Default.NightsStay)
     )
+
+    private val darkModeMap = mapOf(
+        0 to "Follow System",
+        1 to "Always Enabled",
+        2 to "Always Disabled"
+    )
+
 
     private val logMap = mapOf(
         512 to "512 kb",
@@ -117,30 +122,15 @@ actual object SettingScreen {
                         }
                     )
 
-                    SettingScreen.SettingsSwitchItem(
-                        title = "Follow system theme",
-                        contentDescription = "Use a system color scheme",
-                        checked = systemTheme.value,
-                        onCheckedChange = { check ->
-                            systemTheme.value = check
-                        },
-                        modifier = Modifier.padding(10.dp).fillMaxWidth(),
-                        iconOn = Icons.Default.SettingsSystemDaydream
+                    SettingScreen.Selector(
+                        title = "Select Language",
+                        defaultSelectorId = darkMode.value,
+                        selectorMap = darkModeMap,
+                        modifier = Modifier.fillMaxWidth(),
+                        onClick = { select ->
+                            darkMode.value = select
+                        }
                     )
-
-                    if (!systemTheme.value) {
-                        SettingScreen.SettingsSwitchItem(
-                            iconOff = Icons.Default.WbSunny,
-                            iconOn = Icons.Default.NightsStay,
-                            title = "Dark theme",
-                            contentDescription = "Use a dark color scheme",
-                            checked = darkTheme.value,
-                            onCheckedChange = { check ->
-                                darkTheme.value = check
-                            },
-                            modifier = Modifier.padding(10.dp).fillMaxWidth()
-                        )
-                    }
                 }
 
                 item {

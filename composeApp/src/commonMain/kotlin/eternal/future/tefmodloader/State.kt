@@ -6,8 +6,8 @@ import java.io.File
 
 object State {
     val theme = mutableStateOf(configuration.getInt("theme"))
-    val darkTheme = mutableStateOf(configuration.getBoolean("darkTheme"))
-    val systemTheme = mutableStateOf(configuration.getBoolean("systemTheme", true))
+    val darkMode = mutableStateOf(configuration.getInt("darkMode"))
+
     val language = mutableStateOf(configuration.getInt("language"))
 
     val selectedPath = mutableStateOf(configuration.getString("selectedPath"))

@@ -10,16 +10,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.BeachAccess
-import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.LocalFlorist
 import androidx.compose.material.icons.filled.NaturePeople
-import androidx.compose.material.icons.filled.NightsStay
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.SettingsSystemDaydream
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,28 +24,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import eternal.future.tefmodloader.MainApplication
 import eternal.future.tefmodloader.State
-import eternal.future.tefmodloader.State.darkTheme
+import eternal.future.tefmodloader.State.darkMode
 import eternal.future.tefmodloader.State.language
-import eternal.future.tefmodloader.State.loggingEnabled
-import eternal.future.tefmodloader.State.systemTheme
 import eternal.future.tefmodloader.configuration
 import eternal.future.tefmodloader.ui.AppTopBar
 import eternal.future.tefmodloader.ui.navigation.BackMode
 import eternal.future.tefmodloader.ui.navigation.NavigationViewModel
 import eternal.future.tefmodloader.ui.widget.main.SettingScreen
 import eternal.future.tefmodloader.utility.App
-import eternal.future.tefmodloader.utility.EFLog
 import eternal.future.tefmodloader.utility.Locales
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import android.os.Process
 import android.util.Log
-import java.io.BufferedReader
-import java.io.InputStreamReader
 import java.io.OutputStream
-import java.util.concurrent.TimeUnit
 
 
 actual object SettingScreen {
@@ -195,6 +184,13 @@ actual object SettingScreen {
                         5 to Pair(setting.getString("purple"), Icons.Default.Star)
                     )
 
+                    val darkModeMap = mapOf(
+                        0 to setting.getString("followSystem"),
+                        1 to setting.getString("darkMode_enable"),
+                        2 to setting.getString("darkMode_disable"),
+                    )
+
+
                     SettingScreen.Selector(
                         title = setting.getString("language"),
                         defaultSelectorId = language.value,
@@ -223,36 +219,19 @@ actual object SettingScreen {
                         }
                     )
 
-                    SettingScreen.SettingsSwitchItem(
-                        title = setting.getString("follow_system"),
-                        contentDescription = setting.getString("followSystemContent"),
-                        checked = systemTheme.value,
-                        onCheckedChange = { check ->
-                            systemTheme.value = check
-                            configuration.setBoolean("systemTheme", check)
-                        },
+                    SettingScreen.Selector(
+                        title = setting.getString("darkMode"),
+                        defaultSelectorId = darkMode.value,
+                        darkModeMap,
                         modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxWidth(),
-                        iconOn = Icons.Default.SettingsSystemDaydream
+                            .fillMaxWidth()
+                            .padding(4.dp),
+                        onClick = { select ->
+                            darkMode.value = select
+                            setting.loadLocalization("Screen/SettingScreen.toml", Locales.getLanguage(select))
+                            configuration.setInt("darkMode", select)
+                        }
                     )
-
-                    if (!systemTheme.value) {
-                        SettingScreen.SettingsSwitchItem(
-                            iconOff = Icons.Default.WbSunny,
-                            iconOn = Icons.Default.NightsStay,
-                            title = setting.getString("darkTheme"),
-                            contentDescription = setting.getString("darkThemeContent"),
-                            checked = darkTheme.value,
-                            onCheckedChange = { check ->
-                                darkTheme.value = check
-                                configuration.setBoolean("darkTheme", check)
-                            },
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .fillMaxWidth()
-                        )
-                    }
                 }
             }
         }

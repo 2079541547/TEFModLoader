@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import eternal.future.tefmodloader.ui.navigation.NavigationViewModel
 import eternal.future.tefmodloader.ui.widget.main.SettingScreen
 import eternal.future.tefmodloader.utility.FileUtils
 
@@ -45,7 +46,8 @@ actual fun GuideScreen.disposition() {
     )
 }
 
+
 @Composable
-actual fun GuideScreen.disposition_2() {
-    TODO("Not yet implemented")
+actual fun GuideScreen.disposition_2(mainViewModel: NavigationViewModel) {
+    //TODO
 }

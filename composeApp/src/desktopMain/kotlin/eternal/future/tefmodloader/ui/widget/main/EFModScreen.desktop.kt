@@ -46,7 +46,7 @@ actual fun EFModScreen.EFModCard_o(mod: EFMod) {
 
 
 
-    EFModCard_Reuse(mod) {
+    EFModCard_Reuse(mod, onUpdateModClick = { showUpdate = true }) {
         showUpdate = true
     }
 
