@@ -11,6 +11,7 @@ set(TEFMOD_API_SRC
         TEFModLoader/src/tefmod-api/debug_tool.cpp
         TEFModLoader/src/tefmod-api/tefmod.cpp
         TEFModLoader/src/tefmod-api/item.cpp
+        TEFModLoader/src/tefmod-api/projectile.cpp
 )
 
 add_subdirectory(lib/BNM-Android-master)
@@ -35,6 +36,7 @@ add_library(TEFModLoader SHARED
         TEFModLoader/src/initialize_almost_everything.cpp
         TEFModLoader/src/save_player.cpp
         TEFModLoader/src/recipe.cpp
+        TEFModLoader/src/projectile_manager.cpp
 )
 
 target_include_directories(TEFModLoader

@@ -23,21 +23,12 @@
 
 #pragma once
 
-#include "Item.hpp"
+#include "item_api.hpp"
 #include <unordered_set>
 #include <map>
-#include <TEFMod.hpp>
+#include "tefmod_api.hpp"
 
 namespace TEFModLoader {
-
-    inline bool operator==(const TEFMod::identifier& a, const TEFMod::identifier& b) {
-        return a.Namespace == b.Namespace && a.Name == b.Name;
-    }
-
-    inline bool operator<(const TEFMod::identifier& a, const TEFMod::identifier& b) {
-        if (a.Namespace != b.Namespace) return a.Namespace < b.Namespace;
-        return a.Name < b.Name;
-    }
 
     class ItemManager: public TEFMod::ItemManager {
     private:
@@ -45,18 +36,27 @@ namespace TEFModLoader {
         std::unordered_map<std::string, int> m_name_to_id;
         std::unordered_map<int, TEFMod::identifier> m_id_to_name;
         std::unordered_set<std::string> m_registered_names;
-        std::map<int, TEFMod::Item*> m_items_instance;
-        inline static bool m_needs_sorting = true;
+        std::unordered_map<int, TEFMod::Item*> m_items_instance;
 
         std::unordered_map<std::string, TEFMod::item_localized> m_localized_data;
         std::unordered_map<int, std::pair<TEFMod::TerrariaInstance, TEFMod::TerrariaInstance>> m_localized_instance;
 
         std::vector<TEFMod::recipe> m_recipe;
+        std::vector<TEFMod::animation> m_animations;
+        std::vector<TEFMod::item_prefix> m_prefix;
+
+        int _count;
     public:
         void registered(const TEFMod::identifier &name, TEFMod::Item *item) override;
         int get_id(const TEFMod::identifier &name) override;
         TEFMod::identifier get_name(int id) override;
         int get_id_from_str(const std::string& name) override;
+
+        void add_prefix(TEFMod::item_prefix prefix) override;
+        inline std::vector<TEFMod::item_prefix> get_all_prefix() { return m_prefix; }
+
+        void add_animation(TEFMod::animation _animation) override;
+        inline std::vector<TEFMod::animation> get_all_animation() { return m_animations; }
 
         void add_recipe(const TEFMod::recipe& item) override;
         inline std::vector<TEFMod::recipe> get_all_recipe() { return m_recipe; }
@@ -72,7 +72,7 @@ namespace TEFModLoader {
         void init_localized();
         std::pair<TEFMod::TerrariaInstance, TEFMod::TerrariaInstance>& get_localized_instance(int id);
         void registered_unknown(const std::string &name);
-        inline std::map<int, TEFMod::Item*> get_m_items_instance() const& { return m_items_instance; }
+        [[nodiscard]] inline std::unordered_map<int, TEFMod::Item*> get_m_items_instance() const& { return m_items_instance; }
 
         inline static ItemManager* GetInstance() {
             static ItemManager item_manager;

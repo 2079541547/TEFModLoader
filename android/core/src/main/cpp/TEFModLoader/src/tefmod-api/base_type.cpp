@@ -27,6 +27,23 @@
 #include "BNM/UnityStructures.hpp"
 #include "BNM/Field.hpp"
 
+TEFMod::identifier TEFModLoader::parse_identifier_form_str(const std::string &input) {
+    if (input.empty()) {
+        throw std::invalid_argument("Empty input string");
+    }
+
+    const size_t sep_pos = input.find("::");
+
+    if (sep_pos != std::string::npos) {
+        return {
+                input.substr(0, sep_pos),  // Namespace部分
+                input.substr(sep_pos + 2)  // Name部分（跳过"::"）
+        };
+    }
+
+    return { "TEFModLoader::Unclaimed", input };
+}
+
 std::string TEFModLoader::IL2CPP_String::str() const {
     return reinterpret_cast<BNM::Structures::Mono::String*>(this->_ptr)->str();
 }

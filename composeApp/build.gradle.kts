@@ -29,7 +29,7 @@ kotlin {
             implementation(project(":android:core"))
             implementation(project(":android:axml"))
             implementation(project(":android:axml"))
-            // implementation(project(":game-assets"))
+            implementation(project(":game-assets"))
             implementation(fileTree(mapOf("dir" to "src/androidMain/libs", "include" to listOf("*.jar", "*.aar"))))
         }
         //noinspection WrongGradleMethod

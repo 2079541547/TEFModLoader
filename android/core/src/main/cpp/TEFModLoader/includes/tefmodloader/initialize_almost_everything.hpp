@@ -23,12 +23,15 @@
 
 #pragma once
 
-#include <TEFMod.hpp>
+#include "tefmod_api.hpp"
 
 namespace TEFModLoader::Initialize_AlmostEverything {
     void init(TEFMod::TEFModAPI* api);
 
     void init_item();
+    void init_item_animations();
+
+    void init_projectile();
 
     inline void (*old_Initialize_AlmostEverything_Hook)(void*);
     void Initialize_AlmostEverything_Hook(void* Instance);

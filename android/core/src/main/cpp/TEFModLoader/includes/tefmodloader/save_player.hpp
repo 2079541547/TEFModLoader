@@ -26,7 +26,7 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-#include <TEFMod.hpp>
+#include "tefmod_api.hpp"
 
 namespace TEFModLoader::SavePlayer {
 
@@ -59,7 +59,6 @@ namespace TEFModLoader::SavePlayer {
         void serialize(std::vector<uint8_t>& buffer) const;
 
         static address deserialize(const uint8_t*& ptr);
-
     };
 
     struct file_header {
@@ -141,6 +140,7 @@ namespace TEFModLoader::SavePlayer {
     struct player {
         std::vector<equipment> _equipments;     // 套装
         std::vector<buff> _buffs;               // 存在的buff
+        std::vector<item_entry> _sacrifice_data; // 已研究物品的数据
 
         [[nodiscard]] std::vector<uint8_t> serialize() const;
 

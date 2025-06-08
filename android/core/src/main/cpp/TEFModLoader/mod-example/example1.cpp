@@ -25,10 +25,11 @@
 
 #include "efmod_core.hpp"
 
-#include "Logger.hpp"
-#include "DebugTool.hpp"
-#include "TEFMod.hpp"
-#include "Item.hpp"
+#include "logger_api.hpp"
+#include "debug_tool_api.hpp"
+#include "tefmod_api.hpp"
+#include "item_api.hpp"
+#include "projectile_api.hpp"
 #include <random>
 
 
@@ -48,6 +49,7 @@ inline TEFMod::String* (*ParseString)(void*) = nullptr;
 
 static EFMod* mod;
 static TEFMod::ItemManager* ItemManager;
+static TEFMod::ProjectileManager* ProjectileManager;
 
 inline TEFMod::Field<void*>* ShimmerTransformToItem = nullptr;
 
@@ -70,6 +72,17 @@ inline TEFMod::Field<int>* mana;
 inline TEFMod::Field<bool>* magic;
 inline TEFMod::Field<bool>* noUseGraphic;
 
+inline TEFMod::Field<void*>* SwordsHammersAxesPicks;
+
+class MyProjectile : public TEFMod::Projectile {
+public:
+    void kill(TEFMod::TerrariaInstance instance) override {}
+    void damage(TEFMod::TerrariaInstance instance) override {}
+    TEFMod::ImageData get_image() override { return {}; }
+    void init_static() override {}
+    void set_defaults(TEFMod::TerrariaInstance instance) override {}
+    void set_text(const std::string &lang) override {}
+};
 
 class MyItem: public TEFMod::Item {
 public:
@@ -78,6 +91,16 @@ public:
         ItemManager->add_recipe({
             ItemManager->get_id({ "MyMod-EternalFuture", "MyItem" }),
             { { 9, 1 } }
+        });
+        ItemManager->add_animation({
+            ItemManager->get_id({ "MyMod-EternalFuture", "MyItem" }),
+            60,
+            4,
+            true
+        });
+        ItemManager->add_prefix({
+            ItemManager->get_id({ "MyMod-EternalFuture", "MyItem" }),
+            static_cast<uint8_t>(TEFMod::prefix_type::GunsBows)
         });
     };
 
@@ -95,98 +118,112 @@ public:
         rare->Set(4, instance);
         noMelee->Set(false, instance);
         autoReuse->Set(true, instance);
-        shoot->Set(636, instance);
+        shoot->Set(ProjectileManager->get_id({ "MyMod-EternalFuture", "MyProjectile" }), instance);
+        shootSpeed->Set(10, instance);
     }
     void set_text(const std::string &lang) override {
         ItemManager->set_localized({ "MyMod-EternalFuture", "MyItem" },
                                    { "一把普通的剑", "此为Mod添加的测试物品，非原版" });
     }
 
+
     TEFMod::ImageData get_image() override {
         TEFMod::ImageData image;
-        const int size = 100;
-        image.width = size;
-        image.height = size;
-        image.pixels.resize(size * size * 4, 0); // 初始化为全透明
+        const int frameWidth = 32;
+        const int frameHeight = 50;
+        const int frameCount = 4; // 4帧动画
+        const int totalHeight = frameHeight * frameCount;
+
+        // 设置图集尺寸
+        image.width = frameWidth;
+        image.height = totalHeight; // 32x200 (4帧x50高)
+        image.pixels.resize(frameWidth * totalHeight * 4, 0); // RGBA格式
 
         // 颜色定义
         const uint8_t bladeColor[] = {200, 200, 200, 255};  // 剑身银色
         const uint8_t edgeColor[] = {255, 255, 255, 255};   // 剑刃高光
-        const uint8_t hiltColor[] = {101, 67, 33, 255};     // 剑柄深棕色
-        const uint8_t guardColor[] = {139, 69, 19, 255};    // 护手棕色
-        const uint8_t gemColor[] = {255, 50, 50, 255};      // 剑柄宝石红色
+        const uint8_t hiltColor[] = {101, 67, 33, 255};     // 剑柄棕色
+        const uint8_t gemColor[] = {255, 50, 50, 255};      // 宝石红色
 
-        // 剑的主要参数
-        const int hiltStartX = 10;    // 剑柄起始X坐标(左下)
-        const int hiltStartY = size - 10; // 剑柄起始Y坐标(左下)
-        const int length = 80;        // 剑的总长度
-        const int bladeWidth = 8;     // 剑身宽度
-        const int hiltWidth = 6;      // 剑柄宽度
-        const int guardWidth = 12;    // 护手宽度
+        // 为每一帧生成不同的剑形态
+        for (int frame = 0; frame < frameCount; frame++) {
+            int frameOffset = frame * frameHeight;
+            float frameRatio = static_cast<float>(frame) / frameCount;
 
-        // 绘制剑 (从左下到右上的斜线)
-        for (int i = 0; i < length; i++) {
-            // 计算当前点在斜线上的位置
-            float ratio = (float)i / length;
-            int x = hiltStartX + ratio * (size - 30 - hiltStartX);
-            int y = hiltStartY - ratio * (size - 30 - hiltStartX);
+            // 剑的主要参数 (每帧略有不同)
+            int hiltLength = 12;
+            int bladeLength = 35;
+            int hiltWidth = 4;
+            int bladeWidth = 3 + frame % 2; // 让宽度有些变化
+            int guardWidth = 6;
 
-            // 根据剑的不同部分设置不同宽度
-            int currentWidth;
-            if (i < 5) { // 柄头
-                currentWidth = hiltWidth + 2;
-                for (int w = -currentWidth/2; w < currentWidth/2; w++) {
-                    if (x + w >= 0 && x + w < size && y >= 0 && y < size) {
-                        size_t index = (y * size + x + w) * 4;
-                        std::copy(hiltColor, hiltColor + 4, &image.pixels[index]);
-                    }
+            // 计算当前帧的摆动偏移
+            float sway = sin(frameRatio * 3.14f) * 3.0f;
+
+            // 绘制剑柄 (垂直部分)
+            for (int y = frameOffset + frameHeight - hiltLength; y < frameOffset + frameHeight; y++) {
+                for (int x = frameWidth/2 - hiltWidth/2; x < frameWidth/2 + hiltWidth/2; x++) {
+                    size_t index = (y * frameWidth + x) * 4;
+                    std::copy(hiltColor, hiltColor + 4, &image.pixels[index]);
                 }
             }
-            else if (i < 15) { // 剑柄
-                currentWidth = hiltWidth;
-                for (int w = -currentWidth/2; w < currentWidth/2; w++) {
-                    if (x + w >= 0 && x + w < size && y >= 0 && y < size) {
-                        size_t index = (y * size + x + w) * 4;
-                        std::copy(hiltColor, hiltColor + 4, &image.pixels[index]);
-                    }
+
+            // 绘制护手 (水平部分)
+            for (int x = frameWidth/2 - guardWidth/2; x < frameWidth/2 + guardWidth/2; x++) {
+                for (int y = frameOffset + frameHeight - hiltLength - 1;
+                     y < frameOffset + frameHeight - hiltLength + 3; y++) {
+                    size_t index = (y * frameWidth + x) * 4;
+                    std::copy(hiltColor, hiltColor + 4, &image.pixels[index]);
+                }
+            }
+
+            // 绘制剑身 (带帧变化效果)
+            for (int y = frameOffset + frameHeight - hiltLength - bladeLength;
+                 y < frameOffset + frameHeight - hiltLength; y++) {
+
+                // 计算当前宽度 (剑尖变细)
+                int currentWidth = bladeWidth;
+                int distFromTip = (y - (frameOffset + frameHeight - hiltLength - bladeLength));
+                if (distFromTip < 5) {
+                    currentWidth = bladeWidth * distFromTip / 5;
                 }
 
-                // 在剑柄中间添加宝石
-                if (i == 10) {
-                    for (int w = -2; w <= 2; w++) {
-                        for (int h = -2; h <= 2; h++) {
-                            if (x + w >= 0 && x + w < size && y + h >= 0 && y + h < size) {
-                                size_t index = ((y + h) * size + x + w) * 4;
-                                std::copy(gemColor, gemColor + 4, &image.pixels[index]);
-                            }
+                // 添加摆动效果
+                int centerX = frameWidth/2 + static_cast<int>(sway *
+                                                              (1.0f - static_cast<float>(y - frameOffset) / frameHeight));
+
+                for (int x = centerX - currentWidth/2; x < centerX + currentWidth/2; x++) {
+                    if (x >= 0 && x < frameWidth && y >= frameOffset) {
+                        size_t index = (y * frameWidth + x) * 4;
+                        std::copy(bladeColor, bladeColor + 4, &image.pixels[index]);
+
+                        // 剑刃边缘高光
+                        if (x == centerX - currentWidth/2 || x == centerX + currentWidth/2 - 1) {
+                            std::copy(edgeColor, edgeColor + 4, &image.pixels[index]);
                         }
                     }
                 }
             }
-            else if (i < 20) { // 护手
-                currentWidth = guardWidth - (i - 15);
-                for (int w = -currentWidth/2; w < currentWidth/2; w++) {
-                    if (x + w >= 0 && x + w < size && y >= 0 && y < size) {
-                        size_t index = (y * size + x + w) * 4;
-                        std::copy(guardColor, guardColor + 4, &image.pixels[index]);
-                    }
+
+            // 绘制剑柄宝石 (中心位置)
+            for (int y = frameOffset + frameHeight - hiltLength/2 - 1;
+                 y < frameOffset + frameHeight - hiltLength/2 + 1; y++) {
+                for (int x = frameWidth/2 - 1; x < frameWidth/2 + 1; x++) {
+                    size_t index = (y * frameWidth + x) * 4;
+                    std::copy(gemColor, gemColor + 4, &image.pixels[index]);
                 }
             }
-            else { // 剑身
-                // 剑身逐渐变细
-                currentWidth = bladeWidth;
-                if (i > length - 15) {
-                    currentWidth = bladeWidth * (length - i) / 15;
-                }
 
-                for (int w = -currentWidth/2; w < currentWidth/2; w++) {
-                    if (x + w >= 0 && x + w < size && y >= 0 && y < size) {
-                        size_t index = (y * size + x + w) * 4;
-                        std::copy(bladeColor, bladeColor + 4, &image.pixels[index]);
-
-                        // 剑刃边缘高光
-                        if (w == -currentWidth/2 || w == currentWidth/2 - 1) {
-                            std::copy(edgeColor, edgeColor + 4, &image.pixels[index]);
+            // 为每帧添加特效光点
+            if (frame % 2 == 0) {
+                int sparkleX = frameWidth/2 + static_cast<int>(sway * 0.7f);
+                int sparkleY = frameOffset + 10;
+                for (int y = sparkleY - 1; y <= sparkleY + 1; y++) {
+                    for (int x = sparkleX - 1; x <= sparkleX + 1; x++) {
+                        if (x >= 0 && x < frameWidth && y >= frameOffset && y < frameOffset + frameHeight) {
+                            size_t index = (y * frameWidth + x) * 4;
+                            const uint8_t sparkleColor[] = {255, 255, 200, 200};
+                            std::copy(sparkleColor, sparkleColor + 4, &image.pixels[index]);
                         }
                     }
                 }
@@ -302,15 +339,18 @@ public:
 
 static MyItem my_item;
 static MyItem2 my_item2;
+static MyProjectile my_projectile;
 
 
 inline void (*original_cctor)(TEFMod::TerrariaInstance);
 void cctor_HookT(TEFMod::TerrariaInstance i);
 void hook_cctor(TEFMod::TerrariaInstance i) {
-    if (auto *it = ParseIntArray(ShimmerTransformToItem->Get())) {
+    // ParseBoolArray(SwordsHammersAxesPicks->Get())->set(ItemManager->get_id({ "MyMod-EternalFuture", "MyItem" }), true);
+
+  /*  if (auto *it = ParseIntArray(ShimmerTransformToItem->Get())) {
         // it->set(9, ItemManager->get_id({ "MyMod-EternalFuture", "MyItem" }));
         // it->set(ItemManager->get_id({ "MyMod-EternalFuture", "MyItem" }), ItemManager->get_id({ "MyMod-EternalFuture", "MyItem2" }));
-    }
+    }*/
 }
 
 
@@ -336,8 +376,8 @@ public:
     void Send(const std::string &path, MultiChannel *multiChannel) override {
         auto api = multiChannel->receive<TEFMod::TEFModAPI*>("TEFMod::TEFModAPI");
         api->registerFunctionDescriptor({
-            "Terraria.ID",
-            "ItemID.Sets",
+            "Terraria.GameContent.Prefixes",
+            "PrefixLegacy.ItemSets",
             ".cctor",
             "hook>>void",
             0,
@@ -366,10 +406,23 @@ public:
             };
             api->registerApiDescriptor(fieldDesc);
         }
+
+        api->registerApiDescriptor({
+            "Terraria.GameContent.Prefixes",
+            "PrefixLegacy.ItemSets",
+            "SwordsHammersAxesPicks",
+            "Field"
+        });
     }
 
     void Receive(const std::string &path, MultiChannel *multiChannel) override {
         auto api = multiChannel->receive<TEFMod::TEFModAPI*>("TEFMod::TEFModAPI");
+        SwordsHammersAxesPicks = ParseOtherField(api->GetAPI<void*>({
+            "Terraria.GameContent.Prefixes",
+            "PrefixLegacy.ItemSets",
+            "SwordsHammersAxesPicks",
+            "Field"
+        }));
         ShimmerTransformToItem = ParseOtherField(api->GetAPI<void*>({
             "Terraria.ID",
             "ItemID.Sets",
@@ -377,11 +430,11 @@ public:
             "Field"
         }));
         original_cctor = api->GetAPI<void(*)(TEFMod::TerrariaInstance)>({
-            "Terraria.ID",
-                    "ItemID.Sets",
-                    ".cctor",
-                    "old_fun",
-                    0,
+            "Terraria.GameContent.Prefixes",
+            "PrefixLegacy.ItemSets",
+            ".cctor",
+            "old_fun",
+            0,
         });
 
         useStyle = ParseIntField(api->GetAPI<void*>({"Terraria", "Item", "useStyle", "Field"}));
@@ -406,12 +459,13 @@ public:
 
     int Load(const std::string &path, MultiChannel *multiChannel) override {
         ItemManager = multiChannel->receive<TEFMod::ItemManager*>("TEFMod::ItemManager");
+        ProjectileManager = multiChannel->receive<TEFMod::ProjectileManager*>("TEFMod::ProjectileManager");
         ParseOtherField = multiChannel->receive<decltype(ParseOtherField)>("TEFMod::Field<Other>::ParseFromPointer");
         ParseIntArray = multiChannel->receive<decltype(ParseIntArray)>("TEFMod::Array<Int>::ParseFromPointer");
         ItemManager->registered({ "MyMod-EternalFuture", "MyItem" }, &my_item);
         // ItemManager->registered({ "MyMod-EternalFuture", "MyItem2" }, &my_item2);
         // ItemManager->registered({ "MyMod-EternalFuture", "MyItem3" }, nullptr);
-
+        ProjectileManager->registered({ "MyMod-EternalFuture", "MyProjectile" }, &my_projectile);
 
         ParseIntField = multiChannel->receive<decltype(ParseIntField)>("TEFMod::Field<Int>::ParseFromPointer");
         ParseBoolField = multiChannel->receive<decltype(ParseBoolField)>("TEFMod::Field<Bool>::ParseFromPointer");

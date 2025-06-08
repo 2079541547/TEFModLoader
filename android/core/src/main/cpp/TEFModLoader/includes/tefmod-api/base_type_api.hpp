@@ -1,5 +1,5 @@
 /*******************************************************************************
- * 文件名称: BaseType
+ * 文件名称: base_type_api
  * 项目名称: TEFMod-API
  * 创建时间: 25-5-11
  * 作者: EternalFuture゙
@@ -37,6 +37,15 @@ namespace TEFMod {
         [[nodiscard]] std::string GetID() const {
             return Namespace + "::" + Name;
         }
+
+        bool operator==(const identifier& other) const {
+            return Namespace == other.Namespace && Name == other.Name;
+        }
+
+        bool operator<(const identifier& other) const {
+            if (Namespace != other.Namespace) return Namespace < other.Namespace;
+            return Name < other.Name;
+        }
     };
 
     template <typename T>
@@ -61,10 +70,10 @@ namespace TEFMod {
     public:
         virtual ~String() = default;
 
-        virtual size_t length() const = 0;           // 获取字符串长度（不含'\0'）
-        virtual bool empty() const = 0;              // 判断是否为空
-        virtual std::string str() const = 0;         // 转换为std::string
-        __attribute__((unused)) virtual bool null_or_empty() const = 0;
+        [[nodiscard]] virtual size_t length() const = 0;           // 获取字符串长度（不含'\0'）
+        [[nodiscard]] virtual bool empty() const = 0;              // 判断是否为空
+        [[nodiscard]] virtual std::string str() const = 0;         // 转换为std::string
+        [[nodiscard]] __attribute__((unused)) virtual bool null_or_empty() const = 0;
 
         virtual char operator[](size_t index) const = 0; // 下标访问（只读）
     };
@@ -142,6 +151,13 @@ namespace TEFMod {
         std::vector<uint8_t> pixels;
         unsigned width{};
         unsigned height{};
+    };
+
+    struct animation {
+        int id{};                 // 贴图id(如NPC id, Item id)
+        int ticks_per_frame{};    // 播放速度
+        int frame_count{};        // 帧总数
+        bool ping_pong = false;   // 是否来回播放
     };
 
 }

@@ -54,4 +54,11 @@ namespace TEFModLoader::SetFactory {
     void _ctor(void *instance, int i);
 
     void set_item();
+    void set_projectile();
+
+    bool safe_resize_array(const std::string& namespaceName,
+                           const std::string& className,
+                           const std::string& fieldName,
+                           const std::string& typeName,
+                           size_t new_size);
 }

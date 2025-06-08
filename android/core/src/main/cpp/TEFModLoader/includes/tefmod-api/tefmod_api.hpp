@@ -1,5 +1,5 @@
 /*******************************************************************************
- * 文件名称: TEFMod
+ * 文件名称: tefmod_api
  * 项目名称: TEFMod-API
  * 创建时间: 25-5-11
  * 作者: EternalFuture゙
@@ -25,7 +25,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "BaseType.hpp"
+#include "base_type_api.hpp"
 
 namespace TEFMod {
 

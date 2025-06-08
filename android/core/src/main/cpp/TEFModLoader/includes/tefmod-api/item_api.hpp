@@ -1,5 +1,5 @@
 /*******************************************************************************
- * 文件名称: Item
+ * 文件名称: item_api
  * 项目名称: TEFMod-API
  * 创建时间: 25-5-30
  * 作者: EternalFuture゙
@@ -21,11 +21,25 @@
 
 #pragma once
 
-#include "BaseType.hpp"
+#include "base_type_api.hpp"
 #include <unordered_map>
 
 namespace TEFMod {
 
+    struct item_prefix {
+        int id;
+        uint8_t prefix;
+    };
+
+    enum class prefix_type {
+        SwordsHammersAxesPicks = 0,     // 剑/锤/斧/镐类近战武器
+        SpearsMacesChainsawsDrills = 1, // 长矛/链锯/钻头/拳炮类
+        GunsBows = 2,                   // 枪械/弓类远程武器
+        MagicAndSummon = 3,             // 魔法武器和召唤武器
+        BoomerangsChakrams = 4,         // 回旋镖/溜溜球
+        LegendaryWeapons = 5,           // 可拥有传奇前缀的特殊武器
+        Accessories = 6,                // 可前缀化的饰品
+    };
 
     struct item_localized {
         std::string name;
@@ -74,6 +88,8 @@ namespace TEFMod {
     public:
         virtual void registered(const identifier& name, Item* item) = 0;
         virtual void add_recipe(const recipe& item) = 0;
+        virtual void add_animation(animation _animation) = 0;
+        virtual void add_prefix(item_prefix prefix) = 0;
         virtual int get_id(const identifier& name) = 0;
         virtual int get_id_from_str(const std::string& name) = 0;
         virtual identifier get_name(int id) = 0;

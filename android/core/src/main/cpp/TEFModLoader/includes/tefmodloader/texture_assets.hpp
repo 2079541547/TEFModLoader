@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include <TEFMod.hpp>
-#include "BaseType.hpp"
+#include "tefmod_api.hpp"
+#include "base_type_api.hpp"
 
 namespace TEFModLoader::TextureAssets {
     inline TEFMod::ImageData Unknown;
@@ -33,5 +33,7 @@ namespace TEFModLoader::TextureAssets {
     void* CreateXNATexture2d(const TEFMod::ImageData &image_data);
 
     void init_item();
+    void init_projectile();
+
     void draw_Unknown();
 }

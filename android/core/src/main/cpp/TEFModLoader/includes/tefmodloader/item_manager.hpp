@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include <TEFMod.hpp>
+#include "tefmod_api.hpp"
 
 namespace TEFModLoader::item_manager {
 
@@ -48,12 +48,19 @@ namespace TEFModLoader::item_manager {
     inline bool (*old_ItemCheck_CheckCanUse)(void*, void*);
     bool ItemCheck_CheckCanUse(void* instance, void* item);
 
-
     void SetupRecipeGroups();
     inline void (*old_SetupRecipeGroups)();
     void SetupRecipeGroups_T();
     inline TEFMod::HookTemplate SetupRecipeGroups_HookTemplate = {
             reinterpret_cast<void*>(SetupRecipeGroups_T),
+            {}
+    };
+
+    void Prefix_cctor();
+    inline void (*old_Prefix_cctor)();
+    void Prefix_cctor_T();
+    inline TEFMod::HookTemplate Prefix_cctor_HookTemplate = {
+            reinterpret_cast<void*>(Prefix_cctor_T),
             {}
     };
 

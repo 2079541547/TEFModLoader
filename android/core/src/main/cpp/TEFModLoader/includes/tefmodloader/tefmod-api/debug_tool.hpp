@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include "DebugTool.hpp"
+#include "debug_tool_api.hpp"
 
 namespace TEFModLoader {
 

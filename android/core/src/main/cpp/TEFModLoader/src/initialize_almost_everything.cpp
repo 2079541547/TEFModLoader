@@ -27,6 +27,7 @@
 #include <texture_assets.hpp>
 #include <item_manager.hpp>
 #include <tefmod-api/item.hpp>
+#include <tefmod-api/projectile.hpp>
 
 #include <BNM/UserSettings/GlobalSettings.hpp>
 #include <BNM/Class.hpp>
@@ -34,6 +35,7 @@
 #include <BNM/Field.hpp>
 
 #include <tefmod-api/IL2CppArray.hpp>
+#include "BNM/ComplexMonoStructures.hpp"
 
 void TEFModLoader::Initialize_AlmostEverything::init(TEFMod::TEFModAPI *api) {
     static bool inited = false;
@@ -65,9 +67,11 @@ void TEFModLoader::Initialize_AlmostEverything::Initialize_AlmostEverything_T(vo
     for (auto fun : Initialize_AlmostEverything_HookTemplate.FunctionArray) {
         if (fun && fun != reinterpret_cast<void*>(Initialize_AlmostEverything_Hook)) reinterpret_cast<decltype(old_Initialize_AlmostEverything_Hook)>(fun)(Instance);
     }
+    init_item_animations();
 }
 
 void TEFModLoader::Initialize_AlmostEverything::Initialize_AlmostEverything_Hook(void *Instance) {
+    init_projectile();
     init_item();
 }
 
@@ -107,7 +111,20 @@ void TEFModLoader::Initialize_AlmostEverything::init_item() {
         }
     }
 
-
-
     item_manager::need_flush_localized = true;
+}
+
+void TEFModLoader::Initialize_AlmostEverything::init_item_animations() {
+    static BNM::Method<void> register_item_animation = BNM::Class("Terraria", "Main").GetMethod("RegisterItemAnimation", 2);
+    static auto draw_animation_vertical = BNM::Class("Terraria.DataStructures", "DrawAnimationVertical");
+    for (auto animation: ItemManager::GetInstance()->get_all_animation()) {
+        auto new_animation = draw_animation_vertical.CreateNewObjectParameters(animation.ticks_per_frame, animation.frame_count, animation.ping_pong);
+        register_item_animation.Call(animation.id, new_animation);
+    }
+}
+
+void TEFModLoader::Initialize_AlmostEverything::init_projectile() {
+    SetFactory::set_projectile();
+    TextureAssets::init_projectile();
+    ProjectileManager::GetInstance()->init_localized();
 }

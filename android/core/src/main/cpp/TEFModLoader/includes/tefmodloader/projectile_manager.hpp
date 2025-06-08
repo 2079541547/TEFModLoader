@@ -1,7 +1,7 @@
 /*******************************************************************************
- * 文件名称: tefmod
+ * 文件名称: projectile_manager
  * 项目名称: TEFModLoader
- * 创建时间: 2025/5/17
+ * 创建时间: 2025/6/8
  * 作者: EternalFuture゙
  * Github: https://github.com/2079541547
  * 版权声明: Copyright © 2024 EternalFuture. All rights reserved.
@@ -25,36 +25,32 @@
 
 #include "tefmod_api.hpp"
 
-#include <shared_mutex>
+namespace TEFModLoader::projectile_manager {
 
-namespace TEFModLoader {
+    // void init();
+    void init(TEFMod::TEFModAPI* api);
 
-    class TEFModAPI: public TEFMod::TEFModAPI {
-        std::unordered_map<std::string, TEFMod::ModApiDescriptor> _api_data;
-        std::unordered_map<std::string, TEFMod::ModFuncDescriptor> _func_data;
-
-        std::unordered_map<std::string, void*> _api_ptr;
-
-        mutable std::shared_mutex _api_data_mutex;
-        mutable std::shared_mutex _func_data_mutex;
-        mutable std::shared_mutex _api_ptr_mutex;
-
-        void* getApiPointer(const std::string& id) override;
-
-    public:
-
-        static TEFModAPI* GetInstance() {
-            static TEFModAPI instance;
-            return &instance;
-        }
-
-        std::unordered_map<std::string, TEFMod::ModApiDescriptor> getAllApiDescriptors();
-        std::unordered_map<std::string, TEFMod::ModFuncDescriptor> getAllFunctionDescriptors();
-        void registerApiImplementation(const TEFMod::ModApiDescriptor& apiId, void* apiPtr);
-
-
-        void registerApiDescriptor(const TEFMod::ModApiDescriptor& apiDesc) override;
-        void registerFunctionDescriptor(const TEFMod::ModFuncDescriptor& funcDesc) override;
+    inline void (*old_SetDefaults)(void*, int);
+    void SetDefaults(void* instance, int Type);
+    void SetDefaults_T(void* instance, int Type);
+    inline TEFMod::HookTemplate SetDefaults_HookTemplate = {
+            reinterpret_cast<void*>(SetDefaults_T),
+            {}
     };
 
+    inline void (*old_Kill)(void*);
+    void Kill(void* instance);
+    void Kill_T(void* instance);
+    inline TEFMod::HookTemplate Kill_HookTemplate = {
+            reinterpret_cast<void*>(Kill_T),
+            {}
+    };
+
+    inline void (*old_Damage)(void*);
+    void Damage(void* instance);
+    void Damage_T(void* instance);
+    inline TEFMod::HookTemplate Damage_HookTemplate = {
+            reinterpret_cast<void*>(Damage_T),
+            {}
+    };
 }

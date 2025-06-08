@@ -22,6 +22,7 @@
  *******************************************************************************/
 
 #include <tefmod-api/item.hpp>
+#include <tefmod-api/base_type.hpp>
 #include <logger.hpp>
 
 #include <BNM/UserSettings/GlobalSettings.hpp>
@@ -52,9 +53,9 @@ void TEFModLoader::ItemManager::assignment(int startID) {
         m_items_instance[assignedID] = m_items[i].second;
         m_id_to_name[assignedID] = itemName;
     }
-    LOGF_DEBUG("已完成 {} 个物品的ID分配", m_items.size());
 
-    m_needs_sorting = false;
+    _count = startID + static_cast<int>(m_items.size()) - 1;
+    LOGF_DEBUG("已完成 {} 个物品的ID分配", m_items.size());
 }
 
 TEFMod::Item* TEFModLoader::ItemManager::get_item_instance(int id) {
@@ -65,14 +66,8 @@ TEFMod::Item* TEFModLoader::ItemManager::get_item_instance(int id) {
 }
 
 int TEFModLoader::ItemManager::get_count() {
-    if (m_items_instance.empty()) {
-        LOGF_DEBUG("获取物品总数: 0 (容器为空)");
-        return 0;
-    }
-
-    int count = m_items_instance.rbegin()->first;
-    LOGF_DEBUG("获取物品总数: {}", count);
-    return count;
+    LOGF_DEBUG("获取物品总数: {}", _count);
+    return _count;
 }
 
 void TEFModLoader::ItemManager::registered(const TEFMod::identifier& name, TEFMod::Item* item) {
@@ -82,7 +77,6 @@ void TEFModLoader::ItemManager::registered(const TEFMod::identifier& name, TEFMo
     if (m_registered_names.find(nameID) == m_registered_names.end()) {
         m_items.emplace_back(name, item);
         m_registered_names.insert(nameID);
-        m_needs_sorting = true;
         LOGF_INFO("成功注册新物品: {}", nameID);
     } else {
         LOGF_WARN("尝试注册重复物品: {}", nameID);
@@ -132,7 +126,9 @@ void TEFModLoader::ItemManager::flushed_localized() {
     for (auto& localized : m_localized_data) {
         LOGF_TRACE("正在处理物品 '{}' 的本地化数据", localized.first);
 
-        /*
+        int itemID = m_name_to_id[localized.first];
+
+/*
         auto ItemTooltip = ItemTooltipClass.CreateNewObjectParameters();
         auto localizedText = LocalizedTextClass
                 .CreateNewObjectParameters(
@@ -141,14 +137,16 @@ void TEFModLoader::ItemManager::flushed_localized() {
                 );
 
         _text[ItemTooltip].Set(localizedText);
-        */
-        int itemID = m_name_to_id[localized.first];
+
+
+        m_localized_instance[itemID] = {
+               BNM::CreateMonoString(localized.second.name),
+               ItemTooltip
+       };
+*/
+
+
         LOGF_TRACE("为物品ID {} 创建本地化实例", itemID);
-        /*m_localized_instance[itemID] = {
-                BNM::CreateMonoString(localized.second.name),
-                ItemTooltip
-        };
-        */
 
         m_localized_instance[itemID] = {
                 BNM::CreateMonoString(localized.second.name),
@@ -267,25 +265,18 @@ void TEFModLoader::ItemManager::add_recipe(const TEFMod::recipe &item) {
     m_recipe.push_back(item);
 }
 
+void TEFModLoader::ItemManager::add_animation(TEFMod::animation _animation) {
+    LOGF_INFO("为 {} 添加动画", _animation.id);
+    m_animations.push_back(_animation);
+}
+
+void TEFModLoader::ItemManager::add_prefix(TEFMod::item_prefix prefix) {
+    LOGF_INFO("为 {} 添加可修饰的词条类型", prefix.id);
+    m_prefix.push_back(prefix);
+}
+
 void TEFModLoader::ItemManager::registered_unknown(const std::string &name) {
-    static auto parse = [](const std::string& input) -> TEFMod::identifier {
-        if (input.empty()) {
-            throw std::invalid_argument("Empty input string");
-        }
-
-        const size_t sep_pos = input.find("::");
-
-        if (sep_pos != std::string::npos) {
-            return {
-                    input.substr(0, sep_pos),  // Namespace部分
-                    input.substr(sep_pos + 2)  // Name部分（跳过"::"）
-            };
-        }
-
-        return { "TEFModLoader::Unclaimed", input };
-    };
-
-    auto i = parse(name);
+    auto i = parse_identifier_form_str(name);
     LOGF_INFO("注册了一个未知物品: {}", name);
     registered(i, new UnKnown_Item(i));
 }

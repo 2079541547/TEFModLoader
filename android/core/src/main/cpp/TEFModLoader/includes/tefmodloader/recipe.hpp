@@ -23,8 +23,8 @@
 
 #include <unordered_set>
 
-#include "Item.hpp"
-#include "TEFMod.hpp"
+#include "item_api.hpp"
+#include "tefmod_api.hpp"
 
 namespace Recipe {
 

@@ -176,6 +176,7 @@ std::vector<uint8_t> TEFModLoader::SavePlayer::player::serialize() const {
     std::vector<uint8_t> buffer;
     serialize_complex_vector<equipment>(buffer, _equipments);
     serialize_complex_vector<buff>(buffer, _buffs);
+    serialize_complex_vector<item_entry>(buffer, _sacrifice_data);
     return buffer;
 }
 
@@ -183,7 +184,8 @@ TEFModLoader::SavePlayer::player TEFModLoader::SavePlayer::player::deserialize(c
     const uint8_t* ptr = data;
     return {
             deserialize_complex_vector<equipment>(ptr),
-            deserialize_complex_vector<buff>(ptr)
+            deserialize_complex_vector<buff>(ptr),
+            deserialize_complex_vector<item_entry>(ptr)
     };
 }
 
@@ -662,7 +664,7 @@ void TEFModLoader::SavePlayer::LoadPlayer(void* playerFileData, void* playerPath
     static BNM::Field<int> Item_Stack = ItemClass.GetField("stack");
     static BNM::Field<bool> Item_Favorited = ItemClass.GetField("favorited");
     static BNM::Method<void> Item_netDefaults = ItemClass.GetMethod("netDefaults", 1);
-    static BNM::Method<void> Item_Prefix = ItemClass.GetMethod("Prefix", 1);
+    static BNM::Method<bool> Item_Prefix = ItemClass.GetMethod("Prefix", 1);
     static auto PlayerClass = BNM::Class("Terraria", "Player");
     static auto EquipmentLoadoutClass = BNM::Class("Terraria", "EquipmentLoadout");
     static auto manager = ItemManager::GetInstance();
@@ -743,7 +745,8 @@ void TEFModLoader::SavePlayer::LoadPlayer(void* playerFileData, void* playerPath
                     auto item = miscEquips.At(c_miscEquips._flag);
                     Item_netDefaults[item].Call(manager->get_id_from_str(c_miscEquips._id));
                     Item_Stack[item].Set(c_miscEquips._stack);
-                    Item_Prefix[item].Call(c_miscEquips._prefix);
+                    Item_Prefix[item].Call(c_miscEquips._prefix.o_id);
+                    Item_Favorited[item].Set(c_miscEquips._favorited);
                 }
 
                 // 处理miscDyes
@@ -757,7 +760,8 @@ void TEFModLoader::SavePlayer::LoadPlayer(void* playerFileData, void* playerPath
                     auto item = miscDyes.At(c_miscDyes._flag);
                     Item_netDefaults[item].Call(manager->get_id_from_str(c_miscDyes._id));
                     Item_Stack[item].Set(c_miscDyes._stack);
-                    Item_Prefix[item].Call(c_miscDyes._prefix);
+                    Item_Prefix[item].Call(c_miscDyes._prefix.o_id);
+                    Item_Favorited[item].Set(c_miscDyes._favorited);
                 }
                 continue;
             }
@@ -778,7 +782,8 @@ void TEFModLoader::SavePlayer::LoadPlayer(void* playerFileData, void* playerPath
                 auto item = armor.At(c_armor._flag);
                 Item_netDefaults[item].Call(manager->get_id_from_str(c_armor._id));
                 Item_Stack[item].Set(c_armor._stack);
-                Item_Prefix[item].Call(c_armor._prefix);
+                Item_Prefix[item].Call(c_armor._prefix.o_id);
+                Item_Favorited[item].Set(c_armor._favorited);
             }
 
             // 加载染料
@@ -792,7 +797,8 @@ void TEFModLoader::SavePlayer::LoadPlayer(void* playerFileData, void* playerPath
                 auto item = dye.At(c_dye._flag);
                 Item_netDefaults[item].Call(manager->get_id_from_str(c_dye._id));
                 Item_Stack[item].Set(c_dye._stack);
-                Item_Prefix[item].Call(c_dye._prefix);
+                Item_Prefix[item].Call(c_dye._prefix.o_id);
+                Item_Favorited[item].Set(c_dye._favorited);
             }
         }
 
@@ -807,7 +813,8 @@ void TEFModLoader::SavePlayer::LoadPlayer(void* playerFileData, void* playerPath
             auto item = inventoryItems.At(c_inventory._flag);
             Item_netDefaults[item].Call(manager->get_id_from_str(c_inventory._id));
             Item_Stack[item].Set(c_inventory._stack);
-            Item_Prefix[item].Call(c_inventory._prefix);
+            Item_Prefix[item].Call(c_inventory._prefix.o_id);
+            Item_Favorited[item].Set(c_inventory._favorited);
         }
 
         LOGF_INFO("加载银行数据...");
@@ -832,7 +839,8 @@ void TEFModLoader::SavePlayer::LoadPlayer(void* playerFileData, void* playerPath
                     auto item = chestItems.At(c_item._flag);
                     Item_netDefaults[item].Call(manager->get_id_from_str(c_item._id));
                     Item_Stack[item].Set(c_item._stack);
-                    Item_Prefix[item].Call(c_item._prefix);
+                    Item_Prefix[item].Call(c_item._prefix.o_id);
+                    Item_Favorited[item].Set(c_item._favorited);
                 }
             } catch (const std::exception& e) {
                 LOGF_ERROR("处理银行{}失败: {}", bankName, e.what());

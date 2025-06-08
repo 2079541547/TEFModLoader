@@ -25,10 +25,10 @@
 
 #include "efmod_core.hpp"
 
-#include "Logger.hpp"
-#include "DebugTool.hpp"
-#include "TEFMod.hpp"
-#include "BaseType.hpp"
+#include "logger_api.hpp"
+#include "debug_tool_api.hpp"
+#include "tefmod_api.hpp"
+#include "base_type_api.hpp"
 
 TEFMod::Logger* g_log;
 TEFMod::DebugTool* g_debug_tool;

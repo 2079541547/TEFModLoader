@@ -23,8 +23,8 @@
 
 #pragma once
 
-#include "Logger.hpp"
-#include "BaseType.hpp"
+#include "logger_api.hpp"
+#include "base_type_api.hpp"
 
 #include "spdlog/spdlog.h"
 

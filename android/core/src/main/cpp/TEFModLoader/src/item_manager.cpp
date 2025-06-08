@@ -26,11 +26,12 @@
 #include <texture_assets.hpp>
 #include <tefmod-api/item.hpp>
 #include <logger.hpp>
+#include <tefmod-api/IL2CppArray.hpp>
 
 #include <BNM/UserSettings/GlobalSettings.hpp>
 #include <BNM/Field.hpp>
 #include <BNM/Method.hpp>
-#include <tefmod-api/IL2CppArray.hpp>
+#include <BNM/ComplexMonoStructures.hpp>
 
 void TEFModLoader::item_manager::SetDefaults_T(void *instance, int Type, bool noMatCheck,
                                                void *variant) {
@@ -131,6 +132,80 @@ void TEFModLoader::item_manager::SetupRecipeGroups_T() {
     }
 }
 
+void TEFModLoader::item_manager::Prefix_cctor_T() {
+    old_Prefix_cctor();
+    for (auto fun: Prefix_cctor_HookTemplate.FunctionArray) {
+        if (fun) reinterpret_cast<decltype(old_Prefix_cctor)>(fun)();
+    }
+}
+
+void TEFModLoader::item_manager::Prefix_cctor() {
+    // 获取前缀分类系统的ItemSets内部类
+    auto ItemSets = BNM::Class("Terraria.GameContent.Prefixes", "PrefixLegacy").GetInnerClass("ItemSets");
+
+    // 剑/锤/斧/镐类武器 (近战武器主要类别)
+    // 包含：各类剑、锤子、斧头、镐等
+    IL2CppArray<bool> SwordsHammersAxesPicks(
+            static_cast<BNM::Field<void*>>(ItemSets.GetField("SwordsHammersAxesPicks")).Get()
+    );
+
+    // 长矛/链锯/钻头/拳炮类武器
+    // 包含：长矛、链锯、钻头、拳炮等特殊近战武器
+    IL2CppArray<bool> SpearsMacesChainsawsDrillsPunchCannon(
+            static_cast<BNM::Field<void*>>(ItemSets.GetField("SpearsMacesChainsawsDrillsPunchCannon")).Get()
+    );
+
+    // 枪械/弓类武器 (远程武器主要类别)
+    // 包含：各类枪械、弓、弩等远程武器
+    IL2CppArray<bool> GunsBows(
+            static_cast<BNM::Field<void*>>(ItemSets.GetField("GunsBows")).Get()
+    );
+
+    // 魔法/召唤类武器
+    // 包含：法杖、魔法书、召唤杖等魔法和召唤武器
+    IL2CppArray<bool> MagicAndSummon(
+            static_cast<BNM::Field<void*>>(ItemSets.GetField("MagicAndSummon")).Get()
+    );
+
+    // 回旋镖/查克拉姆类武器
+    // 包含：各类回旋镖、查克拉姆等可回收武器
+    IL2CppArray<bool> BoomerangsChakrams(
+            static_cast<BNM::Field<void*>>(ItemSets.GetField("BoomerangsChakrams")).Get()
+    );
+
+    // 特殊传奇类武器 (如泰拉悠悠球)
+    // 包含：可以拥有"传奇"前缀的特殊武器
+    IL2CppArray<bool> ItemsThatCanHaveLegendary2(
+            static_cast<BNM::Field<void*>>(ItemSets.GetField("ItemsThatCanHaveLegendary2")).Get()
+    );
+
+    for (auto prefix : ItemManager::GetInstance()->get_all_prefix()) {
+        switch (prefix.prefix) {
+            case static_cast<uint8_t>(TEFMod::prefix_type::SwordsHammersAxesPicks) :
+                SwordsHammersAxesPicks.Set(prefix.id, true);
+                break;
+            case static_cast<uint8_t>(TEFMod::prefix_type::SpearsMacesChainsawsDrills) :
+                SpearsMacesChainsawsDrillsPunchCannon.Set(prefix.id, true);
+                break;
+            case static_cast<uint8_t>(TEFMod::prefix_type::GunsBows) :
+                GunsBows.Set(prefix.id, true);
+                break;
+            case static_cast<uint8_t>(TEFMod::prefix_type::MagicAndSummon) :
+                MagicAndSummon.Set(prefix.id, true);
+                break;
+            case static_cast<uint8_t>(TEFMod::prefix_type::BoomerangsChakrams) :
+                BoomerangsChakrams.Set(prefix.id, true);
+                break;
+            case static_cast<uint8_t>(TEFMod::prefix_type::LegendaryWeapons) :
+                ItemsThatCanHaveLegendary2.Set(prefix.id, true);
+                break;
+            case static_cast<uint8_t>(TEFMod::prefix_type::Accessories) :
+                IL2CppArray<bool>(static_cast<BNM::Field<void*>>(BNM::Class("Terraria.ID", "ItemID").GetInnerClass("Sets").GetField("CanGetPrefixes")).Get()).Set(prefix.id, true);
+                break;
+        }
+    }
+}
+
 void TEFModLoader::item_manager::init(TEFMod::TEFModAPI *api) {
     static bool inited = false;
     if (!inited) {
@@ -152,6 +227,16 @@ void TEFModLoader::item_manager::init(TEFMod::TEFModAPI *api) {
             &GrantArmorBenefits_HookTemplate,
             { reinterpret_cast<void*>(GrantArmorBenefits) }
         });
+        api->registerFunctionDescriptor({
+            "Terraria.GameContent.Prefixes",
+            "PrefixLegacy.ItemSets",
+            ".cctor",
+            "hook>>void",
+            0,
+            &Prefix_cctor_HookTemplate,
+            { reinterpret_cast<void*>(Prefix_cctor) }
+        });
+
         inited = true;
     } else {
         old_SetDefaults = api->GetAPI<decltype(old_SetDefaults)>({
@@ -167,6 +252,13 @@ void TEFModLoader::item_manager::init(TEFMod::TEFModAPI *api) {
             "GrantArmorBenefits",
             "old_fun",
             1
+        });
+        old_Prefix_cctor = api->GetAPI<decltype(old_Prefix_cctor)>({
+            "Terraria.GameContent.Prefixes",
+            "PrefixLegacy.ItemSets",
+            ".cctor",
+            "old_fun",
+            0,
         });
     }
 }

@@ -39,12 +39,14 @@
 #include "texture_assets.hpp"
 #include "initialize_almost_everything.hpp"
 #include "save_player.hpp"
+#include "projectile_manager.hpp"
 
 #include "tefmod-api/base_type.hpp"
 #include "tefmod-api/debug_tool.hpp"
 #include "tefmod-api/mod_logger.hpp"
 #include "tefmod-api/tefmod.hpp"
 #include "tefmod-api/item.hpp"
+#include "tefmod-api/projectile.hpp"
 
 static EFModLoader::Loader loader(
         [](const std::string& path) -> void* {
@@ -199,6 +201,7 @@ void send_api_to_mod() {
             reinterpret_cast<void*>(TEFModLoader::IL2CPP_Method<void>::ParseFromPointer));
 
     EFModLoader::LoaderMultiChannel::GetInstance()->send("TEFMod::ItemManager", TEFModLoader::ItemManager::GetInstance());
+    EFModLoader::LoaderMultiChannel::GetInstance()->send("TEFMod::ProjectileManager", TEFModLoader::ProjectileManager::GetInstance());
 }
 
 #include "recipe.hpp"
@@ -249,11 +252,13 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
     send_api_to_mod();
 
     TEFModLoader::ItemManager::GetInstance()->registered_unknown("TEFModLoader::default");
+    TEFModLoader::ProjectileManager::GetInstance()->registered({ "TEFModLoader", "default" }, TEFModLoader::UnKnown_Projectile::GetInstance());
 
     TEFModLoader::item_manager::init(TEFModLoader::TEFModAPI::GetInstance());
     TEFModLoader::Initialize_AlmostEverything::init(TEFModLoader::TEFModAPI::GetInstance());
     TEFModLoader::SavePlayer::init(TEFModLoader::TEFModAPI::GetInstance());
     Recipe::init(TEFModLoader::TEFModAPI::GetInstance());
+    TEFModLoader::projectile_manager::init(TEFModLoader::TEFModAPI::GetInstance());
 
     loader.loadAll();
     loader.sendAll();
@@ -272,6 +277,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, [[maybe_unused]] void *reserved) {
         TEFModLoader::Initialize_AlmostEverything::init(TEFModLoader::TEFModAPI::GetInstance());
         TEFModLoader::SavePlayer::init(TEFModLoader::TEFModAPI::GetInstance());
         Recipe::init(TEFModLoader::TEFModAPI::GetInstance());
+        TEFModLoader::projectile_manager::init(TEFModLoader::TEFModAPI::GetInstance());
     });
 
     loader.initializeAll();

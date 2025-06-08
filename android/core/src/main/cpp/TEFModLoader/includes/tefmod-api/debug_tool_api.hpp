@@ -1,7 +1,7 @@
 /*******************************************************************************
- * 文件名称: Projectile
+ * 文件名称: debug_tool_api
  * 项目名称: TEFMod-API
- * 创建时间: 25-6-2
+ * 创建时间: 25-5-11
  * 作者: EternalFuture゙
  * Gitlab: https://gitlab.com/2079541547/
  * 协议: Apache License 2.0
@@ -19,18 +19,19 @@
  * limitations under the License.
  *******************************************************************************/
 
-
 #pragma once
 
-#include "BaseType.hpp"
+#include <functional>
+
+#include "logger_api.hpp"
 
 namespace TEFMod {
-
-    class projectile {
+    class DebugTool {
     public:
-        virtual void init_static() = 0;
-        virtual void set_defaults(TEFMod::TerrariaInstance instance) = 0;
+        virtual ~DebugTool() = default;
+
+        virtual void printMemoryHexView(Logger* logger, const void* ptr, size_t range, size_t hex_width) = 0;
+        virtual void printSystemInfo(Logger* logger) = 0;
+        virtual void printProfile(Logger* logger, std::function<void()> func) = 0;
     };
-
-
 }

@@ -25,6 +25,7 @@
 #include <tefmod-api/IL2CppArray.hpp>
 #include <set_factory.hpp>
 #include <tefmod-api/item.hpp>
+#include <tefmod-api/projectile.hpp>
 #include <logger.hpp>
 
 #include <BNM/Field.hpp>
@@ -104,74 +105,127 @@ void TEFModLoader::TextureAssets::init_item() {
         return;
     }
 
-
     BNM::Field<void*> Assets_Value = AssetClass.GetField("<Value>k__BackingField");
 
-    LOGF_INFO(">>> 开始加载Item纹理数组");
-    BNM::Field<void*> item_field = TextureAssetsClass.GetField("Item");
-    if (item_field) {
-        IL2CppArray<void*> item_array(item_field.Get());
-        LOGF_DEBUG("Item数组大小: {}", item_array.Size());
+    // 预先生成Unknown纹理
+    if (!Unknown_XNA_Texture2d) {
+        LOGF_TRACE("生成Unknown纹理...");
+        draw_Unknown();
+        Unknown_XNA_Texture2d = CreateXNATexture2d(Unknown);
+    }
 
-        for (int i = SetFactory::count.item; i < item_array.Size(); ++i) {
-            LOGF_TRACE("处理物品ID {}...", i);
-            auto assets_instance = AssetClass.CreateNewObjectParameters(
+    // 获取Item和ItemFlame数组
+    BNM::Field<void*> item_field = TextureAssetsClass.GetField("Item");
+    BNM::Field<void*> item_flame_field = TextureAssetsClass.GetField("ItemFlame");
+    if (!item_field || !item_flame_field) {
+        LOGF_ERROR("Item或ItemFlame字段获取失败！");
+        return;
+    }
+
+    IL2CppArray<void*> item_array(item_field.Get());
+    IL2CppArray<void*> item_flame_array(item_flame_field.Get());
+    LOGF_DEBUG("Item数组大小: {}, ItemFlame数组大小: {}", item_array.Size(), item_flame_array.Size());
+
+    for (int i = SetFactory::count.item; i < item_array.Size(); ++i) {
+        LOGF_TRACE("处理物品ID {}...", i);
+
+        if (i < item_array.Size()) {
+            auto item_assets_instance = AssetClass.CreateNewObjectParameters(
                     BNM::CreateMonoString("TEFModLoader::NewItem_" + std::to_string(i))
             );
 
-            if (auto item = ItemManager::GetInstance()->get_item_instance(i);
-            !item->get_image().pixels.empty()) {
-                LOGF_TRACE("物品ID {} 存在，生成自定义纹理...", i);
-                auto texture = CreateXNATexture2d(item->get_image());
-                Assets_Value[assets_instance].Set(texture);
+            if (auto item = ItemManager::GetInstance()->get_item_instance(i)) {
+                if (!item->get_image().pixels.empty()) {
+                    LOGF_TRACE("物品ID {} 存在，生成自定义纹理...", i);
+                    auto texture = CreateXNATexture2d(item->get_image());
+                    Assets_Value[item_assets_instance].Set(texture);
+
+                    if (i < item_flame_array.Size()) {
+                        auto flame_assets_instance = AssetClass.CreateNewObjectParameters(
+                                BNM::CreateMonoString("TEFModLoader::NewItemFlame_" + std::to_string(i))
+                        );
+                        Assets_Value[flame_assets_instance].Set(texture);
+                        item_flame_array.Set(i, flame_assets_instance);
+                    }
+                } else {
+                    LOGF_TRACE("物品ID {} 不存在，使用Unknown纹理", i);
+                    Assets_Value[item_assets_instance].Set(Unknown_XNA_Texture2d);
+                }
             } else {
                 LOGF_TRACE("物品ID {} 不存在，使用Unknown纹理", i);
-                if (!Unknown_XNA_Texture2d) {
-                    LOGF_TRACE("首次生成Unknown纹理...");
-                    draw_Unknown();
-                    Unknown_XNA_Texture2d = CreateXNATexture2d(Unknown);
-                }
-                Assets_Value[assets_instance].Set(Unknown_XNA_Texture2d);
+                Assets_Value[item_assets_instance].Set(Unknown_XNA_Texture2d);
             }
-            item_array.Set(i, assets_instance);
+            item_array.Set(i, item_assets_instance);
         }
-        LOGF_INFO("<<< Item纹理加载完成");
-    } else {
-        LOGF_ERROR("Item字段获取失败！");
-    }
 
-    LOGF_INFO(">>> 开始加载ItemFlame纹理数组");
-    BNM::Field<void*> item_flame_field = TextureAssetsClass.GetField("ItemFlame");
-    if (item_flame_field) {
-        IL2CppArray<void*> item_flame_array(item_flame_field.Get());
-        LOGF_DEBUG("ItemFlame数组大小: {}", item_flame_array.Size());
-
-        for (int i = SetFactory::count.item; i < item_flame_array.Size(); ++i) {
-            LOGF_TRACE("处理物品火焰ID {}...", i);
-            auto assets_instance = AssetClass.CreateNewObjectParameters(
+        if (i >= item_array.Size() && i < item_flame_array.Size()) {
+            auto flame_assets_instance = AssetClass.CreateNewObjectParameters(
                     BNM::CreateMonoString("TEFModLoader::NewItemFlame_" + std::to_string(i))
             );
-
-            if (auto item = ItemManager::GetInstance()->get_item_instance(i);
-            !item->get_image().pixels.empty()) {
-                LOGF_TRACE("物品火焰ID {} 存在，生成自定义纹理...", i);
-                auto texture = CreateXNATexture2d(item->get_image());
-                Assets_Value[assets_instance].Set(texture);
-            } else {
-                LOGF_TRACE("物品火焰ID {} 不存在，使用Unknown纹理", i);
-                if (!Unknown_XNA_Texture2d) {
-                    Unknown_XNA_Texture2d = CreateXNATexture2d(Unknown);
-                }
-                Assets_Value[assets_instance].Set(Unknown_XNA_Texture2d);
-            }
-            item_flame_array.Set(i, assets_instance);
+            Assets_Value[flame_assets_instance].Set(Unknown_XNA_Texture2d);
+            item_flame_array.Set(i, flame_assets_instance);
         }
-        LOGF_INFO("<<< ItemFlame纹理加载完成");
-    } else {
-        LOGF_ERROR("ItemFlame字段获取失败！");
     }
 
     LOGF_INFO("===== 物品纹理加载完成 =====");
+}
+
+void TEFModLoader::TextureAssets::init_projectile() {
+    LOGF_INFO("===== 开始加载物品纹理 =====");
+
+    auto TextureAssetsClass = BNM::Class("Terraria.GameContent", "TextureAssets");
+    if (!TextureAssetsClass) {
+        LOGF_ERROR("TextureAssets类获取失败！");
+        return;
+    }
+
+    auto AssetClass = BNM::Class("ReLogic.Content", "Asset`1").GetGeneric(
+            {BNM::Defaults::Get<void *>()});
+    if (!AssetClass) {
+        LOGF_ERROR("Asset`1类获取失败！");
+        return;
+    }
+
+    BNM::Field<void *> Assets_Value = AssetClass.GetField("<Value>k__BackingField");
+
+    // 预先生成Unknown纹理
+    if (!Unknown_XNA_Texture2d) {
+        LOGF_TRACE("生成Unknown纹理...");
+        draw_Unknown();
+        Unknown_XNA_Texture2d = CreateXNATexture2d(Unknown);
+    }
+
+    // 获取Item和ItemFlame数组
+    BNM::Field<void *> projectile_field = TextureAssetsClass.GetField("Projectile");
+    if (!projectile_field) {
+        LOGF_ERROR("Projectile字段获取失败！");
+        return;
+    }
+
+    IL2CppArray<void *> projectile_array(projectile_field.Get());
+    LOGF_DEBUG("Projectile数组大小: {}", projectile_array.Size());
+
+    for (int i = SetFactory::count.projectile; i < projectile_array.Size(); ++i) {
+        LOGF_TRACE("处理弹幕ID {}...", i);
+        auto projectile_assets_instance = AssetClass.CreateNewObjectParameters(
+                BNM::CreateMonoString("TEFModLoader::NewProjectile_" + std::to_string(i))
+        );
+
+        if (auto projectile = ProjectileManager::GetInstance()->get_projectile_instance(i)) {
+            if (!projectile->get_image().pixels.empty()) {
+                LOGF_TRACE("弹幕ID {} 存在，生成自定义纹理...", i);
+                auto texture = CreateXNATexture2d(projectile->get_image());
+                Assets_Value[projectile_assets_instance].Set(texture);
+            } else {
+                LOGF_TRACE("弹幕ID {} 不存在，使用Unknown纹理", i);
+                Assets_Value[projectile_assets_instance].Set(Unknown_XNA_Texture2d);
+            }
+        } else {
+            LOGF_TRACE("弹幕ID {} 不存在，使用Unknown纹理", i);
+            Assets_Value[projectile_assets_instance].Set(Unknown_XNA_Texture2d);
+        }
+        projectile_array.Set(i, projectile_assets_instance);
+    }
 }
 
 void TEFModLoader::TextureAssets::draw_Unknown() {

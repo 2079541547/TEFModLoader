@@ -23,12 +23,14 @@
 
 #pragma once
 
-#include "BaseType.hpp"
+#include "base_type_api.hpp"
 
 #include "IL2CppArray.hpp"
 
 namespace TEFModLoader {
-    
+
+    TEFMod::identifier parse_identifier_form_str(const std::string& input);
+
     class IL2CPP_String: public TEFMod::String {
         void* _ptr;
     public:
