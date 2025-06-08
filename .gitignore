@@ -19,6 +19,8 @@ output.json
 # IntelliJ
 *.iml
 .idea/
+.vscode/
+.kotlin/
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
