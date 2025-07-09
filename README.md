@@ -4,9 +4,15 @@
 
 ## [💝捐赠名单](Document/donation.md)
 
-## [官方Mod仓库](https://github.com/eternalfuture-e38299/Terraria-EFMod)
+## 📦 [官方Mod仓库](https://github.com/eternalfuture-e38299/Terraria-EFMod)
 
 ## [![Telegram Channel](https://img.shields.io/badge/Official_Telegram_Channel-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/TEFModLoader)
+
+## 🏛️ 社区准则
+1. 文明用语，保持友善交流环境
+2. 禁止讨论任何政治敏感话题（遵循中国和国际法律法规）
+3. 不得传播暴力、极端或违法内容
+4. 技术讨论应保持专业性和建设性
 
 ## 📚 开源组件
 
