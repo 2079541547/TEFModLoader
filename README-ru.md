@@ -6,6 +6,8 @@
 
 ## 📦 [Официальный репозиторий модов](https://github.com/eternalfuture-e38299/Terraria-EFMod)
 
+## [![Telegram Channel](https://img.shields.io/badge/Official_Telegram_Channel-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/TEFModLoader)
+
 ## 🏛️ Правила сообщества
 
 1. Вежливое общение и дружелюбная атмосфера
