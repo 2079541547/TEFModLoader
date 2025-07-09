@@ -4,8 +4,9 @@
 
 ## [💝捐赠名单](Document/donation.md)
 
-##  🌐 官方社区
-[![Telegram Channel](https://img.shields.io/badge/Official_Telegram_Channel-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/TEFModLoader)
+## [官方Mod仓库](https://github.com/eternalfuture-e38299/Terraria-EFMod)
+
+## [![Telegram Channel](https://img.shields.io/badge/Official_Telegram_Channel-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/TEFModLoader)
 
 ## 📚 开源组件
 
