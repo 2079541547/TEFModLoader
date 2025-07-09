@@ -4,6 +4,17 @@
 
 ## [💝 Donation List](Document/donation.md)
 
+## 📦 [Official Mod Repository](https://github.com/eternalfuture-e38299/Terraria-EFMod)
+
+## [![Telegram Channel](https://img.shields.io/badge/Official_Telegram_Channel-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/TEFModLoader)
+
+## 🏛️ Community Guidelines
+1. Use polite language and maintain a friendly environment
+2. No discussion of politically sensitive topics (compliant with Chinese and international laws)
+3. No violent, extremist or illegal content
+4. Keep technical discussions professional and constructive
+
+
 ## 📚 Open Source Components
 
 | Project Name | Purpose | License |
